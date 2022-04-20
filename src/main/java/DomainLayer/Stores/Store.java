@@ -31,7 +31,7 @@ public class Store {
         this.is_open = is_open;
     }
 
-    public int getId() {
+    public int getStoreId() {
         return id;
     }
 
