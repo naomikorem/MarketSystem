@@ -9,7 +9,7 @@ public class User {
         this.shoppingCart = new ShoppingCart();
     }
 
-    public int getId() {
-        return state.getId();
+    public String getName() {
+        return state.getName();
     }
 }
