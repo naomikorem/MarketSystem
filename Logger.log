@@ -1,0 +1,26 @@
+2022-04-20 19:10:04 ERROR root:7 - This is an error :(
+2022-04-20 19:10:04 WARN  root:8 - This is a warning :|
+2022-04-20 19:10:04 DEBUG root:9 - This is a debugging message
+2022-04-20 19:10:04 INFO  root:10 - This is an info message
+2022-04-20 19:10:04 INFO  root:5 - is this cool
+2022-04-20 19:42:54 INFO  main:31 - I AM MAIN
+2022-04-20 19:42:54 INFO  anotherMain:31 - I AM ANOTHER MAIN
+2022-04-20 19:46:38 INFO  main:31 - I AM MAIN
+java.lang.Throwable
+	at Logger.LogUtility.info(LogUtility.java:31)
+	at main.main(main.java:7)
+2022-04-20 19:46:38 INFO  anotherMain:31 - I AM ANOTHER MAIN
+java.lang.Throwable
+	at Logger.LogUtility.info(LogUtility.java:31)
+	at anotherMain.testfunc(anotherMain.java:6)
+	at main.main(main.java:8)
+2022-04-20 19:48:45 INFO  root:31 - I AM MAIN
+2022-04-20 19:48:45 INFO  root:31 - I AM ANOTHER MAIN
+2022-04-20 19:50:11 INFO  root: - I AM MAIN
+2022-04-20 19:50:11 INFO  root: - I AM ANOTHER MAIN
+2022-04-20 19:50:21 INFO  root: - I AM MAIN
+2022-04-20 19:50:21 INFO  root: - I AM ANOTHER MAIN
+2022-04-20 19:53:58 INFO  main: - 7 - I AM MAIN
+2022-04-20 19:53:58 INFO  anotherMain: - 6 - I AM ANOTHER MAIN
+2022-04-20 20:04:29 INFO  main: - 7 - I AM MAIN
+2022-04-20 20:04:29 INFO  anotherMain: - 6 - I AM ANOTHER MAIN
