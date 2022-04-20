@@ -5,8 +5,7 @@ import java.util.Map;
 public class UserController {
     private static UserController userController;
 
-    private int NEXT_USER_ID = 1;
-    private Map<Integer, User> users;
+    private Map<String, User> users;
 
     private UserController() {}
 
@@ -17,25 +16,24 @@ public class UserController {
         return userController;
     }
 
-    private int getNewUserId() {
-        return NEXT_USER_ID++;
-    }
-
     public User createUser(String name, String password, String email) {
-        UserState state = new SubscribedState(getNewUserId(), name, password, email);
+        if (users.containsKey(name)) {
+            throw new IllegalArgumentException("There is already a user with the give name");
+        }
+        UserState state = new SubscribedState(name, password, email);
         User u = new User(state);
         addUser(u);
         return u;
     }
 
     public void addUser(User u) {
-        if (!users.containsKey(u.getId())) {
-            users.put(u.getId(), u);
+        if (!users.containsKey(u.getName())) {
+            users.put(u.getName(), u);
         }
     }
 
-    public User getUser(int id) {
-        return users.getOrDefault(id, null);
+    public User getUser(String name) {
+        return users.getOrDefault(name, null);
     }
 
 }

@@ -2,7 +2,7 @@ package DomainLayer.Users;
 
 public class GuestState implements UserState {
     @Override
-    public int getId() {
-        return -1;
+    public String getName() {
+        throw new RuntimeException("Guest user does not have a name field");
     }
 }
