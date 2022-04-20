@@ -1,4 +1,4 @@
 package main.java.acceptensTests;
 
-public class AbstractTest {
+public abstract class AbstractTest {
 }
