@@ -8,6 +8,8 @@ public class StoreController {
 
     private Map<Integer, Store> stores; // store-id , stores
 
+    private int NEXT_STORE_ID = 1;
+
     private StoreController() {
     }
 
@@ -16,6 +18,21 @@ public class StoreController {
             storeController = new StoreController();
         }
         return storeController;
+    }
+
+    private int getNewStoreId(){
+        return this.NEXT_STORE_ID++;
+    }
+
+    public Store createStore(String store_name){
+        Store store = new Store(store_name, getNewStoreId());
+        addStore(store);
+        return store;
+    }
+
+    private void addStore(Store store)
+    {
+        this.stores.put(store.getId(), store);
     }
 
     public Store getStore(int id){
