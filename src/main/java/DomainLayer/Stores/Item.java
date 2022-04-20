@@ -7,14 +7,14 @@ public class Item {
     private int numberOfRatings; // amount of people rated
     private double price;
 
-    public Item(String product_name, Category category, double price)
-    {
+    public Item(String product_name, Category category, double price) {
         this.product_name = product_name;
         this.category = category;
         this.price = price;
         this.rate = 0;
         this.numberOfRatings = 0;
     }
+
     public String getProduct_name() {
         return product_name;
     }
@@ -39,16 +39,15 @@ public class Item {
         return rate;
     }
 
-    public void updateRate(double new_rate) throws Exception{
-        if (new_rate > 5 || new_rate < 0)
-        {
+    public void updateRate(double new_rate) throws Exception {
+        if (new_rate > 5 || new_rate < 0) {
             if (new_rate > 5)
                 Logger.LogUtility.error("tried to add a new rate for a number bigger then 5");
             else
                 Logger.LogUtility.error("tried to add a new rate for a number lower then 0");
             throw new Exception("Product rate must be between 0-5");
         }
-        this.rate = (this.rate * this.numberOfRatings + new_rate)/(this.numberOfRatings + 1);
+        this.rate = (this.rate * this.numberOfRatings + new_rate) / (this.numberOfRatings + 1);
         this.numberOfRatings++;
     }
 
@@ -56,7 +55,7 @@ public class Item {
         return price;
     }
 
-    public void setPrice(double price) throws Exception{
+    public void setPrice(double price) throws Exception {
         if (price < 0) {
             Logger.LogUtility.error("tried to change product price to a negative value");
             throw new Exception("Product price must be a non negative number");
