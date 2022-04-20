@@ -1,4 +1,4 @@
-package DomainLayer.Users;
+package main.java.DomainLayer.Users;
 
 import java.util.HashMap;
 import java.util.List;

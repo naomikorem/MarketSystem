@@ -1,6 +1,6 @@
-package DomainLayer.Users;
+package main.java.DomainLayer.Users;
 
-import DomainLayer.Stores.Item;
+import main.java.DomainLayer.Stores.Item;
 
 import java.util.ArrayList;
 import java.util.List;
