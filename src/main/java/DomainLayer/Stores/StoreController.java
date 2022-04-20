@@ -32,7 +32,7 @@ public class StoreController {
 
     private void addStore(Store store)
     {
-        this.stores.put(store.getId(), store);
+        this.stores.put(store.getStoreId(), store);
     }
 
     public Store getStore(int id){
