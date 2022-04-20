@@ -1,4 +1,4 @@
-package main.java.DomainLayer.Stores;
+package DomainLayer.Stores;
 
 public class Item {
     private String product_name;

@@ -1,4 +1,4 @@
-package main.java.DomainLayer.Users;
+package DomainLayer.Users;
 
 public class User {
     private UserState state;

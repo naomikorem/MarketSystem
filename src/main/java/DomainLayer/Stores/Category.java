@@ -1,4 +1,4 @@
-package main.java.DomainLayer.Stores;
+package DomainLayer.Stores;
 
 public enum Category {
     Food,
