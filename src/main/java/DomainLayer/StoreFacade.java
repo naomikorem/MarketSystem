@@ -1,4 +1,4 @@
-package main.java.DomainLayer;
+package DomainLayer;
 
 public class StoreFacade {
 }

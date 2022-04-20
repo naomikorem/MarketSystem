@@ -1,6 +1,6 @@
-package main.java;
+package acceptensTests;
 
-import main.java.acceptensTests.Bridge;
+import acceptensTests.Bridge;
 
 public class Real extends Bridge {
 }

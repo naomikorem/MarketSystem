@@ -1,4 +1,4 @@
-package main.java.acceptensTests;
+package acceptensTests;
 
-public class Bridg {
+public class Bridge {
 }
