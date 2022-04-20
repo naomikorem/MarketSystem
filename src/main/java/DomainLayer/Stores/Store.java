@@ -15,10 +15,10 @@ public class Store {
         return store_name;
     }
 
-    public void setStore_name(String store_name) throws Exception {
+    public void setStore_name(String store_name) {
         if (store_name == null || store_name.equals("")) {
             Logger.LogUtility.error("tried to change store name to an empty word / null");
-            throw new Exception("Store name must be a non empty name");
+            throw new IllegalArgumentException("Store name must be a non empty name");
         }
         this.store_name = store_name;
     }

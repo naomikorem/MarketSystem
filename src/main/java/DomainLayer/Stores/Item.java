@@ -19,10 +19,10 @@ public class Item {
         return product_name;
     }
 
-    public void setProduct_name(String product_name) throws Exception {
+    public void setProduct_name(String product_name) {
         if (product_name == null || product_name.equals("")) {
             Logger.LogUtility.error("tried to change product name to an empty word / null");
-            throw new Exception("Product name must be a non empty name");
+            throw new IllegalArgumentException("Product name must be a non empty name");
         }
         this.product_name = product_name;
     }
@@ -39,13 +39,13 @@ public class Item {
         return rate;
     }
 
-    public void updateRate(double new_rate) throws Exception {
+    public void updateRate(double new_rate) {
         if (new_rate > 5 || new_rate < 0) {
             if (new_rate > 5)
                 Logger.LogUtility.error("tried to add a new rate for a number bigger then 5");
             else
                 Logger.LogUtility.error("tried to add a new rate for a number lower then 0");
-            throw new Exception("Product rate must be between 0-5");
+            throw new IllegalArgumentException("Product rate must be between 0-5");
         }
         this.rate = (this.rate * this.numberOfRatings + new_rate) / (this.numberOfRatings + 1);
         this.numberOfRatings++;
@@ -55,10 +55,10 @@ public class Item {
         return price;
     }
 
-    public void setPrice(double price) throws Exception {
+    public void setPrice(double price) {
         if (price < 0) {
             Logger.LogUtility.error("tried to change product price to a negative value");
-            throw new Exception("Product price must be a non negative number");
+            throw new IllegalArgumentException("Product price must be a non negative number");
         }
         this.price = price;
     }
