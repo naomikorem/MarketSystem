@@ -1,4 +1,4 @@
-package Logger;
+package Utility;
 
 import org.apache.log4j.Logger;
 

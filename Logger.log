@@ -7,11 +7,11 @@
 2022-04-20 19:42:54 INFO  anotherMain:31 - I AM ANOTHER MAIN
 2022-04-20 19:46:38 INFO  main:31 - I AM MAIN
 java.lang.Throwable
-	at Logger.LogUtility.info(LogUtility.java:31)
+	at Utility.LogUtility.info(LogUtility.java:31)
 	at main.main(main.java:7)
 2022-04-20 19:46:38 INFO  anotherMain:31 - I AM ANOTHER MAIN
 java.lang.Throwable
-	at Logger.LogUtility.info(LogUtility.java:31)
+	at Utility.LogUtility.info(LogUtility.java:31)
 	at anotherMain.testfunc(anotherMain.java:6)
 	at main.main(main.java:8)
 2022-04-20 19:48:45 INFO  root:31 - I AM MAIN
@@ -33,3 +33,15 @@ java.lang.Throwable
 2022-04-23 20:12:11 ERROR LogException: - 8 - There was an attempt to log in into user name with the wrong credentials
 2022-04-23 20:12:44 ERROR LogException: - 8 - There was an attempt to log in into user name with the wrong credentials
 2022-04-23 20:12:44 ERROR LogException: - 8 - There was an attempt to log in into user name with the wrong credentials
+2022-04-23 20:19:46 ERROR LogException: - 8 - There was an attempt to log in into user name with the wrong credentials
+2022-04-23 20:19:46 ERROR LogException: - 8 - There was an attempt to log in into user name with the wrong credentials
+2022-04-23 20:20:02 INFO  UserController: - 36 - A new user named name was created
+2022-04-23 20:20:02 INFO  UserController: - 71 - User name has logged in
+2022-04-23 20:20:02 ERROR LogException: - 8 - There was an attempt to log in into user name while the user was already logged in
+2022-04-23 20:36:31 ERROR LogException: - 8 - There was an attempt to log in into user name with the wrong credentials
+2022-04-23 20:36:31 ERROR LogException: - 8 - There was an attempt to log in into user name with the wrong credentials
+2022-04-23 20:37:05 ERROR LogException: - 8 - There was an attempt to log in into user name with the wrong credentials
+2022-04-23 20:37:05 ERROR LogException: - 8 - There was an attempt to log in into user name with the wrong credentials
+2022-04-23 20:37:13 INFO  UserController: - 36 - A new user named name was created
+2022-04-23 20:37:13 INFO  UserController: - 71 - User name has logged in
+2022-04-23 20:37:13 ERROR LogException: - 8 - There was an attempt to log in into user name while the user was already logged in

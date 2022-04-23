@@ -1,7 +1,7 @@
 package DomainLayer.Users;
 
 import Exceptions.LogException;
-import Logger.LogUtility;
+import Utility.LogUtility;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,12 +27,13 @@ public class UserController {
     }
 
     public User createUser(String name, String password, String email) {
-        if (users.containsKey(name)) {
-            throw new IllegalArgumentException("There is already a user with the give name");
+        if (isExist(name)) {
+            throw new LogException("There is already a user with the given name", String.format("There was a failed attempt to create a user with the name %s", name));
         }
         UserState state = new SubscribedState(name, password, email);
         User u = new User(state);
         addUser(u);
+        LogUtility.info(String.format("A new user named %s was created", name));
         return u;
     }
 
