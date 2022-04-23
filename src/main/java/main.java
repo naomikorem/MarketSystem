@@ -9,6 +9,6 @@ public class main {
         SystemImplementor s = new SystemImplementor();
         System.out.println(s.register("name", "pass", "email@gmail.com").hadError());
         Response<User> r = s.login("name", "pass");
-        s.login("name", "pass");
+        s.login("name1", "pass");
     }
 }
