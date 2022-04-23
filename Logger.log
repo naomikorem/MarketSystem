@@ -24,3 +24,12 @@ java.lang.Throwable
 2022-04-20 19:53:58 INFO  anotherMain: - 6 - I AM ANOTHER MAIN
 2022-04-20 20:04:29 INFO  main: - 7 - I AM MAIN
 2022-04-20 20:04:29 INFO  anotherMain: - 6 - I AM ANOTHER MAIN
+2022-04-23 19:57:58 INFO  UserController: - 67 - User name has just logged in
+2022-04-23 20:03:49 ERROR LogException: - 8 - There was an attemp to log in into user name1 with the wrong credentials
+2022-04-23 20:04:51 ERROR LogException: - 8 - There was an attempt to log in into user name1 with the wrong credentials
+2022-04-23 20:04:57 INFO  UserController: - 73 - User name has logged in
+2022-04-23 20:04:57 ERROR LogException: - 8 - There was an attempt to log in into user name while the user was already logged in
+2022-04-23 20:12:11 ERROR LogException: - 8 - There was an attempt to log in into user name with the wrong credentials
+2022-04-23 20:12:11 ERROR LogException: - 8 - There was an attempt to log in into user name with the wrong credentials
+2022-04-23 20:12:44 ERROR LogException: - 8 - There was an attempt to log in into user name with the wrong credentials
+2022-04-23 20:12:44 ERROR LogException: - 8 - There was an attempt to log in into user name with the wrong credentials

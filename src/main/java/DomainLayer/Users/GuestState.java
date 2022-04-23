@@ -5,4 +5,14 @@ public class GuestState implements UserState {
     public String getName() {
         throw new RuntimeException("Guest user does not have a name field");
     }
+
+    @Override
+    public boolean isLoggedIn() {
+        return false;
+    }
+
+    @Override
+    public boolean login(String password) {
+        return false;
+    }
 }
