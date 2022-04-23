@@ -15,4 +15,14 @@ public class SubscribedState implements UserState {
     public String getName() {
         return name;
     }
+
+    @Override
+    public boolean isLoggedIn() {
+        return true;
+    }
+
+    @Override
+    public boolean login(String password) {
+        return password.equals(this.password);
+    }
 }

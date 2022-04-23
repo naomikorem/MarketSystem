@@ -1,38 +1,58 @@
 package DomainLayer.Stores;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Store {
-    private String store_name;
-    private boolean is_open;
+    private String name;
+    private boolean open;
     private int id;
+    private String founder;
+    private Map<String, String> owners;
+    private Map<String, Permission> managers;
+    private Map<Item, Integer> items;
 
-    public Store(String store_name, int id) {
-        this.store_name = store_name;
-        this.is_open = true;
+    public Store(String founder, String store_name, int id) {
+        this.founder = founder;
+        this.name = store_name;
+        this.open = true;
         this.id = id;
+        this.owners = new HashMap<>();
+        this.managers = new HashMap<>();
+        this.items = new HashMap<>();
+        owners.put(founder, null);
     }
 
-    public String getStore_name() {
-        return store_name;
+    public String getName() {
+        return name;
     }
 
-    public void setStore_name(String store_name) {
+    public void setName(String store_name) {
         if (store_name == null || store_name.equals("")) {
             Logger.LogUtility.error("tried to change store name to an empty word / null");
             throw new IllegalArgumentException("Store name must be a non empty name");
         }
-        this.store_name = store_name;
+        this.name = store_name;
     }
 
-    public boolean isIs_open() {
-        return is_open;
+    public boolean isOpen() {
+        return open;
     }
 
-    public void setIs_open(boolean is_open) {
-        this.is_open = is_open;
+    public void setIsOpen(boolean is_open) {
+        this.open = is_open;
     }
 
     public int getStoreId() {
         return id;
+    }
+
+    public boolean canBecomeManager(String user) {
+        return !managers.containsKey(user);
+    }
+
+    public void addManager(String givenBy, String manager) {
+        this.managers.put(manager, new Permission(givenBy));
     }
 
 }

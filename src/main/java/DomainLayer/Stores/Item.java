@@ -1,13 +1,22 @@
 package DomainLayer.Stores;
 
 public class Item {
+
+    private static int NEXT_ITEM_ID = 1;
+
+    private int id;
     private String product_name;
     private Category category;
     private double rate; //each product can be rated by clients
     private int numberOfRatings; // amount of people rated
     private double price;
 
+    public int getNextItemId() {
+        return NEXT_ITEM_ID++;
+    }
+
     public Item(String product_name, Category category, double price) {
+        this.id = getNextItemId();
         this.product_name = product_name;
         this.category = category;
         this.price = price;

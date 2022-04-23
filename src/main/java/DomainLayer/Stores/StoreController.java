@@ -1,5 +1,8 @@
 package DomainLayer.Stores;
 
+import DomainLayer.Users.User;
+
+import java.util.HashMap;
 import java.util.Map;
 
 public class StoreController {
@@ -11,31 +14,31 @@ public class StoreController {
     private int NEXT_STORE_ID = 1;
 
     private StoreController() {
+        this.stores = new HashMap<>();
     }
 
-    public StoreController getInstance() {
+    public static StoreController getInstance() {
         if (storeController == null) {
             storeController = new StoreController();
         }
         return storeController;
     }
 
-    private int getNewStoreId(){
+    private int getNewStoreId() {
         return this.NEXT_STORE_ID++;
     }
 
-    public Store createStore(String store_name){
-        Store store = new Store(store_name, getNewStoreId());
+    public Store createStore(User owner, String store_name) {
+        Store store = new Store(owner.getName(), store_name, getNewStoreId());
         addStore(store);
         return store;
     }
 
-    private void addStore(Store store)
-    {
+    private void addStore(Store store) {
         this.stores.put(store.getStoreId(), store);
     }
 
-    public Store getStore(int id){
+    public Store getStore(int id) {
         return stores.getOrDefault(id, null);
     }
 

@@ -1,5 +1,7 @@
 package DomainLayer.Users;
 
 public interface UserState {
-    String getName();
+    public String getName();
+    public boolean isLoggedIn();
+    public boolean login(String password);
 }
