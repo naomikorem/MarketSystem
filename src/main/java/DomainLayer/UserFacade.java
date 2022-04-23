@@ -13,8 +13,12 @@ public class UserFacade {
         this.storeFacade = new StoreFacade();
     }
 
-    public void Register() {
-
+    public Response<User> register(String name, String password, String email) {
+        try {
+            return new Response<>(userController.createUser(name, password, email));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
     }
 
     public Response<User> login(String user, String password) {

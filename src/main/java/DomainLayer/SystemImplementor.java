@@ -15,6 +15,10 @@ public class SystemImplementor {
         this.userFacade = new UserFacade();
     }
 
+    public Response<User> register(String name, String password, String email) {
+        return userFacade.register(name, password, email);
+    }
+
     public Response<User> login(String name, String password) {
         Response<User> r = userFacade.login(name, password);
         if (!r.hadError()) {

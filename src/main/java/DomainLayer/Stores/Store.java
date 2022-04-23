@@ -1,5 +1,7 @@
 package DomainLayer.Stores;
 
+import Utility.LogUtility;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +31,7 @@ public class Store {
 
     public void setName(String store_name) {
         if (store_name == null || store_name.equals("")) {
-            Logger.LogUtility.error("tried to change store name to an empty word / null");
+            LogUtility.error("tried to change store name to an empty word / null");
             throw new IllegalArgumentException("Store name must be a non empty name");
         }
         this.name = store_name;
