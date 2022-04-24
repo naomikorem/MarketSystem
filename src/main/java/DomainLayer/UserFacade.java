@@ -13,9 +13,9 @@ public class UserFacade {
         this.storeFacade = new StoreFacade();
     }
 
-    public Response<User> register(String name, String password, String email) {
+    public Response<User> register(String email, String name, String password) {
         try {
-            return new Response<>(userController.createUser(name, password, email));
+            return new Response<>(userController.createUser(email, name, password));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
