@@ -1,4 +1,4 @@
 package acceptensTests;
 
-public class AbstractTest {
+public abstract class AbstractTest {
 }

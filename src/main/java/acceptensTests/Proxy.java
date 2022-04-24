@@ -1,4 +1,5 @@
 package acceptensTests;
 
-public class Proxy {
+public class Proxy extends Bridge {
+    private Bridge real;
 }
