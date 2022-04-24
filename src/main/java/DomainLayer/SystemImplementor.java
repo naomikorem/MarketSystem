@@ -15,8 +15,8 @@ public class SystemImplementor implements SystemInterface {
         this.userFacade = new UserFacade();
     }
 
-    public Response<User> register(String name, String password, String email) {
-        return userFacade.register(name, password, email);
+    public Response<User> register(String email, String name, String password) {
+        return userFacade.register(email, name, password);
     }
 
     public Response<User> login(String name, String password) {
