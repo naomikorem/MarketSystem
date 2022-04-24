@@ -26,11 +26,11 @@ public class UserController {
         return userController;
     }
 
-    public User createUser(String name, String password, String email) {
+    public User createUser(String email, String name, String password) {
         if (isExist(name)) {
             throw new LogException("There is already a user with the given name", String.format("There was a failed attempt to create a user with the name %s", name));
         }
-        UserState state = new SubscribedState(name, password, email);
+        UserState state = new SubscribedState(email, name, password);
         User u = new User(state);
         addUser(u);
         LogUtility.info(String.format("A new user named %s was created", name));
@@ -41,6 +41,16 @@ public class UserController {
         if (!users.containsKey(u.getName())) {
             users.put(u.getName(), u);
         }
+    }
+
+    public void removeUser(String userName){
+        if(!isExist(userName)) {
+            System.out.println("is unregistered");
+            return;
+        }
+        users.remove(userName);
+        if(loggedUsers.contains(userName))
+            loggedUsers.remove(userName);
     }
 
     public User getUser(String name) {

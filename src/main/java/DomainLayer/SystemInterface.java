@@ -6,7 +6,7 @@ import DomainLayer.Users.User;
 import java.util.Collection;
 
 public interface SystemInterface {
-    public Response<User> register(String name, String password, String email);
+    public Response<User> register(String email, String name, String password);
 
     public Response<User> login(String name, String password);
 

@@ -1,10 +1,11 @@
 package acceptenceTests;
 
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class LoginTest extends AbstractTest {
 
@@ -12,16 +13,19 @@ public class LoginTest extends AbstractTest {
         super();
     }
 
-    @BeforeEach
+    @Before
     public void setup() {
-        this.bridge = new Real();
-        System.out.println("asd");
+        bridge.register("user111@gmail.com", "user", "password");
     }
 
     @Test
-    public void doNothing() {
-        assertTrue(true);
-
+    public void testLogin() {
+        assertTrue(bridge.login("user1", "password").hadError());
+        assertTrue(bridge.login("user", "password1").hadError());
+        assertTrue(bridge.login( null, "password").hadError());
+        assertTrue(bridge.login("user", null).hadError());
+        assertFalse(bridge.login("user", "password").hadError());
+        assertTrue(bridge.login("user", "password").hadError());
     }
 
 }
