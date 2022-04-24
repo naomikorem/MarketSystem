@@ -45,3 +45,5 @@ java.lang.Throwable
 2022-04-23 20:37:13 INFO  UserController: - 36 - A new user named name was created
 2022-04-23 20:37:13 INFO  UserController: - 71 - User name has logged in
 2022-04-23 20:37:13 ERROR LogException: - 8 - There was an attempt to log in into user name while the user was already logged in
+2022-04-25 00:01:36 INFO  UserController: - 36 - A new user named user was created
+2022-04-25 00:01:36 ERROR LogException: - 8 - There was a failed attempt to create a user with the name user

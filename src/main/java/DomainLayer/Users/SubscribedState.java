@@ -8,14 +8,14 @@ public class SubscribedState implements UserState {
     private String password;
     private String email;
 
-    public SubscribedState(String name, String password, String email) {
+    public SubscribedState(String email, String name, String password) {
         this.name = name;
         this.password = password;
         this.email = email;
-        checkParameters(name, password, email);
+        checkParameters(email, name, password);
     }
 
-    private void checkParameters(String name, String password, String email) {
+    private void checkParameters(String email, String name, String password) {
         if (name == null || name.length() < 4) {
             throw new IllegalArgumentException("A user name must be at least 4 letters long.");
         }

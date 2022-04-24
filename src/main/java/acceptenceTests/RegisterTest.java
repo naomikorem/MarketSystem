@@ -5,6 +5,7 @@ import DomainLayer.Users.GuestState;
 import DomainLayer.Users.User;
 import DomainLayer.Users.UserController;
 import Utility.Utility;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,16 +19,12 @@ public class RegisterTest extends AbstractTest {
 
     @BeforeEach
     public void setup() {
-        User user = new User(new GuestState());
         this.bridge = new Real();
         System.out.println("registerTest");
     }
+
     @Test
-    public boolean validEmail(String email) {
-        return Utility.isValidEmailAddress(email);
-    }
-    @Test
-    public void testAcceptRegister(String email, String name, String password) {
+    public void testAcceptRegister() {
         /**invalid email**/
         assertTrue(bridge.register("user1@gm@ail.com","user", "password").hadError());
         assertTrue(bridge.register("user1.com","user", "password").hadError());
@@ -51,7 +48,10 @@ public class RegisterTest extends AbstractTest {
 
     }
     @Test
-    public void testNegativeRegister(String email, String name, String password){
+    public void testNegativeRegister(){
+        if(UserController.getInstance().isExist("user")){
+            UserController.getInstance().removeUser("user");
+        }
         assertFalse(bridge.register("user1@gmail.com","user", "password").hadError());
         //same user can't be registered twice
         assertTrue(bridge.register("user1@gmail.com","user", "password").hadError());
