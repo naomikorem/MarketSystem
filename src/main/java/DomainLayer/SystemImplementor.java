@@ -3,7 +3,7 @@ package DomainLayer;
 import DomainLayer.Users.GuestState;
 import DomainLayer.Users.User;
 
-public class SystemImplementor {
+public class SystemImplementor implements SystemInterface {
     private StoreFacade storeFacade;
     private UserFacade userFacade;
     private User user;
