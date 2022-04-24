@@ -106,3 +106,65 @@ java.lang.Throwable
 2022-04-24 23:30:21 ERROR LogException: - 8 - There was an attempt to log in into user user with the wrong credentials
 2022-04-24 23:30:21 INFO  UserController: - 71 - User user has logged in
 2022-04-24 23:30:21 ERROR LogException: - 8 - There was an attempt to log in into user user while the user was already logged in
+2022-04-24 23:38:10 INFO  UserController: - 36 - A new user named user was created
+2022-04-24 23:38:10 ERROR LogException: - 8 - There was an attempt to log in into user user1 with the wrong credentials
+2022-04-24 23:38:10 ERROR LogException: - 8 - There was an attempt to log in into user user with the wrong credentials
+2022-04-24 23:38:10 ERROR LogException: - 8 - There was an attempt to log in into user null with the wrong credentials
+2022-04-24 23:38:10 ERROR LogException: - 8 - There was an attempt to log in into user user with the wrong credentials
+2022-04-24 23:38:10 INFO  UserController: - 71 - User user has logged in
+2022-04-24 23:38:10 ERROR LogException: - 8 - There was an attempt to log in into user user while the user was already logged in
+2022-04-24 23:38:22 INFO  UserController: - 36 - A new user named user was created
+2022-04-24 23:38:22 ERROR LogException: - 8 - There was an attempt to log in into user user1 with the wrong credentials
+2022-04-24 23:38:22 ERROR LogException: - 8 - There was an attempt to log in into user user with the wrong credentials
+2022-04-24 23:38:22 ERROR LogException: - 8 - There was an attempt to log in into user null with the wrong credentials
+2022-04-24 23:38:22 ERROR LogException: - 8 - There was an attempt to log in into user user with the wrong credentials
+2022-04-24 23:38:22 INFO  UserController: - 71 - User user has logged in
+2022-04-24 23:38:22 ERROR LogException: - 8 - There was an attempt to log in into user user while the user was already logged in
+2022-04-24 23:47:11 ERROR LogException: - 8 - There was an attempt to log in into user user1 with the wrong credentials
+2022-04-24 23:47:11 ERROR LogException: - 8 - There was an attempt to log in into user user with the wrong credentials
+2022-04-24 23:47:11 ERROR LogException: - 8 - There was an attempt to log in into user null with the wrong credentials
+2022-04-24 23:47:11 ERROR LogException: - 8 - There was an attempt to log in into user user with the wrong credentials
+2022-04-24 23:47:11 ERROR LogException: - 8 - There was an attempt to log in into user user with the wrong credentials
+2022-04-24 23:47:42 ERROR LogException: - 8 - There was an attempt to log in into user user1 with the wrong credentials
+2022-04-24 23:47:42 ERROR LogException: - 8 - There was an attempt to log in into user user with the wrong credentials
+2022-04-24 23:47:42 ERROR LogException: - 8 - There was an attempt to log in into user null with the wrong credentials
+2022-04-24 23:47:42 ERROR LogException: - 8 - There was an attempt to log in into user user with the wrong credentials
+2022-04-24 23:47:42 ERROR LogException: - 8 - There was an attempt to log in into user user with the wrong credentials
+2022-04-24 23:48:12 INFO  UserController: - 36 - A new user named user was created
+2022-04-24 23:48:12 ERROR LogException: - 8 - There was an attempt to log in into user user1 with the wrong credentials
+2022-04-24 23:48:12 ERROR LogException: - 8 - There was an attempt to log in into user user with the wrong credentials
+2022-04-24 23:48:12 ERROR LogException: - 8 - There was an attempt to log in into user null with the wrong credentials
+2022-04-24 23:48:12 ERROR LogException: - 8 - There was an attempt to log in into user user with the wrong credentials
+2022-04-24 23:48:12 INFO  UserController: - 71 - User user has logged in
+2022-04-24 23:48:12 ERROR LogException: - 8 - There was an attempt to log in into user user while the user was already logged in
+2022-04-24 23:48:32 ERROR LogException: - 8 - There was an attempt to log in into user user1 with the wrong credentials
+2022-04-24 23:48:32 ERROR LogException: - 8 - There was an attempt to log in into user user with the wrong credentials
+2022-04-24 23:48:32 ERROR LogException: - 8 - There was an attempt to log in into user null with the wrong credentials
+2022-04-24 23:48:32 ERROR LogException: - 8 - There was an attempt to log in into user user with the wrong credentials
+2022-04-24 23:48:32 ERROR LogException: - 8 - There was an attempt to log in into user user with the wrong credentials
+2022-04-24 23:51:31 INFO  UserController: - 36 - A new user named user was created
+2022-04-24 23:51:31 ERROR LogException: - 8 - There was an attempt to log in into user user1 with the wrong credentials
+2022-04-24 23:51:31 ERROR LogException: - 8 - There was an attempt to log in into user user with the wrong credentials
+2022-04-24 23:51:31 ERROR LogException: - 8 - There was an attempt to log in into user null with the wrong credentials
+2022-04-24 23:51:31 ERROR LogException: - 8 - There was an attempt to log in into user user with the wrong credentials
+2022-04-24 23:51:31 INFO  UserController: - 71 - User user has logged in
+2022-04-24 23:51:31 ERROR LogException: - 8 - There was an attempt to log in into user user while the user was already logged in
+2022-04-24 23:54:00 ERROR LogException: - 8 - There was an attempt to log in into user user1 with the wrong credentials
+2022-04-24 23:54:00 ERROR LogException: - 8 - There was an attempt to log in into user user with the wrong credentials
+2022-04-24 23:54:00 ERROR LogException: - 8 - There was an attempt to log in into user null with the wrong credentials
+2022-04-24 23:54:00 ERROR LogException: - 8 - There was an attempt to log in into user user with the wrong credentials
+2022-04-24 23:54:00 ERROR LogException: - 8 - There was an attempt to log in into user user with the wrong credentials
+2022-04-24 23:54:11 INFO  UserController: - 36 - A new user named user was created
+2022-04-24 23:54:11 ERROR LogException: - 8 - There was an attempt to log in into user user1 with the wrong credentials
+2022-04-24 23:54:11 ERROR LogException: - 8 - There was an attempt to log in into user user with the wrong credentials
+2022-04-24 23:54:11 ERROR LogException: - 8 - There was an attempt to log in into user null with the wrong credentials
+2022-04-24 23:54:11 ERROR LogException: - 8 - There was an attempt to log in into user user with the wrong credentials
+2022-04-24 23:54:11 INFO  UserController: - 71 - User user has logged in
+2022-04-24 23:54:11 ERROR LogException: - 8 - There was an attempt to log in into user user while the user was already logged in
+2022-04-25 00:01:05 INFO  UserController: - 36 - A new user named user was created
+2022-04-25 00:01:05 ERROR LogException: - 8 - There was an attempt to log in into user user1 with the wrong credentials
+2022-04-25 00:01:05 ERROR LogException: - 8 - There was an attempt to log in into user user with the wrong credentials
+2022-04-25 00:01:05 ERROR LogException: - 8 - There was an attempt to log in into user null with the wrong credentials
+2022-04-25 00:01:05 ERROR LogException: - 8 - There was an attempt to log in into user user with the wrong credentials
+2022-04-25 00:01:05 INFO  UserController: - 71 - User user has logged in
+2022-04-25 00:01:05 ERROR LogException: - 8 - There was an attempt to log in into user user while the user was already logged in
