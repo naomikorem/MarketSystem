@@ -5,10 +5,7 @@ import DomainLayer.Users.GuestState;
 import DomainLayer.Users.User;
 import DomainLayer.Users.UserController;
 import Utility.Utility;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
+import org.junit.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RegisterTest extends AbstractTest {
@@ -17,10 +14,9 @@ public class RegisterTest extends AbstractTest {
         super();
     }
 
-    @BeforeEach
+    @Before
     public void setup() {
         this.bridge = new Real();
-        System.out.println("registerTest");
     }
 
     @Test
