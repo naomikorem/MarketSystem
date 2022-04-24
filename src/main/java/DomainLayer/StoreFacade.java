@@ -1,8 +1,12 @@
 package DomainLayer;
 
+import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
 import DomainLayer.Stores.StoreController;
 import DomainLayer.Users.User;
+
+import java.util.Collection;
+import java.util.Set;
 
 public class StoreFacade {
 
@@ -28,5 +32,15 @@ public class StoreFacade {
             throw new IllegalArgumentException(String.format("%s cannot be promoted to be a manager of the store with store id %s", manager, storeId));
         }
         s.addManager(owner.getName(), manager);
+    }
+
+    public Response<Collection<Store>> getAllStores(){
+        return new Response<>(storeController.getAllStores());
+    }
+    public Response<Store> getStore(int id){
+        return new Response<>(storeController.getStore(id));
+    }
+    public Response<Set<Item>> getItemsWithNameContains(String name) {
+        return new Response<>(storeController.getItemsWithNameContains(name));
     }
 }

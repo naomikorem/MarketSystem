@@ -2,8 +2,11 @@ package DomainLayer.Stores;
 
 import Utility.LogUtility;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Store {
     private String name;
@@ -55,6 +58,10 @@ public class Store {
 
     public void addManager(String givenBy, String manager) {
         this.managers.put(manager, new Permission(givenBy));
+    }
+
+    public Set<Item> getItemsWithNameContains(String name){
+        return items.keySet().stream().filter((x)->x.isNameContains(name)).collect(Collectors.toSet());
     }
 
 }

@@ -1,10 +1,13 @@
 package acceptenceTests;
 
 import DomainLayer.Response;
+import DomainLayer.Stores.Item;
+import DomainLayer.Stores.Store;
 import DomainLayer.SystemImplementor;
 import DomainLayer.SystemInterface;
 import DomainLayer.Users.User;
 
+import java.util.Collection;
 import java.util.List;
 
 public class Real extends Bridge {
@@ -35,22 +38,29 @@ public class Real extends Bridge {
     }
 
     @Override
-    public void getStores() {
-
+    public Response<Collection<Store>>  getStores() {
+        return adaptee.getAllStores();
     }
 
     @Override
-    public void getStoreInformation(String storeID) {
-
+    public Response<Store> getStoreInformation(String storeID) {
+        try {
+            return adaptee.getStore(Integer.parseInt(storeID));
+        }
+        catch (Exception e){
+            return new  Response<>(e.getMessage());
+        }
     }
 
     @Override
-    public void searchProducts(String productName, String Category, List<String> keywords) {
+    public Response<Collection<Item>> searchProducts(String productName, String Category, List<String> keywords) {
 
+        return null;
     }
 
     @Override
-    public void filterResults() {
+    public Response<Collection<Item>> filterResults() {
 
+        return null;
     }
 }

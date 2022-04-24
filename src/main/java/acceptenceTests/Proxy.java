@@ -1,8 +1,11 @@
 package acceptenceTests;
 
 import DomainLayer.Response;
+import DomainLayer.Stores.Item;
+import DomainLayer.Stores.Store;
 import DomainLayer.Users.User;
 
+import java.util.Collection;
 import java.util.List;
 
 public class Proxy extends Bridge {
@@ -43,22 +46,26 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public void getStores() {
+    public Response<Collection<Store>> getStores() {
 
+        return real.getStores();
     }
 
     @Override
-    public void getStoreInformation(String storeID) {
+    public Response<Store> getStoreInformation(String storeID) {
 
+        return real.getStoreInformation(storeID);
     }
 
     @Override
-    public void searchProducts(String productName, String Category, List<String> keywords) {
+    public Response<Collection<Item>> searchProducts(String productName, String Category, List<String> keywords) {
 
+        return null;
     }
 
     @Override
-    public void filterResults() {
+    public Response<Collection<Item>> filterResults() {
 
+        return null;
     }
 }

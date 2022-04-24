@@ -73,4 +73,7 @@ public class Item {
         }
         this.price = price;
     }
+    public boolean isNameContains(String name){
+        return this.product_name.contains(name);
+    }
 }

@@ -1,7 +1,10 @@
 package DomainLayer;
 
+import DomainLayer.Stores.Store;
 import DomainLayer.Users.GuestState;
 import DomainLayer.Users.User;
+
+import java.util.Collection;
 
 public class SystemImplementor implements SystemInterface {
     private StoreFacade storeFacade;
@@ -33,5 +36,15 @@ public class SystemImplementor implements SystemInterface {
             throw new IllegalArgumentException(String.format("There is no user by the name of %s", manager));
         }
         storeFacade.addManager(owner, manager, storeId);
+    }
+
+    @Override
+    public Response<Collection<Store>> getAllStores() {
+        return storeFacade.getAllStores();
+    }
+
+    @Override
+    public Response<Store> getStore(int id) {
+        return storeFacade.getStore(id);
     }
 }

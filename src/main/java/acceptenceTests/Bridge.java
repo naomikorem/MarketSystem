@@ -1,8 +1,11 @@
 package acceptenceTests;
 
 import DomainLayer.Response;
+import DomainLayer.Stores.Item;
+import DomainLayer.Stores.Store;
 import DomainLayer.Users.User;
 
+import java.util.Collection;
 import java.util.List;
 
 public abstract class Bridge {
@@ -13,10 +16,10 @@ public abstract class Bridge {
     public abstract Response<User> register(String email, String name, String password);
     public abstract Response<User> login(String email, String password);
     //Acceptance Tests for use case 2:
-    public abstract void getStores();
-    public abstract void getStoreInformation(String storeID);
-    public abstract void searchProducts(String productName, String Category, List<String> keywords);
-    public abstract void filterResults();
+    public abstract Response<Collection<Store>> getStores();
+    public abstract Response<Store> getStoreInformation(String storeID);
+    public abstract Response<Collection<Item>> searchProducts(String productName, String Category, List<String> keywords);
+    public abstract Response<Collection<Item>> filterResults();
 
 
     //Acceptance Tests for use case 3:

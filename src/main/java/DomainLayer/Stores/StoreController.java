@@ -2,8 +2,8 @@ package DomainLayer.Stores;
 
 import DomainLayer.Users.User;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class StoreController {
 
@@ -40,6 +40,13 @@ public class StoreController {
 
     public Store getStore(int id) {
         return stores.getOrDefault(id, null);
+    }
+
+    public Collection<Store> getAllStores(){
+        return stores.values();
+    }
+    public Set<Item> getItemsWithNameContains(String name){
+       return stores.values().stream().map(s -> s.getItemsWithNameContains(name)).flatMap(Set::stream).collect(Collectors.toSet());
     }
 
 }
