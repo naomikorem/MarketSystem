@@ -26,7 +26,7 @@ public class UserController {
         return userController;
     }
 
-    public User createUser(String email, String name, String password) {
+    public synchronized User createUser(String email, String name, String password) {
         if (isExist(name)) {
             throw new LogException("There is already a user with the given name", String.format("There was a failed attempt to create a user with the name %s", name));
         }
@@ -74,16 +74,21 @@ public class UserController {
     }
 
     public User login(String name, String password) {
-        if (isLoggedIn(name)) {
-            throw new LogException("The user is already logged in.", String.format("There was an attempt to log in into user %s while the user was already logged in", name));
-        }
         User u = getUser(name);
-        if (u == null || !u.login(password)) {
+        if (u == null) {
             throw new LogException("One of the credentials is incorrect.", String.format("There was an attempt to log in into user %s with the wrong credentials", name));
         }
-        addLoggedUser(name);
-        LogUtility.info(String.format("User %s has logged in", name));
-        return u;
+        synchronized (u) {
+            if (isLoggedIn(name)) {
+                throw new LogException("The user is already logged in.", String.format("There was an attempt to log in into user %s while the user was already logged in", name));
+            }
+            if (!u.login(password)) {
+                throw new LogException("One of the credentials is incorrect.", String.format("There was an attempt to log in into user %s with the wrong credentials", name));
+            }
+            addLoggedUser(name);
+            LogUtility.info(String.format("User %s has logged in", name));
+            return u;
+        }
     }
 
     public boolean logout(String name) {

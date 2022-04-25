@@ -25,4 +25,8 @@ public interface SystemInterface {
     public Response<Collection<Store>> getAllStores();
 
     public Response<Store> getStore(int id);
+
+    public Response<Item> addItemToCart(int storeId, int itemId);
+
+    public Response<Store> addNewStore(String name);
 }

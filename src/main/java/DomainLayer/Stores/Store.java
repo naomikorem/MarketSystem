@@ -68,4 +68,8 @@ public class Store {
         return items.keySet().stream().filter((x)->x.getCategory().equals(category)).collect(Collectors.toSet());
     }
 
+    public Item getItemById(int id) {
+        return items.keySet().stream().filter(i -> i.getId() == id).findFirst().orElse(null);
+    }
+
 }

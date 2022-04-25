@@ -26,5 +26,12 @@ public class ShoppingCart {
         return shoppingBaskets.values().stream().flatMap(sb -> sb.getItems().stream()).collect(Collectors.toList());
     }
 
+    public void addItem(int storeId, Item item) {
+        if (!shoppingBaskets.containsKey(storeId)) {
+            shoppingBaskets.put(storeId, new ShoppingBasket(storeId));
+        }
+        shoppingBaskets.get(storeId).addItem(item);
+    }
+
 
 }

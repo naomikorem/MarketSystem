@@ -11,7 +11,7 @@ public class StoreController {
 
     private Map<Integer, Store> stores; // store-id , stores
 
-    private int NEXT_STORE_ID = 1;
+    private static int NEXT_STORE_ID = 1;
 
     private StoreController() {
         this.stores = new HashMap<>();
@@ -24,8 +24,8 @@ public class StoreController {
         return storeController;
     }
 
-    private int getNewStoreId() {
-        return this.NEXT_STORE_ID++;
+    private synchronized static int getNewStoreId() {
+        return NEXT_STORE_ID++;
     }
 
     public Store createStore(User owner, String store_name) {

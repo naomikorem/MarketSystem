@@ -19,7 +19,7 @@ public class Item {
     private double price;
     private List<String> keyWords;
 
-    public int getNextItemId() {
+    public synchronized static int getNextItemId() {
         return NEXT_ITEM_ID++;
     }
 
@@ -100,5 +100,9 @@ public class Item {
 
     public void setKeyWords(List<String> keyWords) {
         this.keyWords = keyWords;
+    }
+
+    public int getId() {
+        return this.id;
     }
 }

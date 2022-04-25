@@ -93,4 +93,22 @@ public class SystemImplementor implements SystemInterface {
             return new Response<>(e.getMessage());
         }
     }
+
+    @Override
+    public Response<Item> addItemToCart(int storeId, int itemId) {
+        try {
+            Response<Item> itemRes = storeFacade.getItemFromStore(storeId, itemId);
+            if (itemRes.hadError()) {
+                return itemRes;
+            }
+            user.addItemToShoppingCart(storeId, itemRes.getObject());
+            return itemRes;
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Store> addNewStore(String name) {
+        return storeFacade.addNewStore(user, name);
+    }
 }

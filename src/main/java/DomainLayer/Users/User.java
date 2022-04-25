@@ -28,4 +28,8 @@ public class User {
     public List<Item> getShoppingCartItems () {
         return shoppingCart.getAllItems();
     }
+
+    public void addItemToShoppingCart(int storeId, Item item) {
+        this.shoppingCart.addItem(storeId, item);
+    }
 }

@@ -14,6 +14,7 @@ public class StoreInformationTest extends AbstractTest {
 
     private int storeId;
     private String storeName;
+    private static boolean isInit = false;
 
     public StoreInformationTest() {
         super();
@@ -21,11 +22,14 @@ public class StoreInformationTest extends AbstractTest {
 
     @Before
     public void setup() {
-        bridge.enter();
-        bridge.register("user111@gmail.com", "user", "password");
-        bridge.login("user", "password");
-        this.storeName = "MyStore";
-        this.storeId = bridge.addNewStore(storeName).getObject().getStoreId();
+        if (!isInit) {
+            isInit = true;
+            bridge.enter();
+            bridge.register("user111@gmail.com", "user", "password");
+            bridge.login("user", "password");
+            this.storeName = "MyStore";
+            this.storeId = bridge.addNewStore(storeName).getObject().getStoreId();
+        }
     }
 
     @Test

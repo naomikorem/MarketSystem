@@ -4,6 +4,7 @@ import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
 import DomainLayer.Stores.StoreController;
 import DomainLayer.Users.User;
+import Exceptions.LogException;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -19,11 +20,15 @@ public class StoreFacade {
         this.storeController = StoreController.getInstance();
     }
 
-    public void addNewStore(User owner, String storeName) {
-        if (!owner.isLoggedIn()) {
-            throw new RuntimeException("The user is not logged in.");
+    public Response<Store> addNewStore(User owner, String storeName) {
+        try {
+            if (!owner.isLoggedIn()) {
+                throw new RuntimeException("The user is not logged in.");
+            }
+            return new Response<>(storeController.createStore(owner, storeName));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
         }
-        storeController.createStore(owner, storeName);
     }
 
     public void addManager(User owner, String manager, int storeId) {
@@ -42,7 +47,11 @@ public class StoreFacade {
     }
 
     public Response<Store> getStore(int id) {
-        return new Response<>(storeController.getStore(id));
+        Store s = storeController.getStore(id);
+        if (s == null) {
+            throw new IllegalArgumentException(String.format("Could not find store with id %s", id));
+        }
+        return new Response<>(s);
     }
 
     public Response<Set<Item>> getItemsWithNameContains(String name) {
@@ -76,5 +85,17 @@ public class StoreFacade {
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
+    }
+
+    public Response<Item> getItemFromStore(int storeId, int itemId) {
+        Store s = storeController.getStore(storeId);
+        if (s == null) {
+            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
+        }
+        Item i = s.getItemById(itemId);
+        if (i == null) {
+            throw new IllegalArgumentException(String.format("There is item with item id %s in the store", itemId));
+        }
+        return new Response<>(i);
     }
 }
