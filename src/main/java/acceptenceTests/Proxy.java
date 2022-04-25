@@ -62,7 +62,7 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<Store> getStoreInformation(String storeID) {
+    public Response<Store> getStoreInformation(int storeID) {
 
         return real.getStoreInformation(storeID);
     }
@@ -83,5 +83,10 @@ public class Proxy extends Bridge {
     public Response<List<Item>> getShoppingCartItems() {
 
         return real.getShoppingCartItems();
+    }
+
+    @Override
+    public Response<Store> addNewStore(String storeName) {
+        return real.addNewStore(storeName);
     }
 }

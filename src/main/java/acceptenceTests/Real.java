@@ -48,9 +48,9 @@ public class Real extends Bridge {
     }
 
     @Override
-    public Response<Store> getStoreInformation(String storeID) {
+    public Response<Store> getStoreInformation(int storeID) {
         try {
-            return adaptee.getStore(Integer.parseInt(storeID));
+            return adaptee.getStore(storeID);
         }
         catch (Exception e){
             return new  Response<>(e.getMessage());
@@ -72,5 +72,9 @@ public class Real extends Bridge {
     @Override
     public Response<List<Item>> getShoppingCartItems() {
         return adaptee.getShoppingCartItems();
+    }
+    @Override
+    public Response<Store> addNewStore(String name) {
+        return adaptee.addNewStore(name);
     }
 }

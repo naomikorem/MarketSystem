@@ -18,11 +18,11 @@ public abstract class Bridge {
     public abstract Response<Boolean> logout();
     //Acceptance Tests for use case 2:
     public abstract Response<Collection<Store>> getStores();
-    public abstract Response<Store> getStoreInformation(String storeID);
+    public abstract Response<Store> getStoreInformation(int storeID);
     public abstract Response<Collection<Item>> searchProducts(String productName, String Category, List<String> keywords);
     public abstract Response<Collection<Item>> filterResults();
     public abstract Response<List<Item>> getShoppingCartItems();
-
+    public abstract Response<Store> addNewStore(String storeName);
 
     //Acceptance Tests for use case 3:
     //Acceptance Tests for use case 4:
