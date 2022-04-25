@@ -73,7 +73,6 @@ public class Real extends Bridge {
     public Response<List<Item>> getShoppingCartItems() {
         return adaptee.getShoppingCartItems();
     }
-
     @Override
     public Response<Store> addNewStore(String name) {
         return adaptee.addNewStore(name);
