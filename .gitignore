@@ -1,3 +1,17 @@
-*.log
+# Compiled class file
 *.class
-*.iml
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
