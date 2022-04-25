@@ -18,13 +18,13 @@ public class Real extends Bridge {
     }
 
     @Override
-    public void enter() {
-
+    public Response<Boolean> enter() {
+        return adaptee.enter();
     }
 
     @Override
-    public void exit() {
-
+    public Response<Boolean> exit() {
+        return adaptee.exit();
     }
 
     @Override
@@ -35,6 +35,11 @@ public class Real extends Bridge {
     @Override
     public Response<User> login(String name, String password) {
         return adaptee.login(name, password);
+    }
+
+    @Override
+    public Response<Boolean> logout() {
+        return adaptee.logout();
     }
 
     @Override
@@ -62,5 +67,10 @@ public class Real extends Bridge {
     public Response<Collection<Item>> filterResults() {
 
         return null;
+    }
+
+    @Override
+    public Response<List<Item>> getShoppingCartItems() {
+        return adaptee.getShoppingCartItems();
     }
 }

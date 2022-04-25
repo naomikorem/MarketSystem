@@ -1,10 +1,12 @@
 package DomainLayer;
 
+import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
 import DomainLayer.Users.GuestState;
 import DomainLayer.Users.User;
 
 import java.util.Collection;
+import java.util.List;
 
 public class SystemImplementor implements SystemInterface {
     private StoreFacade storeFacade;
@@ -14,8 +16,32 @@ public class SystemImplementor implements SystemInterface {
     //Add catch to every function here.
 
     public SystemImplementor() {
-        this.user = new User(new GuestState());
         this.userFacade = new UserFacade();
+        this.storeFacade = new StoreFacade();
+    }
+
+    public Response<Boolean> enter() {
+        try {
+            if (this.user != null) {
+                return new Response<>(false);
+            }
+            this.user = new User(new GuestState());
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Boolean> exit() {
+        try {
+            if (this.user != null) {
+                logout();
+            }
+            this.user = null;
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
     }
 
     public Response<User> register(String email, String name, String password) {
@@ -28,6 +54,17 @@ public class SystemImplementor implements SystemInterface {
             this.user = r.getObject();
         }
         return r;
+    }
+
+    public Response<Boolean> logout() {
+        if (this.user == null || !this.user.isLoggedIn()) {
+            return new Response<>("You have to be logged in to perform this action.");
+        }
+        Response<Boolean> res = userFacade.logout(user.getName());
+        if (res.getObject()) {
+            this.user = new User(new GuestState());
+        }
+        return res;
     }
 
 
@@ -46,5 +83,14 @@ public class SystemImplementor implements SystemInterface {
     @Override
     public Response<Store> getStore(int id) {
         return storeFacade.getStore(id);
+    }
+
+    @Override
+    public Response<List<Item>> getShoppingCartItems() {
+        try {
+            return new Response<>(user.getShoppingCartItems());
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
     }
 }

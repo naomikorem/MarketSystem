@@ -11,15 +11,17 @@ import java.util.List;
 public abstract class Bridge {
     //TODO: change return tipes.
     //Acceptance Tests for use case 1:
-    public abstract void enter();
-    public abstract void exit();
+    public abstract Response<Boolean> enter();
+    public abstract Response<Boolean> exit();
     public abstract Response<User> register(String email, String name, String password);
     public abstract Response<User> login(String user, String password);
+    public abstract Response<Boolean> logout();
     //Acceptance Tests for use case 2:
     public abstract Response<Collection<Store>> getStores();
     public abstract Response<Store> getStoreInformation(String storeID);
     public abstract Response<Collection<Item>> searchProducts(String productName, String Category, List<String> keywords);
     public abstract Response<Collection<Item>> filterResults();
+    public abstract Response<List<Item>> getShoppingCartItems();
 
 
     //Acceptance Tests for use case 3:

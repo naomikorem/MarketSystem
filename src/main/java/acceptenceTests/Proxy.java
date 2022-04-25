@@ -16,17 +16,19 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public void enter() {
+    public Response<Boolean> enter() {
         if (this.real != null) {
-            real.enter();
+            return real.enter();
         }
+        return null;
     }
 
     @Override
-    public void exit() {
+    public Response<Boolean> exit() {
         if (this.real != null) {
-            real.exit();
+            return real.exit();
         }
+        return null;
     }
 
     @Override
@@ -41,6 +43,14 @@ public class Proxy extends Bridge {
     public Response<User> login(String email, String password) {
         if (this.real != null) {
             return real.login(email, password);
+        }
+        return null;
+    }
+
+    @Override
+    public Response<Boolean> logout() {
+        if (this.real != null) {
+            return real.logout();
         }
         return null;
     }
@@ -67,5 +77,11 @@ public class Proxy extends Bridge {
     public Response<Collection<Item>> filterResults() {
 
         return null;
+    }
+
+    @Override
+    public Response<List<Item>> getShoppingCartItems() {
+
+        return real.getShoppingCartItems();
     }
 }

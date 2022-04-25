@@ -69,6 +69,10 @@ public class UserController {
         this.loggedUsers.add(name);
     }
 
+    private void removedLoggedUser(String name) {
+        this.loggedUsers.remove(name);
+    }
+
     public User login(String name, String password) {
         if (isLoggedIn(name)) {
             throw new LogException("The user is already logged in.", String.format("There was an attempt to log in into user %s while the user was already logged in", name));
@@ -80,6 +84,14 @@ public class UserController {
         addLoggedUser(name);
         LogUtility.info(String.format("User %s has logged in", name));
         return u;
+    }
+
+    public boolean logout(String name) {
+        if (!isLoggedIn(name)) {
+            throw new LogException("Only logged in users can log out.", "User %s has tried to log out even though they are not logged in.");
+        }
+        removedLoggedUser(name);
+        return true;
     }
 
 }
