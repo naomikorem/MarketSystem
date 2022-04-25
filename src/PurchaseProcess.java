@@ -1,2 +1,4 @@
-public class PurchaseProcess {
+public class PurchaseProcess
+{
+
 }
