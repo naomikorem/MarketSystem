@@ -48,6 +48,14 @@ public class Proxy extends Bridge {
     }
 
     @Override
+    public Response<Boolean> logout() {
+        if (this.real != null) {
+            return real.logout();
+        }
+        return null;
+    }
+
+    @Override
     public Response<Collection<Store>> getStores() {
 
         return real.getStores();
@@ -69,5 +77,11 @@ public class Proxy extends Bridge {
     public Response<Collection<Item>> filterResults() {
 
         return null;
+    }
+
+    @Override
+    public Response<List<Item>> getShoppingCartItems() {
+
+        return real.getShoppingCartItems();
     }
 }

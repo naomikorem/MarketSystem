@@ -1,10 +1,12 @@
 package DomainLayer;
 
+import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
 import DomainLayer.Users.GuestState;
 import DomainLayer.Users.User;
 
 import java.util.Collection;
+import java.util.List;
 
 public class SystemImplementor implements SystemInterface {
     private StoreFacade storeFacade;
@@ -13,12 +15,17 @@ public class SystemImplementor implements SystemInterface {
 
     //Add catch to every function here.
 
-    public SystemImplementor() {}
+    public SystemImplementor() {
+        this.userFacade = new UserFacade();
+        this.storeFacade = new StoreFacade();
+    }
 
     public Response<Boolean> enter() {
         try {
+            if (this.user != null) {
+                return new Response<>(false);
+            }
             this.user = new User(new GuestState());
-            this.userFacade = new UserFacade();
             return new Response<>(true);
         } catch (Exception e) {
             return new Response<>(e.getMessage());
@@ -27,8 +34,10 @@ public class SystemImplementor implements SystemInterface {
 
     public Response<Boolean> exit() {
         try {
+            if (this.user != null) {
+                logout();
+            }
             this.user = null;
-            this.userFacade = null;
             return new Response<>(true);
         } catch (Exception e) {
             return new Response<>(e.getMessage());
@@ -47,6 +56,17 @@ public class SystemImplementor implements SystemInterface {
         return r;
     }
 
+    public Response<Boolean> logout() {
+        if (this.user == null || !this.user.isLoggedIn()) {
+            return new Response<>("You have to be logged in to perform this action.");
+        }
+        Response<Boolean> res = userFacade.logout(user.getName());
+        if (res.getObject()) {
+            this.user = new User(new GuestState());
+        }
+        return res;
+    }
+
 
     public void addManager(User owner, String manager, int storeId) {
         if (userFacade.isExist(manager)) {
@@ -63,5 +83,14 @@ public class SystemImplementor implements SystemInterface {
     @Override
     public Response<Store> getStore(int id) {
         return storeFacade.getStore(id);
+    }
+
+    @Override
+    public Response<List<Item>> getShoppingCartItems() {
+        try {
+            return new Response<>(user.getShoppingCartItems());
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
     }
 }

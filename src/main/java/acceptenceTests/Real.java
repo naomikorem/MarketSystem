@@ -38,6 +38,11 @@ public class Real extends Bridge {
     }
 
     @Override
+    public Response<Boolean> logout() {
+        return adaptee.logout();
+    }
+
+    @Override
     public Response<Collection<Store>>  getStores() {
         return adaptee.getAllStores();
     }
@@ -62,5 +67,10 @@ public class Real extends Bridge {
     public Response<Collection<Item>> filterResults() {
 
         return null;
+    }
+
+    @Override
+    public Response<List<Item>> getShoppingCartItems() {
+        return adaptee.getShoppingCartItems();
     }
 }

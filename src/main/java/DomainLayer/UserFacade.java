@@ -29,6 +29,14 @@ public class UserFacade {
         }
     }
 
+    public Response<Boolean> logout(String user) {
+        try {
+            return new Response<>(userController.logout(user));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
     public boolean isExist(String user) {
         return userController.isExist(user);
     }

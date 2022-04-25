@@ -26,4 +26,8 @@ public class ShoppingBasket {
         this.items.remove(item);
     }
 
+    public List<Item> getItems() {
+        return items;
+    }
+
 }
