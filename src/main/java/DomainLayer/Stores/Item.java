@@ -2,6 +2,11 @@ package DomainLayer.Stores;
 
 import Utility.LogUtility;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class Item {
 
     private static int NEXT_ITEM_ID = 1;
@@ -12,6 +17,7 @@ public class Item {
     private double rate; //each product can be rated by clients
     private int numberOfRatings; // amount of people rated
     private double price;
+    private List<String> keyWords;
 
     public int getNextItemId() {
         return NEXT_ITEM_ID++;
@@ -24,6 +30,7 @@ public class Item {
         this.price = price;
         this.rate = 0;
         this.numberOfRatings = 0;
+        keyWords = new ArrayList<>();
     }
 
     public String getProduct_name() {
@@ -73,7 +80,25 @@ public class Item {
         }
         this.price = price;
     }
-    public boolean isNameContains(String name){
+
+    public boolean isNameContains(String name) {
         return this.product_name.contains(name);
+    }
+
+    public boolean hasKeyWords(List<String> kws) {
+        for (String kw : kws)
+            for (String itemKW : keyWords)
+                if (itemKW.contains(kw))
+                    return true;
+        return false;
+    }
+
+
+    public List<String> getKeyWords() {
+        return new ArrayList<>(keyWords);
+    }
+
+    public void setKeyWords(List<String> keyWords) {
+        this.keyWords = keyWords;
     }
 }

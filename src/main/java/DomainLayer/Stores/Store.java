@@ -2,10 +2,7 @@ package DomainLayer.Stores;
 
 import Utility.LogUtility;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Store {
@@ -62,6 +59,13 @@ public class Store {
 
     public Set<Item> getItemsWithNameContains(String name){
         return items.keySet().stream().filter((x)->x.isNameContains(name)).collect(Collectors.toSet());
+    }
+
+    public Set<Item> getItemsWithKeyWords(List<String> kws){
+        return items.keySet().stream().filter((x)->x.hasKeyWords(kws)).collect(Collectors.toSet());
+    }
+    public Set<Item> getItemsWithCategory(Category category){
+        return items.keySet().stream().filter((x)->x.getCategory().equals(category)).collect(Collectors.toSet());
     }
 
 }

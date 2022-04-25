@@ -48,5 +48,16 @@ public class StoreController {
     public Set<Item> getItemsWithNameContains(String name){
        return stores.values().stream().map(s -> s.getItemsWithNameContains(name)).flatMap(Set::stream).collect(Collectors.toSet());
     }
+    public Set<Item> getItemsWithKeyWord(List<String> kws){
+        return stores.values().stream().map(s -> s.getItemsWithKeyWords(kws)).flatMap(Set::stream).collect(Collectors.toSet());
+    }
+    public Set<Item> getItemsWithCategory(String categoryString) throws IllegalArgumentException {
+        try{
+            Category category = Category.valueOf(categoryString);
+            return stores.values().stream().map(s -> s.getItemsWithCategory(category)).flatMap(Set::stream).collect(Collectors.toSet());
+        }catch (Exception e){
+            throw new IllegalArgumentException("Category dose not exist");
+        }
+    }
 
 }
