@@ -11,8 +11,8 @@ import java.util.List;
 public abstract class Bridge {
     //TODO: change return tipes.
     //Acceptance Tests for use case 1:
-    public abstract void enter();
-    public abstract void exit();
+    public abstract Response<Boolean> enter();
+    public abstract Response<Boolean> exit();
     public abstract Response<User> register(String email, String name, String password);
     public abstract Response<User> login(String user, String password);
     //Acceptance Tests for use case 2:

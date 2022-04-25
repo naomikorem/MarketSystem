@@ -6,6 +6,10 @@ import DomainLayer.Users.User;
 import java.util.Collection;
 
 public interface SystemInterface {
+    public Response<Boolean> enter();
+
+    public Response<Boolean> exit();
+
     public Response<User> register(String email, String name, String password);
 
     public Response<User> login(String name, String password);

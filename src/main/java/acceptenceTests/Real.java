@@ -18,13 +18,13 @@ public class Real extends Bridge {
     }
 
     @Override
-    public void enter() {
-
+    public Response<Boolean> enter() {
+        return adaptee.enter();
     }
 
     @Override
-    public void exit() {
-
+    public Response<Boolean> exit() {
+        return adaptee.exit();
     }
 
     @Override

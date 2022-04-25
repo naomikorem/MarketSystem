@@ -16,7 +16,7 @@ public class RegisterTest extends AbstractTest {
 
     @Before
     public void setup() {
-        this.bridge = new Real();
+        bridge.enter();
     }
 
     @Test

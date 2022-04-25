@@ -13,9 +13,26 @@ public class SystemImplementor implements SystemInterface {
 
     //Add catch to every function here.
 
-    public SystemImplementor() {
-        this.user = new User(new GuestState());
-        this.userFacade = new UserFacade();
+    public SystemImplementor() {}
+
+    public Response<Boolean> enter() {
+        try {
+            this.user = new User(new GuestState());
+            this.userFacade = new UserFacade();
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Boolean> exit() {
+        try {
+            this.user = null;
+            this.userFacade = null;
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
     }
 
     public Response<User> register(String email, String name, String password) {
