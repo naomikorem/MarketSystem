@@ -4,6 +4,7 @@ import SupplyServices.StubSupplyService;
 public class SystemManagementFacade
 {
     private ExternalServices services; // TODO: SINGLETON
+    private PurchaseProcess purchaseProcess; // TODO: SINGLETON
     public boolean initializeMarket()
     {
         // check if there is system manager
@@ -19,6 +20,12 @@ public class SystemManagementFacade
         {
             services.addExternalSupplyService(new StubSupplyService());
         }
+        return true;
+    }
+
+    public boolean PurchaseShoppingCart(User user)
+    {
+        purchaseProcess.Pay(user);
         return true;
     }
 
