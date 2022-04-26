@@ -81,7 +81,7 @@ public class StoreController {
         }
         Item i = new Item(name, Category.valueOf(category), price);
         s.addItem(i, amount);
-        return null;
+        return i;
     }
 
     public Item getAndDeductItemFromStore(int storeId, int itemId, int amount) {
@@ -118,5 +118,14 @@ public class StoreController {
         }
         s.addManager(owner.getName(), manager);
         return true;
+    }
+
+    public Item returnItemToStore(int storeId, Item item, int amount) {
+        Store s = getStore(storeId);
+        if (s == null) {
+            throw new IllegalArgumentException(String.format("There is no store with id: %s", storeId));
+        }
+        s.addItem(item, amount);
+        return item;
     }
 }

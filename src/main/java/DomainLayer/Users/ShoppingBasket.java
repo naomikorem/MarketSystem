@@ -33,6 +33,10 @@ public class ShoppingBasket {
         return items.keySet();
     }
 
+    public Set<Map.Entry<Item, Integer>> getItemsAndAmounts() {
+        return items.entrySet();
+    }
+
 
     public double calculatePrice() {
         // 3.1 The system checks that the basket follows the purchase rules of the store's purchase policy.

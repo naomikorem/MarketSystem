@@ -36,4 +36,12 @@ public class User {
     public void addItemToShoppingCart(int storeId, Item item, int amount) {
         this.shoppingCart.addItem(storeId, item, amount);
     }
+
+    public UserState getState() {
+        return this.state;
+    }
+
+    public void setState(UserState state) {
+        this.state = state;
+    }
 }
