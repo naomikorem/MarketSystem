@@ -113,6 +113,9 @@ public class StoreController {
         if (s == null) {
             throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
         }
+        if (!owner.isLoggedIn() || !s.canAssignManager(owner.getName())) {
+            throw new IllegalArgumentException("This user cannot assign a manager");
+        }
         if (!s.canBecomeManager(manager)) {
             throw new IllegalArgumentException(String.format("%s cannot be promoted to be a manager of the store with store id %s", manager, storeId));
         }

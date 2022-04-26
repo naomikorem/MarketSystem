@@ -66,6 +66,10 @@ public class Store {
         return !managers.containsKey(user);
     }
 
+    public boolean canAssignManager(String user) {
+        return isOwner(user);
+    }
+
     public void addManager(String givenBy, String manager) {
         this.managers.put(manager, new Permission(givenBy));
     }
