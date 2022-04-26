@@ -94,10 +94,10 @@ public class Store {
                     items.put(i, amount - toDeduct);
                     return i;
                 } else {
-                    throw new LogException(String.format("The item with id %s is out of stock", i.getId()), String.format("A use tried to buy item (item id: %s) but it was out of stock", i.getId()));
+                    throw new LogException("There isn't enough item " + itemId + " in stock", "User tried to buy item " + itemId + " but there isn't enough in stock");
                 }
             }
-            return null;
+            throw new IllegalArgumentException("Could not find item id " + itemId);
         }
     }
 

@@ -23,6 +23,9 @@ public interface SystemInterface {
 
     public Response<Boolean> hasSupplyService();
 
+    public Response<Boolean> hasPurchaseService(String purchase_service_name);
+
+    public Response<Boolean> hasSupplyService(String purchase_supply_name);
 
     public Response<Boolean> enter();
 

@@ -18,7 +18,8 @@ public abstract class Bridge {
     public abstract Response<Boolean> purchaseShoppingCart(String username, String address, String purchase_service_name, String supply_service_name);
     public abstract Response<Boolean> hasPurchaseService();
     public abstract Response<Boolean> hasSupplyService();
-
+    public abstract Response<Boolean> hasPurchaseService(String purchase_service_name);
+    public abstract Response<Boolean> hasSupplyService(String supply_service_name);
 
     public abstract Response<Boolean> enter();
     public abstract Response<Boolean> exit();

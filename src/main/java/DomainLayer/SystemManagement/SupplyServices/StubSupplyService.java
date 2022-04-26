@@ -3,6 +3,7 @@ package DomainLayer.SystemManagement.SupplyServices;
 import DomainLayer.Stores.Item;
 
 import java.util.List;
+import java.util.Map;
 
 public class StubSupplyService implements IExternalSupplyService
 {
@@ -15,7 +16,7 @@ public class StubSupplyService implements IExternalSupplyService
 
 
     @Override
-    public boolean supply(String shipping_address, List<Item> items) {
+    public boolean supply(String shipping_address, List<Map.Entry<Item, Integer>> items) {
         return false;
     }
 }

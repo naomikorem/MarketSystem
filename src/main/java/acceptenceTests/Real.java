@@ -53,6 +53,15 @@ public class Real extends Bridge {
     }
 
     @Override
+    public Response<Boolean> hasPurchaseService(String purchase_service_name) {
+        return this.adaptee.hasPurchaseService(purchase_service_name);
+    }
+
+    public Response<Boolean> hasSupplyService(String supply_service_name) {
+        return this.adaptee.hasSupplyService(supply_service_name);
+    }
+
+    @Override
     public Response<Boolean> enter() {
         return adaptee.enter();
     }

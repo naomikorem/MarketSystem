@@ -72,6 +72,22 @@ public class Proxy extends Bridge {
     }
 
     @Override
+    public Response<Boolean> hasPurchaseService(String purchase_service_name) {
+        if (this.real != null) {
+            return real.hasPurchaseService(purchase_service_name);
+        }
+        return null;
+    }
+
+    @Override
+    public Response<Boolean> hasSupplyService(String supply_service_name) {
+        if (this.real != null) {
+            return real.hasSupplyService(supply_service_name);
+        }
+        return null;
+    }
+
+    @Override
     public Response<Boolean> enter() {
         if (this.real != null) {
             return real.enter();

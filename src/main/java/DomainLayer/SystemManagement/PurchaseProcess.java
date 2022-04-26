@@ -10,6 +10,7 @@ import DomainLayer.SystemManagement.SupplyServices.IExternalSupplyService;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -32,11 +33,13 @@ public class PurchaseProcess
     public void handlePurchase(User user, String shipping_address, String purchase_service_name, String supply_service_name)
     {
         double price = 0;
+        List<Map.Entry<Item, Integer>> items_and_amounts = new ArrayList<>();
         for (ShoppingBasket basket : user.getCartBaskets())
         {
             // every item has its own purchase type? yes
 
             price += basket.calculatePrice();
+            items_and_amounts.addAll(basket.getItemsAndAmounts());
 
             // calculate discount percents
         }
@@ -48,7 +51,7 @@ public class PurchaseProcess
 
         // get address from user
 
-        this.externalServices.supply(shipping_address, user.getShoppingCartItems(), supply_service_name);
+        this.externalServices.supply(shipping_address, items_and_amounts, supply_service_name);
 
         // save in purchase history
 

@@ -7,6 +7,7 @@ import DomainLayer.SystemManagement.SupplyServices.SupplyProxy;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class ExternalServices
 {
@@ -52,12 +53,22 @@ public class ExternalServices
         return supply_proxy.hasService();
     }
 
+    public boolean hasPurchaseService(String purchase_service_name)
+    {
+        return purchase_proxy.hasService(purchase_service_name);
+    }
+
+    public boolean hasSupplyService(String supply_service_name)
+    {
+        return supply_proxy.hasService(supply_service_name);
+    }
+
     public void pay(double price, String purchase_service_name)
     {
         purchase_proxy.pay(price, purchase_service_name);
     }
 
-    public void supply(String address, List<Item> items, String supply_service_name)
+    public void supply(String address, List<Map.Entry<Item, Integer>> items, String supply_service_name)
     {
         supply_proxy.supply(address, items, supply_service_name);
     }

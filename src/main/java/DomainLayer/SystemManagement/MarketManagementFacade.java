@@ -99,13 +99,36 @@ public class MarketManagementFacade
 
     public Response<Boolean> hasPurchaseService()
     {
-        return new Response<>(this.services.hasPurchaseService());
+        try {
+            return new Response<>(this.services.hasPurchaseService());
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
     }
 
     public Response<Boolean> hasSupplyService()
     {
         try {
             return new Response<>(this.services.hasPurchaseService());
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+
+    public Response<Boolean> hasPurchaseService(String purchase_service_name)
+    {
+        try {
+            return new Response<>(this.services.hasPurchaseService(purchase_service_name));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Boolean> hasSupplyService(String supply_service_name)
+    {
+        try {
+            return new Response<>(this.services.hasPurchaseService(supply_service_name));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }

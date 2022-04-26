@@ -153,14 +153,6 @@ public class SystemImplementor implements SystemInterface {
     }
 
     public Response<Boolean> initializeMarket() {
-        // check if there is system manager
-        if (!userFacade.hasAdmin()) {
-            // create the first system admin if there is no system manager
-            Response<Boolean> res = userFacade.addAdmin("stub", "stub", "stub");
-            if (res.hadError()) {
-                return res;
-            }
-        }
         return this.marketManagementFacade.initializeMarket();
     }
 
@@ -207,5 +199,15 @@ public class SystemImplementor implements SystemInterface {
 
     public Response<Boolean> hasSupplyService() {
         return this.marketManagementFacade.hasSupplyService();
+    }
+
+    @Override
+    public Response<Boolean> hasPurchaseService(String purchase_service_name) {
+        return this.marketManagementFacade.hasPurchaseService(purchase_service_name);
+    }
+
+    @Override
+    public Response<Boolean> hasSupplyService(String purchase_supply_name) {
+        return this.marketManagementFacade.hasSupplyService(purchase_supply_name);
     }
 }
