@@ -2,16 +2,15 @@ package DomainLayer.Users;
 
 import DomainLayer.Stores.Item;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ShoppingBasket {
     private int storeId;
-    private List<Item> items;
+    private Map<Item, Integer> items;
 
     public ShoppingBasket(int storeId) {
         this.storeId = storeId;
-        this.items = new ArrayList<>();
+        this.items = new HashMap<>();
     }
 
     public int getStoreId() {
@@ -19,15 +18,20 @@ public class ShoppingBasket {
     }
 
     public void addItem(Item item) {
-        this.items.add(item);
+        this.items.put(item, items.getOrDefault(item, 0)+1);
     }
 
     public void removeItem(Item item) {
-        this.items.remove(item);
+        int oldAmount = this.items.getOrDefault(item, 0);
+        if(oldAmount > 1)
+            this.items.put(item,oldAmount - 1);
+        else
+            this.items.remove(item);
     }
 
-    public List<Item> getItems() {
-        return items;
+    public Set<Item> getItems(){
+        return items.keySet();
     }
+
 
 }
