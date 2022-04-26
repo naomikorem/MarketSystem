@@ -9,6 +9,7 @@ import DomainLayer.Users.User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class SystemImplementor implements SystemInterface {
     private StoreFacade storeFacade;
@@ -40,8 +41,10 @@ public class SystemImplementor implements SystemInterface {
     @Override
     public Response<Boolean> exit() {
         try {
-            if (this.user != null) {
+            if (this.user != null && this.user.isLoggedIn()) {
                 logout();
+            } else {
+                clearShoppingCart();
             }
             this.user = null;
             return new Response<>(true);
@@ -59,7 +62,7 @@ public class SystemImplementor implements SystemInterface {
     public Response<User> login(String name, String password) {
         Response<User> r = userFacade.login(name, password);
         if (!r.hadError()) {
-            this.user = r.getObject();
+            this.user.setState(r.getObject().getState());
         }
         return r;
     }
@@ -69,11 +72,20 @@ public class SystemImplementor implements SystemInterface {
         if (this.user == null || !this.user.isLoggedIn()) {
             return new Response<>("You have to be logged in to perform this action.");
         }
+        clearShoppingCart();
         Response<Boolean> res = userFacade.logout(user.getName());
         if (res.getObject()) {
             this.user = new User(new GuestState());
         }
         return res;
+    }
+
+    private void clearShoppingCart() {
+        for (ShoppingBasket basket : user.getCartBaskets()) {
+            for (Map.Entry<Item, Integer> itemAmount : basket.getItemsAndAmounts()) {
+                storeFacade.returnItemToStore(basket.getStoreId(), itemAmount.getKey(), itemAmount.getValue());
+            }
+        }
     }
 
     @Override

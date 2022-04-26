@@ -102,4 +102,12 @@ public class StoreFacade {
             return new Response<>(e.getMessage());
         }
     }
+
+    public Response<Item> returnItemToStore(int storeId, Item item, int amount) {
+        try {
+            return new Response<>(storeController.returnItemToStore(storeId, item, amount));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
 }
