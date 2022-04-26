@@ -1,5 +1,6 @@
 package DomainLayer.SystemManagement.SupplyServices;
 
+import DomainLayer.Stores.Item;
 import DomainLayer.SystemManagement.PurchaseServices.IExternalPurchaseService;
 import DomainLayer.SystemManagement.PurchaseServices.StubPurchaseService;
 
@@ -38,5 +39,13 @@ public class SupplyProxy
     public boolean hasService()
     {
         return !services.isEmpty();
+    }
+
+    public boolean supply(String address, List<Item> items, String supply_service_name)
+    {
+        if(!services.containsKey(supply_service_name))
+            throw new IllegalArgumentException("The service with the name " + supply_service_name + " does not exists in the system.\n");
+
+        return services.get(supply_service_name).supply(address, items);
     }
 }

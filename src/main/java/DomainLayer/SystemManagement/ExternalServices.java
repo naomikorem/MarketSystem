@@ -6,6 +6,7 @@ import DomainLayer.SystemManagement.SupplyServices.IExternalSupplyService;
 import DomainLayer.SystemManagement.SupplyServices.SupplyProxy;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class ExternalServices
 {
@@ -56,7 +57,7 @@ public class ExternalServices
         purchase_proxy.pay(price, purchase_service_name);
     }
 
-    public void supply(String address, LinkedList<Item> items, String supply_service_name)
+    public void supply(String address, List<Item> items, String supply_service_name)
     {
         supply_proxy.supply(address, items, supply_service_name);
     }

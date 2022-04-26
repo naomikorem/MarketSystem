@@ -15,7 +15,6 @@ public class MarketManagementFacade
     }
     private MarketManagementFacade()
     {
-        this.admin_facade = AdminFacade.getInstance();
     }
 
     public static MarketManagementFacade getInstance() {
@@ -23,7 +22,6 @@ public class MarketManagementFacade
     }
     private ExternalServices services;
     private PurchaseProcess purchaseProcess;
-    private AdminFacade admin_facade;
 
     public Response<Boolean> initializeMarket()
     {

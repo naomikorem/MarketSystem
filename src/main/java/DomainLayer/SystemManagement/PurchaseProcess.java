@@ -13,14 +13,14 @@ import DomainLayer.Users.User;
 public class PurchaseProcess
 {
     private ExternalServices externalServices;
-    private NotificationFacade notificationFacade;
+    //private NotificationFacade notificationFacade;
     private static class PurchaseProcessHolder {
         static final PurchaseProcess INSTANCE = new PurchaseProcess();
     }
     private PurchaseProcess()
     {
         this.externalServices = ExternalServices.getInstance();
-        this.notificationFacade = NotificationFacade.getInstance();
+        //this.notificationFacade = NotificationFacade.getInstance();
     }
 
     public static PurchaseProcess getInstance() {
@@ -31,8 +31,6 @@ public class PurchaseProcess
         double price = 0;
         for (ShoppingBasket basket : user.getbaskets())
         {
-            int store_id = basket.getStoreId();
-            Store store = StoreController.getInstance().getStore(store_id);
             // 3.1 The system checks that the basket follows the purchase rules of the store's purchase policy.
             // every item has its own purchase type?
 
@@ -51,7 +49,7 @@ public class PurchaseProcess
 
         // get address from user
 
-        this.externalServices.supply(user.getAddress(), items, supply_service_name);
+        this.externalServices.supply(user.getAddress(), user.getShoppingCartItems(), supply_service_name);
 
         // save in purchase history
 
