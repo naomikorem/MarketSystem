@@ -4,7 +4,6 @@ import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
 import DomainLayer.Stores.StoreController;
 import DomainLayer.Users.User;
-import Exceptions.LogException;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -31,15 +30,12 @@ public class StoreFacade {
         }
     }
 
-    public void addManager(User owner, String manager, int storeId) {
-        Store s = storeController.getStore(storeId);
-        if (s == null) {
-            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
+    public Response<Boolean> addManager(User owner, String manager, int storeId) {
+        try {
+            return new Response<>(storeController.addManager(owner, manager, storeId));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
         }
-        if (!s.canBecomeManager(manager)) {
-            throw new IllegalArgumentException(String.format("%s cannot be promoted to be a manager of the store with store id %s", manager, storeId));
-        }
-        s.addManager(owner.getName(), manager);
     }
 
     public Response<Collection<Store>> getAllStores() {
@@ -88,14 +84,22 @@ public class StoreFacade {
     }
 
     public Response<Item> getItemFromStore(int storeId, int itemId) {
-        Store s = storeController.getStore(storeId);
-        if (s == null) {
-            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
+        try {
+            return new Response<>(storeController.getItemFromStore(storeId, itemId));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
         }
-        Item i = s.getItemById(itemId);
-        if (i == null) {
-            throw new IllegalArgumentException(String.format("There is item with item id %s in the store", itemId));
+    }
+
+    public Response<Item> getAndDeductItemFromStore(int storeId, int itemId, int amount) {
+        return new Response<>(storeController.getAndDeductItemFromStore(storeId, itemId, amount));
+    }
+
+    public Response<Item> addItemToStore(User manager, int storeId, String name, String category, double price, int amount) {
+        try {
+            return new Response<>(storeController.addItemToStore(manager, storeId, name, category, price, amount));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
         }
-        return new Response<>(i);
     }
 }

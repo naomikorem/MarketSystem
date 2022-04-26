@@ -33,7 +33,7 @@ public class User {
         return shoppingCart.getBaskets();
     }
 
-    public void addItemToShoppingCart(int storeId, Item item) {
-        this.shoppingCart.addItem(storeId, item);
+    public void addItemToShoppingCart(int storeId, Item item, int amount) {
+        this.shoppingCart.addItem(storeId, item, amount);
     }
 }

@@ -29,11 +29,11 @@ public class ShoppingCart {
         return new ArrayList<>(shoppingBaskets.values());
     }
 
-    public void addItem(int storeId, Item item) {
+    public void addItem(int storeId, Item item, int amount) {
         if (!shoppingBaskets.containsKey(storeId)) {
             shoppingBaskets.put(storeId, new ShoppingBasket(storeId));
         }
-        shoppingBaskets.get(storeId).addItem(item);
+        shoppingBaskets.get(storeId).addItem(item, amount);
     }
 
 

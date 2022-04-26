@@ -1,5 +1,6 @@
 package DomainLayer.Users;
 
+import DomainLayer.Stores.StoreController;
 import Exceptions.LogException;
 import Utility.LogUtility;
 
@@ -19,11 +20,12 @@ public class UserController {
         this.loggedUsers = new HashSet<>();
     }
 
+    private static class UserControllerHolder {
+        static final UserController instance = new UserController();
+    }
+
     public static UserController getInstance() {
-        if (userController == null) {
-            userController = new UserController();
-        }
-        return userController;
+        return UserControllerHolder.instance;
     }
 
     public synchronized User createUser(String email, String name, String password) {
