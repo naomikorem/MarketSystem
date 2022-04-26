@@ -11,7 +11,6 @@ import org.junit.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class RegisterTest extends AbstractTest {
     private Response<User> r1, r2;

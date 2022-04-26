@@ -2,6 +2,7 @@ package DomainLayer;
 
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
+import DomainLayer.SystemManagement.MarketManagementFacade;
 import DomainLayer.Users.GuestState;
 import DomainLayer.Users.User;
 
@@ -11,6 +12,7 @@ import java.util.List;
 public class SystemImplementor implements SystemInterface {
     private StoreFacade storeFacade;
     private UserFacade userFacade;
+    private MarketManagementFacade marketManagementFacade;
     private User user;
 
     //Add catch to every function here.
@@ -18,6 +20,7 @@ public class SystemImplementor implements SystemInterface {
     public SystemImplementor() {
         this.userFacade = new UserFacade();
         this.storeFacade = new StoreFacade();
+        this.marketManagementFacade = MarketManagementFacade.getInstance();
     }
 
     public Response<Boolean> enter() {
@@ -110,5 +113,30 @@ public class SystemImplementor implements SystemInterface {
 
     public Response<Store> addNewStore(String name) {
         return storeFacade.addNewStore(user, name);
+    }
+
+    public Response<Boolean> initializeMarket()
+    {
+        // check if there is system manager
+        if(!userFacade.hasAdmin())
+        {
+            // create the first system admin if there is no system manager
+           Response<Boolean> res = userFacade.addAdmin("stub", "stub", "stub");
+            if (res.hadError()) {
+                return res;
+            }
+        }
+        return this.marketManagementFacade.initializeMarket();
+    }
+    public Response<Boolean> addExternalPurchaseService(String name) {
+        return this.marketManagementFacade.addExternalPurchaseService(name);
+    }
+
+    public Response<Boolean> addExternalSupplyService(String name) {
+        return this.marketManagementFacade.addExternalSupplyService(name);
+    }
+
+    public Response<Boolean> removeExternalPurchaseService(String name) {
+        return this.marketManagementFacade.removeExternalPurchaseService(name);
     }
 }
