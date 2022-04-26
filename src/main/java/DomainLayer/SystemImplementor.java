@@ -4,6 +4,7 @@ import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemManagement.MarketManagementFacade;
 import DomainLayer.Users.GuestState;
+import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
 import java.util.Collection;
@@ -93,6 +94,13 @@ public class SystemImplementor implements SystemInterface {
         try {
             return new Response<>(user.getShoppingCartItems());
         } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+    public Response<List<ShoppingBasket>> getCartBaskets() {
+        try {
+            return new Response<>(user.getCartBaskets());
+        } catch (Exception e){
             return new Response<>(e.getMessage());
         }
     }

@@ -2,10 +2,10 @@ package DomainLayer.Users;
 
 import DomainLayer.Stores.Item;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toCollection;
 
 public class ShoppingCart {
     private Map<Integer, ShoppingBasket> shoppingBaskets;
@@ -24,6 +24,9 @@ public class ShoppingCart {
 
     public List<Item> getAllItems() {
         return shoppingBaskets.values().stream().flatMap(sb -> sb.getItems().stream()).collect(Collectors.toList());
+    }
+    public List<ShoppingBasket> getBaskets() {
+        return new ArrayList<>(shoppingBaskets.values());
     }
 
     public void addItem(int storeId, Item item) {

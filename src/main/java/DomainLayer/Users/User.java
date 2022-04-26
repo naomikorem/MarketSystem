@@ -2,6 +2,7 @@ package DomainLayer.Users;
 
 import DomainLayer.Stores.Item;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {
@@ -27,6 +28,9 @@ public class User {
 
     public List<Item> getShoppingCartItems () {
         return shoppingCart.getAllItems();
+    }
+    public List<ShoppingBasket> getCartBaskets() {
+        return shoppingCart.getBaskets();
     }
 
     public void addItemToShoppingCart(int storeId, Item item) {
