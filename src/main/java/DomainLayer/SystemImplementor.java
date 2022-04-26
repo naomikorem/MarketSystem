@@ -9,8 +9,6 @@ import DomainLayer.Users.User;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class SystemImplementor implements SystemInterface {
     private StoreFacade storeFacade;
@@ -26,6 +24,7 @@ public class SystemImplementor implements SystemInterface {
         this.marketManagementFacade = MarketManagementFacade.getInstance();
     }
 
+    @Override
     public Response<Boolean> enter() {
         try {
             if (this.user != null) {
@@ -38,6 +37,7 @@ public class SystemImplementor implements SystemInterface {
         }
     }
 
+    @Override
     public Response<Boolean> exit() {
         try {
             if (this.user != null) {
@@ -50,10 +50,12 @@ public class SystemImplementor implements SystemInterface {
         }
     }
 
+    @Override
     public Response<User> register(String email, String name, String password) {
         return userFacade.register(email, name, password);
     }
 
+    @Override
     public Response<User> login(String name, String password) {
         Response<User> r = userFacade.login(name, password);
         if (!r.hadError()) {
@@ -62,6 +64,7 @@ public class SystemImplementor implements SystemInterface {
         return r;
     }
 
+    @Override
     public Response<Boolean> logout() {
         if (this.user == null || !this.user.isLoggedIn()) {
             return new Response<>("You have to be logged in to perform this action.");
@@ -73,12 +76,16 @@ public class SystemImplementor implements SystemInterface {
         return res;
     }
 
-
-    public void addManager(User owner, String manager, int storeId) {
-        if (userFacade.isExist(manager)) {
-            throw new IllegalArgumentException(String.format("There is no user by the name of %s", manager));
+    @Override
+    public Response<Boolean> addManager(User owner, String manager, int storeId) {
+        try {
+            if (userFacade.isExist(manager)) {
+                throw new IllegalArgumentException(String.format("There is no user by the name of %s", manager));
+            }
+            return storeFacade.addManager(owner, manager, storeId);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
         }
-        storeFacade.addManager(owner, manager, storeId);
     }
 
     @Override
@@ -99,45 +106,52 @@ public class SystemImplementor implements SystemInterface {
             return new Response<>(e.getMessage());
         }
     }
+
+    @Override
     public Response<List<ShoppingBasket>> getCartBaskets() {
         try {
             return new Response<>(user.getCartBaskets());
-        } catch (Exception e){
+        } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
     }
 
     @Override
-    public Response<Item> addItemToCart(int storeId, int itemId) {
+    public Response<Item> addItemToCart(int storeId, int itemId, int amount) {
         try {
-            Response<Item> itemRes = storeFacade.getItemFromStore(storeId, itemId);
+            Response<Item> itemRes = storeFacade.getAndDeductItemFromStore(storeId, itemId, amount);
             if (itemRes.hadError()) {
                 return itemRes;
             }
-            user.addItemToShoppingCart(storeId, itemRes.getObject());
+            user.addItemToShoppingCart(storeId, itemRes.getObject(), amount);
             return itemRes;
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
     }
 
+    @Override
     public Response<Store> addNewStore(String name) {
         return storeFacade.addNewStore(user, name);
     }
 
-    public Response<Boolean> initializeMarket()
-    {
+    @Override
+    public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount) {
+        return storeFacade.addItemToStore(user, storeId, name, category, price, amount);
+    }
+
+    public Response<Boolean> initializeMarket() {
         // check if there is system manager
-        if(!userFacade.hasAdmin())
-        {
+        if (!userFacade.hasAdmin()) {
             // create the first system admin if there is no system manager
-           Response<Boolean> res = userFacade.addAdmin("stub", "stub", "stub");
+            Response<Boolean> res = userFacade.addAdmin("stub", "stub", "stub");
             if (res.hadError()) {
                 return res;
             }
         }
         return this.marketManagementFacade.initializeMarket();
     }
+
     public Response<Boolean> addExternalPurchaseService(String name) {
         return this.marketManagementFacade.addExternalPurchaseService(name);
     }
@@ -150,10 +164,9 @@ public class SystemImplementor implements SystemInterface {
         return this.marketManagementFacade.removeExternalPurchaseService(name);
     }
 
-    public Response<Boolean> purchaseShoppingCart(String username, String address, String purchase_service_name, String supply_service_name)
-    {
+    public Response<Boolean> purchaseShoppingCart(String username, String address, String purchase_service_name, String supply_service_name) {
         Response<User> user_res = userFacade.getUser(username);
-        if(user_res.hadError())
+        if (user_res.hadError())
             return new Response<>(user_res.getErrorMessage());
 
         User buying_user = user_res.getObject();
@@ -176,13 +189,11 @@ public class SystemImplementor implements SystemInterface {
         return this.marketManagementFacade.purchaseShoppingCart(buying_user, address, purchase_service_name, supply_service_name);
     }
 
-    public Response<Boolean> hasPurchaseService()
-    {
+    public Response<Boolean> hasPurchaseService() {
         return this.marketManagementFacade.hasPurchaseService();
     }
 
-    public Response<Boolean> hasSupplyService()
-    {
+    public Response<Boolean> hasSupplyService() {
         return this.marketManagementFacade.hasSupplyService();
     }
 }

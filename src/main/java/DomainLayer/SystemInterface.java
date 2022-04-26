@@ -2,6 +2,7 @@ package DomainLayer;
 
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
+import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
 import java.util.Collection;
@@ -35,13 +36,17 @@ public interface SystemInterface {
 
     public Response<List<Item>> getShoppingCartItems();
 
-    public void addManager(User owner, String manager, int storeId);
+    public Response<Boolean> addManager(User owner, String manager, int storeId);
 
     public Response<Collection<Store>> getAllStores();
 
     public Response<Store> getStore(int id);
 
-    public Response<Item> addItemToCart(int storeId, int itemId);
+    Response<List<ShoppingBasket>> getCartBaskets();
+
+    public Response<Item> addItemToCart(int storeId, int itemId, int amount);
 
     public Response<Store> addNewStore(String name);
+
+    public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount);
 }

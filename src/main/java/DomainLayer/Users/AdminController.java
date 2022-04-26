@@ -1,0 +1,49 @@
+package DomainLayer.Users;
+
+import DomainLayer.Stores.StoreController;
+
+import java.util.HashSet;
+import java.util.Set;
+
+public class AdminController {
+
+    private Set<String> admins;
+
+    private AdminController() {
+        this.admins = new HashSet<>();
+    }
+
+    public boolean addAdmin(String name) {
+        synchronized (admins) {
+            if (admins.contains(name)) {
+                return false;
+            }
+            admins.add(name);
+            return true;
+        }
+    }
+
+    public boolean isAdmin(String name) {
+        synchronized (admins) {
+            return admins.contains(name);
+        }
+    }
+
+    public boolean removeAdmin(String name) {
+        synchronized (admins) {
+            if (admins.contains(name)) {
+                admins.remove(name);
+                return true;
+            }
+            return false;
+        }
+    }
+
+    private static class AdminControllerHolder {
+        static final AdminController instance = new AdminController();
+    }
+
+    public static AdminController getInstance() {
+        return AdminControllerHolder.instance;
+    }
+}

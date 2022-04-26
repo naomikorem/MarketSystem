@@ -1,6 +1,8 @@
 package DomainLayer.Stores;
 
+import DomainLayer.Response;
 import DomainLayer.Users.User;
+import Exceptions.LogException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,11 +19,13 @@ public class StoreController {
         this.stores = new HashMap<>();
     }
 
+
+    private static class StoreControllerHolder {
+        static final StoreController instance = new StoreController();
+    }
+
     public static StoreController getInstance() {
-        if (storeController == null) {
-            storeController = new StoreController();
-        }
-        return storeController;
+        return StoreControllerHolder.instance;
     }
 
     private synchronized static int getNewStoreId() {
@@ -42,22 +46,77 @@ public class StoreController {
         return stores.getOrDefault(id, null);
     }
 
-    public Collection<Store> getAllStores(){
+    public Collection<Store> getAllStores() {
         return stores.values();
     }
-    public Set<Item> getItemsWithNameContains(String name){
-       return stores.values().stream().map(s -> s.getItemsWithNameContains(name)).flatMap(Set::stream).collect(Collectors.toSet());
+
+    public Set<Item> getItemsWithNameContains(String name) {
+        return stores.values().stream().map(s -> s.getItemsWithNameContains(name)).flatMap(Set::stream).collect(Collectors.toSet());
     }
-    public Set<Item> getItemsWithKeyWord(List<String> kws){
+
+    public Set<Item> getItemsWithKeyWord(List<String> kws) {
         return stores.values().stream().map(s -> s.getItemsWithKeyWords(kws)).flatMap(Set::stream).collect(Collectors.toSet());
     }
+
     public Set<Item> getItemsWithCategory(String categoryString) throws IllegalArgumentException {
-        try{
+        try {
             Category category = Category.valueOf(categoryString);
             return stores.values().stream().map(s -> s.getItemsWithCategory(category)).flatMap(Set::stream).collect(Collectors.toSet());
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new IllegalArgumentException("Category dose not exist");
         }
     }
 
+
+    public Item addItemToStore(User manager, int storeId, String name, String category, double price, int amount) {
+        if (!manager.isLoggedIn()) {
+            throw new IllegalArgumentException("Use has to be logged in to do this action.");
+        }
+        Store s = getStore(storeId);
+        if (s == null) {
+            throw new IllegalArgumentException(String.format("There is no store with id: %s", storeId));
+        }
+        if (!s.canAddItems(manager.getName())) {
+            throw new LogException("You cannot add items to this store", String.format("User %s tried to add an item to a store that they do not manager", manager));
+        }
+        Item i = new Item(name, Category.valueOf(category), price);
+        s.addItem(i, amount);
+        return null;
+    }
+
+    public Item getAndDeductItemFromStore(int storeId, int itemId, int amount) {
+        Store s = storeController.getStore(storeId);
+        if (s == null) {
+            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
+        }
+        Item i = s.getItemAndDeduct(itemId, amount);
+        if (i == null) {
+            throw new IllegalArgumentException(String.format("There is no item with item id %s in the store", itemId));
+        }
+        return i;
+    }
+
+    public Item getItemFromStore(int storeId, int itemId) {
+        Store s = storeController.getStore(storeId);
+        if (s == null) {
+            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
+        }
+        Item i = s.getItemById(itemId);
+        if (i == null) {
+            throw new IllegalArgumentException(String.format("There is no item with item id %s in the store", itemId));
+        }
+        return i;
+    }
+
+    public boolean addManager(User owner, String manager, int storeId) {
+        Store s = storeController.getStore(storeId);
+        if (s == null) {
+            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
+        }
+        if (!s.canBecomeManager(manager)) {
+            throw new IllegalArgumentException(String.format("%s cannot be promoted to be a manager of the store with store id %s", manager, storeId));
+        }
+        s.addManager(owner.getName(), manager);
+        return true;
+    }
 }

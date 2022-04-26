@@ -1,5 +1,6 @@
 package DomainLayer.Stores;
 
+import Exceptions.LogException;
 import Utility.LogUtility;
 
 import java.util.*;
@@ -23,6 +24,18 @@ public class Store {
         this.managers = new HashMap<>();
         this.items = new HashMap<>();
         owners.put(founder, null);
+    }
+
+    public boolean isOwner(String name) {
+        return owners.containsKey(name);
+    }
+
+    public boolean isManager(String name) {
+        return managers.containsKey(name);
+    }
+
+    public boolean canAddItems(String name) {
+        return isOwner(name) || isManager(name);
     }
 
     public String getName() {
@@ -70,6 +83,28 @@ public class Store {
 
     public Item getItemById(int id) {
         return items.keySet().stream().filter(i -> i.getId() == id).findFirst().orElse(null);
+    }
+
+    public Item getItemAndDeduct(int itemId, int toDeduct) {
+        synchronized (items) {
+            Item i = items.keySet().stream().filter(item -> item.getId() == itemId).findFirst().orElse(null);
+            if (i != null) {
+                int amount = items.getOrDefault(i, 0);
+                if (amount >= toDeduct) {
+                    items.put(i, amount - toDeduct);
+                    return i;
+                } else {
+                    throw new LogException(String.format("The item with id %s is out of stock", i.getId()), String.format("A use tried to buy item (item id: %s) but it was out of stock", i.getId()));
+                }
+            }
+            return null;
+        }
+    }
+
+    public void addItem(Item item, int amount) {
+        synchronized (items) {
+            this.items.put(item, items.getOrDefault(item, 0) + amount);
+        }
     }
 
 }
