@@ -11,6 +11,15 @@ import java.util.List;
 public abstract class Bridge {
     //TODO: change return tipes.
     //Acceptance Tests for use case 1:
+    public abstract Response<Boolean> initializeMarket();
+    public abstract Response<Boolean> addExternalPurchaseService(String name);
+    public abstract Response<Boolean> addExternalSupplyService(String name);
+    public abstract Response<Boolean> removeExternalPurchaseService(String name);
+    public abstract Response<Boolean> purchaseShoppingCart(String username, String address, String purchase_service_name, String supply_service_name);
+    public abstract Response<Boolean> hasPurchaseService();
+    public abstract Response<Boolean> hasSupplyService();
+
+
     public abstract Response<Boolean> enter();
     public abstract Response<Boolean> exit();
     public abstract Response<User> register(String email, String name, String password);

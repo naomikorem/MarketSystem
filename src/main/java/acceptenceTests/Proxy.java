@@ -16,6 +16,62 @@ public class Proxy extends Bridge {
     }
 
     @Override
+    public Response<Boolean> initializeMarket() {
+        if (this.real != null) {
+            return real.initializeMarket();
+        }
+        return null;
+    }
+
+    @Override
+    public Response<Boolean> addExternalPurchaseService(String name) {
+        if (this.real != null) {
+            return real.addExternalPurchaseService(name);
+        }
+        return null;
+    }
+
+    @Override
+    public Response<Boolean> addExternalSupplyService(String name) {
+        if (this.real != null) {
+            return real.addExternalSupplyService(name);
+        }
+        return null;
+    }
+
+    @Override
+    public Response<Boolean> removeExternalPurchaseService(String name) {
+        if (this.real != null) {
+            return real.removeExternalPurchaseService(name);
+        }
+        return null;
+    }
+
+    @Override
+    public Response<Boolean> purchaseShoppingCart(String username, String address, String purchase_service_name, String supply_service_name) {
+        if (this.real != null) {
+            return real.purchaseShoppingCart(username, address, purchase_service_name, supply_service_name);
+        }
+        return null;
+    }
+
+    @Override
+    public Response<Boolean> hasPurchaseService() {
+        if (this.real != null) {
+            return real.hasPurchaseService();
+        }
+        return null;
+    }
+
+    @Override
+    public Response<Boolean> hasSupplyService() {
+        if (this.real != null) {
+            return real.hasSupplyService();
+        }
+        return null;
+    }
+
+    @Override
     public Response<Boolean> enter() {
         if (this.real != null) {
             return real.enter();

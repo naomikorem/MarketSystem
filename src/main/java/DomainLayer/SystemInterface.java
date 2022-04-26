@@ -8,6 +8,21 @@ import java.util.Collection;
 import java.util.List;
 
 public interface SystemInterface {
+    public Response<Boolean> initializeMarket();
+
+    public Response<Boolean> addExternalPurchaseService(String name);
+
+    public Response<Boolean> addExternalSupplyService(String name);
+
+    public Response<Boolean> removeExternalPurchaseService(String name);
+
+    public Response<Boolean> purchaseShoppingCart(String username, String address, String purchase_service_name, String supply_service_name);
+
+    public Response<Boolean> hasPurchaseService();
+
+    public Response<Boolean> hasSupplyService();
+
+
     public Response<Boolean> enter();
 
     public Response<Boolean> exit();

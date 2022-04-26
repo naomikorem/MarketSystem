@@ -18,6 +18,41 @@ public class Real extends Bridge {
     }
 
     @Override
+    public Response<Boolean> initializeMarket() {
+        return this.adaptee.initializeMarket();
+    }
+
+    @Override
+    public Response<Boolean> addExternalPurchaseService(String name) {
+        return this.adaptee.addExternalPurchaseService(name);
+    }
+
+    @Override
+    public Response<Boolean> addExternalSupplyService(String name) {
+        return this.adaptee.addExternalSupplyService(name);
+    }
+
+    @Override
+    public Response<Boolean> removeExternalPurchaseService(String name) {
+        return this.adaptee.removeExternalPurchaseService(name);
+    }
+
+    @Override
+    public Response<Boolean> purchaseShoppingCart(String username, String address, String purchase_service_name, String supply_service_name) {
+        return this.adaptee.purchaseShoppingCart(username, address, purchase_service_name, supply_service_name);
+    }
+
+    @Override
+    public Response<Boolean> hasPurchaseService() {
+        return this.adaptee.hasPurchaseService();
+    }
+
+    @Override
+    public Response<Boolean> hasSupplyService() {
+        return this.adaptee.hasSupplyService();
+    }
+
+    @Override
     public Response<Boolean> enter() {
         return adaptee.enter();
     }

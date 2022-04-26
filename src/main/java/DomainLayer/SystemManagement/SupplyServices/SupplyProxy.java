@@ -41,6 +41,11 @@ public class SupplyProxy
         return !services.isEmpty();
     }
 
+    public boolean hasService(String purchase_service_name)
+    {
+        return services.containsKey(purchase_service_name);
+    }
+
     public boolean supply(String address, List<Item> items, String supply_service_name)
     {
         if(!services.containsKey(supply_service_name))

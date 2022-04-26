@@ -9,6 +9,8 @@ import DomainLayer.Users.User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class SystemImplementor implements SystemInterface {
     private StoreFacade storeFacade;
@@ -146,5 +148,41 @@ public class SystemImplementor implements SystemInterface {
 
     public Response<Boolean> removeExternalPurchaseService(String name) {
         return this.marketManagementFacade.removeExternalPurchaseService(name);
+    }
+
+    public Response<Boolean> purchaseShoppingCart(String username, String address, String purchase_service_name, String supply_service_name)
+    {
+        Response<User> user_res = userFacade.getUser(username);
+        if(user_res.hadError())
+            return new Response<>(user_res.getErrorMessage());
+
+        User buying_user = user_res.getObject();
+        /*List<Integer> stores_ids = buying_user.getCartBaskets().stream().map(ShoppingBasket::getStoreId).collect(Collectors.toList());
+        List<Response<Store>> stores_response = stores_ids.stream().map(id -> storeFacade.getStore(id)).collect(Collectors.toList());
+
+        List<Response<Store>> problematic_stores = stores_response.stream().filter(Response::hadError).collect(Collectors.toList());
+        if (!problematic_stores.isEmpty())
+        {
+            StringBuilder error_msg = new StringBuilder();
+            for (Response<Store> res : problematic_stores)
+            {
+                error_msg.append(res.getErrorMessage());
+            }
+            return new Response<>(error_msg.toString());
+        }
+
+        Map<Integer, Store> stores = stores_response.stream().map(Response::getObject).collect(Collectors.toConcurrentMap(Store::getStoreId, store -> store));
+        */
+        return this.marketManagementFacade.purchaseShoppingCart(buying_user, address, purchase_service_name, supply_service_name);
+    }
+
+    public Response<Boolean> hasPurchaseService()
+    {
+        return this.marketManagementFacade.hasPurchaseService();
+    }
+
+    public Response<Boolean> hasSupplyService()
+    {
+        return this.marketManagementFacade.hasSupplyService();
     }
 }

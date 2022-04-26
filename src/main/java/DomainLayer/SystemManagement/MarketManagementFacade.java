@@ -3,10 +3,14 @@ package DomainLayer.SystemManagement;
 import DomainLayer.AdminFacade;
 import DomainLayer.Response;
 import DomainLayer.StoreFacade;
+import DomainLayer.Stores.Store;
 import DomainLayer.SystemManagement.NotificationManager.NotificationFacade;
 import DomainLayer.SystemManagement.PurchaseServices.StubPurchaseService;
 import DomainLayer.SystemManagement.SupplyServices.StubSupplyService;
 import DomainLayer.Users.User;
+
+import java.util.List;
+import java.util.Map;
 
 public class MarketManagementFacade
 {
@@ -42,10 +46,10 @@ public class MarketManagementFacade
         }
     }
 
-    public Response<Boolean> PurchaseShoppingCart(User user)
+    public Response<Boolean> purchaseShoppingCart(User user, String address, String purchase_service_name, String supply_service_name)
     {
         try {
-            purchaseProcess.Pay(user, "stub", "stub"); // TODO: change to actual input
+            purchaseProcess.handlePurchase(user, address, purchase_service_name, supply_service_name);
             return new Response<>(true);
         }
         catch (Exception e) {
@@ -88,6 +92,20 @@ public class MarketManagementFacade
         try {
             this.services.removeExternalSupplyService(name);
             return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Boolean> hasPurchaseService()
+    {
+        return new Response<>(this.services.hasPurchaseService());
+    }
+
+    public Response<Boolean> hasSupplyService()
+    {
+        try {
+            return new Response<>(this.services.hasPurchaseService());
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
