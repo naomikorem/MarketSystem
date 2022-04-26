@@ -11,6 +11,13 @@ public class AdminController {
 
     private AdminController() {
         this.admins = new HashSet<>();
+
+        // load database
+
+        if (admins.isEmpty()) {
+            admins.add(UserController.DEFAULT_ADMIN_EMAIL);
+        }
+
     }
 
     public boolean addAdmin(String name) {
@@ -31,6 +38,9 @@ public class AdminController {
 
     public boolean removeAdmin(String name) {
         synchronized (admins) {
+            if (admins.size() <= 1) {
+                return false;
+            }
             if (admins.contains(name)) {
                 admins.remove(name);
                 return true;

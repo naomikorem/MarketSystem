@@ -15,9 +15,19 @@ public class UserController {
     private Map<String, User> users;
     private Set<String> loggedUsers;
 
+    public static String DEFAULT_ADMIN_USER = "admin";
+    public static String DEFAULT_ADMIN_PASSWORD = "admin";
+    public static String DEFAULT_ADMIN_EMAIL = "admin@mycompany.com";
+
     private UserController() {
         this.users = new HashMap<>();
         this.loggedUsers = new HashSet<>();
+
+        //load database
+
+        if (!users.containsKey(DEFAULT_ADMIN_USER)) {
+            createUser(DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_USER, DEFAULT_ADMIN_PASSWORD);
+        }
     }
 
     private static class UserControllerHolder {
