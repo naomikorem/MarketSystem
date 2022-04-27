@@ -3,6 +3,7 @@ package acceptenceTests;
 import DomainLayer.Response;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
+import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
 import java.util.Collection;
@@ -168,5 +169,20 @@ public class Proxy extends Bridge {
     @Override
     public Response<Store> addNewStore(String storeName) {
         return real.addNewStore(storeName);
+    }
+
+    @Override
+    public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount) {
+        return real.addItemToStore(storeId, name, category, price, amount);
+    }
+
+    @Override
+    public Response<Item> addItemToCart(int storeId, int itemId, int amount) {
+        return real.addItemToCart(storeId, itemId, amount);
+    }
+
+    @Override
+    public Response<List<ShoppingBasket>> getCartBaskets() {
+        return real.getCartBaskets();
     }
 }

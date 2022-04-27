@@ -163,6 +163,11 @@ public class SystemImplementor implements SystemInterface {
     }
 
     @Override
+    public Response<Boolean> closeStore(int storeId) {
+        return storeFacade.closeStore(user, storeId);
+    }
+
+    @Override
     public Response<Store> addNewStore(String name) {
         return storeFacade.addNewStore(user, name);
     }

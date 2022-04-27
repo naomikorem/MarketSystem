@@ -55,6 +55,8 @@ public interface SystemInterface {
 
     public Response<Item> addItemToCart(int storeId, int itemId, int amount);
 
+    Response<Boolean> closeStore(int storeId);
+
     public Response<Store> addNewStore(String name);
 
     public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount);

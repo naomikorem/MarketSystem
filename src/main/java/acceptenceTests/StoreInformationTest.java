@@ -11,8 +11,8 @@ import static org.junit.Assert.*;
 
 public class StoreInformationTest extends AbstractTest {
 
-    private int storeId;
-    private String storeName;
+    private static int storeId;
+    private static String storeName;
     private static boolean isInit = false;
 
     public StoreInformationTest() {

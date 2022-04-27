@@ -24,7 +24,7 @@ public class SubscribedState implements UserState {
     }
 
     public static boolean isValidUsername(String name) {
-        return name != null && name.length() >= MIN_NAME_LENGTH && name.length() <= MAX_NAME_LENGTH && Pattern.matches("[a-z]+", name);
+        return name != null && name.length() >= MIN_NAME_LENGTH && name.length() <= MAX_NAME_LENGTH && Pattern.matches("^[a-zA-Z0-9]+$", name);
     }
 
     private void checkParameters(String name, String password, String email) {

@@ -5,6 +5,7 @@ import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemImplementor;
 import DomainLayer.SystemInterface;
+import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
 import java.util.Collection;
@@ -125,5 +126,20 @@ public class Real extends Bridge {
     @Override
     public Response<Store> addNewStore(String name) {
         return adaptee.addNewStore(name);
+    }
+
+    @Override
+    public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount) {
+        return adaptee.addItemToStore(storeId, name, category, price, amount);
+    }
+
+    @Override
+    public Response<Item> addItemToCart(int storeId, int itemId, int amount) {
+        return adaptee.addItemToCart(storeId, itemId, amount);
+    }
+
+    @Override
+    public Response<List<ShoppingBasket>> getCartBaskets() {
+        return adaptee.getCartBaskets();
     }
 }
