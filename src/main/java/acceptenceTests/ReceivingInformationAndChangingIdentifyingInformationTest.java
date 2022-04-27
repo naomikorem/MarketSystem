@@ -23,7 +23,7 @@ public class ReceivingInformationAndChangingIdentifyingInformationTest extends A
 
     @AfterAll
     public void clean(){
-        UserController.getInstance().removeUser("User");
+        UserController.getInstance().removeUser("uuser");
     }
 
     @Test
@@ -39,9 +39,9 @@ public class ReceivingInformationAndChangingIdentifyingInformationTest extends A
     @Test
     public void testAcceptModifyInformation() {
         User u = UserController.getInstance().getUser("user");
-        u.setName("User");
-        assertFalse(u.getName().equals("user"));
-        assertTrue(u.getName().equals("User1"));
+        u.setName("uuser");
+        assertTrue(u.getName().equals("uuser"));
+        assertFalse(u.getName().equals("User1"));
         assertThrows(IllegalArgumentException.class, () -> u.setEmail("UUU"));
         assertThrows(IllegalArgumentException.class, () -> u.setName(""));
         u.setEmail("user11@gmail.com");
