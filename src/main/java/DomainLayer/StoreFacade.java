@@ -21,7 +21,7 @@ public class StoreFacade {
 
     public Response<Store> addNewStore(User owner, String storeName) {
         try {
-            if (!owner.isLoggedIn()) {
+            if (!owner.isRegistered()) {
                 throw new RuntimeException("The user is not logged in.");
             }
             return new Response<>(storeController.createStore(owner, storeName));

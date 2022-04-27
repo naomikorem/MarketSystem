@@ -41,7 +41,7 @@ public class SystemImplementor implements SystemInterface {
     @Override
     public Response<Boolean> exit() {
         try {
-            if (this.user != null && this.user.isLoggedIn()) {
+            if (this.user != null && this.user.isRegistered()) {
                 logout();
             } else {
                 clearShoppingCart();
@@ -69,7 +69,7 @@ public class SystemImplementor implements SystemInterface {
 
     @Override
     public Response<Boolean> logout() {
-        if (this.user == null || !this.user.isLoggedIn()) {
+        if (this.user == null || !this.user.isRegistered()) {
             return new Response<>("You have to be logged in to perform this action.");
         }
         Response<Boolean> res = userFacade.logout(user.getName());

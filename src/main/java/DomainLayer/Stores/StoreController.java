@@ -1,6 +1,5 @@
 package DomainLayer.Stores;
 
-import DomainLayer.Response;
 import DomainLayer.Users.User;
 import Exceptions.LogException;
 
@@ -69,7 +68,7 @@ public class StoreController {
 
 
     public Item addItemToStore(User manager, int storeId, String name, String category, double price, int amount) {
-        if (!manager.isLoggedIn()) {
+        if (!manager.isRegistered()) {
             throw new IllegalArgumentException("Use has to be logged in to do this action.");
         }
         Store s = getStore(storeId);
@@ -113,7 +112,7 @@ public class StoreController {
         if (s == null) {
             throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
         }
-        if (!owner.isLoggedIn() || !s.canAssignManager(owner.getName())) {
+        if (!owner.isRegistered() || !s.canAssignManager(owner.getName())) {
             throw new IllegalArgumentException("This user cannot assign a manager");
         }
         if (!s.canBecomeManager(manager)) {
@@ -128,7 +127,7 @@ public class StoreController {
         if (s == null) {
             throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
         }
-        if (!owner.isLoggedIn() || !s.canAssignOwner(owner.getName())) {
+        if (!owner.isRegistered() || !s.canAssignOwner(owner.getName())) {
             throw new IllegalArgumentException("This user cannot assign another user to be an owner");
         }
         if (!s.canBecomeOwner(newOwner)) {
@@ -156,7 +155,7 @@ public class StoreController {
         if (s == null) {
             throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
         }
-        if (!owner.isLoggedIn() || !s.isOwner(owner.getName())) {
+        if (!owner.isRegistered() || !s.isOwner(owner.getName())) {
             throw new IllegalArgumentException("This user cannot assign a manager");
         }
         s.changePermission(manager, permission);

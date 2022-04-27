@@ -2,6 +2,7 @@ package DomainLayer.Users;
 
 import Exceptions.LogException;
 import Utility.Utility;
+import Utility.LogUtility;
 
 import java.util.regex.Pattern;
 
@@ -43,8 +44,29 @@ public class SubscribedState implements UserState {
         return name;
     }
 
+    public void setName(String userName){
+        if (!isValidUsername(userName)) {
+            throw new IllegalArgumentException("A user name must be at least 4 letters long.");
+        }
+        String oldName = this.name;
+        this.name = userName;
+        LogUtility.info(String.format("User %s changed its name to %s", oldName, this.name));
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String newEmail){
+        if (newEmail == null || !Utility.isValidEmailAddress(newEmail)) {
+            throw new IllegalArgumentException("The email is invalid.");
+        }
+        this.email = newEmail;
+        LogUtility.info(String.format("User %s changed its email to %s", this.name, this.email));
+    }
+
     @Override
-    public boolean isLoggedIn() {
+    public boolean isRegistered() {
         return true;
     }
 

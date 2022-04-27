@@ -2,7 +2,6 @@ package DomainLayer.Users;
 
 import DomainLayer.Stores.Item;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class User {
@@ -18,8 +17,8 @@ public class User {
         return state.getName();
     }
 
-    public boolean isLoggedIn() {
-        return state.isLoggedIn();
+    public boolean isRegistered() {
+        return state.isRegistered();
     }
 
     public boolean login(String password) {

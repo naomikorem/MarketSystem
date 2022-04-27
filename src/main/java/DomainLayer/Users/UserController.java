@@ -1,6 +1,5 @@
 package DomainLayer.Users;
 
-import DomainLayer.Stores.StoreController;
 import Exceptions.LogException;
 import Utility.LogUtility;
 
@@ -111,6 +110,13 @@ public class UserController {
         removedLoggedUser(name);
         LogUtility.info(String.format("User %s has logged out", name));
         return true;
+    }
+
+    public void setUserName(User user, String newName){
+        if(user.isRegistered())
+        {
+            user.
+        }
     }
 
 }
