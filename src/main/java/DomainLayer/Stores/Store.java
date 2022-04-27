@@ -43,6 +43,10 @@ public class Store {
     }
 
     public void setName(String store_name) {
+        if(!isOpen()){
+            LogUtility.error("tried to change store name for a closed store");
+            throw new IllegalArgumentException("This store is closed");
+        }
         if (store_name == null || store_name.equals("")) {
             LogUtility.error("tried to change store name to an empty word / null");
             throw new IllegalArgumentException("Store name must be a non empty name");
@@ -79,29 +83,57 @@ public class Store {
     }
 
     public void addManager(String givenBy, String manager) {
+        if(!isOpen()){
+            LogUtility.error("tried to add a manger for a closed store");
+            throw new IllegalArgumentException("This store is closed");
+        }
         this.managers.put(manager, new Permission(givenBy));
     }
 
     public void addOwner(String givenBy, String newOwner) {
+        if(!isOpen()){
+            LogUtility.error("tried to add owner for a closed store");
+            throw new IllegalArgumentException("This store is closed");
+        }
         this.owners.put(newOwner, givenBy);
     }
 
     public Set<Item> getItemsWithNameContains(String name){
+        if(!isOpen()){
+            LogUtility.error("tried to get item from a closed store");
+            throw new IllegalArgumentException("This store is closed");
+        }
         return items.keySet().stream().filter((x)->x.isNameContains(name)).collect(Collectors.toSet());
     }
 
     public Set<Item> getItemsWithKeyWords(List<String> kws){
+        if(!isOpen()){
+            LogUtility.error("tried to get item from a closed store");
+            throw new IllegalArgumentException("This store is closed");
+        }
         return items.keySet().stream().filter((x)->x.hasKeyWords(kws)).collect(Collectors.toSet());
     }
     public Set<Item> getItemsWithCategory(Category category){
+        if(!isOpen()){
+            LogUtility.error("tried to get item from a closed store");
+            throw new IllegalArgumentException("This store is closed");
+        }
         return items.keySet().stream().filter((x)->x.getCategory().equals(category)).collect(Collectors.toSet());
     }
 
     public Item getItemById(int id) {
+        if(!isOpen()){
+            LogUtility.error("tried to get item from a closed store");
+            throw new IllegalArgumentException("This store is closed");
+        }
         return items.keySet().stream().filter(i -> i.getId() == id).findFirst().orElse(null);
     }
 
     public Item getItemAndDeduct(int itemId, int toDeduct) {
+        if(!isOpen()){
+            LogUtility.error("tried to get item from a closed store");
+            throw new IllegalArgumentException("This store is closed");
+        }
         synchronized (items) {
             Item i = items.keySet().stream().filter(item -> item.getId() == itemId).findFirst().orElse(null);
             if (i != null) {
@@ -118,12 +150,20 @@ public class Store {
     }
 
     public void addItem(Item item, int amount) {
+        if(!isOpen()){
+            LogUtility.error("tried to add item for a closed store");
+            throw new IllegalArgumentException("This store is closed");
+        }
         synchronized (items) {
             this.items.put(item, items.getOrDefault(item, 0) + amount);
         }
     }
 
     public void changePermission(String manager, byte permission) {
+        if(!isOpen()){
+            LogUtility.error("tried to change permissions for a closed store");
+            throw new IllegalArgumentException("This store is closed");
+        }
         Permission p = managers.getOrDefault(manager, null);
         if (p == null) {
             throw new IllegalArgumentException(String.format("%s is not a manager in the store", manager));
