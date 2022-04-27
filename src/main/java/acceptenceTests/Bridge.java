@@ -3,6 +3,7 @@ package acceptenceTests;
 import DomainLayer.Response;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
+import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
 import java.util.Collection;
@@ -34,6 +35,11 @@ public abstract class Bridge {
     public abstract Response<Collection<Item>> filterResults();
     public abstract Response<List<Item>> getShoppingCartItems();
     public abstract Response<Store> addNewStore(String storeName);
+    public abstract Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount);
+
+    public abstract Response<Item> addItemToCart(int storeId, int itemId, int amount);
+
+    public abstract Response<List<ShoppingBasket>> getCartBaskets();
 
     //Acceptance Tests for use case 3:
     //Acceptance Tests for use case 4:
