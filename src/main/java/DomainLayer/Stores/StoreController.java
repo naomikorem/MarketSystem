@@ -161,5 +161,12 @@ public class StoreController {
         }
         s.changePermission(manager, permission);
     }
-    
+
+    public static int getNextStoreId() {
+        return NEXT_STORE_ID;
+    }
+
+    public void closeStore(String username, int storeId){
+        stores.get(storeId).setIsOpen(username, false);
+    }
 }

@@ -58,8 +58,23 @@ public class Store {
         return open;
     }
 
-    public void setIsOpen(boolean is_open) {
+    public void setIsOpen(String username, boolean is_open) {
+        if(!this.founder.equals(username)){
+            LogUtility.error("someone who isn't the store founder tried to close the store");
+            throw new IllegalArgumentException("someone who isn't the store founder tried to close the store");
+        }
+        if(!is_open){
+            updateManagersAndOwners();
+        }
         this.open = is_open;
+    }
+
+    @TODO
+    /**
+     * update managers and owners that the store is getting closed
+     */
+    private void updateManagersAndOwners() {
+        return;
     }
 
     public int getStoreId() {
