@@ -24,7 +24,10 @@ public class ReceivingInformationAndChangingIdentifyingInformationTest extends A
 
     @After
     public void clean(){
-        UserController.getInstance().removeUser("uuser");
+        if(UserController.getInstance().isExist("user"))
+            UserController.getInstance().removeUser("user");
+        if(UserController.getInstance().isExist("uuser"))
+            UserController.getInstance().removeUser("uuser");
         bridge.logout();
     }
 
