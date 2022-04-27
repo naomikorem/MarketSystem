@@ -35,6 +35,7 @@ public abstract class Bridge {
     public abstract Response<Collection<Item>> filterResults();
     public abstract Response<List<Item>> getShoppingCartItems();
     public abstract Response<Store> addNewStore(String storeName);
+    public abstract Response<Boolean> addManager(String manager, int storeId);
     public abstract Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount);
 
     public abstract Response<Item> addItemToCart(int storeId, int itemId, int amount);

@@ -90,7 +90,7 @@ public class SystemImplementor implements SystemInterface {
     @Override
     public Response<Boolean> addManager(String manager, int storeId) {
         try {
-            if (userFacade.isExist(manager)) {
+            if (!userFacade.isExist(manager)) {
                 throw new IllegalArgumentException(String.format("There is no user by the name of %s", manager));
             }
             return storeFacade.addManager(user, manager, storeId);
@@ -102,7 +102,7 @@ public class SystemImplementor implements SystemInterface {
     @Override
     public Response<Boolean> addOwner(String owner, int storeId) {
         try {
-            if (userFacade.isExist(owner)) {
+            if (!userFacade.isExist(owner)) {
                 throw new IllegalArgumentException(String.format("There is no user by the name of %s", owner));
             }
             return storeFacade.addOwner(user, owner, storeId);

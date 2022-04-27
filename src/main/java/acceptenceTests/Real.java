@@ -129,6 +129,11 @@ public class Real extends Bridge {
     }
 
     @Override
+    public Response<Boolean> addManager(String manager, int storeId) {
+        return adaptee.addManager(manager, storeId);
+    }
+
+    @Override
     public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount) {
         return adaptee.addItemToStore(storeId, name, category, price, amount);
     }

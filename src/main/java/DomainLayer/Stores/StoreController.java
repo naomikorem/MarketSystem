@@ -39,6 +39,10 @@ public class StoreController {
     private void addStore(Store store) {
         this.stores.put(store.getStoreId(), store);
     }
+    /**for debugging**/
+    public void removeStore(Store store) {
+        this.stores.remove(store.getStoreId());
+    }
 
     public Store getStore(int id) {
         return stores.getOrDefault(id, null);

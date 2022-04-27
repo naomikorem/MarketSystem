@@ -172,6 +172,11 @@ public class Proxy extends Bridge {
     }
 
     @Override
+    public Response<Boolean> addManager(String manager, int storeId) {
+        return  real.addManager(manager, storeId);
+    }
+
+    @Override
     public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount) {
         return real.addItemToStore(storeId, name, category, price, amount);
     }
