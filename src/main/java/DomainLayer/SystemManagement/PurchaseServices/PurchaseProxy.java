@@ -9,25 +9,33 @@ public class PurchaseProxy
 
     public void addService(String name)
     {
-        if(!services.containsKey(name))
+        synchronized (services) {
+            if (services.containsKey(name))
+                throw new IllegalArgumentException("The service with the name " + name + " already exists in the system.");
             services.put(name, purchaseServiceFactory(name));
+        }
     }
 
     private IExternalPurchaseService purchaseServiceFactory(String name)
     {
-        if (name.equals("stub"))
-            return new StubPurchaseService(name);
+        return new StubPurchaseService(name);
 
         // TODO: should we know all the services in advance?
-        return null;
     }
 
     public void removeService(String purchase_service_name)
     {
-        if(!services.containsKey(purchase_service_name))
-            throw new IllegalArgumentException("The service with the name " + purchase_service_name + " does not exists in the system.\n");
+        synchronized (services) {
+            if (services.size() == 1)
+            {
+                throw new IllegalArgumentException("cannot remove the purchase service " + purchase_service_name + " because it is the last connection to purchase service in the system.");
+            }
 
-        services.remove(purchase_service_name);
+            if (!services.containsKey(purchase_service_name))
+                throw new IllegalArgumentException("The service with the name " + purchase_service_name + " does not exists in the system.");
+
+            services.remove(purchase_service_name);
+        }
     }
 
     public boolean hasService()
@@ -42,9 +50,11 @@ public class PurchaseProxy
 
     public boolean pay(double price, String purchase_service_name)
     {
-        if(!services.containsKey(purchase_service_name))
-            throw new IllegalArgumentException("The service with the name " + purchase_service_name + " does not exists in the system.\n");
+        synchronized (services) {
+            if (!services.containsKey(purchase_service_name))
+                throw new IllegalArgumentException("The service with the name " + purchase_service_name + " does not exists in the system.");
 
-        return services.get(purchase_service_name).pay(price);
+            return services.get(purchase_service_name).pay(price);
+        }
     }
 }

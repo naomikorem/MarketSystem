@@ -1,16 +1,7 @@
 package DomainLayer.SystemManagement;
 
-import DomainLayer.AdminFacade;
 import DomainLayer.Response;
-import DomainLayer.StoreFacade;
-import DomainLayer.Stores.Store;
-import DomainLayer.SystemManagement.NotificationManager.NotificationFacade;
-import DomainLayer.SystemManagement.PurchaseServices.StubPurchaseService;
-import DomainLayer.SystemManagement.SupplyServices.StubSupplyService;
 import DomainLayer.Users.User;
-
-import java.util.List;
-import java.util.Map;
 
 public class MarketManagementFacade
 {
@@ -19,12 +10,14 @@ public class MarketManagementFacade
     }
     private MarketManagementFacade()
     {
+        this.services = ExternalServicesHandler.getInstance();
+        this.purchaseProcess = PurchaseProcess.getInstance();
     }
 
     public static MarketManagementFacade getInstance() {
         return MarketManagementFacadeHolder.INSTANCE;
     }
-    private ExternalServices services;
+    private ExternalServicesHandler services;
     private PurchaseProcess purchaseProcess;
 
     public Response<Boolean> initializeMarket()

@@ -2,24 +2,26 @@ package DomainLayer.SystemManagement;
 
 import DomainLayer.Stores.Item;
 import DomainLayer.SystemManagement.PurchaseServices.PurchaseProxy;
-import DomainLayer.SystemManagement.SupplyServices.IExternalSupplyService;
 import DomainLayer.SystemManagement.SupplyServices.SupplyProxy;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class ExternalServices
+public class ExternalServicesHandler
 {
     private PurchaseProxy purchase_proxy;
     private SupplyProxy supply_proxy;
 
     private static class ExternalServicesHolder {
-        static final ExternalServices INSTANCE = new ExternalServices();
+        static final ExternalServicesHandler INSTANCE = new ExternalServicesHandler();
     }
-    private ExternalServices() {}
+    private ExternalServicesHandler()
+    {
+        this.purchase_proxy = new PurchaseProxy();
+        this.supply_proxy = new SupplyProxy();
+    }
 
-    public static ExternalServices getInstance() {
+    public static ExternalServicesHandler getInstance() {
         return ExternalServicesHolder.INSTANCE;
     }
 

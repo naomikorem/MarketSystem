@@ -1,10 +1,6 @@
 package DomainLayer.SystemManagement.NotificationManager;
 
 import DomainLayer.StoreFacade;
-import DomainLayer.Stores.Store;
-import DomainLayer.SystemManagement.ExternalServices;
-
-import java.util.List;
 
 public class NotificationFacade {
     private StoreFacade storeFacade;

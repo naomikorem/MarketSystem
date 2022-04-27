@@ -1,12 +1,6 @@
 package DomainLayer.SystemManagement;
 
-import DomainLayer.StoreFacade;
 import DomainLayer.Stores.Item;
-import DomainLayer.Stores.Store;
-import DomainLayer.Stores.StoreController;
-import DomainLayer.SystemManagement.NotificationManager.NotificationFacade;
-import DomainLayer.SystemManagement.PurchaseServices.IExternalPurchaseService;
-import DomainLayer.SystemManagement.SupplyServices.IExternalSupplyService;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
@@ -16,14 +10,14 @@ import java.util.Map;
 
 public class PurchaseProcess
 {
-    private ExternalServices externalServices;
+    private ExternalServicesHandler externalServicesHandler;
     //private NotificationFacade notificationFacade;
     private static class PurchaseProcessHolder {
         static final PurchaseProcess INSTANCE = new PurchaseProcess();
     }
     private PurchaseProcess()
     {
-        this.externalServices = ExternalServices.getInstance();
+        this.externalServicesHandler = ExternalServicesHandler.getInstance();
         //this.notificationFacade = NotificationFacade.getInstance();
     }
 
@@ -47,11 +41,11 @@ public class PurchaseProcess
         // how to choose the payment service
         // how to get payment details? get them or is it the external service problem?
 
-        this.externalServices.pay(price, purchase_service_name);
+        this.externalServicesHandler.pay(price, purchase_service_name);
 
         // get address from user
 
-        this.externalServices.supply(shipping_address, items_and_amounts, supply_service_name);
+        this.externalServicesHandler.supply(shipping_address, items_and_amounts, supply_service_name);
 
         // save in purchase history
 

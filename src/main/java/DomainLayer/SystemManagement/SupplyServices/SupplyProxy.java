@@ -16,25 +16,31 @@ public class SupplyProxy
 
     public void addService(String name)
     {
-        if(!services.containsKey(name))
-            services.put(name, supplyServiceFactory(name));
+        synchronized (services) {
+            if (!services.containsKey(name))
+                services.put(name, supplyServiceFactory(name));
+        }
     }
 
     private IExternalSupplyService supplyServiceFactory(String name)
     {
-        if (name.equals("stub"))
-            return new StubSupplyService(name);
+        return new StubSupplyService(name);
 
         // TODO: should we know all the services in advance?
-        return null;
     }
 
     public void removeService(String supply_service_name)
     {
-        if(!services.containsKey(supply_service_name))
-            throw new IllegalArgumentException("The service with the name " + supply_service_name + " does not exists in the system.\n");
+        synchronized (services) {
+            if (services.size() == 1) {
+                throw new IllegalArgumentException("cannot remove the supply service " + supply_service_name + " because it is the last connection to purchase service in the system.");
+            }
 
-        services.remove(supply_service_name);
+            if (!services.containsKey(supply_service_name))
+                throw new IllegalArgumentException("The service with the name " + supply_service_name + " does not exists in the system.\n");
+
+            services.remove(supply_service_name);
+        }
     }
 
     public boolean hasService()
