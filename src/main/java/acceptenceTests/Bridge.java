@@ -42,6 +42,8 @@ public abstract class Bridge {
 
     public abstract Response<List<ShoppingBasket>> getCartBaskets();
 
+    public abstract Response<Item> removeItemFromStore(int storeId, int itemId, int amount);
+
     //Acceptance Tests for use case 3:
     //Acceptance Tests for use case 4:
     //Acceptance Tests for use case 5:

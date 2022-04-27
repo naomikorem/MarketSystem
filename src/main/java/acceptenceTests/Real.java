@@ -147,4 +147,9 @@ public class Real extends Bridge {
     public Response<List<ShoppingBasket>> getCartBaskets() {
         return adaptee.getCartBaskets();
     }
+
+    @Override
+    public Response<Item> removeItemFromStore(int storeId, int itemId, int amount) {
+        return adaptee.removeItemFromStore(storeId, itemId, amount);
+    }
 }

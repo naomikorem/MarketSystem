@@ -9,6 +9,8 @@ import java.util.Collection;
 import java.util.List;
 
 public interface SystemInterface {
+    Response<Item> removeItemFromStore(int storeId, int itemId, int amount);
+
     public Response<Boolean> initializeMarket();
 
     public Response<Boolean> addExternalPurchaseService(String name);
