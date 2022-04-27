@@ -131,4 +131,9 @@ public class StoreController {
         s.addItem(item, amount);
         return item;
     }
+
+    public boolean isShopOwner(Store store, String shopOwnerName){
+        return stores.get(store.getStoreId()).isOwner(shopOwnerName);
+    }
+    
 }
