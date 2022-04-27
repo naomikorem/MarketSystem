@@ -131,4 +131,13 @@ public class StoreFacade {
             return new Response<>(e.getMessage());
         }
     }
+
+    public Response<Boolean> closeStore(User founder, int storeId) {
+        try {
+            storeController.closeStore(founder, storeId);
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
 }
