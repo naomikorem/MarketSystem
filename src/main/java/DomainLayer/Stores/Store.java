@@ -159,8 +159,29 @@ public class Store {
             LogUtility.error("tried to add item for a closed store");
             throw new IllegalArgumentException("This store is closed");
         }
+        /*if(!isManager(userName) && !isOwner(userName)) {
+            LogUtility.error("A user that isn't the store owner/manger tried to add items");
+            throw new IllegalArgumentException("This store is closed");
+        }*/
         synchronized (items) {
             this.items.put(item, items.getOrDefault(item, 0) + amount);
+        }
+    }
+
+    public void removeItem(String userName, Item item, int amount) {
+        if (!isOpen()) {
+            LogUtility.error("tried to add item for a closed store");
+            throw new IllegalArgumentException("This store is closed");
+        }
+        if(!isManager(userName) && !isOwner(userName)) {
+            LogUtility.error("A user that isn't the store owner/manger tried to remove items");
+            throw new IllegalArgumentException("This store is closed");
+        }
+        if(items.get(item) < amount){
+            throw new IllegalArgumentException("You cannot remove more items then there are");
+        }
+        synchronized (items) {
+            this.items.put(item, items.get(item) - amount);
         }
     }
 
