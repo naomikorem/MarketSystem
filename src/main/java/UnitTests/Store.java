@@ -5,6 +5,7 @@ import DomainLayer.Stores.StoreController;
 import DomainLayer.Users.User;
 import DomainLayer.Users.UserController;
 import acceptenceTests.AbstractTest;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
@@ -27,6 +28,11 @@ public class Store extends AbstractTest {
         }
         Response<User> u = bridge.register("user1@gmail.com", "user", "password");
         this.user = u.getObject();
+    }
+
+    @After
+    public void clean() {
+        UserController.getInstance().removeUser("user");
     }
 
     @Test

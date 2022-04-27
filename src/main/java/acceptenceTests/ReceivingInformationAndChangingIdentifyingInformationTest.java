@@ -2,6 +2,7 @@ package acceptenceTests;
 
 import DomainLayer.Users.User;
 import DomainLayer.Users.UserController;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterAll;
@@ -21,9 +22,10 @@ public class ReceivingInformationAndChangingIdentifyingInformationTest extends A
         }
     }
 
-    @AfterAll
+    @After
     public void clean(){
         UserController.getInstance().removeUser("uuser");
+        bridge.logout();
     }
 
     @Test

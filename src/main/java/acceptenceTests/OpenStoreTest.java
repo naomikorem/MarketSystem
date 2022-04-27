@@ -5,6 +5,7 @@ import DomainLayer.Stores.Store;
 import DomainLayer.Stores.StoreController;
 import DomainLayer.Users.User;
 import DomainLayer.Users.UserController;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterAll;
@@ -30,11 +31,12 @@ public class OpenStoreTest extends AbstractTest {
         this.user = u.getObject();
     }
 
-    @AfterAll
+    @After
     public void clean(){
         if (UserController.getInstance().isExist("user")) {
             UserController.getInstance().removeUser("user");
         }
+        bridge.logout();
     }
 
     @Test

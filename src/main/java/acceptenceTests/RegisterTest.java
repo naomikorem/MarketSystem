@@ -24,6 +24,9 @@ public class RegisterTest extends AbstractTest {
         bridge.enter();
     }
 
+    @After
+    public void clean(){bridge.logout();}
+
     @Test
     public void testAcceptRegister() {
         /**invalid email**/
