@@ -4,6 +4,9 @@ import Exceptions.LogException;
 import Utility.LogUtility;
 
 import java.util.*;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 public class Store {
@@ -14,6 +17,7 @@ public class Store {
     private Map<String, String> owners;
     private Map<String, Permission> managers;
     private Map<Item, Integer> items;
+    private Lock lock;
 
     public Store(String founder, String store_name, int id) {
         this.founder = founder;
@@ -22,6 +26,7 @@ public class Store {
         this.owners = new HashMap<>();
         this.managers = new HashMap<>();
         this.items = new HashMap<>();
+        this.lock = new ReentrantLock();
         owners.put(founder, null);
         setName(store_name);
     }
@@ -87,19 +92,33 @@ public class Store {
     }
 
     public void addManager(String givenBy, String manager) {
-        if (!isOpen()) {
-            LogUtility.error("tried to add a manger for a closed store");
-            throw new IllegalArgumentException("This store is closed");
+        synchronized (lock) {
+            if (!isOpen()) {
+                LogUtility.error("tried to add a manger for a closed store");
+                throw new IllegalArgumentException("This store is closed");
+            }
+            if(managers.containsKey(manager)||owners.containsKey(manager)){
+                LogUtility.error("tried to add a manger who is already a store-owner/ manager");
+                throw new IllegalArgumentException("This manger is already a store-owner/ manager");
+            }
+            this.managers.put(manager, new Permission(givenBy));
+            LogUtility.info(String.format("New manager for shop "+this.id+", the store manger is :"+ manager));
         }
-        this.managers.put(manager, new Permission(givenBy));
     }
 
     public void addOwner(String givenBy, String newOwner) {
-        if (!isOpen()) {
-            LogUtility.error("tried to add owner for a closed store");
-            throw new IllegalArgumentException("This store is closed");
+        synchronized (lock) {
+            if (!isOpen()) {
+                LogUtility.error("tried to add owner for a closed store");
+                throw new IllegalArgumentException("This store is closed");
+            }
+            if(managers.containsKey(newOwner)||owners.containsKey(newOwner)) {
+                LogUtility.error("tried to add a manger who is already a store-owner/ manager");
+                throw new IllegalArgumentException("This manger is already a store-owner/ manager");
+            }
+            this.owners.put(newOwner, givenBy);
+            LogUtility.info(String.format("New store owner for shop "+this.id+", the store owner is :"+ newOwner));
         }
-        this.owners.put(newOwner, givenBy);
     }
 
     public Set<Item> getItemsWithNameContains(String name) {
