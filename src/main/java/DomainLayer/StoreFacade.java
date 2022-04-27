@@ -71,10 +71,14 @@ public class StoreFacade {
             Set<Item> items = new HashSet<>();
             if (!productName.isEmpty())
                 items = storeController.getItemsWithNameContains(productName);
-            if (!category.isEmpty())
-                items = storeController.getItemsWithNameContains(category).stream().filter(items::contains).collect(Collectors.toSet());
-            if (!keywords.isEmpty())
-                items = storeController.getItemsWithKeyWord(keywords).stream().filter(items::contains).collect(Collectors.toSet());
+            if (!category.isEmpty()) {
+                Set<Item> finalItems = items;
+                items = storeController.getItemsWithCategory(category).stream().filter(i -> finalItems.contains(i) || finalItems.isEmpty()).collect(Collectors.toSet());
+            }
+            if (!keywords.isEmpty()) {
+                Set<Item> finalItems1 = items;
+                items = storeController.getItemsWithKeyWord(keywords).stream().filter(i -> finalItems1.contains(i) || finalItems1.isEmpty()).collect(Collectors.toSet());
+            }
             if (!items.isEmpty())
                 return new Response<>(items);
             throw new Exception("No items mach the search");
