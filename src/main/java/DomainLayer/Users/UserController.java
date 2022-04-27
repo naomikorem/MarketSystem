@@ -63,6 +63,7 @@ public class UserController {
         users.remove(userName);
         if(loggedUsers.contains(userName))
             loggedUsers.remove(userName);
+        LogUtility.info(String.format("A user named %s was removed", userName));
     }
 
     public User getUser(String name) {
@@ -108,6 +109,7 @@ public class UserController {
             throw new LogException("Only logged in users can log out.", "User %s has tried to log out even though they are not logged in.");
         }
         removedLoggedUser(name);
+        LogUtility.info(String.format("User %s has logged out", name));
         return true;
     }
 
