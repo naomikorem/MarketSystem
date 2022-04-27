@@ -72,7 +72,6 @@ public class SystemImplementor implements SystemInterface {
         if (this.user == null || !this.user.isLoggedIn()) {
             return new Response<>("You have to be logged in to perform this action.");
         }
-        clearShoppingCart();
         Response<Boolean> res = userFacade.logout(user.getName());
         if (res.getObject()) {
             this.user = new User(new GuestState());
