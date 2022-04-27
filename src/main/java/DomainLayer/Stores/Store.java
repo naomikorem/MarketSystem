@@ -34,8 +34,8 @@ public class Store {
         return managers.containsKey(name);
     }
 
-    public boolean canAddItems(String name) {
-        return isOwner(name) || isManager(name);
+    public boolean canManageItems(String name) {
+        return isOwner(name) || (isManager(name) && managers.get(name).canChangeItems());
     }
 
     public String getName() {
@@ -67,11 +67,23 @@ public class Store {
     }
 
     public boolean canAssignManager(String user) {
+        return isOwner(user) || (isManager(user) && managers.get(user).canAssignManager());
+    }
+
+    public boolean canBecomeOwner(String user) {
+        return !owners.containsKey(user);
+    }
+
+    public boolean canAssignOwner(String user) {
         return isOwner(user);
     }
 
     public void addManager(String givenBy, String manager) {
         this.managers.put(manager, new Permission(givenBy));
+    }
+
+    public void addOwner(String givenBy, String newOwner) {
+        this.owners.put(newOwner, givenBy);
     }
 
     public Set<Item> getItemsWithNameContains(String name){
@@ -109,6 +121,14 @@ public class Store {
         synchronized (items) {
             this.items.put(item, items.getOrDefault(item, 0) + amount);
         }
+    }
+
+    public void changePermission(String manager, byte permission) {
+        Permission p = managers.getOrDefault(manager, null);
+        if (p == null) {
+            throw new IllegalArgumentException(String.format("%s is not a manager in the store", manager));
+        }
+        p.setPermissionsMask(permission);
     }
 
 }

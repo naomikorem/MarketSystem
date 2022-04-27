@@ -38,6 +38,14 @@ public class StoreFacade {
         }
     }
 
+    public Response<Boolean> addOwner(User owner, String newOwner, int storeId) {
+        try {
+            return new Response<>(storeController.addOwner(owner, newOwner, storeId));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
     public Response<Collection<Store>> getAllStores() {
         return new Response<>(storeController.getAllStores());
     }
@@ -110,6 +118,15 @@ public class StoreFacade {
     public Response<Item> returnItemToStore(int storeId, Item item, int amount) {
         try {
             return new Response<>(storeController.returnItemToStore(storeId, item, amount));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Boolean> setManagerPermission(User owner, String manager, int storeId, byte permission) {
+        try {
+            storeController.setManagerPermission(owner, manager, storeId, permission);
+            return new Response<>(true);
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
