@@ -19,6 +19,7 @@ public class SavingProductTest extends AbstractTest {
     private static Store s;
     private static Item i1;
     private static Item i2;
+    private static Item i3;
     private Response<Item> r1, r2;
 
     @BeforeClass
@@ -31,8 +32,8 @@ public class SavingProductTest extends AbstractTest {
         bridge.addNewStore("Store1");
         s = bridge.addNewStore("Store1").getObject();
         i1 = bridge.addItemToStore(s.getStoreId(), "Item1", "Food", 100, 9).getObject();
-        Response<Item> r2 = bridge.addItemToStore(s.getStoreId(), "Item2", "Food", 100, 10);
-        i2 = r2.getObject();
+        i2 = bridge.addItemToStore(s.getStoreId(), "Item2", "Food", 100, 10).getObject();
+        i3 = bridge.addItemToStore(s.getStoreId(), "Item3", "Food", 100, 10).getObject();
         bridge.logout();
     }
 
@@ -65,7 +66,7 @@ public class SavingProductTest extends AbstractTest {
     }
 
     @Test
-    public void synchronizedSavingProductTest() {
+    public void synchronizedSavingProductTestTwoUsers() {
         Thread t1 = new Thread(() -> {
             Bridge bridge = new Real();
             bridge.enter();
@@ -78,6 +79,34 @@ public class SavingProductTest extends AbstractTest {
             bridge.enter();
             bridge.login("user2", "password");
             r2 = bridge.addItemToCart(s.getStoreId(), i2.getId(), 6);
+            bridge.logout();
+        });
+        t1.start();
+        t2.start();
+        try {
+            t1.join();
+            t2.join();
+            assertTrue(r1.hadError() || r2.hadError()); //one failed to connect
+            assertFalse(r1.hadError() && r2.hadError()); //not both failed
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void synchronizedSavingProductTestUserOwner() {
+        Thread t1 = new Thread(() -> {
+            Bridge bridge = new Real();
+            bridge.enter();
+            bridge.login("user1", "password");
+            r1 = bridge.removeItemFromStore(s.getStoreId(), i3.getId(), 5);
+            bridge.logout();
+        });
+        Thread t2 = new Thread(() -> {
+            Bridge bridge = new Real();
+            bridge.enter();
+            bridge.login("user2", "password");
+            r2 = bridge.addItemToCart(s.getStoreId(), i3.getId(), 6);
             bridge.logout();
         });
         t1.start();

@@ -138,13 +138,17 @@ public class Proxy extends Bridge {
 
     @Override
     public Response<Collection<Store>> getStores() {
-
+        if (this.real == null) {
+            return null;
+        }
         return real.getStores();
     }
 
     @Override
     public Response<Store> getStoreInformation(int storeID) {
-
+        if (this.real == null) {
+            return null;
+        }
         return real.getStoreInformation(storeID);
     }
 
@@ -162,27 +166,49 @@ public class Proxy extends Bridge {
 
     @Override
     public Response<List<Item>> getShoppingCartItems() {
-
+        if (this.real == null) {
+            return null;
+        }
         return real.getShoppingCartItems();
     }
 
     @Override
     public Response<Store> addNewStore(String storeName) {
+        if (this.real == null) {
+            return null;
+        }
         return real.addNewStore(storeName);
     }
 
     @Override
     public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount) {
+        if (this.real == null) {
+            return null;
+        }
         return real.addItemToStore(storeId, name, category, price, amount);
     }
 
     @Override
     public Response<Item> addItemToCart(int storeId, int itemId, int amount) {
+        if (this.real == null) {
+            return null;
+        }
         return real.addItemToCart(storeId, itemId, amount);
     }
 
     @Override
     public Response<List<ShoppingBasket>> getCartBaskets() {
+        if (this.real == null) {
+            return null;
+        }
         return real.getCartBaskets();
+    }
+
+    @Override
+    public Response<Item> removeItemFromStore(int storeId, int itemId, int amount) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.removeItemFromStore(storeId, itemId, amount);
     }
 }

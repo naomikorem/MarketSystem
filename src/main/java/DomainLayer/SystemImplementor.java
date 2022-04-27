@@ -151,7 +151,7 @@ public class SystemImplementor implements SystemInterface {
     @Override
     public Response<Item> addItemToCart(int storeId, int itemId, int amount) {
         try {
-            Response<Item> itemRes = storeFacade.getAndDeductItemFromStore(storeId, itemId, amount);
+            Response<Item> itemRes = storeFacade.reserveItemFromStore(storeId, itemId, amount);
             if (itemRes.hadError()) {
                 return itemRes;
             }
@@ -175,6 +175,11 @@ public class SystemImplementor implements SystemInterface {
     @Override
     public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount) {
         return storeFacade.addItemToStore(user, storeId, name, category, price, amount);
+    }
+
+    @Override
+    public Response<Item> removeItemFromStore(int storeId, int itemId, int amount) {
+        return storeFacade.removeItemFromStore(user, storeId, itemId, amount);
     }
 
     public Response<Boolean> initializeMarket() {

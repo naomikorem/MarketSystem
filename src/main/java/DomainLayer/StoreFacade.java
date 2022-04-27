@@ -103,8 +103,20 @@ public class StoreFacade {
         }
     }
 
-    public Response<Item> getAndDeductItemFromStore(int storeId, int itemId, int amount) {
-        return new Response<>(storeController.getAndDeductItemFromStore(storeId, itemId, amount));
+    public Response<Item> reserveItemFromStore(int storeId, int itemId, int amount) {
+        try {
+            return new Response<>(storeController.reserveItemFromStore(storeId, itemId, amount));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Item> removeItemFromStore(User owner, int storeId, int itemId, int amount) {
+        try {
+            return new Response<>(storeController.removeItemFromStore(owner, storeId, itemId, amount));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
     }
 
     public Response<Item> addItemToStore(User manager, int storeId, String name, String category, double price, int amount) {

@@ -83,7 +83,7 @@ public class StoreController {
         return i;
     }
 
-    public Item getAndDeductItemFromStore(int storeId, int itemId, int amount) {
+    public Item reserveItemFromStore(int storeId, int itemId, int amount) {
         Store s = getInstance().getStore(storeId);
         if (s == null) {
             throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
@@ -92,7 +92,23 @@ public class StoreController {
         if (i == null) {
             throw new IllegalArgumentException(String.format("There is no item with item id %s in the store", itemId));
         }
-        LogUtility.info(String.format("%s %s were taken out of store %s", amount, i.getProduct_name(), storeId));
+        LogUtility.info(String.format("%s %s were reserved in store %s", amount, i.getProduct_name(), storeId));
+        return i;
+    }
+
+    public Item removeItemFromStore(User owner, int storeId, int itemId, int amount) {
+        Store s = getInstance().getStore(storeId);
+        if (s == null) {
+            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
+        }
+        if (!owner.isRegistered() || !s.canManageItems(owner.getName())) {
+            throw new LogException("You cannot remove items from this store.", String.format("a user tried to illegally edit store %s", storeId));
+        }
+        Item i = s.getItemAndDeduct(itemId, amount);
+        if (i == null) {
+            throw new IllegalArgumentException(String.format("There is no item with item id %s in the store", itemId));
+        }
+        LogUtility.info(String.format("%s %s were taken out of store %s by %s", amount, i.getProduct_name(), storeId, owner.getName()));
         return i;
     }
 
