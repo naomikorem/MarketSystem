@@ -17,7 +17,7 @@ public class Store {
 
     public Store(String founder, String store_name, int id) {
         this.founder = founder;
-        this.name = store_name;
+        setName(store_name);
         this.open = true;
         this.id = id;
         this.owners = new HashMap<>();
