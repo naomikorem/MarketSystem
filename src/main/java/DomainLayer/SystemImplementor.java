@@ -55,11 +55,20 @@ public class SystemImplementor implements SystemInterface {
 
     @Override
     public Response<User> register(String email, String name, String password) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
         return userFacade.register(email, name, password);
     }
 
     @Override
     public Response<User> login(String name, String password) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        if (user.isRegistered()) {
+            return new Response<>("You have to log out before attempting to log in to a user.");
+        }
         Response<User> r = userFacade.login(name, password);
         if (!r.hadError()) {
             this.user.setState(r.getObject().getState());
@@ -122,17 +131,26 @@ public class SystemImplementor implements SystemInterface {
 
     @Override
     public Response<Collection<Store>> getAllStores() {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
         return storeFacade.getAllStores();
     }
 
     @Override
     public Response<Store> getStore(int id) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
         return storeFacade.getStore(id);
     }
 
     @Override
     public Response<List<Item>> getShoppingCartItems() {
         try {
+            if (user == null) {
+                return new Response<>("Enter the system properly in order to perform actions in it.");
+            }
             return new Response<>(user.getShoppingCartItems());
         } catch (Exception e) {
             return new Response<>(e.getMessage());
@@ -142,6 +160,9 @@ public class SystemImplementor implements SystemInterface {
     @Override
     public Response<List<ShoppingBasket>> getCartBaskets() {
         try {
+            if (user == null) {
+                return new Response<>("Enter the system properly in order to perform actions in it.");
+            }
             return new Response<>(user.getCartBaskets());
         } catch (Exception e) {
             return new Response<>(e.getMessage());
@@ -151,6 +172,9 @@ public class SystemImplementor implements SystemInterface {
     @Override
     public Response<Item> addItemToCart(int storeId, int itemId, int amount) {
         try {
+            if (user == null) {
+                return new Response<>("Enter the system properly in order to perform actions in it.");
+            }
             Response<Item> itemRes = storeFacade.reserveItemFromStore(storeId, itemId, amount);
             if (itemRes.hadError()) {
                 return itemRes;
@@ -187,23 +211,38 @@ public class SystemImplementor implements SystemInterface {
     }
 
     public Response<Boolean> addExternalPurchaseService(String name) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
         return this.marketManagementFacade.addExternalPurchaseService(name);
     }
 
     public Response<Boolean> addExternalSupplyService(String name) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
         return this.marketManagementFacade.addExternalSupplyService(name);
     }
 
     public Response<Boolean> removeExternalPurchaseService(String name) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
         return this.marketManagementFacade.removeExternalPurchaseService(name);
     }
 
     @Override
     public Response<Boolean> removeExternalSupplyService(String name) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
         return this.marketManagementFacade.removeExternalSupplyService(name);
     }
 
     public Response<Boolean> purchaseShoppingCart(String username, String address, String purchase_service_name, String supply_service_name) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
         Response<User> user_res = userFacade.getUser(username);
         if (user_res.hadError())
             return new Response<>(user_res.getErrorMessage());
@@ -229,20 +268,32 @@ public class SystemImplementor implements SystemInterface {
     }
 
     public Response<Boolean> hasPurchaseService() {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
         return this.marketManagementFacade.hasPurchaseService();
     }
 
     public Response<Boolean> hasSupplyService() {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
         return this.marketManagementFacade.hasSupplyService();
     }
 
     @Override
     public Response<Boolean> hasPurchaseService(String purchase_service_name) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
         return this.marketManagementFacade.hasPurchaseService(purchase_service_name);
     }
 
     @Override
     public Response<Boolean> hasSupplyService(String purchase_supply_name) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
         return this.marketManagementFacade.hasSupplyService(purchase_supply_name);
     }
 }
