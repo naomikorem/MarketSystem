@@ -17,13 +17,13 @@ public class Store {
 
     public Store(String founder, String store_name, int id) {
         this.founder = founder;
-        setName(store_name);
         this.open = true;
         this.id = id;
         this.owners = new HashMap<>();
         this.managers = new HashMap<>();
         this.items = new HashMap<>();
         owners.put(founder, null);
+        setName(store_name);
     }
 
     public boolean isOwner(String name) {
@@ -43,7 +43,7 @@ public class Store {
     }
 
     public void setName(String store_name) {
-        if(!isOpen()){
+        if (!isOpen()) {
             LogUtility.error("tried to change store name for a closed store");
             throw new IllegalArgumentException("This store is closed");
         }
@@ -59,22 +59,11 @@ public class Store {
     }
 
     public void setIsOpen(String username, boolean is_open) {
-        if(!this.founder.equals(username)){
-            LogUtility.error("someone who isn't the store founder tried to close the store");
+        if (!this.founder.equals(username)) {
+            LogUtility.error(String.format("someone who isn't the store founder tried to close the store store id %s", getStoreId()));
             throw new IllegalArgumentException("someone who isn't the store founder tried to close the store");
         }
-        if(!is_open){
-            updateManagersAndOwners();
-        }
         this.open = is_open;
-    }
-
-    @TODO
-    /**
-     * update managers and owners that the store is getting closed
-     */
-    private void updateManagersAndOwners() {
-        return;
     }
 
     public int getStoreId() {
@@ -98,7 +87,7 @@ public class Store {
     }
 
     public void addManager(String givenBy, String manager) {
-        if(!isOpen()){
+        if (!isOpen()) {
             LogUtility.error("tried to add a manger for a closed store");
             throw new IllegalArgumentException("This store is closed");
         }
@@ -106,38 +95,39 @@ public class Store {
     }
 
     public void addOwner(String givenBy, String newOwner) {
-        if(!isOpen()){
+        if (!isOpen()) {
             LogUtility.error("tried to add owner for a closed store");
             throw new IllegalArgumentException("This store is closed");
         }
         this.owners.put(newOwner, givenBy);
     }
 
-    public Set<Item> getItemsWithNameContains(String name){
-        if(!isOpen()){
+    public Set<Item> getItemsWithNameContains(String name) {
+        if (!isOpen()) {
             LogUtility.error("tried to get item from a closed store");
             throw new IllegalArgumentException("This store is closed");
         }
-        return items.keySet().stream().filter((x)->x.isNameContains(name)).collect(Collectors.toSet());
+        return items.keySet().stream().filter((x) -> x.isNameContains(name)).collect(Collectors.toSet());
     }
 
-    public Set<Item> getItemsWithKeyWords(List<String> kws){
-        if(!isOpen()){
+    public Set<Item> getItemsWithKeyWords(List<String> kws) {
+        if (!isOpen()) {
             LogUtility.error("tried to get item from a closed store");
             throw new IllegalArgumentException("This store is closed");
         }
-        return items.keySet().stream().filter((x)->x.hasKeyWords(kws)).collect(Collectors.toSet());
+        return items.keySet().stream().filter((x) -> x.hasKeyWords(kws)).collect(Collectors.toSet());
     }
-    public Set<Item> getItemsWithCategory(Category category){
-        if(!isOpen()){
+
+    public Set<Item> getItemsWithCategory(Category category) {
+        if (!isOpen()) {
             LogUtility.error("tried to get item from a closed store");
             throw new IllegalArgumentException("This store is closed");
         }
-        return items.keySet().stream().filter((x)->x.getCategory().equals(category)).collect(Collectors.toSet());
+        return items.keySet().stream().filter((x) -> x.getCategory().equals(category)).collect(Collectors.toSet());
     }
 
     public Item getItemById(int id) {
-        if(!isOpen()){
+        if (!isOpen()) {
             LogUtility.error("tried to get item from a closed store");
             throw new IllegalArgumentException("This store is closed");
         }
@@ -145,7 +135,7 @@ public class Store {
     }
 
     public Item getItemAndDeduct(int itemId, int toDeduct) {
-        if(!isOpen()){
+        if (!isOpen()) {
             LogUtility.error("tried to get item from a closed store");
             throw new IllegalArgumentException("This store is closed");
         }
@@ -165,7 +155,7 @@ public class Store {
     }
 
     public void addItem(Item item, int amount) {
-        if(!isOpen()){
+        if (!isOpen()) {
             LogUtility.error("tried to add item for a closed store");
             throw new IllegalArgumentException("This store is closed");
         }
@@ -175,7 +165,7 @@ public class Store {
     }
 
     public void changePermission(String manager, byte permission) {
-        if(!isOpen()){
+        if (!isOpen()) {
             LogUtility.error("tried to change permissions for a closed store");
             throw new IllegalArgumentException("This store is closed");
         }
