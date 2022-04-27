@@ -88,12 +88,33 @@ public class SystemImplementor implements SystemInterface {
     }
 
     @Override
-    public Response<Boolean> addManager(User owner, String manager, int storeId) {
+    public Response<Boolean> addManager(String manager, int storeId) {
         try {
             if (userFacade.isExist(manager)) {
                 throw new IllegalArgumentException(String.format("There is no user by the name of %s", manager));
             }
-            return storeFacade.addManager(owner, manager, storeId);
+            return storeFacade.addManager(user, manager, storeId);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    @Override
+    public Response<Boolean> addOwner(String owner, int storeId) {
+        try {
+            if (userFacade.isExist(owner)) {
+                throw new IllegalArgumentException(String.format("There is no user by the name of %s", owner));
+            }
+            return storeFacade.addOwner(user, owner, storeId);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    @Override
+    public Response<Boolean> setManagerPermission(String manager, int storeId, byte permission) {
+        try {
+            return storeFacade.setManagerPermission(user, manager, storeId, permission);
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }

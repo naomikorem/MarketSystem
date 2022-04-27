@@ -41,7 +41,11 @@ public interface SystemInterface {
 
     public Response<List<Item>> getShoppingCartItems();
 
-    public Response<Boolean> addManager(User owner, String manager, int storeId);
+    public Response<Boolean> addManager(String manager, int storeId);
+
+    Response<Boolean> addOwner(String owner, int storeId);
+
+    Response<Boolean> setManagerPermission(String manager, int storeId, byte permission);
 
     public Response<Collection<Store>> getAllStores();
 

@@ -76,7 +76,7 @@ public class StoreController {
         if (s == null) {
             throw new IllegalArgumentException(String.format("There is no store with id: %s", storeId));
         }
-        if (!s.canAddItems(manager.getName())) {
+        if (!s.canManageItems(manager.getName())) {
             throw new LogException("You cannot add items to this store", String.format("User %s tried to add an item to a store that they do not manager", manager));
         }
         Item i = new Item(name, Category.valueOf(category), price);
@@ -123,6 +123,21 @@ public class StoreController {
         return true;
     }
 
+    public boolean addOwner(User owner, String newOwner, int storeId) {
+        Store s = storeController.getStore(storeId);
+        if (s == null) {
+            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
+        }
+        if (!owner.isLoggedIn() || !s.canAssignOwner(owner.getName())) {
+            throw new IllegalArgumentException("This user cannot assign another user to be an owner");
+        }
+        if (!s.canBecomeOwner(newOwner)) {
+            throw new IllegalArgumentException(String.format("%s cannot be promoted to be a an owner of the store with store id %s", newOwner, storeId));
+        }
+        s.addOwner(owner.getName(), newOwner);
+        return true;
+    }
+
     public Item returnItemToStore(int storeId, Item item, int amount) {
         Store s = getStore(storeId);
         if (s == null) {
@@ -134,6 +149,17 @@ public class StoreController {
 
     public boolean isShopOwner(Store store, String shopOwnerName){
         return stores.get(store.getStoreId()).isOwner(shopOwnerName);
+    }
+
+    public void setManagerPermission(User owner, String manager, int storeId, byte permission) {
+        Store s = storeController.getStore(storeId);
+        if (s == null) {
+            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
+        }
+        if (!owner.isLoggedIn() || !s.isOwner(owner.getName())) {
+            throw new IllegalArgumentException("This user cannot assign a manager");
+        }
+        s.changePermission(manager, permission);
     }
     
 }
