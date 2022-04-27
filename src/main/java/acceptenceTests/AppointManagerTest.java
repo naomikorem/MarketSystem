@@ -1,26 +1,24 @@
 package acceptenceTests;
 
 import DomainLayer.Response;
-import DomainLayer.StoreFacade;
 import DomainLayer.Stores.Store;
 import DomainLayer.Stores.StoreController;
 import DomainLayer.Users.User;
 import DomainLayer.Users.UserController;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertTrue;
 
-public class AppointManager extends AbstractTest {
+public class AppointManagerTest extends AbstractTest {
 
     private User user1, user2, manager;
     private Store store;
     private Response<Boolean> r1,r2;
 
-    public AppointManager() {
+    public AppointManagerTest() {
         super();
     }
 
