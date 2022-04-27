@@ -1,4 +1,4 @@
-package DomainLayer.SystemManagement.SupplyServices;
+package DomainLayer.SystemManagement.ExternalServices.SupplyServices;
 
 import DomainLayer.Stores.Item;
 

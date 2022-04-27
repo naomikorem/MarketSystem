@@ -1,9 +1,6 @@
-package DomainLayer.SystemManagement.PurchaseServices;
+package DomainLayer.SystemManagement.ExternalServices.PurchaseServices;
 
-import DomainLayer.SystemManagement.AbstractServiceProxy;
-
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import DomainLayer.SystemManagement.ExternalServices.AbstractServiceProxy;
 
 /*public class PurchaseProxy
 {

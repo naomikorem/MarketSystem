@@ -1,4 +1,4 @@
-package DomainLayer.SystemManagement.PurchaseServices;
+package DomainLayer.SystemManagement.ExternalServices.PurchaseServices;
 
 public class StubPurchaseService implements IExternalPurchaseService
 {

@@ -1,15 +1,10 @@
-package DomainLayer.SystemManagement.SupplyServices;
+package DomainLayer.SystemManagement.ExternalServices.SupplyServices;
 
 import DomainLayer.Stores.Item;
-import DomainLayer.SystemManagement.AbstractServiceProxy;
-import DomainLayer.SystemManagement.PurchaseServices.IExternalPurchaseService;
-import DomainLayer.SystemManagement.PurchaseServices.StubPurchaseService;
+import DomainLayer.SystemManagement.ExternalServices.AbstractServiceProxy;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /*public class SupplyProxy
 {

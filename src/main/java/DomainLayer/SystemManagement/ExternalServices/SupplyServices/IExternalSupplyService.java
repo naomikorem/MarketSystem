@@ -1,7 +1,7 @@
-package DomainLayer.SystemManagement.SupplyServices;
+package DomainLayer.SystemManagement.ExternalServices.SupplyServices;
 
 import DomainLayer.Stores.Item;
-import DomainLayer.SystemManagement.AbstractExternalService;
+import DomainLayer.SystemManagement.ExternalServices.AbstractExternalService;
 
 import java.util.List;
 import java.util.Map;

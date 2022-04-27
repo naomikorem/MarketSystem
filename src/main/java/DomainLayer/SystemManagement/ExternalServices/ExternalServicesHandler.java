@@ -1,8 +1,8 @@
-package DomainLayer.SystemManagement;
+package DomainLayer.SystemManagement.ExternalServices;
 
 import DomainLayer.Stores.Item;
-import DomainLayer.SystemManagement.PurchaseServices.PurchaseProxy;
-import DomainLayer.SystemManagement.SupplyServices.SupplyProxy;
+import DomainLayer.SystemManagement.ExternalServices.PurchaseServices.PurchaseProxy;
+import DomainLayer.SystemManagement.ExternalServices.SupplyServices.SupplyProxy;
 
 import java.util.List;
 import java.util.Map;

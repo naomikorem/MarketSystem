@@ -1,13 +1,14 @@
-package acceptenceTests;
+package acceptenceTests.ExternalServicesTests;
 
 import DomainLayer.Response;
+import acceptenceTests.AbstractTest;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public abstract class AbstractEditExternalTest extends AbstractTest{
+public abstract class AbstractEditExternalTest extends AbstractTest {
     private final String new_service_name;
     private final String new_service_name_2;
 

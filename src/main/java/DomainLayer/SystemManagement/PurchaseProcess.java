@@ -1,6 +1,7 @@
 package DomainLayer.SystemManagement;
 
 import DomainLayer.Stores.Item;
+import DomainLayer.SystemManagement.ExternalServices.ExternalServicesHandler;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 

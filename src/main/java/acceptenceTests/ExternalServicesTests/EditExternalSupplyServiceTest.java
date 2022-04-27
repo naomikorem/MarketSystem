@@ -1,4 +1,4 @@
-package acceptenceTests;
+package acceptenceTests.ExternalServicesTests;
 
 import DomainLayer.Response;
 

@@ -1,4 +1,4 @@
-package DomainLayer.SystemManagement;
+package DomainLayer.SystemManagement.ExternalServices;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,7 +22,7 @@ public abstract class AbstractServiceProxy<T extends AbstractExternalService>
         synchronized (services) {
             if (services.size() == 1)
             {
-                throw new IllegalArgumentException("cannot remove the purchase service " + service_name + " because it is the last connection to purchase service in the system.");
+                throw new IllegalArgumentException("cannot remove the service " + service_name + " because it is the last connection to service in the system from this category.");
             }
 
             if (!services.containsKey(service_name))

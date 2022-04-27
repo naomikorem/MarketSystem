@@ -1,6 +1,7 @@
 package DomainLayer.SystemManagement;
 
 import DomainLayer.Response;
+import DomainLayer.SystemManagement.ExternalServices.ExternalServicesHandler;
 import DomainLayer.Users.User;
 
 public class MarketManagementFacade
