@@ -1,25 +1,36 @@
 package acceptenceTests;
 
 import DomainLayer.Response;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class EditExternalServices extends AbstractTest {
-    private final String new_service_purchase_name;
-    private final String new_service2_purchase_name;
+public class EditExternalPurchaseServicesTest extends AbstractEditExternalTest /*AbstractTest*/ {
+    //private final String new_service_purchase_name;
+    //private final String new_service2_purchase_name;
 
-    public EditExternalServices() {
+    public EditExternalPurchaseServicesTest() {
         super();
-        this.new_service_purchase_name = "some external service";
-        this.new_service2_purchase_name = "some external service2";
+       // this.new_service_purchase_name = "some external service";
+       // this.new_service2_purchase_name = "some external service2";
     }
 
-    @Before
+    @Override
+    protected Response<Boolean> hasService(String service_name) {
+        return bridge.hasPurchaseService(service_name);
+    }
+
+    @Override
+    protected Response<Boolean> addExternalService(String service_name) {
+        return bridge.addExternalPurchaseService(service_name);
+    }
+
+    @Override
+    protected Response<Boolean> removeExternalService(String service_name) {
+        return bridge.removeExternalPurchaseService(service_name);
+    }
+
+    /*@Before
     public void setup()
     {
         Response<Boolean> has_purchase_service = bridge.hasPurchaseService(new_service_purchase_name);
@@ -44,7 +55,7 @@ public class EditExternalServices extends AbstractTest {
         assertFalse(add_purchase_service_response.hadError());
         assertTrue(add_purchase_service_response.getObject());
 
-        // not valid case
+        // not valid case - add the same service twice
         assertTrue(bridge.addExternalPurchaseService(new_service2_purchase_name).hadError());
 
         // restore previous state
@@ -52,7 +63,7 @@ public class EditExternalServices extends AbstractTest {
         assertFalse(remove_purchase_service_response.hadError());
         assertTrue(remove_purchase_service_response.getObject());
 
-        // not valid case
+        // not valid case - remove the same service twice
         assertTrue(bridge.removeExternalPurchaseService(new_service2_purchase_name).hadError());
     }
 
@@ -63,8 +74,9 @@ public class EditExternalServices extends AbstractTest {
         assertFalse(has_purchase_service.hadError());
         assertTrue(has_purchase_service.getObject());
 
-        // not valid case
+        // not valid case - remove last service in the system
         assertTrue(bridge.removeExternalPurchaseService(new_service_purchase_name).hadError());
-    }
+    }*/
+
 
 }

@@ -1,9 +1,11 @@
 package DomainLayer.SystemManagement.PurchaseServices;
 
+import DomainLayer.SystemManagement.AbstractServiceProxy;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class PurchaseProxy
+/*public class PurchaseProxy
 {
     private final ConcurrentHashMap<String, IExternalPurchaseService> services = new ConcurrentHashMap<String, IExternalPurchaseService>();
 
@@ -46,6 +48,26 @@ public class PurchaseProxy
     public boolean hasService(String purchase_service_name)
     {
         return services.containsKey(purchase_service_name);
+    }
+
+    public boolean pay(double price, String purchase_service_name)
+    {
+        synchronized (services) {
+            if (!services.containsKey(purchase_service_name))
+                throw new IllegalArgumentException("The service with the name " + purchase_service_name + " does not exists in the system.");
+
+            return services.get(purchase_service_name).pay(price);
+        }
+    }
+}*/
+
+public class PurchaseProxy extends AbstractServiceProxy<IExternalPurchaseService>
+{
+    @Override
+    protected IExternalPurchaseService ServiceFactory(String name) {
+        return new StubPurchaseService(name);
+
+        // TODO: should we know all the services in advance?
     }
 
     public boolean pay(double price, String purchase_service_name)

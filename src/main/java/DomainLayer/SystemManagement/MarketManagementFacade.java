@@ -102,7 +102,7 @@ public class MarketManagementFacade
     public Response<Boolean> hasSupplyService()
     {
         try {
-            return new Response<>(this.services.hasPurchaseService());
+            return new Response<>(this.services.hasSupplyService());
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
@@ -121,7 +121,7 @@ public class MarketManagementFacade
     public Response<Boolean> hasSupplyService(String supply_service_name)
     {
         try {
-            return new Response<>(this.services.hasPurchaseService(supply_service_name));
+            return new Response<>(this.services.hasSupplyService(supply_service_name));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }

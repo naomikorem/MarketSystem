@@ -38,6 +38,11 @@ public class Real extends Bridge {
     }
 
     @Override
+    public Response<Boolean> removeExternalSupplyService(String name) {
+        return this.adaptee.removeExternalSupplyService(name);
+    }
+
+    @Override
     public Response<Boolean> purchaseShoppingCart(String username, String address, String purchase_service_name, String supply_service_name) {
         return this.adaptee.purchaseShoppingCart(username, address, purchase_service_name, supply_service_name);
     }

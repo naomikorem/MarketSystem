@@ -168,6 +168,11 @@ public class SystemImplementor implements SystemInterface {
         return this.marketManagementFacade.removeExternalPurchaseService(name);
     }
 
+    @Override
+    public Response<Boolean> removeExternalSupplyService(String name) {
+        return this.marketManagementFacade.removeExternalSupplyService(name);
+    }
+
     public Response<Boolean> purchaseShoppingCart(String username, String address, String purchase_service_name, String supply_service_name) {
         Response<User> user_res = userFacade.getUser(username);
         if (user_res.hadError())

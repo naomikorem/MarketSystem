@@ -48,6 +48,14 @@ public class Proxy extends Bridge {
     }
 
     @Override
+    public Response<Boolean> removeExternalSupplyService(String name) {
+        if (this.real != null) {
+            return real.removeExternalSupplyService(name);
+        }
+        return null;
+    }
+
+    @Override
     public Response<Boolean> purchaseShoppingCart(String username, String address, String purchase_service_name, String supply_service_name) {
         if (this.real != null) {
             return real.purchaseShoppingCart(username, address, purchase_service_name, supply_service_name);

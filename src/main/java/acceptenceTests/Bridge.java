@@ -15,6 +15,7 @@ public abstract class Bridge {
     public abstract Response<Boolean> addExternalPurchaseService(String name);
     public abstract Response<Boolean> addExternalSupplyService(String name);
     public abstract Response<Boolean> removeExternalPurchaseService(String name);
+    public abstract Response<Boolean> removeExternalSupplyService(String name);
     public abstract Response<Boolean> purchaseShoppingCart(String username, String address, String purchase_service_name, String supply_service_name);
     public abstract Response<Boolean> hasPurchaseService();
     public abstract Response<Boolean> hasSupplyService();

@@ -17,6 +17,8 @@ public interface SystemInterface {
 
     public Response<Boolean> removeExternalPurchaseService(String name);
 
+    public Response<Boolean> removeExternalSupplyService(String name);
+
     public Response<Boolean> purchaseShoppingCart(String username, String address, String purchase_service_name, String supply_service_name);
 
     public Response<Boolean> hasPurchaseService();

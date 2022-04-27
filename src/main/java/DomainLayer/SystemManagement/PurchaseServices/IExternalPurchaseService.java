@@ -1,6 +1,8 @@
 package DomainLayer.SystemManagement.PurchaseServices;
 
-public interface IExternalPurchaseService
+import DomainLayer.SystemManagement.AbstractExternalService;
+
+public interface IExternalPurchaseService extends AbstractExternalService
 {
     boolean pay(double amount);
 }

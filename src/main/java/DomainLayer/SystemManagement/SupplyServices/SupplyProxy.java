@@ -1,6 +1,7 @@
 package DomainLayer.SystemManagement.SupplyServices;
 
 import DomainLayer.Stores.Item;
+import DomainLayer.SystemManagement.AbstractServiceProxy;
 import DomainLayer.SystemManagement.PurchaseServices.IExternalPurchaseService;
 import DomainLayer.SystemManagement.PurchaseServices.StubPurchaseService;
 
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class SupplyProxy
+/*public class SupplyProxy
 {
     private final ConcurrentHashMap<String, IExternalSupplyService> services = new ConcurrentHashMap<String, IExternalSupplyService>();
 
@@ -51,6 +52,25 @@ public class SupplyProxy
     public boolean hasService(String supply_service_name)
     {
         return services.containsKey(supply_service_name);
+    }
+
+    public boolean supply(String address, List<Map.Entry<Item, Integer>> items, String supply_service_name)
+    {
+        if(!services.containsKey(supply_service_name))
+            throw new IllegalArgumentException("The service with the name " + supply_service_name + " does not exists in the system.\n");
+
+        return services.get(supply_service_name).supply(address, items);
+    }
+}*/
+
+public class SupplyProxy extends AbstractServiceProxy<IExternalSupplyService>
+{
+
+    @Override
+    protected IExternalSupplyService ServiceFactory(String name) {
+        return new StubSupplyService(name);
+
+        // TODO: should we know all the services in advance?
     }
 
     public boolean supply(String address, List<Map.Entry<Item, Integer>> items, String supply_service_name)
