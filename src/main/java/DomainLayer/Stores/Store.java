@@ -173,7 +173,7 @@ public class Store {
             LogUtility.error("tried to add item for a closed store");
             throw new IllegalArgumentException("This store is closed");
         }
-        if(!isManager(userName) && !isOwner(userName)) {
+        if(!canManageItems(userName)) {
             LogUtility.error("A user that isn't the store owner/manger tried to remove items");
             throw new IllegalArgumentException("This store is closed");
         }
