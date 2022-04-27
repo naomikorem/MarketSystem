@@ -1,6 +1,7 @@
 package DomainLayer.Users;
 
 import DomainLayer.Stores.StoreController;
+import Utility.LogUtility;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -26,6 +27,7 @@ public class AdminController {
                 return false;
             }
             admins.add(name);
+            LogUtility.info(String.format("Admin %s was added", name));
             return true;
         }
     }
@@ -45,6 +47,7 @@ public class AdminController {
                 admins.remove(name);
                 return true;
             }
+            LogUtility.info(String.format("Admin %s was removed", name));
             return false;
         }
     }
