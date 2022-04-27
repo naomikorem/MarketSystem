@@ -17,6 +17,10 @@ public class User {
         return state.getName();
     }
 
+    public String getEmail() {
+        return state.getEmail();
+    }
+
     public boolean isRegistered() {
         return state.isRegistered();
     }
@@ -42,5 +46,13 @@ public class User {
 
     public void setState(UserState state) {
         this.state = state;
+    }
+
+    public void setName(String name){
+        this.state.setName(name);
+    }
+
+    public void setEmail(String email){
+        this.state.setEmail(email);
     }
 }

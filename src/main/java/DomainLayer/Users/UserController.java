@@ -115,8 +115,14 @@ public class UserController {
     public void setUserName(User user, String newName){
         if(user.isRegistered())
         {
-            user.
+            user.setName(newName);
         }
     }
 
+    public void setUserEmail(User user, String newEmail){
+        if(user.isRegistered())
+        {
+            user.setEmail(newEmail);
+        }
+    }
 }

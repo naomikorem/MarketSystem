@@ -7,6 +7,11 @@ public class GuestState implements UserState {
     }
 
     @Override
+    public String getEmail() {
+        throw new RuntimeException("Guest user does not have a name field");
+    }
+
+    @Override
     public boolean isRegistered() {
         return false;
     }
