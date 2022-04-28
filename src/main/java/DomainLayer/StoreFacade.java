@@ -160,4 +160,31 @@ public class StoreFacade {
             return new Response<>(e.getMessage());
         }
     }
+
+    public Response<Boolean> permanentlyCloseStore(int storeId) {
+        try {
+            storeController.permanentlyCloseStore(storeId);
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Boolean> removeOwner(User owner, String toRemove, int storeId) {
+        try {
+            storeController.removeOwner(owner, toRemove, storeId);
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Boolean> removeManager(User owner, String toRemove, int storeId) {
+        try {
+            storeController.removeManager(owner, toRemove, storeId);
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
 }

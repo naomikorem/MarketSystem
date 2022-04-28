@@ -17,11 +17,13 @@ public class Store {
     private Map<String, String> owners;
     private Map<String, Permission> managers;
     private Map<Item, Integer> items;
-    private Lock lock;
+    private final Lock lock;
+    private boolean permanentlyClosed;
 
     public Store(String founder, String store_name, int id) {
         this.founder = founder;
         this.open = true;
+        this.permanentlyClosed = false;
         this.id = id;
         this.owners = new HashMap<>();
         this.managers = new HashMap<>();
@@ -60,7 +62,7 @@ public class Store {
     }
 
     public boolean isOpen() {
-        return open;
+        return open && !permanentlyClosed;
     }
 
     public void setIsOpen(String username, boolean is_open) {
@@ -69,6 +71,10 @@ public class Store {
             throw new IllegalArgumentException("someone who isn't the store founder tried to close the store");
         }
         this.open = is_open;
+    }
+
+    public void setPermanentlyClosed(boolean closed) {
+        this.permanentlyClosed = closed;
     }
 
     public int getStoreId() {
@@ -97,12 +103,12 @@ public class Store {
                 LogUtility.error("tried to add a manger for a closed store");
                 throw new IllegalArgumentException("This store is closed");
             }
-            if(managers.containsKey(manager)||owners.containsKey(manager)){
+            if (managers.containsKey(manager) || owners.containsKey(manager)) {
                 LogUtility.error("tried to add a manger who is already a store-owner/ manager");
                 throw new IllegalArgumentException("This manger is already a store-owner/ manager");
             }
             this.managers.put(manager, new Permission(givenBy));
-            LogUtility.info(String.format("New manager for shop "+this.id+", the store manger is :"+ manager));
+            LogUtility.info(String.format("New manager for shop " + this.id + ", the store manger is :" + manager));
         }
     }
 
@@ -112,12 +118,12 @@ public class Store {
                 LogUtility.error("tried to add owner for a closed store");
                 throw new IllegalArgumentException("This store is closed");
             }
-            if(managers.containsKey(newOwner)||owners.containsKey(newOwner)) {
+            if (managers.containsKey(newOwner) || owners.containsKey(newOwner)) {
                 LogUtility.error("tried to add a manger who is already a store-owner/ manager");
                 throw new IllegalArgumentException("This manger is already a store-owner/ manager");
             }
             this.owners.put(newOwner, givenBy);
-            LogUtility.info(String.format("New store owner for shop "+this.id+", the store owner is :"+ newOwner));
+            LogUtility.info(String.format("New store owner for shop " + this.id + ", the store owner is :" + newOwner));
         }
     }
 
@@ -203,4 +209,32 @@ public class Store {
         return this.founder;
     }
 
+    public void removeStoreOwner(String removedBy, String owner) {
+        synchronized (lock) {
+            if (!owners.containsKey(owner) || !owners.get(owner).equals(removedBy)) {
+                throw new IllegalArgumentException(String.format("%s is not a store owner that was set by %s", owner, removedBy));
+            }
+            removeAndRemoveEveryoneAssignedBy(owner);
+        }
+    }
+
+    public void removeAndRemoveEveryoneAssignedBy(String user) {
+        synchronized (lock) {
+            owners.remove(user);
+            this.managers.entrySet().removeIf(entry -> entry.getValue().getGivenBy().equals(user));
+            //create new list so no concurrent modification exception
+            new ArrayList<>(this.owners.entrySet()).stream().filter(entry -> entry.getValue() != null  && entry.getValue().equals(user)).forEach(e -> {
+                removeAndRemoveEveryoneAssignedBy(e.getKey());
+            });
+        }
+    }
+
+    public void removeStoreManager(String removedBy, String manager) {
+        synchronized (lock) {
+            if (!managers.containsKey(manager) || !managers.get(manager).getGivenBy().equals(removedBy)) {
+                throw new IllegalArgumentException(String.format("%s is not a store manager that was set by %s", manager, removedBy));
+            }
+            managers.remove(manager);
+        }
+    }
 }

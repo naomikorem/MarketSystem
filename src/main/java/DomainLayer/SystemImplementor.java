@@ -2,6 +2,7 @@ package DomainLayer;
 
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
+import DomainLayer.Stores.TODO;
 import DomainLayer.SystemManagement.MarketManagementFacade;
 import DomainLayer.Users.GuestState;
 import DomainLayer.Users.ShoppingBasket;
@@ -12,6 +13,9 @@ import java.util.List;
 import java.util.Map;
 
 public class SystemImplementor implements SystemInterface {
+    @TODO
+    //move checks if user == null to the delegating class when sockets are added
+
     private StoreFacade storeFacade;
     private UserFacade userFacade;
     private MarketManagementFacade marketManagementFacade;
@@ -192,19 +196,32 @@ public class SystemImplementor implements SystemInterface {
     }
 
     @Override
-    public Response<Boolean> permanentlyCloseStore(String adminName, int storeId){
-        Response<Boolean> r1  = userFacade.isAdmin(adminName);
-        Response<Boolean> r2 = storeFacade.isExistStore(storeId);
-        if(r1.hadError()){
+    public Response<Boolean> permanentlyCloseStore(int storeId) {
+        if (user == null || !user.isRegistered()) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        Response<Boolean> r1 = userFacade.isAdmin(user.getName());
+        if (r1.hadError()) {
             return r1;
+        } else {
+            return storeFacade.permanentlyCloseStore(storeId);
         }
-        else if (r2.hadError()) {
-            return r2;
+    }
+
+    @Override
+    public Response<Boolean> removeOwner(String toRemove, int storeId) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
         }
-        else {
-            Store s = storeFacade.getStore(storeId).getObject();
-            return storeFacade.closeStore(userFacade.getUser(s.getFounder()).getObject(),storeId);
+        return storeFacade.removeOwner(user, toRemove, storeId);
+    }
+
+    @Override
+    public Response<Boolean> removeManager(String toRemove, int storeId) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
         }
+        return storeFacade.removeManager(user, toRemove, storeId);
     }
 
     @Override

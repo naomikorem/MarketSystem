@@ -59,7 +59,11 @@ public interface SystemInterface {
 
     public Response<Boolean> closeStore(int storeId);
 
-    public Response<Boolean> permanentlyCloseStore(String admin, int storeId);
+    public Response<Boolean> permanentlyCloseStore(int storeId);
+
+    Response<Boolean> removeOwner(String toRemove, int storeId);
+
+    Response<Boolean> removeManager(String toRemove, int storeId);
 
     public Response<Store> addNewStore(String name);
 

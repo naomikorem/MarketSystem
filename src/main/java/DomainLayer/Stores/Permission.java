@@ -39,4 +39,8 @@ public class Permission {
     public boolean canChangePurchase() {
         return (permissionsMask & PermissionEnum.canChangePurchase.flag) != 0;
     }
+
+    public String getGivenBy() {
+        return this.givenBy;
+    }
 }
