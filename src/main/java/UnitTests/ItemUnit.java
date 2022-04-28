@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class ItemUnit extends AbstractTest {
-    private User user;
+
     private static Store s;
     private static Item i1;
     private static Item i2;
