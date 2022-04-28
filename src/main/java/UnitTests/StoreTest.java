@@ -8,15 +8,14 @@ import acceptenceTests.AbstractTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.function.ThrowingRunnable;
 
 import static org.junit.Assert.*;
 
-public class Store extends AbstractTest {
+public class StoreTest extends AbstractTest {
 
     private User user;
 
-    public Store() {
+    public StoreTest() {
         super();
     }
 
