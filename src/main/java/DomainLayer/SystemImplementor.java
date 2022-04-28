@@ -202,7 +202,7 @@ public class SystemImplementor implements SystemInterface {
             return r2;
         }
         else {
-            return storeFacade.closeStore(userFacade.getUser(storeFacade.getStore(storeId).getFounder()),storeId);
+            return storeFacade.closeStore(userFacade.getUser(storeFacade.getStore(storeId).getObject().getFounder()),storeId);
         }
     }
 

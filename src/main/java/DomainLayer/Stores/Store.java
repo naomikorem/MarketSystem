@@ -199,4 +199,8 @@ public class Store {
         p.setPermissionsMask(permission);
     }
 
+    public String getFounder(){
+        return this.founder;
+    }
+
 }

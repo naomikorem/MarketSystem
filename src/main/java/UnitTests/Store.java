@@ -13,7 +13,7 @@ import org.junit.function.ThrowingRunnable;
 import static org.junit.Assert.*;
 
 public class Store extends AbstractTest {
-    private Response<User> r1, r2;
+
     private User user;
 
     public Store() {
