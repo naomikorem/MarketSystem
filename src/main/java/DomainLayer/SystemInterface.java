@@ -68,4 +68,6 @@ public interface SystemInterface {
     public Response<Store> addNewStore(String name);
 
     public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount);
+
+    Response<Boolean> deleteUser(String name);
 }

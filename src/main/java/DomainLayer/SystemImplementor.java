@@ -45,7 +45,7 @@ public class SystemImplementor implements SystemInterface {
     @Override
     public Response<Boolean> exit() {
         try {
-            if (this.user != null && this.user.isRegistered()) {
+            if (this.user != null && this.user.isSubscribed()) {
                 logout();
             } else {
                 clearShoppingCart();
@@ -70,7 +70,7 @@ public class SystemImplementor implements SystemInterface {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
-        if (user.isRegistered()) {
+        if (user.isSubscribed()) {
             return new Response<>("You have to log out before attempting to log in to a user.");
         }
         Response<User> r = userFacade.login(name, password);
@@ -82,7 +82,7 @@ public class SystemImplementor implements SystemInterface {
 
     @Override
     public Response<Boolean> logout() {
-        if (this.user == null || !this.user.isRegistered()) {
+        if (this.user == null || !this.user.isSubscribed()) {
             return new Response<>("You have to be logged in to perform this action.");
         }
         Response<Boolean> res = userFacade.logout(user.getName());
@@ -106,7 +106,7 @@ public class SystemImplementor implements SystemInterface {
             if (!userFacade.isExist(manager)) {
                 throw new IllegalArgumentException(String.format("There is no user by the name of %s", manager));
             }
-            return storeFacade.addManager(user, manager, storeId);
+            return storeFacade.addManager(user, userFacade.getUser(manager).getObject(), storeId);
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
@@ -118,7 +118,7 @@ public class SystemImplementor implements SystemInterface {
             if (!userFacade.isExist(owner)) {
                 throw new IllegalArgumentException(String.format("There is no user by the name of %s", owner));
             }
-            return storeFacade.addOwner(user, owner, storeId);
+            return storeFacade.addOwner(user, userFacade.getUser(owner).getObject(), storeId);
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
@@ -197,11 +197,11 @@ public class SystemImplementor implements SystemInterface {
 
     @Override
     public Response<Boolean> permanentlyCloseStore(int storeId) {
-        if (user == null || !user.isRegistered()) {
+        if (user == null || !user.isSubscribed()) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
         Response<Boolean> r1 = userFacade.isAdmin(user.getName());
-        if (r1.hadError()) {
+        if (r1.hadError() || !r1.getObject()) {
             return r1;
         } else {
             return storeFacade.permanentlyCloseStore(storeId);
@@ -213,7 +213,11 @@ public class SystemImplementor implements SystemInterface {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
-        return storeFacade.removeOwner(user, toRemove, storeId);
+        Response<User> r = userFacade.getUser(toRemove);
+        if (r.hadError()) {
+            return new Response<>(r.getErrorMessage());
+        }
+        return storeFacade.removeOwner(user, r.getObject(), storeId);
     }
 
     @Override
@@ -221,7 +225,11 @@ public class SystemImplementor implements SystemInterface {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
-        return storeFacade.removeManager(user, toRemove, storeId);
+        Response<User> r = userFacade.getUser(toRemove);
+        if (r.hadError()) {
+            return new Response<>(r.getErrorMessage());
+        }
+        return storeFacade.removeManager(user, r.getObject(), storeId);
     }
 
     @Override
@@ -328,5 +336,25 @@ public class SystemImplementor implements SystemInterface {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
         return this.marketManagementFacade.hasSupplyService(purchase_supply_name);
+    }
+
+    @Override
+    public Response<Boolean> deleteUser(String name) {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("You must be logged in in order to perform this action");
+        }
+        Response<Boolean> r = userFacade.isAdmin(user.getName());
+        if (r.hadError() || !r.getObject()) {
+            return new Response<>("Only admin users can perform this action");
+        }
+        Response<User> userResponse = userFacade.getUser(name);
+        if (userResponse.hadError()) {
+            return new Response<>(userResponse.getErrorMessage());
+        }
+        Response<Boolean> responseRemoveRoles = storeFacade.removeUserRoles(user, userResponse.getObject());
+        if (responseRemoveRoles.hadError()) {
+            return responseRemoveRoles;
+        }
+        return userFacade.removeUser(user.getName(), name);
     }
 }

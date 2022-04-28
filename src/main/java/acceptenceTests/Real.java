@@ -134,6 +134,16 @@ public class Real extends Bridge {
     }
 
     @Override
+    public Response<Boolean> addOwner(String owner, int storeId) {
+        return adaptee.addOwner(owner, storeId);
+    }
+
+    @Override
+    public Response<Boolean> removeOwner(String toRemove, int storeId) {
+        return adaptee.removeOwner(toRemove, storeId);
+    }
+
+    @Override
     public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount) {
         return adaptee.addItemToStore(storeId, name, category, price, amount);
     }

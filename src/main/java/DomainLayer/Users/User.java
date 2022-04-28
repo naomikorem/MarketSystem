@@ -3,6 +3,7 @@ package DomainLayer.Users;
 import DomainLayer.Stores.Item;
 
 import java.util.List;
+import java.util.Set;
 
 public class User {
     private UserState state;
@@ -21,8 +22,8 @@ public class User {
         return state.getEmail();
     }
 
-    public boolean isRegistered() {
-        return state.isRegistered();
+    public boolean isSubscribed() {
+        return state.isSubscribed();
     }
 
     public boolean login(String password) {
@@ -54,5 +55,29 @@ public class User {
 
     public void setEmail(String email){
         this.state.setEmail(email);
+    }
+
+    public void addManagedStore(int storeId) {
+        this.state.addManagedStore(storeId);
+    }
+
+    public void addOwnedStore(int storeId) {
+        this.state.addOwnedStore(storeId);
+    }
+
+    public void removedManagedStore(int storeId) {
+        this.state.removeManagedStore(storeId);
+    }
+
+    public void removedOwnedStore(int storeId) {
+        this.state.removeOwnedStore(storeId);
+    }
+
+    public Set<Integer> getManagedStores() {
+        return this.state.getManagedStores();
+    }
+
+    public Set<Integer> getOwnedStores() {
+        return this.state.getOwnedStores();
     }
 }

@@ -65,4 +65,13 @@ public class UserFacade {
     public Response<Boolean> removeAdmin(String name) {
         return adminFacade.removeAdmin(name);
     }
+
+    public Response<Boolean> removeUser(String removedBy, String name) {
+        try {
+            userController.removeUser(removedBy, name);
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
 }

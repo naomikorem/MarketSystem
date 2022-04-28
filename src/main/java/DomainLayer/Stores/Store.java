@@ -1,5 +1,6 @@
 package DomainLayer.Stores;
 
+import DomainLayer.Users.User;
 import Exceptions.LogException;
 import Utility.LogUtility;
 
@@ -14,14 +15,14 @@ public class Store {
     private boolean open;
     private int id;
     private String founder;
-    private Map<String, String> owners;
-    private Map<String, Permission> managers;
+    private Map<User, String> owners;
+    private Map<User, Permission> managers;
     private Map<Item, Integer> items;
     private final Lock lock;
     private boolean permanentlyClosed;
 
-    public Store(String founder, String store_name, int id) {
-        this.founder = founder;
+    public Store(User founder, String store_name, int id) {
+        this.founder = founder.getName();
         this.open = true;
         this.permanentlyClosed = false;
         this.id = id;
@@ -30,19 +31,28 @@ public class Store {
         this.items = new HashMap<>();
         this.lock = new ReentrantLock();
         owners.put(founder, null);
+        founder.addOwnedStore(getStoreId());
         setName(store_name);
     }
 
+    public boolean isOwner(User u) {
+        return this.owners.containsKey(u);
+    }
+
     public boolean isOwner(String name) {
-        return owners.containsKey(name);
+        return owners.entrySet().stream().filter(e -> e.getKey().getName().equals(name)).findFirst().orElse(null) != null;
+    }
+
+    public boolean isManager(User user) {
+        return managers.containsKey(user);
     }
 
     public boolean isManager(String name) {
-        return managers.containsKey(name);
+        return managers.entrySet().stream().filter(e -> e.getKey().getName().equals(name)).findFirst().orElse(null) != null;
     }
 
-    public boolean canManageItems(String name) {
-        return isOwner(name) || (isManager(name) && managers.get(name).canChangeItems());
+    public boolean canManageItems(User user) {
+        return isOwner(user) || (isManager(user) && managers.get(user).canChangeItems());
     }
 
     public String getName() {
@@ -81,15 +91,15 @@ public class Store {
         return id;
     }
 
-    public boolean canBecomeManager(String user) {
+    public boolean canBecomeManager(User user) {
         return !managers.containsKey(user);
     }
 
-    public boolean canAssignManager(String user) {
+    public boolean canAssignManager(User user) {
         return isOwner(user) || (isManager(user) && managers.get(user).canAssignManager());
     }
 
-    public boolean canBecomeOwner(String user) {
+    public boolean canBecomeOwner(User user) {
         return !owners.containsKey(user);
     }
 
@@ -97,7 +107,7 @@ public class Store {
         return isOwner(user);
     }
 
-    public void addManager(String givenBy, String manager) {
+    public void addManager(String givenBy, User manager) {
         synchronized (lock) {
             if (!isOpen()) {
                 LogUtility.error("tried to add a manger for a closed store");
@@ -108,11 +118,12 @@ public class Store {
                 throw new IllegalArgumentException("This manger is already a store-owner/ manager");
             }
             this.managers.put(manager, new Permission(givenBy));
-            LogUtility.info(String.format("New manager for shop " + this.id + ", the store manger is :" + manager));
+            manager.addManagedStore(getStoreId());
+            LogUtility.info("New manager for shop " + this.id + ", the store manger is :" + manager.getName());
         }
     }
 
-    public void addOwner(String givenBy, String newOwner) {
+    public void addOwner(String givenBy, User newOwner) {
         synchronized (lock) {
             if (!isOpen()) {
                 LogUtility.error("tried to add owner for a closed store");
@@ -123,7 +134,8 @@ public class Store {
                 throw new IllegalArgumentException("This manger is already a store-owner/ manager");
             }
             this.owners.put(newOwner, givenBy);
-            LogUtility.info(String.format("New store owner for shop " + this.id + ", the store owner is :" + newOwner));
+            newOwner.addOwnedStore(getStoreId());
+            LogUtility.info("New store owner for shop " + this.id + ", the store owner is :" + newOwner.getName());
         }
     }
 
@@ -193,12 +205,20 @@ public class Store {
         }
     }
 
+    private User getManagerByName(String name) {
+        return this.managers.entrySet().stream().filter(e -> e.getKey().getName().equals(name)).findFirst().map(Map.Entry::getKey).orElse(null);
+    }
+
+    private Permission getPermissionByName(String name) {
+        return this.managers.entrySet().stream().filter(e -> e.getKey().getName().equals(name)).findFirst().map(Map.Entry::getValue).orElse(null);
+    }
+
     public void changePermission(String manager, byte permission) {
         if (!isOpen()) {
             LogUtility.error("tried to change permissions for a closed store");
             throw new IllegalArgumentException("This store is closed");
         }
-        Permission p = managers.getOrDefault(manager, null);
+        Permission p = getPermissionByName(manager);
         if (p == null) {
             throw new IllegalArgumentException(String.format("%s is not a manager in the store", manager));
         }
@@ -209,7 +229,7 @@ public class Store {
         return this.founder;
     }
 
-    public void removeStoreOwner(String removedBy, String owner) {
+    public void removeStoreOwner(String removedBy, User owner) {
         synchronized (lock) {
             if (!owners.containsKey(owner) || !owners.get(owner).equals(removedBy)) {
                 throw new IllegalArgumentException(String.format("%s is not a store owner that was set by %s", owner, removedBy));
@@ -218,23 +238,25 @@ public class Store {
         }
     }
 
-    public void removeAndRemoveEveryoneAssignedBy(String user) {
+    public void removeAndRemoveEveryoneAssignedBy(User user) {
         synchronized (lock) {
             owners.remove(user);
-            this.managers.entrySet().removeIf(entry -> entry.getValue().getGivenBy().equals(user));
+            user.removedOwnedStore(getStoreId());
+            this.managers.entrySet().removeIf(entry -> entry.getValue().getGivenBy().equals(user.getName()));
             //create new list so no concurrent modification exception
-            new ArrayList<>(this.owners.entrySet()).stream().filter(entry -> entry.getValue() != null  && entry.getValue().equals(user)).forEach(e -> {
+            new ArrayList<>(this.owners.entrySet()).stream().filter(entry -> entry.getValue() != null  && entry.getValue().equals(user.getName())).forEach(e -> {
                 removeAndRemoveEveryoneAssignedBy(e.getKey());
             });
         }
     }
 
-    public void removeStoreManager(String removedBy, String manager) {
+    public void removeStoreManager(String removedBy, User manager) {
         synchronized (lock) {
             if (!managers.containsKey(manager) || !managers.get(manager).getGivenBy().equals(removedBy)) {
                 throw new IllegalArgumentException(String.format("%s is not a store manager that was set by %s", manager, removedBy));
             }
             managers.remove(manager);
+            manager.removedManagedStore(getStoreId());
         }
     }
 }

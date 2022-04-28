@@ -1,5 +1,7 @@
 package DomainLayer.Users;
 
+import java.util.Set;
+
 public class GuestState implements UserState {
     @Override
     public String getName() {
@@ -12,7 +14,7 @@ public class GuestState implements UserState {
     }
 
     @Override
-    public boolean isRegistered() {
+    public boolean isSubscribed() {
         return false;
     }
 
@@ -28,6 +30,36 @@ public class GuestState implements UserState {
 
     @Override
     public void setEmail(String email) {
+        throw new RuntimeException("Guest user does not have a name field");
+    }
+
+    @Override
+    public void addManagedStore(int storeId) {
+        throw new RuntimeException("Guest user does not have a name field");
+    }
+
+    @Override
+    public void addOwnedStore(int storeId) {
+        throw new RuntimeException("Guest user does not have a name field");
+    }
+
+    @Override
+    public void removeManagedStore(int storeId) {
+        throw new RuntimeException("Guest user does not have a name field");
+    }
+
+    @Override
+    public void removeOwnedStore(int storeId) {
+        throw new RuntimeException("Guest user does not have a name field");
+    }
+
+    @Override
+    public Set<Integer> getOwnedStores() {
+        throw new RuntimeException("Guest user does not have a name field");
+    }
+
+    @Override
+    public Set<Integer> getManagedStores() {
         throw new RuntimeException("Guest user does not have a name field");
     }
 }

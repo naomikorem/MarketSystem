@@ -54,14 +54,17 @@ public class UserController {
         }
     }
 
-    public void removeUser(String userName){
-        if(!isExist(userName)) {
-            System.out.println("is unregistered");
-            return;
+    public void removeUser(String removedBy, String username) {
+        LogUtility.info(String.format("user %s was deleted by %s", username, removedBy));
+        removeUser(username);
+    }
+
+    public void removeUser(String userName) {
+        if (!isExist(userName)) {
+            throw new IllegalArgumentException(String.format("Could not find user with name %s", userName));
         }
         users.remove(userName);
-        if(loggedUsers.contains(userName))
-            loggedUsers.remove(userName);
+        loggedUsers.remove(userName);
         LogUtility.info(String.format("A user named %s was removed", userName));
     }
 
@@ -112,16 +115,14 @@ public class UserController {
         return true;
     }
 
-    public void setUserName(User user, String newName){
-        if(user.isRegistered())
-        {
+    public void setUserName(User user, String newName) {
+        if (user.isSubscribed()) {
             user.setName(newName);
         }
     }
 
-    public void setUserEmail(User user, String newEmail){
-        if(user.isRegistered())
-        {
+    public void setUserEmail(User user, String newEmail) {
+        if (user.isSubscribed()) {
             user.setEmail(newEmail);
         }
     }

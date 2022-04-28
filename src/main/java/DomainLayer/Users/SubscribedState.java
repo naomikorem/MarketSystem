@@ -4,6 +4,10 @@ import Exceptions.LogException;
 import Utility.Utility;
 import Utility.LogUtility;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class SubscribedState implements UserState {
@@ -15,11 +19,15 @@ public class SubscribedState implements UserState {
     private String name;
     private String password;
     private String email;
+    private Set<Integer> ownedStores;
+    private Set<Integer> managedStores;
 
     public SubscribedState(String email, String name, String password) {
         this.name = name;
         this.password = password;
         this.email = email;
+        this.ownedStores = new HashSet<>();
+        this.managedStores = new HashSet<>();
         checkParameters(name, password, email);
     }
 
@@ -66,7 +74,37 @@ public class SubscribedState implements UserState {
     }
 
     @Override
-    public boolean isRegistered() {
+    public void addManagedStore(int storeId) {
+        this.managedStores.add(storeId);
+    }
+
+    @Override
+    public void addOwnedStore(int storeId) {
+        this.ownedStores.add(storeId);
+    }
+
+    @Override
+    public void removeManagedStore(int storeId) {
+        this.managedStores.remove(storeId);
+    }
+
+    @Override
+    public void removeOwnedStore(int storeId) {
+        this.ownedStores.remove(storeId);
+    }
+
+    @Override
+    public Set<Integer> getOwnedStores() {
+        return ownedStores;
+    }
+
+    @Override
+    public Set<Integer> getManagedStores() {
+        return managedStores;
+    }
+
+    @Override
+    public boolean isSubscribed() {
         return true;
     }
 

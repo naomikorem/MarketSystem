@@ -21,7 +21,7 @@ public class StoreFacade {
 
     public Response<Store> addNewStore(User owner, String storeName) {
         try {
-            if (!owner.isRegistered()) {
+            if (!owner.isSubscribed()) {
                 throw new RuntimeException("The user is not logged in.");
             }
             return new Response<>(storeController.createStore(owner, storeName));
@@ -30,7 +30,7 @@ public class StoreFacade {
         }
     }
 
-    public Response<Boolean> addManager(User owner, String manager, int storeId) {
+    public Response<Boolean> addManager(User owner, User manager, int storeId) {
         try {
             return new Response<>(storeController.addManager(owner, manager, storeId));
         } catch (Exception e) {
@@ -38,7 +38,7 @@ public class StoreFacade {
         }
     }
 
-    public Response<Boolean> addOwner(User owner, String newOwner, int storeId) {
+    public Response<Boolean> addOwner(User owner, User newOwner, int storeId) {
         try {
             return new Response<>(storeController.addOwner(owner, newOwner, storeId));
         } catch (Exception e) {
@@ -170,7 +170,7 @@ public class StoreFacade {
         }
     }
 
-    public Response<Boolean> removeOwner(User owner, String toRemove, int storeId) {
+    public Response<Boolean> removeOwner(User owner, User toRemove, int storeId) {
         try {
             storeController.removeOwner(owner, toRemove, storeId);
             return new Response<>(true);
@@ -179,9 +179,18 @@ public class StoreFacade {
         }
     }
 
-    public Response<Boolean> removeManager(User owner, String toRemove, int storeId) {
+    public Response<Boolean> removeManager(User owner, User toRemove, int storeId) {
         try {
             storeController.removeManager(owner, toRemove, storeId);
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Boolean> removeUserRoles(User owner, User toRemove) {
+        try {
+            storeController.removeUserRoles(owner, toRemove);
             return new Response<>(true);
         } catch (Exception e) {
             return new Response<>(e.getMessage());
