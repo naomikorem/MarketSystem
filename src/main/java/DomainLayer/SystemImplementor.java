@@ -192,6 +192,21 @@ public class SystemImplementor implements SystemInterface {
     }
 
     @Override
+    public Response<Boolean> permanentlyCloseStore(String adminName, int storeId){
+        Response<Boolean> r1  = userFacade.isAdmin(adminName);
+        Response<Boolean> r2 = storeFacade.isExistStore(storeId);
+        if(r1.hadError()){
+            return r1;
+        }
+        else if (r2.hadError()) {
+            return r2;
+        }
+        else {
+            return storeFacade.closeStore(userFacade.getUser(storeFacade.getStore(storeId).getFounder()),storeId);
+        }
+    }
+
+    @Override
     public Response<Store> addNewStore(String name) {
         return storeFacade.addNewStore(user, name);
     }

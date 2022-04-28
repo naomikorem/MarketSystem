@@ -36,6 +36,7 @@ public class StoreController {
         return store;
     }
 
+    public Boolean isExist(int storeId) { return this.stores.getOrDefault(storeId, null)!=null;}
     private void addStore(Store store) {
         this.stores.put(store.getStoreId(), store);
     }

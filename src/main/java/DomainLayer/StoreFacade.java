@@ -46,6 +46,14 @@ public class StoreFacade {
         }
     }
 
+    public Response<Boolean> isExistStore(int storeId){
+        try {
+            return new Response<>(storeController.isExist(storeId));
+        } catch (Exception e){
+            return new Response<>(e.getMessage());
+        }
+    }
+
     public Response<Collection<Store>> getAllStores() {
         return new Response<>(storeController.getAllStores());
     }
