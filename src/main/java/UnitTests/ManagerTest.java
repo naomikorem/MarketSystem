@@ -31,7 +31,7 @@ public class ManagerTest extends AbstractTest {
         this.user1 = bridge.register("user123@gmail.com","user","useruser").getObject();
         this.user2 = bridge.register("user2@gmail.com","userthesecond","user2").getObject();
         this.store = StoreController.getInstance().createStore(user1,"Store1");
-        store.addOwner(user1.getName(),user2.getName());
+        store.addOwner(user1.getName(),user2);
         this.manager = bridge.register("manger@gmail.com","manger","manager1").getObject();
         UserController.getInstance().addUser(manager);
     }
