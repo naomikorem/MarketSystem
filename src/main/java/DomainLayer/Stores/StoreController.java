@@ -31,7 +31,7 @@ public class StoreController {
     }
 
     public Store createStore(User owner, String store_name) {
-        Store store = new Store(owner.getName(), store_name, getNewStoreId());
+        Store store = new Store(owner, store_name, getNewStoreId());
         addStore(store);
         return store;
     }
@@ -72,14 +72,14 @@ public class StoreController {
 
 
     public Item addItemToStore(User manager, int storeId, String name, String category, double price, int amount) {
-        if (!manager.isRegistered()) {
+        if (!manager.isSubscribed()) {
             throw new IllegalArgumentException("Use has to be logged in to do this action.");
         }
         Store s = getStore(storeId);
         if (s == null) {
             throw new IllegalArgumentException(String.format("There is no store with id: %s", storeId));
         }
-        if (!s.canManageItems(manager.getName())) {
+        if (!s.canManageItems(manager)) {
             throw new LogException("You cannot add items to this store", String.format("User %s tried to add an item to a store that they do not manager", manager));
         }
         Item i = new Item(name, Category.valueOf(category), price);
@@ -106,7 +106,7 @@ public class StoreController {
         if (s == null) {
             throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
         }
-        if (!owner.isRegistered() || !s.canManageItems(owner.getName())) {
+        if (!owner.isSubscribed() || !s.canManageItems(owner)) {
             throw new LogException("You cannot remove items from this store.", String.format("a user tried to illegally edit store %s", storeId));
         }
         Item i = s.getItemAndDeduct(itemId, amount);
@@ -129,12 +129,12 @@ public class StoreController {
         return i;
     }
 
-    public boolean addManager(User owner, String manager, int storeId) {
+    public boolean addManager(User owner, User manager, int storeId) {
         Store s = getInstance().getStore(storeId);
         if (s == null) {
             throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
         }
-        if (!owner.isRegistered() || !s.canAssignManager(owner.getName())) {
+        if (!owner.isSubscribed() || !s.canAssignManager(owner)) {
             throw new IllegalArgumentException("This user cannot assign a manager");
         }
         if (!s.canBecomeManager(manager)) {
@@ -145,12 +145,12 @@ public class StoreController {
         return true;
     }
 
-    public boolean addOwner(User owner, String newOwner, int storeId) {
+    public boolean addOwner(User owner, User newOwner, int storeId) {
         Store s = getInstance().getStore(storeId);
         if (s == null) {
             throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
         }
-        if (!owner.isRegistered() || !s.canAssignOwner(owner.getName())) {
+        if (!owner.isSubscribed() || !s.canAssignOwner(owner.getName())) {
             throw new IllegalArgumentException("This user cannot assign another user to be an owner");
         }
         if (!s.canBecomeOwner(newOwner)) {
@@ -180,7 +180,7 @@ public class StoreController {
         if (s == null) {
             throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
         }
-        if (!owner.isRegistered() || !s.isOwner(owner.getName())) {
+        if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
             throw new IllegalArgumentException("This user cannot assign a manager");
         }
         s.changePermission(manager, permission);
@@ -191,7 +191,7 @@ public class StoreController {
         if (!isExist(storeId)) {
             throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
         }
-        if (!user.isRegistered()) {
+        if (!user.isSubscribed()) {
             throw new IllegalArgumentException("Only logged in users can perform this action.");
         }
         stores.get(storeId).setIsOpen(user.getName(), false);
@@ -206,27 +206,38 @@ public class StoreController {
         LogUtility.info(String.format("store %s was permanently closed by an admin", storeId));
     }
 
-    public void removeOwner(User owner, String toRemove, int storeId) {
+    public void removeOwner(User owner, User toRemove, int storeId) {
         Store s = getInstance().getStore(storeId);
         if (s == null) {
             throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
         }
-        if (!owner.isRegistered()) {
+        if (!owner.isSubscribed()) {
             throw new IllegalArgumentException("Guest users can not perform this action.");
         }
         s.removeStoreOwner(owner.getName(), toRemove);
         LogUtility.info(String.format("%s removed %s from being a store owner at store %s", owner.getName(), toRemove, storeId));
     }
 
-    public void removeManager(User owner, String toRemove, int storeId) {
+    public void removeManager(User owner, User toRemove, int storeId) {
         Store s = getInstance().getStore(storeId);
         if (s == null) {
             throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
         }
-        if (!owner.isRegistered()) {
+        if (!owner.isSubscribed()) {
             throw new IllegalArgumentException("Guest users can not perform this action.");
         }
         s.removeStoreManager(owner.getName(), toRemove);
         LogUtility.info(String.format("%s removed %s from being a store manager at store %s", owner.getName(), toRemove, storeId));
+    }
+
+    public void removeUserRoles(User owner, User removed) {
+        for (int id : removed.getManagedStores()) {
+            Store s = getStore(id);
+            s.removeStoreManager(owner.getName(), removed);
+        }
+        for (int id : removed.getOwnedStores()) {
+            Store s = getStore(id);
+            s.removeStoreOwner(owner.getName(), removed);
+        }
     }
 }

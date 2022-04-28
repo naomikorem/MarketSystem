@@ -32,7 +32,7 @@ public class OpenStoreTest extends AbstractTest {
     }
 
     @After
-    public void clean(){
+    public void clean() {
         if (UserController.getInstance().isExist("user")) {
             UserController.getInstance().removeUser("user");
         }
@@ -45,16 +45,15 @@ public class OpenStoreTest extends AbstractTest {
         assertTrue(StoreController.getInstance().getStore(store.getStoreId()).equals(store));
         assertTrue(StoreController.getInstance().getAllStores().contains(store));
         assertTrue(StoreController.getInstance().isShopOwner(store, "user"));
-        Store s = new Store("User", "Use", 3);
+        Store s = new Store(user, "Use", 3);
         assertNull(StoreController.getInstance().getStore(s.getStoreId()));
 
     }
 
     @Test
     public void testNegativeOpenStore() {
-        Store store = new Store("User", "Use", 3);
+        Store store = new Store(user, "Use", 3);
         assertFalse(StoreController.getInstance().getAllStores().contains(store));
     }
-
 
 }

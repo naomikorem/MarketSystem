@@ -182,7 +182,17 @@ public class Proxy extends Bridge {
 
     @Override
     public Response<Boolean> addManager(String manager, int storeId) {
-        return  real.addManager(manager, storeId);
+        return real.addManager(manager, storeId);
+    }
+
+    @Override
+    public Response<Boolean> addOwner(String owner, int storeId) {
+        return real.addOwner(owner, storeId);
+    }
+
+    @Override
+    public Response<Boolean> removeOwner(String toRemove, int storeId) {
+        return real.removeOwner(toRemove, storeId);
     }
 
     @Override
