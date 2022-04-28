@@ -1,7 +1,9 @@
 package DomainLayer;
 
+import DomainLayer.Users.AdminController;
 import DomainLayer.Users.User;
 import DomainLayer.Users.UserController;
+import Networking.RequestMessage;
 
 public class UserFacade {
     private UserController userController;
@@ -36,7 +38,7 @@ public class UserFacade {
         }
     }
 
-    public User getUser(String username) {
+    public Response<User> getUser(String username) {
         try {
             return new Response<>(userController.getUser(username));
         } catch (Exception e) {
