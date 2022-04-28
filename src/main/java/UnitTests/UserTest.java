@@ -39,7 +39,7 @@ public class UserTest extends AbstractTest {
     @Test
     public void UserTestTest() {
         bridge.login("user1", "password");
-        assertTrue(u.isRegistered());
+        assertTrue(u.isSubscribed());
         assertTrue(u.getName().equals("user1"));
         assertTrue(u.getEmail().equals("user111@gmail.com"));
         u.setEmail("user123@gmail.com");
