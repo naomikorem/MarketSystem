@@ -97,7 +97,7 @@ public class StoreController {
         if (i == null) {
             throw new IllegalArgumentException(String.format("There is no item with item id %s in the store", itemId));
         }
-        LogUtility.info(String.format("%s %s were reserved in store %s", amount, i.getProduct_name(), storeId));
+        LogUtility.info(String.format("%s %s were reserved in store %s", amount, i.getProductName(), storeId));
         return i;
     }
 
@@ -113,7 +113,7 @@ public class StoreController {
         if (i == null) {
             throw new IllegalArgumentException(String.format("There is no item with item id %s in the store", itemId));
         }
-        LogUtility.info(String.format("%s %s were taken out of store %s by %s", amount, i.getProduct_name(), storeId, owner.getName()));
+        LogUtility.info(String.format("%s %s were taken out of store %s by %s", amount, i.getProductName(), storeId, owner.getName()));
         return i;
     }
 
@@ -167,7 +167,7 @@ public class StoreController {
             throw new IllegalArgumentException(String.format("There is no store with id: %s", storeId));
         }
         s.addItem(item, amount);
-        LogUtility.info(String.format("%s %s were returned to store %s", amount, item.getProduct_name(), storeId));
+        LogUtility.info(String.format("%s %s were returned to store %s", amount, item.getProductName(), storeId));
         return item;
     }
 

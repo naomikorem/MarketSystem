@@ -3,9 +3,7 @@ package DomainLayer.Stores;
 import Utility.LogUtility;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class Item {
 
@@ -33,11 +31,11 @@ public class Item {
         keyWords = new ArrayList<>();
     }
 
-    public String getProduct_name() {
+    public String getProductName() {
         return product_name;
     }
 
-    public void setProduct_name(String product_name) {
+    public void setProductName(String product_name) {
         if (product_name == null || product_name.equals("")) {
             LogUtility.error("tried to change product name to an empty word / null");
             throw new IllegalArgumentException("Product name must be a non empty name");
