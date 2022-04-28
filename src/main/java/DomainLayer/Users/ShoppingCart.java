@@ -37,4 +37,7 @@ public class ShoppingCart {
     }
 
 
+    public void emptyShoppingCart() {
+        this.shoppingBaskets = new HashMap<>();
+    }
 }

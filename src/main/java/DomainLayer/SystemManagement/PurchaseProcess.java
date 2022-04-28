@@ -44,6 +44,8 @@ public class PurchaseProcess
 
         this.externalServicesHandler.pay(price, purchase_service_name);
 
+        user.emptyShoppingCart();
+
         // get address from user
 
         this.externalServicesHandler.supply(shipping_address, items_and_amounts, supply_service_name);
