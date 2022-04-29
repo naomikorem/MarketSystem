@@ -240,4 +240,20 @@ public class StoreController {
             s.removeStoreOwner(owner.getName(), removed);
         }
     }
+
+    public Item modifyItem(User owner, int storeId, int itemId, String productName, String category, double price, List<String> keywords) {
+        Store s = getStore(storeId);
+        if (s == null) {
+            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
+        }
+        Item i = s.getItemById(itemId);
+        if (i == null) {
+            throw new IllegalArgumentException(String.format("There is no item with id %s in store %s", itemId, storeId));
+        }
+        if (!owner.isSubscribed() || !s.isOwner(owner)) {
+            throw new IllegalArgumentException("Only store owners can perform this action.");
+        }
+        i.updateItem(productName, Category.valueOf(category), price, keywords);
+        return i;
+    }
 }
