@@ -25,6 +25,7 @@ public abstract class AbstractEditExternalTest extends AbstractTest {
     @Before
     public void setup()
     {
+        bridge.enter();
         Response<Boolean> has_service = hasService(new_service_name);
         assertFalse(has_service.hadError());
 

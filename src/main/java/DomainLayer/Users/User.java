@@ -80,4 +80,8 @@ public class User {
     public Set<Integer> getOwnedStores() {
         return this.state.getOwnedStores();
     }
+
+    public void emptyShoppingCart() {
+        this.shoppingCart.emptyShoppingCart();
+    }
 }
