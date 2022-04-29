@@ -16,7 +16,7 @@ public class AdminController {
         // load database
 
         if (admins.isEmpty()) {
-            admins.add(UserController.DEFAULT_ADMIN_EMAIL);
+            admins.add(UserController.DEFAULT_ADMIN_USER);
         }
 
     }

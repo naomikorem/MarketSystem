@@ -101,12 +101,12 @@ public class SystemImplementor implements SystemInterface {
     }
 
     @Override
-    public Response<Boolean> addManager(String managerName, int storeId) {
+    public Response<Boolean> addManager(String manager, int storeId) {
         try {
-            if (!userFacade.isExist(managerName)) {
-                throw new IllegalArgumentException(String.format("There is no user by the name of %s", managerName));
+            if (!userFacade.isExist(manager)) {
+                throw new IllegalArgumentException(String.format("There is no user by the name of %s", manager));
             }
-            return storeFacade.addManager(user, userFacade.getUser(managerName).getObject(), storeId);
+            return storeFacade.addManager(user, userFacade.getUser(manager).getObject(), storeId);
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
@@ -247,36 +247,49 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.removeItemFromStore(user, storeId, itemId, amount);
     }
 
+    @Override
+    public Response<Item> modifyItem(int storeId, int itemId, String productName, String category, double price, List<String> keywords) {
+        return storeFacade.modifyItem(user, storeId, itemId, productName, category, price, keywords);
+    }
+
     public Response<Boolean> initializeMarket() {
         return this.marketManagementFacade.initializeMarket();
     }
 
     public Response<Boolean> addExternalPurchaseService(String name) {
-        if (user == null) {
-            return new Response<>("Enter the system properly in order to perform actions in it.");
+        Response<Boolean> is_admin_response = isAdminCheck();
+        if (is_admin_response.hadError() || !is_admin_response.getObject()) {
+            return is_admin_response;
         }
+
         return this.marketManagementFacade.addExternalPurchaseService(name);
     }
 
     public Response<Boolean> addExternalSupplyService(String name) {
-        if (user == null) {
-            return new Response<>("Enter the system properly in order to perform actions in it.");
+        Response<Boolean> is_admin_response = isAdminCheck();
+        if (is_admin_response.hadError() || !is_admin_response.getObject()) {
+            return is_admin_response;
         }
+
         return this.marketManagementFacade.addExternalSupplyService(name);
     }
 
     public Response<Boolean> removeExternalPurchaseService(String name) {
-        if (user == null) {
-            return new Response<>("Enter the system properly in order to perform actions in it.");
+        Response<Boolean> is_admin_response = isAdminCheck();
+        if (is_admin_response.hadError() || !is_admin_response.getObject()) {
+            return is_admin_response;
         }
+
         return this.marketManagementFacade.removeExternalPurchaseService(name);
     }
 
     @Override
     public Response<Boolean> removeExternalSupplyService(String name) {
-        if (user == null) {
-            return new Response<>("Enter the system properly in order to perform actions in it.");
+        Response<Boolean> is_admin_response = isAdminCheck();
+        if (is_admin_response.hadError() || !is_admin_response.getObject()) {
+            return is_admin_response;
         }
+
         return this.marketManagementFacade.removeExternalSupplyService(name);
     }
 
@@ -356,6 +369,21 @@ public class SystemImplementor implements SystemInterface {
             return responseRemoveRoles;
         }
         return userFacade.removeUser(user.getName(), name);
+    }
+
+    private Response<Boolean> isAdminCheck() {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+
+        String username;
+        try {
+            username = user.getName();
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+
+        return userFacade.isAdmin(username);
     }
 
     @Override

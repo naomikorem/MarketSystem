@@ -1,6 +1,8 @@
 package acceptenceTests;
 
 import DomainLayer.Response;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
@@ -10,6 +12,11 @@ public class InitializeSystemTest extends AbstractTest {
 
     public InitializeSystemTest() {
         super();
+    }
+
+    @Before
+    public void setup(){
+        bridge.enter();
     }
 
     @Test

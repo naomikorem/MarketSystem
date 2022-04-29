@@ -46,10 +46,10 @@ public class StoreFacade {
         }
     }
 
-    public Response<Boolean> isExistStore(int storeId){
+    public Response<Boolean> isExistStore(int storeId) {
         try {
             return new Response<>(storeController.isExist(storeId));
-        } catch (Exception e){
+        } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
     }
@@ -199,6 +199,14 @@ public class StoreFacade {
     public Response<List<User>> getManagers(User owner, int storeId){
         try {
             return new Response<>(storeController.getManagers(owner, storeId));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Item> modifyItem(User owner, int storeId, int itemId, String productName, String category, double price, List<String> keywords) {
+        try {
+            return new Response<>(storeController.modifyItem(owner, storeId, itemId, productName, category, price, keywords));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }

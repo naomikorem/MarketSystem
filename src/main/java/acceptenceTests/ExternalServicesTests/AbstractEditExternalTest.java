@@ -1,7 +1,9 @@
 package acceptenceTests.ExternalServicesTests;
 
 import DomainLayer.Response;
+import DomainLayer.Users.UserController;
 import acceptenceTests.AbstractTest;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,6 +28,8 @@ public abstract class AbstractEditExternalTest extends AbstractTest {
     public void setup()
     {
         bridge.enter();
+        bridge.login(UserController.DEFAULT_ADMIN_USER, UserController.DEFAULT_ADMIN_PASSWORD);
+
         Response<Boolean> has_service = hasService(new_service_name);
         assertFalse(has_service.hadError());
 
@@ -34,6 +38,11 @@ public abstract class AbstractEditExternalTest extends AbstractTest {
             assertFalse(add_service_response.hadError());
             assertTrue(add_service_response.getObject());
         }
+    }
+
+    @After
+    public void tearDown(){
+        bridge.logout();
     }
 
     @Test
@@ -114,11 +123,27 @@ public abstract class AbstractEditExternalTest extends AbstractTest {
     @Test
     public void testRemoveLastExternalServices()
     {
+        removeExternalService("stub");
+
         Response<Boolean> has_purchase_service = hasService(new_service_name);
         assertFalse(has_purchase_service.hadError());
         assertTrue(has_purchase_service.getObject());
 
         // not valid case - remove last service in the system
         assertTrue(removeExternalService(new_service_name).hadError());
+    }
+
+    @Test
+    public void removeServiceGuestUser()
+    {
+        bridge.logout();
+        assertTrue(removeExternalService(new_service_name).hadError());
+    }
+
+    @Test
+    public void addServiceGuestUser()
+    {
+        bridge.logout();
+        assertTrue(addExternalService(new_service_name).hadError());
     }
 }
