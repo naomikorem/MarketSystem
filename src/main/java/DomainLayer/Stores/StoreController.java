@@ -250,7 +250,7 @@ public class StoreController {
         if (i == null) {
             throw new IllegalArgumentException(String.format("There is no item with id %s in store %s", itemId, storeId));
         }
-        if (!owner.isSubscribed() || s.isManager(owner)) {
+        if (!owner.isSubscribed() || !s.isOwner(owner)) {
             throw new IllegalArgumentException("Only store owners can perform this action.");
         }
         i.updateItem(productName, Category.valueOf(category), price, keywords);
