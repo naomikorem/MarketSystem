@@ -11,7 +11,7 @@ public class StoreController {
 
     private Map<Integer, Store> stores; // store-id , stores
 
-    private static int NEXT_STORE_ID = 1;
+    private int NEXT_STORE_ID = 1;
 
     private StoreController() {
         this.stores = new HashMap<>();
@@ -26,7 +26,7 @@ public class StoreController {
         return StoreControllerHolder.instance;
     }
 
-    private synchronized static int getNewStoreId() {
+    private synchronized int getNewStoreId() {
         return NEXT_STORE_ID++;
     }
 
@@ -250,12 +250,22 @@ public class StoreController {
         if (i == null) {
             throw new IllegalArgumentException(String.format("There is no item with id %s in store %s", itemId, storeId));
         }
-        if (!owner.isSubscribed() || !s.isOwner(owner)) {
+        if (!owner.isSubscribed() || !s.canManageItems(owner)) {
             throw new IllegalArgumentException("Only store owners can perform this action.");
         }
         i.updateItem(productName, Category.valueOf(category), price, keywords);
         return i;
     }
+
+    public Map<Item, Integer> getItems(int storeId) {
+        Store s = getStore(storeId);
+        if (s == null) {
+            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
+        }
+        return s.getItems();
+    }
+      
+      
     public List<User> getManagers(User owner, int storeId){
         Store s = getStore(storeId);
         if (s == null) {

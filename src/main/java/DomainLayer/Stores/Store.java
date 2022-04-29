@@ -139,6 +139,10 @@ public class Store {
         }
     }
 
+    public Map<Item, Integer> getItems() {
+        return items;
+    }
+
     public Set<Item> getItemsWithNameContains(String name) {
         if (!isOpen()) {
             LogUtility.error("tried to get item from a closed store");

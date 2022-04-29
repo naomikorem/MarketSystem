@@ -29,8 +29,8 @@ public class UserController {
         }
     }
 
-    private static class UserControllerHolder {
-        static final UserController instance = new UserController();
+    public static class UserControllerHolder {
+        public static final UserController instance = new UserController();
     }
 
     public static UserController getInstance() {

@@ -8,6 +8,7 @@ import DomainLayer.Users.User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public abstract class Bridge {
@@ -61,6 +62,7 @@ public abstract class Bridge {
 
 
     public abstract Response<Item> removeItemFromStore(int storeId, int itemId, int amount);
+    public abstract Response<Map<Item, Integer>> getItems(int storeId);
 
 
 
