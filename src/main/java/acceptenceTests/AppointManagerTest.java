@@ -34,14 +34,14 @@ public class AppointManagerTest extends AbstractTest {
         this.manager = bridge.register("manger@gmail.com", "manger", "manager1").getObject();
     }
 
-    /*@After
+    @After
     public void clean() {
         UserController.getInstance().removeUser(this.manager.getName());
         StoreController.getInstance().removeStore(store);
         UserController.getInstance().removeUser("user2");
         UserController.getInstance().removeUser("user");
         bridge.logout();
-    }*/
+    }
 
 
     @Test
