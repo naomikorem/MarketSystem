@@ -181,7 +181,7 @@ public class StoreController {
             throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
         }
         if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
-            throw new IllegalArgumentException("This user cannot assign a manager");
+            throw new IllegalArgumentException("This user cannot assign manager's permission");
         }
         s.changePermission(manager, permission);
         LogUtility.info(String.format("%s changed the permissions of manager %s", owner.getName(), manager));
