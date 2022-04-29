@@ -14,9 +14,15 @@ public class StubSupplyService implements IExternalSupplyService
         this.name = name;
     }
 
-
+    /***
+     * Interface function that all the external supply services must have.
+     * The service deals with supplying the requested items to the relevant address.
+     * @param shipping_address The shipping address of the user
+     * @param items The items that the user paid for
+     * @return true - if the supply process is successful, false - otherwise
+     */
     @Override
     public boolean supply(String shipping_address, List<Map.Entry<Item, Integer>> items) {
-        return false;
+        return true;
     }
 }
