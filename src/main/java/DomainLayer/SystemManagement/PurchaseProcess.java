@@ -60,8 +60,9 @@ public class PurchaseProcess
         * 3. send the price and user details and store details to the purchase service
         * 4. should send money to the store owner here or is it the purchase services problem?
         * 5. foreach store owner send notifications about the bought items.
-        * 6. save items in store and user's purchase history
         * */
+
+        this.externalServicesHandler.pay(price, purchase_service_name);
 
         if (user.isSubscribed()) {
             String username = user.getName();
