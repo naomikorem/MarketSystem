@@ -101,12 +101,12 @@ public class SystemImplementor implements SystemInterface {
     }
 
     @Override
-    public Response<Boolean> addManager(String manager, int storeId) {
+    public Response<Boolean> addManager(String managerName, int storeId) {
         try {
-            if (!userFacade.isExist(manager)) {
-                throw new IllegalArgumentException(String.format("There is no user by the name of %s", manager));
+            if (!userFacade.isExist(managerName)) {
+                throw new IllegalArgumentException(String.format("There is no user by the name of %s", managerName));
             }
-            return storeFacade.addManager(user, userFacade.getUser(manager).getObject(), storeId);
+            return storeFacade.addManager(user, userFacade.getUser(managerName).getObject(), storeId);
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
@@ -356,5 +356,13 @@ public class SystemImplementor implements SystemInterface {
             return responseRemoveRoles;
         }
         return userFacade.removeUser(user.getName(), name);
+    }
+
+    @Override
+    public Response<List<User>> getStoreManagers(int storeId){
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.getManagers(user, storeId);
     }
 }

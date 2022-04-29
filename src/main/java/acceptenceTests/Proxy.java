@@ -154,14 +154,16 @@ public class Proxy extends Bridge {
 
     @Override
     public Response<Collection<Item>> searchProducts(String productName, String Category, List<String> keywords) {
-
-        return null;
+        if (this.real == null)
+            return null;
+        return real.searchProducts(productName,Category, keywords);
     }
 
     @Override
     public Response<Collection<Item>> filterResults() {
-
-        return null;
+        if (this.real == null)
+            return null;
+        return real.filterResults();
     }
 
     @Override
@@ -170,6 +172,11 @@ public class Proxy extends Bridge {
             return null;
         }
         return real.getShoppingCartItems();
+    }
+
+    @Override
+    public Response<List<Item>> updateItemInCart(int storeId, int itemId, int amount) {
+        return null;
     }
 
     @Override
@@ -183,6 +190,20 @@ public class Proxy extends Bridge {
     @Override
     public Response<Boolean> addManager(String manager, int storeId) {
         return real.addManager(manager, storeId);
+    }
+
+    @Override
+    public Response<Boolean> updateManagerPermissions(int storeId, String managerName, Byte newPermission) {
+        if (this.real == null)
+            return null;
+        return real.updateManagerPermissions(storeId, managerName, newPermission);
+    }
+
+    @Override
+    public Response<List<User>> getStoreManagers(int store) {
+        if (this.real == null)
+            return null;
+        return real.getStoreManagers(store);
     }
 
     @Override
@@ -201,6 +222,16 @@ public class Proxy extends Bridge {
             return null;
         }
         return real.addItemToStore(storeId, name, category, price, amount);
+    }
+
+    @Override
+    public Response<Boolean> updateStorePolicy(int storeId) {
+        return null;
+    }
+
+    @Override
+    public Response<Boolean> updateDiscountPolicy(int storeId) {
+        return null;
     }
 
     @Override
