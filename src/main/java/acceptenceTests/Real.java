@@ -142,6 +142,7 @@ public class Real extends Bridge {
     @Override
     public Response<Boolean> updateManagerPermissions(int storeId, String managerName, Byte newPermission) {
         return adaptee.setManagerPermission(managerName, storeId, newPermission);
+
     }
 
 

@@ -223,4 +223,12 @@ public class StoreFacade {
             return new Response<>(e.getMessage());
         }
     }
+
+    public Response<Boolean> isOwner(int store_id, String username) {
+        try {
+            return new Response<>(storeController.getStore(store_id).isOwner(username));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
 }

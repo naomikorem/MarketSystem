@@ -2,6 +2,7 @@ package DomainLayer;
 
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
+import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
@@ -33,6 +34,9 @@ public interface SystemInterface {
     public Response<Boolean> hasPurchaseService(String purchase_service_name);
 
     public Response<Boolean> hasSupplyService(String purchase_supply_name);
+
+    public Response<History> getPurchaseHistory(String username);
+    public Response<History> getStoreHistory(int store_id);
 
     public Response<Boolean> enter();
 
@@ -75,6 +79,8 @@ public interface SystemInterface {
     Response<Boolean> deleteUser(String name);
     Response<List<User>> getStoreManagers(int storeId);
 
+
     Response<Set<Item>> searchProducts(String productName, String category, List<String> keywords) ;
     Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating);
+
 }

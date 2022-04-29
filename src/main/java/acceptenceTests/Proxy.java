@@ -155,6 +155,8 @@ public class Proxy extends Bridge {
 
     @Override
     public Response<Set<Item>> searchProducts(String productName, String Category, List<String> keywords) {
+
+
         if (this.real == null)
             return null;
         return real.searchProducts(productName,Category, keywords);
