@@ -5,6 +5,7 @@ import DomainLayer.Stores.Store;
 import DomainLayer.Stores.TODO;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.MarketManagementFacade;
+import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.GuestState;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
@@ -352,11 +353,14 @@ public class SystemImplementor implements SystemInterface {
         return this.marketManagementFacade.hasSupplyService(purchase_supply_name);
     }
 
-
     public Response<History> getPurchaseHistory(String username)
     {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Enter the system properly and be subscribes in order get his purchase history");
+        }
+        if(!user.getName().equals(username))
+        {
+            return new Response<>("you can see only your own purchase history");
         }
         return this.marketManagementFacade.getPurchaseHistory(username);
     }
@@ -426,5 +430,10 @@ public class SystemImplementor implements SystemInterface {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
         return storeFacade.getManagers(user, storeId);
+    }
+
+    public Response<List<INotification>> getUserNotifications(String username)
+    {
+        return this.marketManagementFacade.getUserNotifications(username);
     }
 }

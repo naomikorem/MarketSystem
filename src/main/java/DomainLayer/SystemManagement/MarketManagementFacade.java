@@ -4,7 +4,11 @@ import DomainLayer.Response;
 import DomainLayer.SystemManagement.ExternalServices.ExternalServicesHandler;
 import DomainLayer.SystemManagement.HistoryManagement.HistoryController;
 import DomainLayer.SystemManagement.HistoryManagement.History;
+import DomainLayer.SystemManagement.NotificationManager.INotification;
+import DomainLayer.SystemManagement.NotificationManager.NotificationController;
 import DomainLayer.Users.User;
+
+import java.util.List;
 
 public class MarketManagementFacade
 {
@@ -17,15 +21,17 @@ public class MarketManagementFacade
         this.services = ExternalServicesHandler.getInstance();
         this.purchaseProcess = PurchaseProcess.getInstance();
         this.historyController = HistoryController.getInstance();
+        this.notificationController = NotificationController.getInstance();
     }
 
     // Implementation of thread safe singleton
     public static MarketManagementFacade getInstance() {
         return MarketManagementFacadeHolder.INSTANCE;
     }
-    private ExternalServicesHandler services;
-    private PurchaseProcess purchaseProcess;
-    private HistoryController historyController;
+    private final ExternalServicesHandler services;
+    private final PurchaseProcess purchaseProcess;
+    private final HistoryController historyController;
+    private final NotificationController notificationController;
 
     /***
      * The function responsible to initialize the connection with the external services, when the system is loaded
@@ -193,6 +199,38 @@ public class MarketManagementFacade
     public Response<History> getStoreHistory(int store_id) {
         try {
             return new Response<>(this.historyController.getStoreHistory(store_id));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Boolean> addNotification(String username, String message)
+    {
+        try
+        {
+            this.notificationController.addNotification(username, message);
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Boolean> removeUserNotifications(String username)
+    {
+        try
+        {
+            this.notificationController.removeUserNotifications(username);
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<List<INotification>> getUserNotifications(String username)
+    {
+        try
+        {
+            return new Response<>(this.notificationController.getUserNotifications(username));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
