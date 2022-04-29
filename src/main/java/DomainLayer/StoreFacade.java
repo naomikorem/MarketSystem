@@ -100,6 +100,18 @@ public class StoreFacade {
         }
     }
 
+    /**
+     * @param items serched items
+     * @param upLimit if irrelevant value = -1
+     * @param lowLimit if irrelevant value = -1
+     * @param rating if irrelevant value = -1
+     * @return filtered prodacts
+     */
+    public Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating){
+        return new Response<>(storeController.filterProdacts(items,upLimit,lowLimit, rating));
+    }
+
+
     public Response<Item> getItemFromStore(int storeId, int itemId) {
         try {
             return new Response<>(storeController.getItemFromStore(storeId, itemId));
@@ -193,6 +205,14 @@ public class StoreFacade {
             return new Response<>(e.getMessage());
         }
     }
+  
+    public Response<List<User>> getManagers(User owner, int storeId){
+        try {
+            return new Response<>(storeController.getManagers(owner, storeId));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
 
     public Response<Item> modifyItem(User owner, int storeId, int itemId, String productName, String category, double price, List<String> keywords) {
         try {
@@ -202,9 +222,17 @@ public class StoreFacade {
         }
     }
 
-    public Response<Map<Item, Integer>> getItems(int storeId) {
+public Response<Map<Item, Integer>> getItems(int storeId) {
         try {
             return new Response<>(storeController.getItems(storeId));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+  
+    public Response<Boolean> isOwner(int store_id, String username) {
+        try {
+            return new Response<>(storeController.getStore(store_id).isOwner(username));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }

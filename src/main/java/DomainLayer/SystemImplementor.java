@@ -3,7 +3,9 @@ package DomainLayer;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
 import DomainLayer.Stores.TODO;
+import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.MarketManagementFacade;
+import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.GuestState;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
@@ -11,6 +13,7 @@ import DomainLayer.Users.User;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SystemImplementor implements SystemInterface {
     @TODO
@@ -265,31 +268,39 @@ public class SystemImplementor implements SystemInterface {
     }
 
     public Response<Boolean> addExternalPurchaseService(String name) {
-        if (user == null) {
-            return new Response<>("Enter the system properly in order to perform actions in it.");
+        Response<Boolean> is_admin_response = isAdminCheck();
+        if (is_admin_response.hadError() || !is_admin_response.getObject()) {
+            return is_admin_response;
         }
+
         return this.marketManagementFacade.addExternalPurchaseService(name);
     }
 
     public Response<Boolean> addExternalSupplyService(String name) {
-        if (user == null) {
-            return new Response<>("Enter the system properly in order to perform actions in it.");
+        Response<Boolean> is_admin_response = isAdminCheck();
+        if (is_admin_response.hadError() || !is_admin_response.getObject()) {
+            return is_admin_response;
         }
+
         return this.marketManagementFacade.addExternalSupplyService(name);
     }
 
     public Response<Boolean> removeExternalPurchaseService(String name) {
-        if (user == null) {
-            return new Response<>("Enter the system properly in order to perform actions in it.");
+        Response<Boolean> is_admin_response = isAdminCheck();
+        if (is_admin_response.hadError() || !is_admin_response.getObject()) {
+            return is_admin_response;
         }
+
         return this.marketManagementFacade.removeExternalPurchaseService(name);
     }
 
     @Override
     public Response<Boolean> removeExternalSupplyService(String name) {
-        if (user == null) {
-            return new Response<>("Enter the system properly in order to perform actions in it.");
+        Response<Boolean> is_admin_response = isAdminCheck();
+        if (is_admin_response.hadError() || !is_admin_response.getObject()) {
+            return is_admin_response;
         }
+
         return this.marketManagementFacade.removeExternalSupplyService(name);
     }
 
@@ -351,6 +362,27 @@ public class SystemImplementor implements SystemInterface {
         return this.marketManagementFacade.hasSupplyService(purchase_supply_name);
     }
 
+    public Response<History> getPurchaseHistory(String username)
+    {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Enter the system properly and be subscribes in order get his purchase history");
+        }
+        if(!user.getName().equals(username))
+        {
+            return new Response<>("you can see only your own purchase history");
+        }
+        return this.marketManagementFacade.getPurchaseHistory(username);
+    }
+
+    public Response<History> getStoreHistory(int store_id)
+    {
+        Response<Boolean> is_owner_response = isOwnerCheck(store_id);
+        if (is_owner_response.hadError() || !is_owner_response.getObject()) {
+            return new Response<>(is_owner_response.getErrorMessage());
+        }
+        return this.marketManagementFacade.getStoreHistory(store_id);
+    }
+
     @Override
     public Response<Boolean> deleteUser(String name) {
         if (user == null || !user.isSubscribed()) {
@@ -369,5 +401,61 @@ public class SystemImplementor implements SystemInterface {
             return responseRemoveRoles;
         }
         return userFacade.removeUser(user.getName(), name);
+    }
+
+    private Response<Boolean> isOwnerCheck(int store_id) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+
+        String username;
+        try {
+            username = user.getName();
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+
+        return storeFacade.isOwner(store_id, username);
+    }
+
+    private Response<Boolean> isAdminCheck() {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+
+        String username;
+        try {
+            username = user.getName();
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+
+        return userFacade.isAdmin(username);
+    }
+
+    @Override
+    public Response<List<User>> getStoreManagers(int storeId){
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.getManagers(user, storeId);
+    }
+
+    public Response<Set<Item>> searchProducts(String productName, String category, List<String> keywords) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.searchProducts(productName, category, keywords);
+    }
+    public Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating){
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.filterProdacts(items, upLimit, lowLimit, rating);
+
+
+    public Response<List<INotification>> getUserNotifications(String username)
+    {
+        return this.marketManagementFacade.getUserNotifications(username);
     }
 }

@@ -264,4 +264,29 @@ public class StoreController {
         }
         return s.getItems();
     }
+      
+      
+    public List<User> getManagers(User owner, int storeId){
+        Store s = getStore(storeId);
+        if (s == null) {
+            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
+        }
+        if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
+            throw new IllegalArgumentException("This user cannot see the managers");
+        }
+        List<User> result = s.getManagers();
+        LogUtility.info(String.format("%s got list of managers: %s from store %s", owner.getName(), result, storeId));
+        return result;
+    }
+
+    public Set<Item> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating){
+        Set<Item> output = new HashSet<>();
+        for (Item item: items) {
+            if(upLimit == -1 || item.getPrice() <= upLimit)
+                if(lowLimit == -1 || item.getPrice() >= lowLimit)
+                    if(rating== -1 || item.getRate() > rating)
+                        output.add(item);
+        }
+        return output;
+    }
 }
