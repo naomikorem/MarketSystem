@@ -247,6 +247,11 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.removeItemFromStore(user, storeId, itemId, amount);
     }
 
+    @Override
+    public Response<Item> modifyItem(int storeId, int itemId, String productName, String category, double price, List<String> keywords) {
+        return storeFacade.modifyItem(user, storeId, itemId, productName, category, price, keywords);
+    }
+
     public Response<Boolean> initializeMarket() {
         return this.marketManagementFacade.initializeMarket();
     }

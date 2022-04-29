@@ -11,6 +11,8 @@ import java.util.List;
 public interface SystemInterface {
     Response<Item> removeItemFromStore(int storeId, int itemId, int amount);
 
+    Response<Item> modifyItem(int storeId, int itemId, String productName, String category, double price, List<String> keywords);
+
     public Response<Boolean> initializeMarket();
 
     public Response<Boolean> addExternalPurchaseService(String name);
