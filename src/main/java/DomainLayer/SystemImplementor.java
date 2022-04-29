@@ -447,11 +447,13 @@ public class SystemImplementor implements SystemInterface {
         }
         return storeFacade.searchProducts(productName, category, keywords);
     }
-    public Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating){
+
+    public Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating) {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
         return storeFacade.filterProdacts(items, upLimit, lowLimit, rating);
+    }
 
 
     public Response<List<INotification>> getUserNotifications(String username)
