@@ -7,11 +7,14 @@ import DomainLayer.Users.User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public interface SystemInterface {
     Response<Item> removeItemFromStore(int storeId, int itemId, int amount);
 
     Response<Item> modifyItem(int storeId, int itemId, String productName, String category, double price, List<String> keywords);
+
+    Response<Map<Item, Integer>> getItems(int storeId);
 
     public Response<Boolean> initializeMarket();
 

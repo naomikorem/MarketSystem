@@ -252,6 +252,14 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.modifyItem(user, storeId, itemId, productName, category, price, keywords);
     }
 
+    @Override
+    public Response<Map<Item, Integer>> getItems(int storeId) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return this.storeFacade.getItems(storeId);
+    }
+
     public Response<Boolean> initializeMarket() {
         return this.marketManagementFacade.initializeMarket();
     }

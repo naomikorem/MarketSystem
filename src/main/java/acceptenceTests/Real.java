@@ -10,6 +10,7 @@ import DomainLayer.Users.User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class Real extends Bridge {
     private SystemInterface adaptee;
@@ -161,5 +162,10 @@ public class Real extends Bridge {
     @Override
     public Response<Item> removeItemFromStore(int storeId, int itemId, int amount) {
         return adaptee.removeItemFromStore(storeId, itemId, amount);
+    }
+
+    @Override
+    public Response<Map<Item, Integer>> getItems(int storeId) {
+        return adaptee.getItems(storeId);
     }
 }

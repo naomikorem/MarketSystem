@@ -8,6 +8,7 @@ import DomainLayer.Users.User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public abstract class Bridge {
     //TODO: change return tipes.
@@ -45,6 +46,7 @@ public abstract class Bridge {
     public abstract Response<List<ShoppingBasket>> getCartBaskets();
 
     public abstract Response<Item> removeItemFromStore(int storeId, int itemId, int amount);
+    public abstract Response<Map<Item, Integer>> getItems(int storeId);
 
     //Acceptance Tests for use case 3:
     //Acceptance Tests for use case 4:

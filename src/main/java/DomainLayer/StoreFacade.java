@@ -5,10 +5,7 @@ import DomainLayer.Stores.Store;
 import DomainLayer.Stores.StoreController;
 import DomainLayer.Users.User;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class StoreFacade {
@@ -200,6 +197,14 @@ public class StoreFacade {
     public Response<Item> modifyItem(User owner, int storeId, int itemId, String productName, String category, double price, List<String> keywords) {
         try {
             return new Response<>(storeController.modifyItem(owner, storeId, itemId, productName, category, price, keywords));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Map<Item, Integer>> getItems(int storeId) {
+        try {
+            return new Response<>(storeController.getItems(storeId));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }

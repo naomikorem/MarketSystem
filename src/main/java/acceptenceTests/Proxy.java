@@ -8,6 +8,7 @@ import DomainLayer.Users.User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class Proxy extends Bridge {
     private Bridge real;
@@ -182,16 +183,25 @@ public class Proxy extends Bridge {
 
     @Override
     public Response<Boolean> addManager(String manager, int storeId) {
+        if (this.real == null) {
+            return null;
+        }
         return real.addManager(manager, storeId);
     }
 
     @Override
     public Response<Boolean> addOwner(String owner, int storeId) {
+        if (this.real == null) {
+            return null;
+        }
         return real.addOwner(owner, storeId);
     }
 
     @Override
     public Response<Boolean> removeOwner(String toRemove, int storeId) {
+        if (this.real == null) {
+            return null;
+        }
         return real.removeOwner(toRemove, storeId);
     }
 
@@ -225,5 +235,13 @@ public class Proxy extends Bridge {
             return null;
         }
         return real.removeItemFromStore(storeId, itemId, amount);
+    }
+
+    @Override
+    public Response<Map<Item, Integer>> getItems(int storeId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getItems(storeId);
     }
 }
