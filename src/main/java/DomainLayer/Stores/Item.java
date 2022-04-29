@@ -22,6 +22,7 @@ public class Item {
     }
 
     public Item(String product_name, Category category, double price) {
+        checkParams(product_name, price);
         this.id = getNextItemId();
         this.product_name = product_name;
         this.category = category;
@@ -31,15 +32,30 @@ public class Item {
         keyWords = new ArrayList<>();
     }
 
+    public void updateItem(String productName, Category category, double price, List<String> keywords) {
+        checkParams(productName, price);
+        this.product_name = productName;
+        this.category = category;
+        this.price = price;
+        this.keyWords = keywords;
+    }
+
+    public void checkParams(String product_name, double price) {
+        if (product_name == null || product_name.equals("")) {
+            LogUtility.error("tried to change product name to an empty word / null");
+            throw new IllegalArgumentException("Product name must be a non empty name");
+        }
+        if (price < 0) {
+            throw new IllegalArgumentException("Product price must not be below 0");
+        }
+    }
+
     public String getProductName() {
         return product_name;
     }
 
     public void setProductName(String product_name) {
-        if (product_name == null || product_name.equals("")) {
-            LogUtility.error("tried to change product name to an empty word / null");
-            throw new IllegalArgumentException("Product name must be a non empty name");
-        }
+        checkParams(product_name, price);
         this.product_name = product_name;
     }
 
