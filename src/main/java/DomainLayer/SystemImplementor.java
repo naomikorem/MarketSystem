@@ -3,6 +3,7 @@ package DomainLayer;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
 import DomainLayer.Stores.TODO;
+import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.MarketManagementFacade;
 import DomainLayer.Users.GuestState;
 import DomainLayer.Users.ShoppingBasket;
@@ -351,6 +352,24 @@ public class SystemImplementor implements SystemInterface {
         return this.marketManagementFacade.hasSupplyService(purchase_supply_name);
     }
 
+
+    public Response<History> getPurchaseHistory(String username)
+    {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Enter the system properly and be subscribes in order get his purchase history");
+        }
+        return this.marketManagementFacade.getPurchaseHistory(username);
+    }
+
+    public Response<History> getStoreHistory(int store_id)
+    {
+        Response<Boolean> is_owner_response = isOwnerCheck(store_id);
+        if (is_owner_response.hadError() || !is_owner_response.getObject()) {
+            return new Response<>(is_owner_response.getErrorMessage());
+        }
+        return this.marketManagementFacade.getStoreHistory(store_id);
+    }
+
     @Override
     public Response<Boolean> deleteUser(String name) {
         if (user == null || !user.isSubscribed()) {
@@ -369,6 +388,21 @@ public class SystemImplementor implements SystemInterface {
             return responseRemoveRoles;
         }
         return userFacade.removeUser(user.getName(), name);
+    }
+
+    private Response<Boolean> isOwnerCheck(int store_id) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+
+        String username;
+        try {
+            username = user.getName();
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+
+        return storeFacade.isOwner(store_id, username);
     }
 
     private Response<Boolean> isAdminCheck() {

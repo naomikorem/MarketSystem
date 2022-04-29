@@ -2,6 +2,8 @@ package DomainLayer.SystemManagement;
 
 import DomainLayer.Response;
 import DomainLayer.SystemManagement.ExternalServices.ExternalServicesHandler;
+import DomainLayer.SystemManagement.HistoryManagement.HistoryController;
+import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.Users.User;
 
 public class MarketManagementFacade
@@ -14,6 +16,7 @@ public class MarketManagementFacade
     {
         this.services = ExternalServicesHandler.getInstance();
         this.purchaseProcess = PurchaseProcess.getInstance();
+        this.historyController = HistoryController.getInstance();
     }
 
     // Implementation of thread safe singleton
@@ -22,6 +25,7 @@ public class MarketManagementFacade
     }
     private ExternalServicesHandler services;
     private PurchaseProcess purchaseProcess;
+    private HistoryController historyController;
 
     /***
      * The function responsible to initialize the connection with the external services, when the system is loaded
@@ -172,6 +176,23 @@ public class MarketManagementFacade
     {
         try {
             return new Response<>(this.services.hasSupplyService(supply_service_name));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<History> getPurchaseHistory(String username)
+    {
+        try {
+            return new Response<>(this.historyController.getPurchaseHistory(username));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<History> getStoreHistory(int store_id) {
+        try {
+            return new Response<>(this.historyController.getStoreHistory(store_id));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }

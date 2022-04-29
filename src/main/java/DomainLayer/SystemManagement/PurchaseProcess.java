@@ -2,6 +2,7 @@ package DomainLayer.SystemManagement;
 
 import DomainLayer.Stores.Item;
 import DomainLayer.SystemManagement.ExternalServices.ExternalServicesHandler;
+import DomainLayer.SystemManagement.HistoryManagement.HistoryController;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
@@ -12,6 +13,8 @@ import java.util.Map;
 public class PurchaseProcess
 {
     private ExternalServicesHandler externalServicesHandler;
+    private HistoryController historyController;
+
     //private NotificationFacade notificationFacade;
     private static class PurchaseProcessHolder {
         static final PurchaseProcess INSTANCE = new PurchaseProcess();
@@ -19,6 +22,7 @@ public class PurchaseProcess
     private PurchaseProcess()
     {
         this.externalServicesHandler = ExternalServicesHandler.getInstance();
+        this.historyController = HistoryController.getInstance();
         //this.notificationFacade = NotificationFacade.getInstance();
     }
 
@@ -39,8 +43,10 @@ public class PurchaseProcess
         double price = 0;
         List<Map.Entry<Item, Integer>> items_and_amounts = new ArrayList<>();
 
+        List<ShoppingBasket> baskets = user.getCartBaskets();
+
         // Calculate the price that the user needs to pay.
-        for (ShoppingBasket basket : user.getCartBaskets())
+        for (ShoppingBasket basket : baskets)
         {
             price += basket.calculatePrice();
             items_and_amounts.addAll(basket.getItemsAndAmounts());
@@ -57,10 +63,14 @@ public class PurchaseProcess
         * 6. save items in store and user's purchase history
         * */
 
-        // Call purchase services with the relevant details.
-        this.externalServicesHandler.pay(price, purchase_service_name/*, store details, user details*/);
+        if (user.isSubscribed()) {
+            String username = user.getName();
+            this.historyController.addToPurchaseHistory(username, baskets);
+            this.historyController.addToStoreHistory(username, baskets);
+        }
 
-        // remove all items from the user's shopping cart
+        this.historyController.addToPurchaseStoreHistory(baskets);
+
         user.emptyShoppingCart();
 
         // Call supply services with the relevant details.
