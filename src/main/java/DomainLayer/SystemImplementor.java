@@ -11,6 +11,7 @@ import DomainLayer.Users.User;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SystemImplementor implements SystemInterface {
     @TODO
@@ -392,5 +393,17 @@ public class SystemImplementor implements SystemInterface {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
         return storeFacade.getManagers(user, storeId);
+    }
+    public Response<Set<Item>> searchProducts(String productName, String category, List<String> keywords) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.searchProducts(productName, category, keywords);
+    }
+    public Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating){
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.filterProdacts(items, upLimit, lowLimit, rating);
     }
 }

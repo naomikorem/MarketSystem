@@ -10,6 +10,7 @@ import DomainLayer.Users.User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public class Real extends Bridge {
     private SystemInterface adaptee;
@@ -93,7 +94,7 @@ public class Real extends Bridge {
     }
 
     @Override
-    public Response<Collection<Store>>  getStores() {
+    public Response<Collection<Store>> getStores() {
         return adaptee.getAllStores();
     }
 
@@ -101,22 +102,21 @@ public class Real extends Bridge {
     public Response<Store> getStoreInformation(int storeID) {
         try {
             return adaptee.getStore(storeID);
-        }
-        catch (Exception e){
-            return new  Response<>(e.getMessage());
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
         }
     }
 
     @Override
-    public Response<Collection<Item>> searchProducts(String productName, String Category, List<String> keywords) {
+    public Response<Set<Item>> searchProducts(String productName, String Category, List<String> keywords) {
 
-        return null;
+        return adaptee.searchProducts(productName, Category, keywords);
     }
 
     @Override
-    public Response<Collection<Item>> filterResults() {
+    public Response<Set<Item>> filterResults(Set<Item> items, int upLimit, int lowLimit, int rating) {
 
-        return null;
+        return adaptee.filterProdacts(items, upLimit, lowLimit, rating);
     }
 
     @Override
@@ -141,7 +141,7 @@ public class Real extends Bridge {
 
     @Override
     public Response<Boolean> updateManagerPermissions(int storeId, String managerName, Byte newPermission) {
-        return adaptee.setManagerPermission(managerName,storeId, newPermission);
+        return adaptee.setManagerPermission(managerName, storeId, newPermission);
     }
 
 

@@ -8,6 +8,7 @@ import DomainLayer.Users.User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public abstract class Bridge {
     //TODO: change return tipes.
@@ -33,8 +34,8 @@ public abstract class Bridge {
     //Acceptance Tests for use case 2:
     public abstract Response<Collection<Store>> getStores();
     public abstract Response<Store> getStoreInformation(int storeID);
-    public abstract Response<Collection<Item>> searchProducts(String productName, String Category, List<String> keywords);
-    public abstract Response<Collection<Item>> filterResults();
+    public abstract Response<Set<Item>> searchProducts(String productName, String Category, List<String> keywords);
+    public abstract Response<Set<Item>> filterResults(Set<Item> items, int upLimit, int lowLimit, int rating);
     public abstract Response<Item> addItemToCart(int storeId, int itemId, int amount);
     public abstract Response<List<Item>> getShoppingCartItems();
     public abstract Response<List<Item>> updateItemInCart(int storeId, int itemId, int amount);

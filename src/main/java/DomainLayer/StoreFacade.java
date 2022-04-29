@@ -103,6 +103,18 @@ public class StoreFacade {
         }
     }
 
+    /**
+     * @param items serched items
+     * @param upLimit if irrelevant value = -1
+     * @param lowLimit if irrelevant value = -1
+     * @param rating if irrelevant value = -1
+     * @return filtered prodacts
+     */
+    public Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating){
+        return new Response<>(storeController.filterProdacts(items,upLimit,lowLimit, rating));
+    }
+
+
     public Response<Item> getItemFromStore(int storeId, int itemId) {
         try {
             return new Response<>(storeController.getItemFromStore(storeId, itemId));
