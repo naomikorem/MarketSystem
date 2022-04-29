@@ -8,6 +8,7 @@ import DomainLayer.Users.User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public interface SystemInterface {
     Response<Item> removeItemFromStore(int storeId, int itemId, int amount);
@@ -77,4 +78,9 @@ public interface SystemInterface {
 
     Response<Boolean> deleteUser(String name);
     Response<List<User>> getStoreManagers(int storeId);
+
+
+    Response<Set<Item>> searchProducts(String productName, String category, List<String> keywords) ;
+    Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating);
+
 }

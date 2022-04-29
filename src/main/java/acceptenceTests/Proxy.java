@@ -8,6 +8,7 @@ import DomainLayer.Users.User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public class Proxy extends Bridge {
     private Bridge real;
@@ -153,17 +154,19 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<Collection<Item>> searchProducts(String productName, String Category, List<String> keywords) {
+    public Response<Set<Item>> searchProducts(String productName, String Category, List<String> keywords) {
+
+
         if (this.real == null)
             return null;
         return real.searchProducts(productName,Category, keywords);
     }
 
     @Override
-    public Response<Collection<Item>> filterResults() {
+    public Response<Set<Item>> filterResults(Set<Item> items, int upLimit, int lowLimit, int rating) {
         if (this.real == null)
             return null;
-        return real.filterResults();
+        return real.filterResults(items, upLimit, lowLimit, rating);
     }
 
     @Override

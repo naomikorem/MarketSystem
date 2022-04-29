@@ -268,4 +268,15 @@ public class StoreController {
         LogUtility.info(String.format("%s got list of managers: %s from store %s", owner.getName(), result, storeId));
         return result;
     }
+
+    public Set<Item> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating){
+        Set<Item> output = new HashSet<>();
+        for (Item item: items) {
+            if(upLimit == -1 || item.getPrice() <= upLimit)
+                if(lowLimit == -1 || item.getPrice() >= lowLimit)
+                    if(rating== -1 || item.getRate() > rating)
+                        output.add(item);
+        }
+        return output;
+    }
 }
