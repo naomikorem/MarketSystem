@@ -256,4 +256,16 @@ public class StoreController {
         i.updateItem(productName, Category.valueOf(category), price, keywords);
         return i;
     }
+    public List<User> getManagers(User owner, int storeId){
+        Store s = getStore(storeId);
+        if (s == null) {
+            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
+        }
+        if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
+            throw new IllegalArgumentException("This user cannot see the managers");
+        }
+        List<User> result = s.getManagers();
+        LogUtility.info(String.format("%s got list of managers: %s from store %s", owner.getName(), result, storeId));
+        return result;
+    }
 }

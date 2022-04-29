@@ -259,4 +259,8 @@ public class Store {
             manager.removedManagedStore(getStoreId());
         }
     }
+    public List<User> getManagers(){
+        return new ArrayList<User>(managers.keySet());
+    }
+
 }

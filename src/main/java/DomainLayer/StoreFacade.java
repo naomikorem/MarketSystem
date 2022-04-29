@@ -196,6 +196,13 @@ public class StoreFacade {
             return new Response<>(e.getMessage());
         }
     }
+    public Response<List<User>> getManagers(User owner, int storeId){
+        try {
+            return new Response<>(storeController.getManagers(owner, storeId));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
 
     public Response<Item> modifyItem(User owner, int storeId, int itemId, String productName, String category, double price, List<String> keywords) {
         try {

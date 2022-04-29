@@ -385,4 +385,12 @@ public class SystemImplementor implements SystemInterface {
 
         return userFacade.isAdmin(username);
     }
+
+    @Override
+    public Response<List<User>> getStoreManagers(int storeId){
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.getManagers(user, storeId);
+    }
 }

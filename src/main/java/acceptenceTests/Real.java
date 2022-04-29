@@ -123,6 +123,12 @@ public class Real extends Bridge {
     public Response<List<Item>> getShoppingCartItems() {
         return adaptee.getShoppingCartItems();
     }
+
+    @Override
+    public Response<List<Item>> updateItemInCart(int storeId, int itemId, int amount) {
+        return null;
+    }
+
     @Override
     public Response<Store> addNewStore(String name) {
         return adaptee.addNewStore(name);
@@ -131,6 +137,17 @@ public class Real extends Bridge {
     @Override
     public Response<Boolean> addManager(String manager, int storeId) {
         return adaptee.addManager(manager, storeId);
+    }
+
+    @Override
+    public Response<Boolean> updateManagerPermissions(int storeId, String managerName, Byte newPermission) {
+        return adaptee.setManagerPermission(managerName,storeId, newPermission);
+    }
+
+
+    @Override
+    public Response<List<User>> getStoreManagers(int store) {
+        return adaptee.getStoreManagers(store);
     }
 
     @Override
@@ -146,6 +163,16 @@ public class Real extends Bridge {
     @Override
     public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount) {
         return adaptee.addItemToStore(storeId, name, category, price, amount);
+    }
+
+    @Override
+    public Response<Boolean> updateStorePolicy(int storeId) {
+        return null;
+    }
+
+    @Override
+    public Response<Boolean> updateDiscountPolicy(int storeId) {
+        return null;
     }
 
     @Override
