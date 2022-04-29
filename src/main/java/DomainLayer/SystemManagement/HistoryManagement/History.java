@@ -21,4 +21,9 @@ public class History {
             items.add(new ItemHistory(item.getId(), storeId, username, item.getProductName(), item.getCategory(), item.getPrice(), amount));
         }
     }
+
+    public Set<ItemHistory> getHistoryItems()
+    {
+        return this.items;
+    }
 }

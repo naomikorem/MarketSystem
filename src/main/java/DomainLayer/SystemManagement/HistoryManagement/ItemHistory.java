@@ -26,4 +26,5 @@ public class ItemHistory
         this.amount = amount;
         this.date = new Date();
     }
+
 }
