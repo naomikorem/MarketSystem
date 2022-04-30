@@ -1,6 +1,7 @@
 package acceptenceTests;
 
 import DomainLayer.Stores.StoreController;
+import DomainLayer.SystemManagement.NotificationManager.NotificationController;
 import DomainLayer.Users.AdminController;
 import DomainLayer.Users.SubscribedState;
 import DomainLayer.Users.User;
@@ -30,5 +31,9 @@ public abstract class AbstractTest {
         AdminController aMock = mock(AdminController.class);
         MockedStatic<AdminController> ac = Mockito.mockStatic(AdminController.class);
         ac.when(AdminController::getInstance).thenReturn(aMock);
+
+        NotificationController nMock = mock(NotificationController.class);
+        MockedStatic<NotificationController> nc = Mockito.mockStatic(NotificationController.class);
+        nc.when(NotificationController::getInstance).thenReturn(nMock);
     }
 }
