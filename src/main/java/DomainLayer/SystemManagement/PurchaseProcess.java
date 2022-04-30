@@ -7,6 +7,7 @@ import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -62,16 +63,18 @@ public class PurchaseProcess
         * 5. foreach store owner send notifications about the bought items.
         * */
 
+        Date purchase_date = new Date();
         this.externalServicesHandler.pay(price, purchase_service_name);
 
-        if (user.isSubscribed()) {
+        if (user.isSubscribed())
+        {
             String username = user.getName();
-            this.historyController.addToPurchaseHistory(username, baskets);
-            this.historyController.addToStoreHistory(username, baskets);
+            this.historyController.addToPurchaseHistory(username, baskets, purchase_date);
+            this.historyController.addToStoreHistory(username, baskets, purchase_date);
         }
-
-        this.historyController.addToPurchaseStoreHistory(baskets);
-
+        else {
+            this.historyController.addToPurchaseStoreHistory(baskets, purchase_date);
+        }
         user.emptyShoppingCart();
 
         // Call supply services with the relevant details.
