@@ -434,7 +434,7 @@ public class SystemImplementor implements SystemInterface {
     }
 
     @Override
-    public Response<List<User>> getStoreManagers(int storeId){
+    public Response<List<String>> getStoreManagers(int storeId){
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }

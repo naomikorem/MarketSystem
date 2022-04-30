@@ -206,7 +206,7 @@ public class StoreFacade {
         }
     }
   
-    public Response<List<User>> getManagers(User owner, int storeId){
+    public Response<List<String>> getManagers(User owner, int storeId){
         try {
             return new Response<>(storeController.getManagers(owner, storeId));
         } catch (Exception e) {

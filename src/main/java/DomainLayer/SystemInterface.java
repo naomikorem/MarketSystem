@@ -80,7 +80,7 @@ public interface SystemInterface {
     public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount);
 
     Response<Boolean> deleteUser(String name);
-    Response<List<User>> getStoreManagers(int storeId);
+    Response<List<String>> getStoreManagers(int storeId);
 
 
     Response<Set<Item>> searchProducts(String productName, String category, List<String> keywords) ;
