@@ -19,7 +19,7 @@ public class NotificationController {
         return NotificationControllerHolder.INSTANCE;
     }
 
-    public void addNotification(String username, String message)
+    public synchronized void addNotification(String username, String message)
     {
         if(!this.users_messages.containsKey(username))
         {
@@ -29,7 +29,7 @@ public class NotificationController {
         this.users_messages.get(username).add(new Notification(message));
     }
 
-    public void removeUserNotifications(String username)
+    public synchronized void removeUserNotifications(String username)
     {
         if(!this.users_messages.containsKey(username))
             throw new IllegalArgumentException("The user doesn't have notifications.");
@@ -37,7 +37,7 @@ public class NotificationController {
         this.users_messages.remove(username);
     }
 
-    public List<INotification> getUserNotifications(String username)
+    public synchronized List<INotification> getUserNotifications(String username)
     {
         if(!this.users_messages.containsKey(username))
             throw new IllegalArgumentException("The user doesn't have notifications.");

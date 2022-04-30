@@ -25,6 +25,7 @@ public class HistoryControllerTest extends AbstractTest
     private final String username;
     private final int store1_id;
     private final int store5_id;
+    private final Date date;
 
     public HistoryControllerTest()
     {
@@ -32,6 +33,7 @@ public class HistoryControllerTest extends AbstractTest
         this.username = "sagi is annoying";
         store1_id = 1;
         store5_id = 5;
+        this.date = new Date();
     }
 
     @Before
@@ -49,7 +51,7 @@ public class HistoryControllerTest extends AbstractTest
         basket1.addItem(item4, 2);
 
         originals_as_items_history_store1 = basket1.getItemsAndAmounts().stream().
-                map(item_amount ->convertItemToItemHistory(item_amount, store1_id, username)).collect(Collectors.toSet());
+                map(item_amount ->convertItemToItemHistory(item_amount, store1_id, username, date)).collect(Collectors.toSet());
 
         Item item5 = new Item("shirt", Category.Clothing, 65);
         Item item6 = new Item("shoes", Category.Clothing, 200);
@@ -63,7 +65,7 @@ public class HistoryControllerTest extends AbstractTest
         basket2.addItem(item8, 3);
 
         originals_as_items_history_store5 = basket2.getItemsAndAmounts().stream().
-                map(item_amount ->convertItemToItemHistory(item_amount, store5_id, username)).collect(Collectors.toSet());
+                map(item_amount ->convertItemToItemHistory(item_amount, store5_id, username, date)).collect(Collectors.toSet());
 
         originals_as_items_history = new HashSet<>();
         originals_as_items_history.addAll(originals_as_items_history_store1);
@@ -77,7 +79,7 @@ public class HistoryControllerTest extends AbstractTest
     @Test
     public void addItemsToUserHistory()
     {
-        this.historyController.addToPurchaseHistory(username, baskets);
+        this.historyController.addToPurchaseHistory(username, baskets, date);
 
         History res = this.historyController.getPurchaseHistory(username);
         Set<ItemHistory> items = res.getHistoryItems();
@@ -86,9 +88,9 @@ public class HistoryControllerTest extends AbstractTest
     }
 
     @Test
-    public void addItemsToStoreHistory()
+    public void addItemsToStoreHistorySubscribedUser()
     {
-        this.historyController.addToStoreHistory(username, baskets);
+        this.historyController.addToStoreHistory(username, baskets, date);
 
         History history_store_1 = this.historyController.getStoreHistory(store1_id);
         Set<ItemHistory> items_store_1 = history_store_1.getHistoryItems();
@@ -100,10 +102,23 @@ public class HistoryControllerTest extends AbstractTest
         assertEquals(items_store_5, originals_as_items_history_store5);
     }
 
-    private static ItemHistory convertItemToItemHistory(Map.Entry<Item, Integer> item_amount, int store_id, String username)
+    @Test
+    public void addItemsToStoreHistoryUnsubscribedUser()
+    {
+        this.historyController.addToPurchaseStoreHistory(baskets, date);
+
+        History history_store_1 = this.historyController.getStoreHistory(store1_id);
+        Set<ItemHistory> items_store_1 = history_store_1.getHistoryItems();
+        Set<String> users_items = items_store_1.stream().map(item -> item.username).collect(Collectors.toSet());
+
+        assertEquals(1, users_items.size());
+        assertTrue(users_items.contains(HistoryController.GUEST_DEFAULT_NAME));
+    }
+
+    private static ItemHistory convertItemToItemHistory(Map.Entry<Item, Integer> item_amount, int store_id, String username, Date date)
     {
         Item item = item_amount.getKey();
         int amount = item_amount.getValue();
-        return new ItemHistory(item.getId(), store_id, username, item.getProductName(), item.getCategory(), item.getPrice(), amount);
+        return new ItemHistory(item.getId(), store_id, username, item.getProductName(), item.getCategory(), item.getPrice(), amount, date);
     }
 }

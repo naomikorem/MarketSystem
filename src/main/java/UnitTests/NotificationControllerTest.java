@@ -32,18 +32,6 @@ public class NotificationControllerTest extends AbstractTest {
         this.message3 = "message 3";
     }
 
-    @Before
-    public void setup()
-    {
-        //super.before();
-    }
-
-    @After
-    public void after()
-    {
-        //super.unmock();
-    }
-
     @Test
     public void addNotificationTest(){
         final NotificationController notificationController = NotificationController.getInstance();
@@ -84,5 +72,16 @@ public class NotificationControllerTest extends AbstractTest {
 
         user2_notifications = notificationController.getUserNotifications(username2);
         assertEquals(1, user2_notifications.size());
+    }
+
+    @Test
+    public void removeNotificationsTwice()
+    {
+        final NotificationController notificationController = NotificationController.getInstance();
+        notificationController.addNotification(username1, message);
+        notificationController.addNotification(username1, message3);
+
+        notificationController.removeUserNotifications(username1);
+        assertThrows(IllegalArgumentException.class, () -> notificationController.removeUserNotifications(username1));
     }
 }
