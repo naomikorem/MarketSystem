@@ -3,6 +3,7 @@ package DomainLayer.Users;
 import DomainLayer.Stores.Item;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class User {
@@ -83,5 +84,15 @@ public class User {
 
     public void emptyShoppingCart() {
         this.shoppingCart.emptyShoppingCart();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return (other instanceof User) && ((User) other).getName().equals(getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.getName());
     }
 }
