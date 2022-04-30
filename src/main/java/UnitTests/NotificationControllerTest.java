@@ -36,13 +36,13 @@ public class NotificationControllerTest extends AbstractTest {
     @Before
     public void setup()
     {
-        super.before();
+        //super.before();
     }
 
     @After
-    public void tearDown()
+    public void after()
     {
-        //super.after();
+        //super.unmock();
     }
 
     @Test

@@ -10,7 +10,7 @@ public class AdminController {
 
     private Set<String> admins;
 
-    private AdminController() {
+    public AdminController() {
         this.admins = new HashSet<>();
 
         // load database

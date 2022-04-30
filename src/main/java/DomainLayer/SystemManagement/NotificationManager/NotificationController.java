@@ -10,7 +10,7 @@ public class NotificationController {
     private static class NotificationControllerHolder {
         static final NotificationController INSTANCE = new NotificationController();
     }
-    private NotificationController()
+    public NotificationController()
     {
         this.users_messages = new ConcurrentHashMap<>();
     }

@@ -18,7 +18,7 @@ public class UserController {
     public static String DEFAULT_ADMIN_PASSWORD = "admin";
     public static String DEFAULT_ADMIN_EMAIL = "admin@mycompany.com";
 
-    private UserController() {
+    public UserController() {
         this.users = new HashMap<>();
         this.loggedUsers = new HashSet<>();
 
