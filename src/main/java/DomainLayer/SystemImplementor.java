@@ -469,4 +469,11 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.filterProdacts(items, upLimit, lowLimit, rating);
     }
 
+    public Response<Boolean> setUserName(String newUserName) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return userFacade.setUserName(user,newUserName);
+    }
+
 }

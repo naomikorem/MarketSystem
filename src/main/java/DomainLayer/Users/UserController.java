@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class UserController {
     private static UserController userController;
@@ -17,6 +19,8 @@ public class UserController {
     public static String DEFAULT_ADMIN_USER = "admin";
     public static String DEFAULT_ADMIN_PASSWORD = "admin";
     public static String DEFAULT_ADMIN_EMAIL = "admin@mycompany.com";
+
+    public static Lock lock = new ReentrantLock();
 
     public UserController() {
         this.users = new HashMap<>();
@@ -59,7 +63,9 @@ public class UserController {
 
     public void addUser(User u) {
         if (!users.containsKey(u.getName())) {
-            users.put(u.getName(), u);
+            synchronized (lock) {
+                users.put(u.getName(), u);
+            }
         }
     }
 
@@ -69,12 +75,14 @@ public class UserController {
     }
 
     public void removeUser(String userName) {
-        if (!isExist(userName)) {
-            throw new IllegalArgumentException(String.format("Could not find user with name %s", userName));
+        synchronized (lock) {
+            if (!isExist(userName)) {
+                throw new IllegalArgumentException(String.format("Could not find user with name %s", userName));
+            }
+            users.remove(userName);
+            loggedUsers.remove(userName);
+            LogUtility.info(String.format("A user named %s was removed", userName));
         }
-        users.remove(userName);
-        loggedUsers.remove(userName);
-        LogUtility.info(String.format("A user named %s was removed", userName));
     }
 
     public User getUser(String name) {
@@ -126,7 +134,16 @@ public class UserController {
 
     public void setUserName(User user, String newName) {
         if (user.isSubscribed()) {
-            user.setName(newName);
+            synchronized (lock) {
+                if (isExist(newName)) {
+                    throw new IllegalArgumentException("The new user name is not unique, already exists in the system");
+                }
+                loggedUsers.remove(user.getName());
+                users.remove(user.getName());
+                user.setName(newName);
+                users.put(newName, user);
+                loggedUsers.add(newName);
+            }
         }
     }
 
