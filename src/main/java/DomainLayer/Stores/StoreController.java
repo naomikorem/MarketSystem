@@ -210,12 +210,14 @@ public class StoreController {
         return stores.get(storeId);
     }
 
-    public void permanentlyCloseStore(int storeId) {
+    public Store permanentlyCloseStore(int storeId) {
         if (!isExist(storeId)) {
             throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
         }
-        stores.get(storeId).setPermanentlyClosed(true);
+        Store s = getStore(storeId);
+        s.setPermanentlyClosed(true);
         LogUtility.info(String.format("store %s was permanently closed by an admin", storeId));
+        return s;
     }
 
     public void removeOwner(User owner, User toRemove, int storeId) {
