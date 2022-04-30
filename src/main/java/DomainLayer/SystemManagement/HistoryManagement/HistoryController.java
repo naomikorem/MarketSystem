@@ -9,8 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class HistoryController {
 
     private static final String GUEST_DEFAULT_NAME = "guest";
-    private final Map<String, History> users_history;
-    private final Map<Integer, History> store_history;
+    private Map<String, History> users_history;
+    private Map<Integer, History> store_history;
 
     private HistoryController()
     {
@@ -72,5 +72,12 @@ public class HistoryController {
         }
 
         return this.store_history.get(store_id);
+    }
+
+    public boolean clearHistory()
+    {
+        this.users_history = new ConcurrentHashMap<>();
+        this.store_history = new ConcurrentHashMap<>();
+        return true;
     }
 }
