@@ -10,9 +10,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UserTest extends AbstractTest {
     private static User u;
@@ -24,26 +22,20 @@ public class UserTest extends AbstractTest {
     @Before
     public void setup() {
         u = new User(new SubscribedState("user@gmail.com", "user", "password"));
-        UserController.getInstance().addUser(u);
 
-    }
-
-    @After
-    public void clean() {
-        UserController.getInstance().removeUser(u.getName());
     }
 
     @Test
     public void UserTestTest() {
         assertTrue(u.isSubscribed());
-        assertTrue(u.getName().equals("user"));
-        assertTrue(u.getEmail().equals("user@gmail.com"));
+        assertEquals("user", u.getName());
+        assertEquals("user@gmail.com", u.getEmail());
         u.setEmail("user123@gmail.com");
-        assertFalse(u.getEmail().equals("user@gmail.com"));
-        assertTrue(u.getEmail().equals("user123@gmail.com"));
+        assertNotEquals("user@gmail.com", u.getEmail());
+        assertEquals("user123@gmail.com", u.getEmail());
         u.setName("useruser");
-        assertFalse(u.getName().equals("user"));
-        assertTrue(u.getName().equals("useruser"));
+        assertNotEquals("user", u.getName());
+        assertEquals("useruser", u.getName());
         u.setName("user");
     }
 }

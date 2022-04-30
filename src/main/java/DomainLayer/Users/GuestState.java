@@ -10,7 +10,7 @@ public class GuestState implements UserState {
 
     @Override
     public String getEmail() {
-        throw new RuntimeException("Guest user does not have a name field");
+        throw new RuntimeException("Guest user does not have an email field");
     }
 
     @Override

@@ -22,8 +22,6 @@ import java.util.function.BooleanSupplier;
 import static DomainLayer.Stores.Category.Clothing;
 import static DomainLayer.Stores.Category.Food;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class ItemUnit extends AbstractTest {
 

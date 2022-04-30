@@ -15,6 +15,8 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ManagerTest extends AbstractTest {
     private User user1, user2, manager;
@@ -27,31 +29,23 @@ public class ManagerTest extends AbstractTest {
 
     @Before
     public void setup() {
-        this.user1 = new User(new SubscribedState("user1@gmail.com", "user1", "password"));
-        UserController.getInstance().addUser(user1);
-        this.user2 = new User(new SubscribedState("user2@gmail.com", "user2", "password"));
-        UserController.getInstance().addUser(user2);
+        this.user1 = mock(User.class);
+        when(user1.getName()).thenReturn("user1");
+        when(user1.isSubscribed()).thenReturn(true);
+        this.user2 = mock(User.class);
+        when(user2.getName()).thenReturn("user2");
+        when(user2.isSubscribed()).thenReturn(true);
         store = StoreController.getInstance().createStore(user1,"Store1");
-
         this.manager = new User(new SubscribedState("userM@gmail.com", "manager", "password"));
-        UserController.getInstance().addUser(manager);
     }
 
-    @After
-    public void clean(){
-        UserController.getInstance().removeUser(this.manager.getName());
-        StoreController.getInstance().removeStore(store);
-        UserController.getInstance().removeUser("user2");
-        UserController.getInstance().removeUser("user1");
-
-    }
 
     @Test
     public void appointUnregitered(){
         assertThrows(IllegalArgumentException.class, () -> StoreController.getInstance().addManager(user2,user2,store.getStoreId()));
         assertThrows(IllegalArgumentException.class, () -> StoreController.getInstance().addManager(user1,user1,store.getStoreId()));
-        assertThrows(NullPointerException.class, () -> StoreController.getInstance().addManager(user1,null,store.getStoreId()));
-        assertThrows(NullPointerException.class, () -> StoreController.getInstance().addManager(null,user2,store.getStoreId()));
+        assertThrows(IllegalArgumentException.class, () -> StoreController.getInstance().addManager(user1,null,store.getStoreId()));
+        assertThrows(IllegalArgumentException.class, () -> StoreController.getInstance().addManager(null,user2,store.getStoreId()));
         try{
             StoreController.getInstance().addManager(user1,user2,store.getStoreId());
         }catch (Exception e){

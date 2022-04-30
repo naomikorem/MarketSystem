@@ -88,15 +88,15 @@ public class User {
 
     @Override
     public boolean equals(Object other) {
-        return (other instanceof User) &&
-                ((((User) other).isSubscribed() && ((User) other).getName().equals(getName())) || this == other);
+        return this == other || ((other instanceof User) &&
+                (((User) other).isSubscribed() && ((User) other).getName().equals(getName())));
     }
 
     @Override
     public int hashCode() {
-        if (getName() != null) {
+        if (isSubscribed()) {
             return Objects.hashCode(this.getName());
         }
-        return Objects.hashCode(this);
+        return Objects.hashCode(state);
     }
 }

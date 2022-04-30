@@ -44,15 +44,12 @@ public class ReceivingInformationAndChangingIdentifyingInformationTest extends A
     @Test
     public void testAcceptModifyInformation() {
         bridge.login(u.getName(),"user1");
-        u.setName("uuser");
+        bridge.setUserName("uuser");
         assertTrue(u.getName().equals("uuser"));
         assertFalse(u.getName().equals("user"));
         u.setEmail("user11@gmail.com");
         assertTrue(u.getEmail().equals("user11@gmail.com"));
         assertFalse(u.getEmail().equals("user@gmail.com"));
-        u.setName("user");
-        assertTrue(u.getName().equals("user"));
-        assertFalse(u.getName().equals("userr"));
         bridge.logout();
 
     }

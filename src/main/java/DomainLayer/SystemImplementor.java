@@ -469,4 +469,16 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.filterProdacts(items, upLimit, lowLimit, rating);
     }
 
+    public Response<Boolean> setUserName(String newUserName) {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
+        }
+        String oldName = user.getName();
+        Response<Boolean> r1 = userFacade.setUserName(user,newUserName);
+        if (r1.hadError() || !r1.getObject()) {
+            return r1;
+        }
+        return storeFacade.applyChangeName(user, oldName, newUserName);
+    }
+
 }

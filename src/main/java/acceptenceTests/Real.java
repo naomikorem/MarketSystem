@@ -91,6 +91,11 @@ public class Real extends Bridge {
     }
 
     @Override
+    public Response<Boolean> setUserName(String userName) {
+        return adaptee.setUserName(userName);
+    }
+
+    @Override
     public Response<Boolean> logout() {
         return adaptee.logout();
     }

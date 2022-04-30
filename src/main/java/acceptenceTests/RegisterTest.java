@@ -56,14 +56,12 @@ public class RegisterTest extends AbstractTest {
 
     @Test
     public void testNegativeRegister() {
-        if (UserController.getInstance().isExist("user")) {
-            UserController.getInstance().removeUser("user");
-        }
-        assertFalse(bridge.register("user1@gmail.com", "user", "password").hadError());
+
+        Response<User> u = bridge.register("user1@gmail.com", "user", "password");
+        assertFalse(u.hadError());
         //same user can't be registered twice
         assertTrue(bridge.register("user1@gmail.com", "user", "password").hadError());
-        assertFalse(UserController.getInstance().isExist("user1"));
-        assertFalse(UserController.getInstance().isLoggedIn("user1"));
+
     }
 
     @Test

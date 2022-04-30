@@ -25,9 +25,9 @@ public class AppointManagerTest extends AbstractTest {
     @Before
     public void before() {
         bridge.enter();
-        this.user1 = bridge.register("user123@gmail.com", "user", "useruser").getObject();
+        this.user1 = bridge.register("user123@gmail.com", "user", "pass").getObject();
         this.user2 = bridge.register("user2@gmail.com", "user2", "user2").getObject();
-        bridge.login("user", "useruser");
+        bridge.login("user", "pass");
         this.store = bridge.addNewStore("Store1").getObject();
         bridge.addOwner("user2", store.getStoreId());
         bridge.logout();
@@ -58,7 +58,7 @@ public class AppointManagerTest extends AbstractTest {
         Thread t1 = new Thread(() -> {
             Bridge bridge = new Real();
             bridge.enter();
-            bridge.login(user1.getName(), "useruser");
+            bridge.login(user1.getName(), "pass");
             r1 = bridge.addManager(manager.getName(), store.getStoreId());
             bridge.logout();
         });

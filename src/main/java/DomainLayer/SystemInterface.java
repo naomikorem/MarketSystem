@@ -48,7 +48,7 @@ public interface SystemInterface {
 
     public Response<User> register(String email, String name, String password);
 
-    public Response<User> login(String name, String password);
+    public Response<User> login(String user, String password);
 
     public Response<Boolean> logout();
 
@@ -85,6 +85,7 @@ public interface SystemInterface {
 
     Response<Permission> getManagersPermissions(int storeId, String managerName);
 
+    Response<Boolean> setUserName(String newUserName);
 
     Response<Set<Item>> searchProducts(String productName, String category, List<String> keywords) ;
     Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating);
