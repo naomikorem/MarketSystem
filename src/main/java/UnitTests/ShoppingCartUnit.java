@@ -48,7 +48,6 @@ public class ShoppingCartUnit extends AbstractTest {
         bridge.removeItemFromStore(s.getStoreId(),i2.getId(),8);
         bridge.removeItemFromStore(s.getStoreId(),i3.getId(),10);
         UserController.getInstance().removeUser("user1");
-        UserController.getInstance().removeUser("user2");
 
     }
 
