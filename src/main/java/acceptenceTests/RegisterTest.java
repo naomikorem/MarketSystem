@@ -69,11 +69,9 @@ public class RegisterTest extends AbstractTest {
     @Test
     public void synchronizedRegisterTest() {
         Thread t1 = new Thread(() -> {
-            remock();
             r1 = bridge.register("user1@gmail.com", "user", "password");
         });
         Thread t2 = new Thread(() -> {
-            remock();
             r2 = bridge.register("user1@gmail.com", "user", "password");
         });
         t1.start();

@@ -26,6 +26,10 @@ public class StoreController {
         return StoreControllerHolder.instance;
     }
 
+    public void clearAll() {
+        stores = new HashMap<>();
+    }
+
     private synchronized int getNewStoreId() {
         return NEXT_STORE_ID++;
     }

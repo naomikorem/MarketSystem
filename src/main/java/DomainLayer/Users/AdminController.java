@@ -21,6 +21,14 @@ public class AdminController {
 
     }
 
+    public void clearAll() {
+        admins = new HashSet<>();
+
+        if (admins.isEmpty()) {
+            admins.add(UserController.DEFAULT_ADMIN_USER);
+        }
+    }
+
     public boolean addAdmin(String name) {
         synchronized (admins) {
             if (admins.contains(name)) {
