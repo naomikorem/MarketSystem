@@ -27,7 +27,7 @@ public class HistoryController {
         return HistoryControllerHolder.INSTANCE;
     }
 
-    public void addToPurchaseHistory(String username, List<ShoppingBasket> baskets, Date purchase_date) {
+    public void addToUserHistory(String username, List<ShoppingBasket> baskets, Date purchase_date) {
         if (!this.users_history.containsKey(username))
         {
             this.users_history.put(username, new History());

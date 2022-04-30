@@ -16,7 +16,6 @@ public class PurchaseProcess
     private ExternalServicesHandler externalServicesHandler;
     private HistoryController historyController;
 
-    //private NotificationFacade notificationFacade;
     private static class PurchaseProcessHolder {
         static final PurchaseProcess INSTANCE = new PurchaseProcess();
     }
@@ -24,7 +23,6 @@ public class PurchaseProcess
     {
         this.externalServicesHandler = ExternalServicesHandler.getInstance();
         this.historyController = HistoryController.getInstance();
-        //this.notificationFacade = NotificationFacade.getInstance();
     }
 
     // Implementation of thread safe singleton
@@ -41,19 +39,9 @@ public class PurchaseProcess
      */
     public void handlePurchase(User user, String shipping_address, String purchase_service_name, String supply_service_name)
     {
-        double price = 0;
-        List<Map.Entry<Item, Integer>> items_and_amounts = new ArrayList<>();
-
         List<ShoppingBasket> baskets = user.getCartBaskets();
-
-        // Calculate the price that the user needs to pay.
-        for (ShoppingBasket basket : baskets)
-        {
-            price += basket.calculatePrice();
-            items_and_amounts.addAll(basket.getItemsAndAmounts());
-
-            // TODO: calculate discount percents
-        }
+        double price = CalcPrice(baskets);
+        List<Map.Entry<Item, Integer>> items_and_amounts = getItemsAndAmounts(baskets);
 
         /* TODO:
         * 1. choose payment and shipping service
@@ -69,7 +57,7 @@ public class PurchaseProcess
         if (user.isSubscribed())
         {
             String username = user.getName();
-            this.historyController.addToPurchaseHistory(username, baskets, purchase_date);
+            this.historyController.addToUserHistory(username, baskets, purchase_date);
             this.historyController.addToStoreHistory(username, baskets, purchase_date);
         }
         else {
@@ -79,15 +67,26 @@ public class PurchaseProcess
 
         // Call supply services with the relevant details.
         this.externalServicesHandler.supply(shipping_address, items_and_amounts, supply_service_name);
+    }
 
-        // save in purchase history
-
-        // send notifications about the items
-        /*for (ShoppingBasket basket : user.getCartBaskets())
+    private double CalcPrice(List<ShoppingBasket> baskets) {
+        double price = 0;
+        for (ShoppingBasket basket : baskets)
         {
-            int store_id = basket.getStoreId();
+            price += basket.calculatePrice();
 
-            this.notificationFacade.notifyOwners(store_id);
-        }*/
+            // TODO: calculate discount percents
+        }
+        return price;
+    }
+
+    private List<Map.Entry<Item, Integer>> getItemsAndAmounts(List<ShoppingBasket> baskets)
+    {
+        List<Map.Entry<Item, Integer>> items_and_amounts = new ArrayList<>();
+        for (ShoppingBasket basket : baskets)
+        {
+            items_and_amounts.addAll(basket.getItemsAndAmounts());
+        }
+        return items_and_amounts;
     }
 }

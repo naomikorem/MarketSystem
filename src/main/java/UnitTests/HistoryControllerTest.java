@@ -79,7 +79,7 @@ public class HistoryControllerTest extends AbstractTest
     @Test
     public void addItemsToUserHistory()
     {
-        this.historyController.addToPurchaseHistory(username, baskets, date);
+        this.historyController.addToUserHistory(username, baskets, date);
 
         History res = this.historyController.getPurchaseHistory(username);
         Set<ItemHistory> items = res.getHistoryItems();
