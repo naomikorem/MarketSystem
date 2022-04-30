@@ -3,7 +3,6 @@ package UnitTests;
 import DomainLayer.Response;
 import DomainLayer.Stores.Store;
 import DomainLayer.Stores.StoreController;
-import DomainLayer.Users.GuestState;
 import DomainLayer.Users.User;
 import DomainLayer.Users.UserController;
 import acceptenceTests.AbstractTest;
