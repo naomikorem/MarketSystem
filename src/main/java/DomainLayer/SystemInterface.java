@@ -4,6 +4,7 @@ import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemManagement.HistoryManagement.History;
+import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
@@ -86,6 +87,8 @@ public interface SystemInterface {
     Response<Permission> getManagersPermissions(int storeId, String managerName);
 
     Response<Boolean> setUserName(String newUserName);
+
+    Response<List<INotification>> getUserNotifications();
 
     Response<Set<Item>> searchProducts(String productName, String category, List<String> keywords) ;
     Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating);

@@ -267,6 +267,10 @@ public class Store {
         return managers.keySet().stream().map(User::getName).collect(Collectors.toList());
     }
 
+    public List<String> getOwners(){
+        return owners.keySet().stream().map(User::getName).collect(Collectors.toList());
+    }
+
     public void changeName(String oldName, String newName) {
         synchronized (lock) {
             Set<User> changedOwners = owners.entrySet().stream().filter(e -> e.getValue().equals(oldName)).map(Map.Entry::getKey).collect(Collectors.toSet());

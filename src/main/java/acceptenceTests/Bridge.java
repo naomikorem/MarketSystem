@@ -4,6 +4,7 @@ import DomainLayer.Response;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
+import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
@@ -62,7 +63,10 @@ public abstract class Bridge {
     public abstract Response<Boolean> updateManagerPermissions(int storeId, String managerName, Byte newPermission);
     public abstract Response<List<String>> getStoreManagers(int store);
     public abstract Response<Boolean> removeOwner(String toRemove, int storeId);
-
+    public abstract Response<Boolean> closeStore(int storeId);
+    public abstract Response<List<INotification>> getUserNotifications();
+    public abstract Response<Boolean> removeManager(String toRemove, int storeId);
+    public abstract Response<Boolean> permanentlyCloseStore(int storeId);
 
 
 
