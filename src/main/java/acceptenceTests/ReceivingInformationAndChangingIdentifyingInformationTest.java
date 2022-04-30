@@ -10,6 +10,9 @@ import org.junit.jupiter.api.AfterAll;
 import static org.junit.Assert.*;
 
 public class ReceivingInformationAndChangingIdentifyingInformationTest extends AbstractTest {
+
+    private User u;
+
     public ReceivingInformationAndChangingIdentifyingInformationTest() {
         super();
     }
@@ -17,41 +20,40 @@ public class ReceivingInformationAndChangingIdentifyingInformationTest extends A
     @Before
     public void setup() {
         bridge.enter();
-        if (!UserController.getInstance().isExist("user")) {
-            bridge.register("user@gmail.com","user","user1");
+        if (UserController.getInstance().isExist("user")) {
+            UserController.getInstance().removeUser("user");
         }
+        this.u = bridge.register("user@gmail.com","user","user1").getObject();
     }
 
     @After
     public void clean(){
-        if(UserController.getInstance().isExist("user"))
-            UserController.getInstance().removeUser("user");
-        if(UserController.getInstance().isExist("uuser"))
-            UserController.getInstance().removeUser("uuser");
-        bridge.logout();
+
     }
 
     @Test
     public void testAcceptReceivingInformation() {
-        User u = UserController.getInstance().getUser("user");
+        bridge.login(u.getName(),"user1");
         assertTrue(u.getName().equals("user"));
         assertTrue(u.getEmail().equals("user@gmail.com"));
         assertFalse(u.getEmail().equals("user1"));
         assertFalse(u.getEmail().equals("user"));
-
+        bridge.logout();
     }
 
     @Test
     public void testAcceptModifyInformation() {
-        User u = UserController.getInstance().getUser("user");
+        bridge.login(u.getName(),"user1");
         u.setName("uuser");
         assertTrue(u.getName().equals("uuser"));
-        assertFalse(u.getName().equals("User1"));
-        assertThrows(IllegalArgumentException.class, () -> u.setEmail("UUU"));
-        assertThrows(IllegalArgumentException.class, () -> u.setName(""));
+        assertFalse(u.getName().equals("user"));
         u.setEmail("user11@gmail.com");
         assertTrue(u.getEmail().equals("user11@gmail.com"));
         assertFalse(u.getEmail().equals("user@gmail.com"));
+        u.setName("user");
+        assertTrue(u.getName().equals("user"));
+        assertFalse(u.getName().equals("userr"));
+        bridge.logout();
 
     }
 
