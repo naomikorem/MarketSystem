@@ -59,7 +59,6 @@ public class ManagerTest extends AbstractTest {
     @Test
     public void testAppointManager() {
         Thread t1 = new Thread(() -> {
-            remock();
             Bridge bridge = new Real();
             bridge.enter();
             bridge.login(user1.getName(),"pass");
@@ -67,7 +66,6 @@ public class ManagerTest extends AbstractTest {
             bridge.logout();
         });
         Thread t2 = new Thread(() -> {
-            remock();
             Bridge bridge = new Real();
             bridge.enter();
             bridge.login(user2.getName(),"pass");
