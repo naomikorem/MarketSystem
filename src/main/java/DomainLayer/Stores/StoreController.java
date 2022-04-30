@@ -198,7 +198,7 @@ public class StoreController {
         LogUtility.info(String.format("%s changed the permissions of manager %s", owner.getName(), manager));
     }
 
-    public void closeStore(User user, int storeId) {
+    public Store closeStore(User user, int storeId) {
         if (!isExist(storeId)) {
             throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
         }
@@ -207,6 +207,7 @@ public class StoreController {
         }
         stores.get(storeId).setIsOpen(user.getName(), false);
         LogUtility.info(String.format("User %s just closed store %s", user.getName(), storeId));
+        return stores.get(storeId);
     }
 
     public void permanentlyCloseStore(int storeId) {
@@ -226,7 +227,7 @@ public class StoreController {
             throw new IllegalArgumentException("Guest users can not perform this action.");
         }
         s.removeStoreOwner(owner.getName(), toRemove);
-        LogUtility.info(String.format("%s removed %s from being a store owner at store %s", owner.getName(), toRemove, storeId));
+        LogUtility.info(String.format("%s removed %s from being a store owner at store %s", owner.getName(), toRemove.getName(), storeId));
     }
 
     public void removeManager(User owner, User toRemove, int storeId) {
@@ -238,7 +239,7 @@ public class StoreController {
             throw new IllegalArgumentException("Guest users can not perform this action.");
         }
         s.removeStoreManager(owner.getName(), toRemove);
-        LogUtility.info(String.format("%s removed %s from being a store manager at store %s", owner.getName(), toRemove, storeId));
+        LogUtility.info(String.format("%s removed %s from being a store manager at store %s", owner.getName(), toRemove.getName(), storeId));
     }
 
     public void removeUserRoles(User owner, User removed) {
