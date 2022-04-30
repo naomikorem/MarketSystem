@@ -4,6 +4,7 @@ import DomainLayer.Response;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
+import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
@@ -60,9 +61,9 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<Boolean> purchaseShoppingCart(String username, String address, String purchase_service_name, String supply_service_name) {
+    public Response<Boolean> purchaseShoppingCart(String address, String purchase_service_name, String supply_service_name) {
         if (this.real != null) {
-            return real.purchaseShoppingCart(username, address, purchase_service_name, supply_service_name);
+            return real.purchaseShoppingCart(address, purchase_service_name, supply_service_name);
         }
         return null;
     }
@@ -252,6 +253,30 @@ public class Proxy extends Bridge {
             return null;
         }
         return real.addItemToStore(storeId, name, category, price, amount);
+    }
+
+    @Override
+    public Response<History> getPurchaseHistory() {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getPurchaseHistory();
+    }
+
+    @Override
+    public Response<History> getPurchaseHistory(String username) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getPurchaseHistory(username);
+    }
+
+    @Override
+    public Response<History> getStoreHistory(int store_id) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getStoreHistory(store_id);
     }
 
     @Override

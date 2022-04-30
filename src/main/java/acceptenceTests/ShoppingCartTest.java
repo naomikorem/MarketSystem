@@ -64,7 +64,7 @@ public class ShoppingCartTest extends AbstractTest {
         assertTrue(l.contains(i1));
         assertTrue(l.contains(i2));
         assertFalse(l.contains(i3));
-        bridge.purchaseShoppingCart("user1","bear shava", "UPS", "hello");
+        bridge.purchaseShoppingCart("bear shava", "UPS", "hello");
         l = bridge.getShoppingCartItems().getObject();
         //assertTrue(l.isEmpty());
         bridge.logout();

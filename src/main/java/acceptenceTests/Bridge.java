@@ -4,6 +4,7 @@ import DomainLayer.Response;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
+import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
@@ -20,7 +21,7 @@ public abstract class Bridge {
     public abstract Response<Boolean> addExternalSupplyService(String name);
     public abstract Response<Boolean> removeExternalPurchaseService(String name);
     public abstract Response<Boolean> removeExternalSupplyService(String name);
-    public abstract Response<Boolean> purchaseShoppingCart(String username, String address, String purchase_service_name, String supply_service_name);
+    public abstract Response<Boolean> purchaseShoppingCart(String address, String purchase_service_name, String supply_service_name);
     public abstract Response<Boolean> hasPurchaseService();
     public abstract Response<Boolean> hasSupplyService();
     public abstract Response<Boolean> hasPurchaseService(String purchase_service_name);
@@ -55,6 +56,9 @@ public abstract class Bridge {
     //Acceptance Tests for use case 4:
     public abstract Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount);
 
+    public abstract Response<History> getPurchaseHistory();
+    public abstract Response<History> getPurchaseHistory(String username);
+    public abstract Response<History> getStoreHistory(int store_id);
     public abstract Response<Boolean> updateStorePolicy(int storeId);
     public abstract Response<Boolean> updateDiscountPolicy(int storeId);
     public abstract Response<Boolean> addOwner(String owner, int storeId);
@@ -75,4 +79,6 @@ public abstract class Bridge {
     //Acceptance Tests for use case 6:
 
     public abstract Response<List<ShoppingBasket>> getCartBaskets();
+
+
 }

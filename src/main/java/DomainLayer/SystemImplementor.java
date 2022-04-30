@@ -306,15 +306,11 @@ public class SystemImplementor implements SystemInterface {
         return this.marketManagementFacade.removeExternalSupplyService(name);
     }
 
-    public Response<Boolean> purchaseShoppingCart(String username, String address, String purchase_service_name, String supply_service_name) {
+    public Response<Boolean> purchaseShoppingCart(String address, String purchase_service_name, String supply_service_name) {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
-        Response<User> user_res = userFacade.getUser(username);
-        if (user_res.hadError())
-            return new Response<>(user_res.getErrorMessage());
 
-        User buying_user = user_res.getObject();
         /*List<Integer> stores_ids = buying_user.getCartBaskets().stream().map(ShoppingBasket::getStoreId).collect(Collectors.toList());
         List<Response<Store>> stores_response = stores_ids.stream().map(id -> storeFacade.getStore(id)).collect(Collectors.toList());
 
@@ -331,7 +327,7 @@ public class SystemImplementor implements SystemInterface {
 
         Map<Integer, Store> stores = stores_response.stream().map(Response::getObject).collect(Collectors.toConcurrentMap(Store::getStoreId, store -> store));
         */
-        return this.marketManagementFacade.purchaseShoppingCart(buying_user, address, purchase_service_name, supply_service_name);
+        return this.marketManagementFacade.purchaseShoppingCart(user, address, purchase_service_name, supply_service_name);
     }
 
     public Response<Boolean> hasPurchaseService() {
@@ -364,14 +360,19 @@ public class SystemImplementor implements SystemInterface {
         return this.marketManagementFacade.hasSupplyService(purchase_supply_name);
     }
 
-    public Response<History> getPurchaseHistory(String username)
+    public Response<History> getPurchaseHistory()
     {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Enter the system properly and be subscribes in order get his purchase history");
         }
-        if(!user.getName().equals(username))
-        {
-            return new Response<>("you can see only your own purchase history");
+        return this.marketManagementFacade.getPurchaseHistory(user.getName());
+    }
+
+    public Response<History> getPurchaseHistory(String username)
+    {
+        Response<Boolean> is_admin_response = isAdminCheck();
+        if (is_admin_response.hadError() || !is_admin_response.getObject()) {
+            return new Response<>("The current user is not a system admin");
         }
         return this.marketManagementFacade.getPurchaseHistory(username);
     }
@@ -379,8 +380,10 @@ public class SystemImplementor implements SystemInterface {
     public Response<History> getStoreHistory(int store_id)
     {
         Response<Boolean> is_owner_response = isOwnerCheck(store_id);
-        if (is_owner_response.hadError() || !is_owner_response.getObject()) {
-            return new Response<>(is_owner_response.getErrorMessage());
+        Response<Boolean> is_admin_response = isAdminCheck();
+        if((is_admin_response.hadError() || !is_admin_response.getObject()) && (is_owner_response.hadError() || !is_owner_response.getObject()))
+        {
+            return new Response<>("The user is not an owner of the store and not an admin of the system");
         }
         return this.marketManagementFacade.getStoreHistory(store_id);
     }

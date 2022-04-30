@@ -40,14 +40,13 @@ public class ItemHistory
                     i.id == this.id &&
                     i.store_id == this.store_id &&
                     i.amount == this.amount &&
-                    i.category == this.category &&
-                    i.date.equals(this.date);
+                    i.category == this.category;
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, store_id, username, product_name, category, price_per_unit, amount, date);
+        return Objects.hash(id, store_id, username, product_name, category, price_per_unit, amount);
     }
 }

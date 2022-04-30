@@ -29,7 +29,7 @@ public interface SystemInterface {
 
     public Response<Boolean> removeExternalSupplyService(String name);
 
-    public Response<Boolean> purchaseShoppingCart(String username, String address, String purchase_service_name, String supply_service_name);
+    public Response<Boolean> purchaseShoppingCart(String address, String purchase_service_name, String supply_service_name);
 
     public Response<Boolean> hasPurchaseService();
 
@@ -39,7 +39,9 @@ public interface SystemInterface {
 
     public Response<Boolean> hasSupplyService(String purchase_supply_name);
 
+    public Response<History> getPurchaseHistory();
     public Response<History> getPurchaseHistory(String username);
+
     public Response<History> getStoreHistory(int store_id);
 
     public Response<Boolean> enter();
