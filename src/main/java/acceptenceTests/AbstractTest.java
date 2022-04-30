@@ -2,6 +2,7 @@ package acceptenceTests;
 
 import DomainLayer.Stores.StoreController;
 import DomainLayer.SystemManagement.HistoryManagement.HistoryController;
+import DomainLayer.SystemManagement.MarketManagementFacade;
 import DomainLayer.SystemManagement.NotificationManager.NotificationController;
 import DomainLayer.Users.AdminController;
 import DomainLayer.Users.UserController;
@@ -19,7 +20,6 @@ public abstract class AbstractTest {
         UserController.getInstance().clearAll();
         StoreController.getInstance().clearAll();
         AdminController.getInstance().clearAll();
-        HistoryController.getInstance().clearHistory();
-        NotificationController.getInstance().clearNotifications();
+        MarketManagementFacade.getInstance().clearAll();
     }
 }

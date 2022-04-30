@@ -36,6 +36,7 @@ public class HistoryTests extends AbstractTest
 
     public HistoryTests()
     {
+        super();
         this.regular_username1 = "regularUser1";
         this.regular_username2 = "regularUser2";
         this.store1_owner_username = "store1owner";

@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class AbstractServiceProxy<T extends AbstractExternalService>
 {
     // Holds all the external services from specific type (purchase or supply)
-    protected final ConcurrentHashMap<String, T> services = new ConcurrentHashMap<String, T>();
+    protected ConcurrentHashMap<String, T> services = new ConcurrentHashMap<String, T>();
 
     protected abstract T ServiceFactory(String name); // abstract function
 
@@ -68,5 +68,10 @@ public abstract class AbstractServiceProxy<T extends AbstractExternalService>
     public boolean hasService(String service_name)
     {
         return services.containsKey(service_name);
+    }
+
+    public void clearServices()
+    {
+        this.services = new ConcurrentHashMap<>();
     }
 }

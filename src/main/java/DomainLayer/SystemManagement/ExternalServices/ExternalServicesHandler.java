@@ -12,6 +12,7 @@ public class ExternalServicesHandler
     private PurchaseProxy purchase_proxy;
     private SupplyProxy supply_proxy;
 
+
     private static class ExternalServicesHolder {
         static final ExternalServicesHandler INSTANCE = new ExternalServicesHandler();
     }
@@ -24,6 +25,12 @@ public class ExternalServicesHandler
     // Implementation of thread safe singleton
     public static ExternalServicesHandler getInstance() {
         return ExternalServicesHolder.INSTANCE;
+    }
+
+    public void clearServices()
+    {
+        this.purchase_proxy.clearServices();
+        this.supply_proxy.clearServices();
     }
 
     /***

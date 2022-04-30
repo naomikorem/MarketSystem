@@ -33,6 +33,14 @@ public class MarketManagementFacade
     private final HistoryController historyController;
     private final NotificationController notificationController;
 
+    public Response<Boolean> clearAll()
+    {
+        this.notificationController.clearNotifications();
+        this.historyController.clearHistory();
+        this.services.clearServices();
+        return new Response<>(true);
+    }
+
     /***
      * The function responsible to initialize the connection with the external services, when the system is loaded
      * After this function, the system will have at least one supply service and one purchase service
