@@ -267,4 +267,18 @@ public class Store {
         return managers.keySet().stream().map(User::getName).collect(Collectors.toList());
     }
 
+    public void changeName(String oldName, String newName) {
+        synchronized (lock) {
+            Set<User> changedOwners = owners.entrySet().stream().filter(e -> e.getValue().equals(oldName)).map(Map.Entry::getKey).collect(Collectors.toSet());
+            owners.keySet().removeAll(changedOwners);
+            changedOwners.forEach(u -> owners.put(u, newName));
+
+            managers.forEach((key, value) -> {
+                if (value.getGivenBy().equals(oldName)) {
+                    value.setGivenBy(newName);
+                }
+            });
+        }
+    }
+
 }

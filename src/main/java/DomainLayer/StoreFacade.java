@@ -246,4 +246,13 @@ public Response<Map<Item, Integer>> getItems(int storeId) {
             return new Response<>(e.getMessage());
         }
     }
+
+    public Response<Boolean> applyChangeName(User u, String oldName, String newName) {
+        try {
+            storeController.applyChangeName(u, oldName, newName);
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
 }
