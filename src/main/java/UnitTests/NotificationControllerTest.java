@@ -25,7 +25,6 @@ public class NotificationControllerTest extends AbstractTest {
 
     public NotificationControllerTest()
     {
-        //this.notificationController = NotificationController.getInstance();
         this.username1 = "some name";
         this.username2 = "another name";
         this.message = "notification message!!!";
