@@ -2,6 +2,7 @@ package acceptenceTests;
 
 import DomainLayer.Response;
 import DomainLayer.Stores.Item;
+import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
@@ -35,6 +36,8 @@ public abstract class Bridge {
     //Acceptance Tests for use case 2:
     public abstract Response<Collection<Store>> getStores();
     public abstract Response<Store> getStoreInformation(int storeID);
+
+    public abstract Response<Permission> getManagersPermissions(int storeId, String managerName);
 
     public abstract Response<Set<Item>> searchProducts(String productName, String Category, List<String> keywords);
     public abstract Response<Set<Item>> filterResults(Set<Item> items, int upLimit, int lowLimit, int rating);

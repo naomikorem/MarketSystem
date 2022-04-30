@@ -1,6 +1,7 @@
 package DomainLayer;
 
 import DomainLayer.Stores.Item;
+import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
 import DomainLayer.Stores.TODO;
 import DomainLayer.SystemManagement.HistoryManagement.History;
@@ -10,6 +11,7 @@ import DomainLayer.Users.GuestState;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -441,6 +443,12 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.getManagers(user, storeId);
     }
 
+    public Response<Permission> getManagersPermissions(int storeId, String managerName){
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.getManagersPermissions(user, storeId, managerName);
+    }
 
     public Response<List<INotification>> getUserNotifications(String username)
     {

@@ -2,6 +2,7 @@ package acceptenceTests;
 
 import DomainLayer.Response;
 import DomainLayer.Stores.Item;
+import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemImplementor;
 import DomainLayer.SystemInterface;
@@ -106,6 +107,11 @@ public class Real extends Bridge {
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
+    }
+
+    @Override
+    public Response<Permission> getManagersPermissions(int storeId, String managerName) {
+        return adaptee.getManagersPermissions(storeId, managerName);
     }
 
     @Override

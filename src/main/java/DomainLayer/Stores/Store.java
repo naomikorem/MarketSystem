@@ -213,7 +213,7 @@ public class Store {
         return this.managers.entrySet().stream().filter(e -> e.getKey().getName().equals(name)).findFirst().map(Map.Entry::getKey).orElse(null);
     }
 
-    private Permission getPermissionByName(String name) {
+    public Permission getPermissionByName(String name) {
         return this.managers.entrySet().stream().filter(e -> e.getKey().getName().equals(name)).findFirst().map(Map.Entry::getValue).orElse(null);
     }
 

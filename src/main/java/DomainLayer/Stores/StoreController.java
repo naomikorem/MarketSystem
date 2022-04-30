@@ -1,5 +1,6 @@
 package DomainLayer.Stores;
 
+import DomainLayer.Response;
 import DomainLayer.Users.User;
 import Exceptions.LogException;
 import Utility.LogUtility;
@@ -268,7 +269,18 @@ public class StoreController {
         }
         return s.getItems();
     }
-      
+
+    public Permission getManagersPermissions(User owner, int storeId, String managerName){
+        Store s = getStore(storeId);
+        if (s == null) {
+            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
+        }
+        if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
+            throw new IllegalArgumentException("This user cannot see the managers");
+        }
+        Permission result = s.getPermissionByName(managerName);
+        return result;
+    }
       
     public List<String> getManagers(User owner, int storeId){
         Store s = getStore(storeId);

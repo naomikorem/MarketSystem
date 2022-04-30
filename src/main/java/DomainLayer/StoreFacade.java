@@ -1,6 +1,7 @@
 package DomainLayer;
 
 import DomainLayer.Stores.Item;
+import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
 import DomainLayer.Stores.StoreController;
 import DomainLayer.Users.User;
@@ -209,6 +210,14 @@ public class StoreFacade {
     public Response<List<String>> getManagers(User owner, int storeId){
         try {
             return new Response<>(storeController.getManagers(owner, storeId));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Permission> getManagersPermissions(User owner, int storeId, String managerName){
+        try {
+            return new Response<>(storeController.getManagersPermissions(owner, storeId, managerName));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }

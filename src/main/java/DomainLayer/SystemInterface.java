@@ -1,6 +1,7 @@
 package DomainLayer;
 
 import DomainLayer.Stores.Item;
+import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.Users.ShoppingBasket;
@@ -81,6 +82,8 @@ public interface SystemInterface {
 
     Response<Boolean> deleteUser(String name);
     Response<List<String>> getStoreManagers(int storeId);
+
+    Response<Permission> getManagersPermissions(int storeId, String managerName);
 
 
     Response<Set<Item>> searchProducts(String productName, String category, List<String> keywords) ;

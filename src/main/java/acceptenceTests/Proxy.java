@@ -2,6 +2,7 @@ package acceptenceTests;
 
 import DomainLayer.Response;
 import DomainLayer.Stores.Item;
+import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
@@ -152,6 +153,14 @@ public class Proxy extends Bridge {
             return null;
         }
         return real.getStoreInformation(storeID);
+    }
+
+    @Override
+    public Response<Permission> getManagersPermissions(int storeId, String managerName) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getManagersPermissions(storeId, managerName);
     }
 
     @Override
