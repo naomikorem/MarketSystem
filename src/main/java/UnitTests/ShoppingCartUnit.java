@@ -2,6 +2,8 @@ package UnitTests;
 
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
+import DomainLayer.Stores.StoreController;
+import DomainLayer.Users.SubscribedState;
 import DomainLayer.Users.User;
 import DomainLayer.Users.UserController;
 import acceptenceTests.AbstractTest;
@@ -13,8 +15,11 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static DomainLayer.Stores.Category.Food;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ShoppingCartUnit extends AbstractTest {
     private static User u;
@@ -29,48 +34,35 @@ public class ShoppingCartUnit extends AbstractTest {
 
     @Before
     public void setup() {
-        bridge.enter();
-        this.u = bridge.register("user111@gmail.com", "user1", "password").getObject();
-        bridge.login("user1", "password");
-        bridge.addNewStore("Store1");
-        s = bridge.addNewStore("Store1").getObject();
-        i1 = bridge.addItemToStore(s.getStoreId(), "Item1", "Food", 100, 9).getObject();
-        i2 = bridge.addItemToStore(s.getStoreId(), "Item2", "Food", 100, 10).getObject();
-        i3 = bridge.addItemToStore(s.getStoreId(), "Item3", "Food", 100, 10).getObject();
-        bridge.logout();
-
+        u = new User(new SubscribedState("user@gmail.com", "user", "password"));
+        s = mock(Store.class);
+        when(s.getStoreId()).thenReturn(1);
+        i1 = new Item("Item1", Food, 100);
+        i2 = new Item("Item2", Food, 10);
+        i3 = new Item("Item3", Food, 20);
     }
 
-    @After
-    public void clean() {
-
-        bridge.removeItemFromStore(s.getStoreId(),i1.getId(),7);
-        bridge.removeItemFromStore(s.getStoreId(),i2.getId(),8);
-        bridge.removeItemFromStore(s.getStoreId(),i3.getId(),10);
-        UserController.getInstance().removeUser("user1");
-
-    }
 
     @Test
     public void ShoppingCartTest() {
-        bridge.login("user1", "password");
-        List<Item> l = bridge.getShoppingCartItems().getObject();
+        List<Item> l = u.getShoppingCartItems();
         assertTrue(l.isEmpty());
-        bridge.addItemToCart(s.getStoreId(),i1.getId(),2);
-        l = bridge.getShoppingCartItems().getObject();
+        s.addItem(i1, 10);
+        s.addItem(i2, 10);
+        u.addItemToShoppingCart(s.getStoreId(),i1,2);
+        l = u.getShoppingCartItems();
         assertFalse(l.isEmpty());
         assertTrue(l.contains(i1));
         assertFalse(l.contains(i2));
         assertFalse(l.contains(i3));
-        bridge.addItemToCart(s.getStoreId(),i2.getId(),1);
-        l = bridge.getShoppingCartItems().getObject();
+        u.addItemToShoppingCart(s.getStoreId(),i2,5);
+        l = u.getShoppingCartItems();
         assertTrue(l.contains(i1));
         assertTrue(l.contains(i2));
         assertFalse(l.contains(i3));
-        bridge.purchaseShoppingCart("user1","bear shava", "UPS", "hello");
-        l = bridge.getShoppingCartItems().getObject();
-        //assertTrue(l.isEmpty());
-        bridge.logout();
+        u.emptyShoppingCart();
+        l = u.getShoppingCartItems();
+        assertTrue(l.isEmpty());
     }
 
 }

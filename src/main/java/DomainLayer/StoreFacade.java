@@ -1,6 +1,7 @@
 package DomainLayer;
 
 import DomainLayer.Stores.Item;
+import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
 import DomainLayer.Stores.StoreController;
 import DomainLayer.Users.User;
@@ -161,19 +162,17 @@ public class StoreFacade {
         }
     }
 
-    public Response<Boolean> closeStore(User founder, int storeId) {
+    public Response<Store> closeStore(User founder, int storeId) {
         try {
-            storeController.closeStore(founder, storeId);
-            return new Response<>(true);
+            return new Response<>(storeController.closeStore(founder, storeId));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
     }
 
-    public Response<Boolean> permanentlyCloseStore(int storeId) {
+    public Response<Store> permanentlyCloseStore(int storeId) {
         try {
-            storeController.permanentlyCloseStore(storeId);
-            return new Response<>(true);
+            return new Response<>(storeController.permanentlyCloseStore(storeId));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
@@ -214,6 +213,14 @@ public class StoreFacade {
         }
     }
 
+    public Response<Permission> getManagersPermissions(User owner, int storeId, String managerName){
+        try {
+            return new Response<>(storeController.getManagersPermissions(owner, storeId, managerName));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
     public Response<Item> modifyItem(User owner, int storeId, int itemId, String productName, String category, double price, List<String> keywords) {
         try {
             return new Response<>(storeController.modifyItem(owner, storeId, itemId, productName, category, price, keywords));
@@ -233,6 +240,15 @@ public Response<Map<Item, Integer>> getItems(int storeId) {
     public Response<Boolean> isOwner(int store_id, String username) {
         try {
             return new Response<>(storeController.getStore(store_id).isOwner(username));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Boolean> applyChangeName(User u, String oldName, String newName) {
+        try {
+            storeController.applyChangeName(u, oldName, newName);
+            return new Response<>(true);
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }

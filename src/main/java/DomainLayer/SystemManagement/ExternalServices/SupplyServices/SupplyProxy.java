@@ -31,12 +31,13 @@ public class SupplyProxy extends AbstractServiceProxy<IExternalSupplyService>
      */
     public boolean supply(String address, List<Map.Entry<Item, Integer>> items, String supply_service_name)
     {
-        if(!services.containsKey(supply_service_name))
-        {
-            LogUtility.error("tried to use external service that doesn't exists");
-            throw new IllegalArgumentException("The service with the name " + supply_service_name + " does not exists in the system.\n");
+        synchronized (services) {
+            if (!services.containsKey(supply_service_name)) {
+                LogUtility.error("tried to use external service that doesn't exists");
+                throw new IllegalArgumentException("The service with the name " + supply_service_name + " does not exists in the system.\n");
+            }
+            LogUtility.info("The supply service " + supply_service_name + " will try supply the items to the address: " + address);
+            return services.get(supply_service_name).supply(address, items);
         }
-        LogUtility.info("The supply service " + supply_service_name + " will try supply the items to the address: " + address);
-        return services.get(supply_service_name).supply(address, items);
     }
 }

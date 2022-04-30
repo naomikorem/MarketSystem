@@ -43,4 +43,8 @@ public class Permission {
     public String getGivenBy() {
         return this.givenBy;
     }
+
+    public void setGivenBy(String givenBy) {
+        this.givenBy = givenBy;
+    }
 }

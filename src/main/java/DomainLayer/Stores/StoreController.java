@@ -1,5 +1,6 @@
 package DomainLayer.Stores;
 
+import DomainLayer.Response;
 import DomainLayer.Users.User;
 import Exceptions.LogException;
 import Utility.LogUtility;
@@ -24,6 +25,10 @@ public class StoreController {
 
     public static StoreController getInstance() {
         return StoreControllerHolder.instance;
+    }
+
+    public void clearAll() {
+        stores = new HashMap<>();
     }
 
     private synchronized int getNewStoreId() {
@@ -130,6 +135,9 @@ public class StoreController {
     }
 
     public boolean addManager(User owner, User manager, int storeId) {
+        if (owner == null || manager == null) {
+            throw new IllegalArgumentException("A user cannot be null.");
+        }
         Store s = getInstance().getStore(storeId);
         if (s == null) {
             throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
@@ -146,6 +154,9 @@ public class StoreController {
     }
 
     public boolean addOwner(User owner, User newOwner, int storeId) {
+        if (owner == null || newOwner == null) {
+            throw new IllegalArgumentException("A user cannot be null.");
+        }
         Store s = getInstance().getStore(storeId);
         if (s == null) {
             throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
@@ -187,7 +198,7 @@ public class StoreController {
         LogUtility.info(String.format("%s changed the permissions of manager %s", owner.getName(), manager));
     }
 
-    public void closeStore(User user, int storeId) {
+    public Store closeStore(User user, int storeId) {
         if (!isExist(storeId)) {
             throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
         }
@@ -196,14 +207,17 @@ public class StoreController {
         }
         stores.get(storeId).setIsOpen(user.getName(), false);
         LogUtility.info(String.format("User %s just closed store %s", user.getName(), storeId));
+        return stores.get(storeId);
     }
 
-    public void permanentlyCloseStore(int storeId) {
+    public Store permanentlyCloseStore(int storeId) {
         if (!isExist(storeId)) {
             throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
         }
-        stores.get(storeId).setPermanentlyClosed(true);
+        Store s = getStore(storeId);
+        s.setPermanentlyClosed(true);
         LogUtility.info(String.format("store %s was permanently closed by an admin", storeId));
+        return s;
     }
 
     public void removeOwner(User owner, User toRemove, int storeId) {
@@ -215,7 +229,7 @@ public class StoreController {
             throw new IllegalArgumentException("Guest users can not perform this action.");
         }
         s.removeStoreOwner(owner.getName(), toRemove);
-        LogUtility.info(String.format("%s removed %s from being a store owner at store %s", owner.getName(), toRemove, storeId));
+        LogUtility.info(String.format("%s removed %s from being a store owner at store %s", owner.getName(), toRemove.getName(), storeId));
     }
 
     public void removeManager(User owner, User toRemove, int storeId) {
@@ -227,7 +241,7 @@ public class StoreController {
             throw new IllegalArgumentException("Guest users can not perform this action.");
         }
         s.removeStoreManager(owner.getName(), toRemove);
-        LogUtility.info(String.format("%s removed %s from being a store manager at store %s", owner.getName(), toRemove, storeId));
+        LogUtility.info(String.format("%s removed %s from being a store manager at store %s", owner.getName(), toRemove.getName(), storeId));
     }
 
     public void removeUserRoles(User owner, User removed) {
@@ -264,8 +278,19 @@ public class StoreController {
         }
         return s.getItems();
     }
-      
-      
+
+    public Permission getManagersPermissions(User owner, int storeId, String managerName){
+        Store s = getStore(storeId);
+        if (s == null) {
+            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
+        }
+        if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
+            throw new IllegalArgumentException("This user cannot see the managers");
+        }
+        Permission result = s.getPermissionByName(managerName);
+        return result;
+    }
+
     public List<String> getManagers(User owner, int storeId){
         Store s = getStore(storeId);
         if (s == null) {
@@ -288,5 +313,20 @@ public class StoreController {
                         output.add(item);
         }
         return output;
+    }
+
+    public void applyChangeName(User u, String oldName, String newName) {
+        for (int id : u.getOwnedStores()) {
+            Store s = getStore(id);
+            if (s != null) {
+                s.changeName(oldName, newName);
+            }
+        }
+        for (int id : u.getManagedStores()) {
+            Store s = getStore(id);
+            if (s != null) {
+                s.changeName(oldName, newName);
+            }
+        }
     }
 }

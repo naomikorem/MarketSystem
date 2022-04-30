@@ -213,7 +213,7 @@ public class Store {
         return this.managers.entrySet().stream().filter(e -> e.getKey().getName().equals(name)).findFirst().map(Map.Entry::getKey).orElse(null);
     }
 
-    private Permission getPermissionByName(String name) {
+    public Permission getPermissionByName(String name) {
         return this.managers.entrySet().stream().filter(e -> e.getKey().getName().equals(name)).findFirst().map(Map.Entry::getValue).orElse(null);
     }
 
@@ -265,6 +265,24 @@ public class Store {
     }
     public List<String> getManagers(){
         return managers.keySet().stream().map(User::getName).collect(Collectors.toList());
+    }
+
+    public List<String> getOwners(){
+        return owners.keySet().stream().map(User::getName).collect(Collectors.toList());
+    }
+
+    public void changeName(String oldName, String newName) {
+        synchronized (lock) {
+            Set<User> changedOwners = owners.entrySet().stream().filter(e -> e.getValue().equals(oldName)).map(Map.Entry::getKey).collect(Collectors.toSet());
+            owners.keySet().removeAll(changedOwners);
+            changedOwners.forEach(u -> owners.put(u, newName));
+
+            managers.forEach((key, value) -> {
+                if (value.getGivenBy().equals(oldName)) {
+                    value.setGivenBy(newName);
+                }
+            });
+        }
     }
 
 }

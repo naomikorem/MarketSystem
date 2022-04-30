@@ -74,4 +74,13 @@ public class UserFacade {
             return new Response<>(e.getMessage());
         }
     }
+
+    public Response<Boolean> setUserName(User user, String newUserName){
+        try{
+            userController.setUserName(user, newUserName);
+            return new Response<>(true);
+        }catch (Exception e){
+            return new Response<>(e.getMessage());
+        }
+    }
 }

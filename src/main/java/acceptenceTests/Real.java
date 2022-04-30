@@ -2,9 +2,11 @@ package acceptenceTests;
 
 import DomainLayer.Response;
 import DomainLayer.Stores.Item;
+import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemImplementor;
 import DomainLayer.SystemInterface;
+import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
@@ -90,6 +92,11 @@ public class Real extends Bridge {
     }
 
     @Override
+    public Response<Boolean> setUserName(String userName) {
+        return adaptee.setUserName(userName);
+    }
+
+    @Override
     public Response<Boolean> logout() {
         return adaptee.logout();
     }
@@ -106,6 +113,11 @@ public class Real extends Bridge {
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
+    }
+
+    @Override
+    public Response<Permission> getManagersPermissions(int storeId, String managerName) {
+        return adaptee.getManagersPermissions(storeId, managerName);
     }
 
     @Override
@@ -160,6 +172,26 @@ public class Real extends Bridge {
     @Override
     public Response<Boolean> removeOwner(String toRemove, int storeId) {
         return adaptee.removeOwner(toRemove, storeId);
+    }
+
+    @Override
+    public Response<Boolean> closeStore(int storeId) {
+        return this.adaptee.closeStore(storeId);
+    }
+
+    @Override
+    public Response<List<INotification>> getUserNotifications() {
+        return this.adaptee.getUserNotifications();
+    }
+
+    @Override
+    public Response<Boolean> removeManager(String toRemove, int storeId) {
+        return this.adaptee.removeManager(toRemove, storeId);
+    }
+
+    @Override
+    public Response<Boolean> permanentlyCloseStore(int storeId) {
+        return this.adaptee.permanentlyCloseStore(storeId);
     }
 
     @Override

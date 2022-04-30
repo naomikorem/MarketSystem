@@ -1,8 +1,10 @@
 package DomainLayer;
 
 import DomainLayer.Stores.Item;
+import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemManagement.HistoryManagement.History;
+import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
@@ -47,7 +49,7 @@ public interface SystemInterface {
 
     public Response<User> register(String email, String name, String password);
 
-    public Response<User> login(String name, String password);
+    public Response<User> login(String user, String password);
 
     public Response<Boolean> logout();
 
@@ -82,6 +84,11 @@ public interface SystemInterface {
     Response<Boolean> deleteUser(String name);
     Response<List<String>> getStoreManagers(int storeId);
 
+    Response<Permission> getManagersPermissions(int storeId, String managerName);
+
+    Response<Boolean> setUserName(String newUserName);
+
+    Response<List<INotification>> getUserNotifications();
 
     Response<Set<Item>> searchProducts(String productName, String category, List<String> keywords) ;
     Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating);

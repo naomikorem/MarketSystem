@@ -3,6 +3,7 @@ package UnitTests;
 import DomainLayer.Response;
 import DomainLayer.Stores.Store;
 import DomainLayer.Stores.StoreController;
+import DomainLayer.Users.SubscribedState;
 import DomainLayer.Users.User;
 import DomainLayer.Users.UserController;
 import acceptenceTests.AbstractTest;
@@ -13,12 +14,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class OwnerTest extends AbstractTest {
 
-    private User user1, user2, manager;
+    private User user1, user2;
     private Store store;
-    private Response<Boolean> r1,r2;
+    private Response<Boolean> r1;
 
     public OwnerTest() {
         super();
@@ -26,33 +29,29 @@ public class OwnerTest extends AbstractTest {
 
     @Before
     public void setup() {
-        bridge.enter();
-        this.user1 = bridge.register("user123@gmail.com","user","useruser").getObject();
-        this.user2 = bridge.register("user2@gmail.com","userthesecond","user2").getObject();
-        this.store = StoreController.getInstance().createStore(user1,"Store1");
+        this.user1 = mock(User.class);
+        when(user1.getName()).thenReturn("user1");
+        when(user1.isSubscribed()).thenReturn(true);
+        this.user2 = mock(User.class);
+        when(user2.getName()).thenReturn("user2");
+        when(user2.isSubscribed()).thenReturn(true);
+        store = StoreController.getInstance().createStore(user1, "Store1");
 
-    }
-
-    @After
-    public void clean(){
-        StoreController.getInstance().removeStore(store);
-        UserController.getInstance().removeUser("userthesecond");
-        UserController.getInstance().removeUser("user");
-        bridge.logout();
     }
 
     @Test
-    public void addOwner(){
-        bridge.login(user1.getName(),"useruser");
-        r1 = bridge.addOwner("owner",store.getStoreId());
-        assertTrue(r1.hadError());
-        r1 = bridge.addOwner(user2.getName(),store.getStoreId());
-        assertFalse(r1.hadError());
-        r1 = bridge.addOwner(user1.getName(),store.getStoreId());
-        assertTrue(r1.hadError());
-        assertTrue(bridge.removeOwner(user1.getName(),store.getStoreId()).hadError());
-        assertFalse(bridge.removeOwner(user2.getName(),store.getStoreId()).hadError());
-        bridge.logout();
+    public void addOwner() {
+        assertThrows(IllegalArgumentException.class, () -> StoreController.getInstance().addOwner(user2, user2, store.getStoreId()));
+        assertThrows(IllegalArgumentException.class, () -> StoreController.getInstance().addOwner(user1, user1, store.getStoreId()));
+        assertThrows(IllegalArgumentException.class, () -> StoreController.getInstance().addOwner(user1, null, store.getStoreId()));
+        try {
+            StoreController.getInstance().addOwner(user1, user2, store.getStoreId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+        assertTrue(store.isOwner(user1));
+        assertTrue(store.isOwner(user2));
     }
 
 

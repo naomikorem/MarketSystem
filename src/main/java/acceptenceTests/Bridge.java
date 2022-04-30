@@ -2,7 +2,9 @@ package acceptenceTests;
 
 import DomainLayer.Response;
 import DomainLayer.Stores.Item;
+import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
+import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
@@ -31,10 +33,14 @@ public abstract class Bridge {
     public abstract Response<User> register(String email, String name, String password);
     public abstract Response<User> login(String user, String password);
 
+    public abstract Response<Boolean> setUserName(String userName);
+
 
     //Acceptance Tests for use case 2:
     public abstract Response<Collection<Store>> getStores();
     public abstract Response<Store> getStoreInformation(int storeID);
+
+    public abstract Response<Permission> getManagersPermissions(int storeId, String managerName);
 
     public abstract Response<Set<Item>> searchProducts(String productName, String Category, List<String> keywords);
     public abstract Response<Set<Item>> filterResults(Set<Item> items, int upLimit, int lowLimit, int rating);
@@ -57,7 +63,10 @@ public abstract class Bridge {
     public abstract Response<Boolean> updateManagerPermissions(int storeId, String managerName, Byte newPermission);
     public abstract Response<List<String>> getStoreManagers(int store);
     public abstract Response<Boolean> removeOwner(String toRemove, int storeId);
-
+    public abstract Response<Boolean> closeStore(int storeId);
+    public abstract Response<List<INotification>> getUserNotifications();
+    public abstract Response<Boolean> removeManager(String toRemove, int storeId);
+    public abstract Response<Boolean> permanentlyCloseStore(int storeId);
 
 
 

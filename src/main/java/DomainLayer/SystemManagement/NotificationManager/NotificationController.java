@@ -6,11 +6,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class NotificationController {
-    private final Map<String, List<INotification>> users_messages;
+    private Map<String, List<INotification>> users_messages;
     private static class NotificationControllerHolder {
         static final NotificationController INSTANCE = new NotificationController();
     }
-    public NotificationController()
+    private NotificationController()
     {
         this.users_messages = new ConcurrentHashMap<>();
     }
@@ -19,7 +19,7 @@ public class NotificationController {
         return NotificationControllerHolder.INSTANCE;
     }
 
-    public void addNotification(String username, String message)
+    public synchronized void addNotification(String username, String message)
     {
         if(!this.users_messages.containsKey(username))
         {
@@ -29,7 +29,7 @@ public class NotificationController {
         this.users_messages.get(username).add(new Notification(message));
     }
 
-    public void removeUserNotifications(String username)
+    public synchronized void removeUserNotifications(String username)
     {
         if(!this.users_messages.containsKey(username))
             throw new IllegalArgumentException("The user doesn't have notifications.");
@@ -37,11 +37,17 @@ public class NotificationController {
         this.users_messages.remove(username);
     }
 
-    public List<INotification> getUserNotifications(String username)
+    public synchronized List<INotification> getUserNotifications(String username)
     {
         if(!this.users_messages.containsKey(username))
             throw new IllegalArgumentException("The user doesn't have notifications.");
 
         return this.users_messages.get(username);
+    }
+
+    public boolean clearNotifications()
+    {
+        this.users_messages = new ConcurrentHashMap<>();
+        return true;
     }
 }

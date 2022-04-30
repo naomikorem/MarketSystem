@@ -25,7 +25,9 @@ public class RegisterTest extends AbstractTest {
     }
 
     @After
-    public void clean(){bridge.logout();}
+    public void clean() {
+        bridge.logout();
+    }
 
     @Test
     public void testAcceptRegister() {
@@ -48,26 +50,28 @@ public class RegisterTest extends AbstractTest {
         //password is null
         assertTrue(bridge.register("user1@gmail.com", "user", null).hadError());
         //password more then 25
-        assertTrue(bridge.register("user1@gmail.com", "user", "aaaaaaaaaaaaaaaaaaaaaaaaa").hadError());
+        assertTrue(bridge.register("user1@gmail.com", "user", "aaaaaaaaaaaaaaaaaaaaaaaaaa").hadError());
 
     }
 
     @Test
     public void testNegativeRegister() {
-        if (UserController.getInstance().isExist("user")) {
-            UserController.getInstance().removeUser("user");
-        }
-        assertFalse(bridge.register("user1@gmail.com", "user", "password").hadError());
+
+        Response<User> u = bridge.register("user1@gmail.com", "user", "password");
+        assertFalse(u.hadError());
         //same user can't be registered twice
         assertTrue(bridge.register("user1@gmail.com", "user", "password").hadError());
-        assertFalse(UserController.getInstance().isExist("user1"));
-        assertFalse(UserController.getInstance().isLoggedIn("user1"));
+
     }
 
     @Test
     public void synchronizedRegisterTest() {
-        Thread t1 = new Thread(() -> r1 = bridge.register("user1@gmail.com", "user", "password"));
-        Thread t2 = new Thread(() -> r2 = bridge.register("user1@gmail.com", "user", "password"));
+        Thread t1 = new Thread(() -> {
+            r1 = bridge.register("user1@gmail.com", "user", "password");
+        });
+        Thread t2 = new Thread(() -> {
+            r2 = bridge.register("user1@gmail.com", "user", "password");
+        });
         t1.start();
         t2.start();
         try {

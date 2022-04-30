@@ -2,7 +2,9 @@ package acceptenceTests;
 
 import DomainLayer.Response;
 import DomainLayer.Stores.Item;
+import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
+import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
@@ -131,6 +133,14 @@ public class Proxy extends Bridge {
     }
 
     @Override
+    public Response<Boolean> setUserName(String userName) {
+        if (this.real != null) {
+            return real.setUserName(userName);
+        }
+        return null;
+    }
+
+    @Override
     public Response<Boolean> logout() {
         if (this.real != null) {
             return real.logout();
@@ -152,6 +162,14 @@ public class Proxy extends Bridge {
             return null;
         }
         return real.getStoreInformation(storeID);
+    }
+
+    @Override
+    public Response<Permission> getManagersPermissions(int storeId, String managerName) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getManagersPermissions(storeId, managerName);
     }
 
     @Override
@@ -227,6 +245,38 @@ public class Proxy extends Bridge {
             return null;
         }
         return real.removeOwner(toRemove, storeId);
+    }
+
+    @Override
+    public Response<Boolean> closeStore(int storeId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.closeStore(storeId);
+    }
+
+    @Override
+    public Response<List<INotification>> getUserNotifications() {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getUserNotifications();
+    }
+
+    @Override
+    public Response<Boolean> removeManager(String toRemove, int storeId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.removeManager(toRemove, storeId);
+    }
+
+    @Override
+    public Response<Boolean> permanentlyCloseStore(int storeId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.permanentlyCloseStore(storeId);
     }
 
     @Override
