@@ -2,6 +2,7 @@ package UnitTests;
 
 import DomainLayer.Response;
 import DomainLayer.Stores.StoreController;
+import DomainLayer.Users.SubscribedState;
 import DomainLayer.Users.User;
 import DomainLayer.Users.UserController;
 import acceptenceTests.AbstractTest;
@@ -21,12 +22,8 @@ public class StoreTest extends AbstractTest {
 
     @Before
     public void setup() {
-        bridge.enter();
-        if (UserController.getInstance().isExist("user")) {
-            UserController.getInstance().removeUser("user");
-        }
-        Response<User> u = bridge.register("user1@gmail.com", "user", "password");
-        this.user = u.getObject();
+        user = new User(new SubscribedState("user@gmail.com", "user", "password"));
+        UserController.getInstance().addUser(user);
     }
 
     @After
