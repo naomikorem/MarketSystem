@@ -470,10 +470,15 @@ public class SystemImplementor implements SystemInterface {
     }
 
     public Response<Boolean> setUserName(String newUserName) {
-        if (user == null) {
-            return new Response<>("Enter the system properly in order to perform actions in it.");
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
         }
-        return userFacade.setUserName(user,newUserName);
+        String oldName = user.getName();
+        Response<Boolean> r1 = userFacade.setUserName(user,newUserName);
+        if (r1.hadError() || !r1.getObject()) {
+            return r1;
+        }
+        return storeFacade.applyChangeName(user, oldName, newUserName);
     }
 
 }

@@ -311,4 +311,19 @@ public class StoreController {
         }
         return output;
     }
+
+    public void applyChangeName(User u, String oldName, String newName) {
+        for (int id : u.getOwnedStores()) {
+            Store s = getStore(id);
+            if (s != null) {
+                s.changeName(oldName, newName);
+            }
+        }
+        for (int id : u.getManagedStores()) {
+            Store s = getStore(id);
+            if (s != null) {
+                s.changeName(oldName, newName);
+            }
+        }
+    }
 }
