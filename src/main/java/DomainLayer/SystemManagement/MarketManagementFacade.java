@@ -29,7 +29,7 @@ public class MarketManagementFacade
     private MarketManagementFacade()
     {
         this.services = ExternalServicesHandler.getInstance();
-        this.purchaseProcess = PurchaseProcess.getInstance();
+        //this.purchaseProcess = PurchaseProcess.getInstance();
         this.historyController = HistoryController.getInstance();
         this.notificationController = NotificationController.getInstance();
         this.storeController = StoreController.getInstance();
@@ -41,7 +41,7 @@ public class MarketManagementFacade
     }
     public static final String GUEST_DEFAULT_NAME = "guest";
     private final ExternalServicesHandler services;
-    private final PurchaseProcess purchaseProcess;
+    //private final PurchaseProcess purchaseProcess;
     private final HistoryController historyController;
     private final NotificationController notificationController;
     private final StoreController storeController;
@@ -90,8 +90,8 @@ public class MarketManagementFacade
         try
         {
             List<ShoppingBasket> baskets = user.getCartBaskets();
-            double price = this.purchaseProcess.CalcPrice(baskets);
-            List<Map.Entry<Item, Integer>> items_and_amounts = this.purchaseProcess.getItemsAndAmounts(baskets);
+            double price = PurchaseProcess.CalcPrice(baskets);
+            List<Map.Entry<Item, Integer>> items_and_amounts = PurchaseProcess.getItemsAndAmounts(baskets);
 
             /* TODO:
              * 1. choose payment and shipping service
@@ -101,7 +101,7 @@ public class MarketManagementFacade
              * */
 
             this.services.pay(price, purchase_service_name);
-            this.purchaseProcess.addToHistory(checkUsername(user), baskets);
+            PurchaseProcess.addToHistory(checkUsername(user), baskets);
             this.services.supply(address, items_and_amounts, supply_service_name);
 
             LogUtility.info("The user " + checkUsername(user) + " paid " + price + " shekels to the purchase services.");
