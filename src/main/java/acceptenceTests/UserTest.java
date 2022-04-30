@@ -1,3 +1,4 @@
+package acceptenceTests;
 
 import DomainLayer.Users.User;
 import DomainLayer.Users.UserController;
