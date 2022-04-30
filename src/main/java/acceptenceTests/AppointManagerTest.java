@@ -43,6 +43,15 @@ public class AppointManagerTest extends AbstractTest {
         bridge.logout();
     }
 
+    @Test
+    public void appointUnregitered(){
+        bridge.login(user1.getName(),"pass");
+        r1 = bridge.addManager("u1", store.getStoreId());
+        assertTrue(r1.hadError());
+        r2 = bridge.addManager(manager.getName(),store.getStoreId());
+        assertFalse(r2.hadError());
+        bridge.logout();
+    }
 
     @Test
     public void testAppointManager() {
