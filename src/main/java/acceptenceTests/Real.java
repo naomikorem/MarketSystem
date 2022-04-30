@@ -7,6 +7,7 @@ import DomainLayer.Stores.Store;
 import DomainLayer.SystemImplementor;
 import DomainLayer.SystemInterface;
 import DomainLayer.SystemManagement.HistoryManagement.History;
+import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
@@ -175,6 +176,26 @@ public class Real extends Bridge {
     }
 
     @Override
+    public Response<Boolean> closeStore(int storeId) {
+        return this.adaptee.closeStore(storeId);
+    }
+
+    @Override
+    public Response<List<INotification>> getUserNotifications() {
+        return this.adaptee.getUserNotifications();
+    }
+
+    @Override
+    public Response<Boolean> removeManager(String toRemove, int storeId) {
+        return this.adaptee.removeManager(toRemove, storeId);
+    }
+
+    @Override
+    public Response<Boolean> permanentlyCloseStore(int storeId) {
+        return this.adaptee.permanentlyCloseStore(storeId);
+    }
+
+    @Override
     public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount) {
         return adaptee.addItemToStore(storeId, name, category, price, amount);
     }
@@ -222,5 +243,15 @@ public class Real extends Bridge {
     @Override
     public Response<Map<Item, Integer>> getItems(int storeId) {
         return adaptee.getItems(storeId);
+    }
+
+    @Override
+    public Response<Boolean> addAdmin(String name) {
+        return adaptee.addAdmin(name);
+    }
+
+    @Override
+    public Response<Boolean> deleteAdmin(String name) {
+        return adaptee.deleteAdmin(name);
     }
 }

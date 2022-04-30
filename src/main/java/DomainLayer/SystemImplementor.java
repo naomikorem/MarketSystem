@@ -11,11 +11,7 @@ import DomainLayer.Users.GuestState;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class SystemImplementor implements SystemInterface {
     @TODO
@@ -197,7 +193,24 @@ public class SystemImplementor implements SystemInterface {
 
     @Override
     public Response<Boolean> closeStore(int storeId) {
-        return storeFacade.closeStore(user, storeId);
+        Response<Store> response = storeFacade.closeStore(user, storeId);
+        if (response.hadError()) {
+            return new Response<>(response.getErrorMessage());
+        }
+        Store s = response.getObject();
+        for (String manager : s.getManagers()) {
+            Response<Boolean> msgResponse = marketManagementFacade.addNotification(manager, String.format("The store %s that is managed by you was shut down", s.getStoreId()));
+            if (msgResponse.hadError() || !msgResponse.getObject()) {
+                return msgResponse;
+            }
+        }
+        for (String manager : s.getOwners()) {
+            Response<Boolean> msgResponse = marketManagementFacade.addNotification(manager, String.format("The store %s that is owned by you was shut down", s.getStoreId()));
+            if (msgResponse.hadError() || !msgResponse.getObject()) {
+                return msgResponse;
+            }
+        }
+        return new Response<>(true);
     }
 
     @Override
@@ -208,9 +221,21 @@ public class SystemImplementor implements SystemInterface {
         Response<Boolean> r1 = userFacade.isAdmin(user.getName());
         if (r1.hadError() || !r1.getObject()) {
             return r1;
-        } else {
-            return storeFacade.permanentlyCloseStore(storeId);
         }
+        Response<Store> s = storeFacade.permanentlyCloseStore(storeId);
+        if (s.hadError()) {
+            return new Response<>(s.getErrorMessage());
+        }
+        List<String> toDelete = new ArrayList<>(s.getObject().getManagers());
+        toDelete.addAll(s.getObject().getOwners());
+        toDelete.remove(user.getName());
+        for (String toRemove : toDelete) {
+            Response<Boolean> r2 = userFacade.removeUser(user.getName(), toRemove);
+            if (r2.hadError()) {
+                return r2;
+            }
+        }
+        return new Response<>(true);
     }
 
     @Override
@@ -222,7 +247,11 @@ public class SystemImplementor implements SystemInterface {
         if (r.hadError()) {
             return new Response<>(r.getErrorMessage());
         }
-        return storeFacade.removeOwner(user, r.getObject(), storeId);
+        Response<Boolean> r2 = storeFacade.removeOwner(user, r.getObject(), storeId);
+        if (r2.hadError() || !r2.getObject()) {
+            return r2;
+        }
+        return marketManagementFacade.addNotification(toRemove, String.format("You were removed as an owner of store %s", storeId));
     }
 
     @Override
@@ -234,7 +263,11 @@ public class SystemImplementor implements SystemInterface {
         if (r.hadError()) {
             return new Response<>(r.getErrorMessage());
         }
-        return storeFacade.removeManager(user, r.getObject(), storeId);
+        Response<Boolean> r2 = storeFacade.removeManager(user, r.getObject(), storeId);
+        if (r2.hadError() || !r2.getObject()) {
+            return r2;
+        }
+        return marketManagementFacade.addNotification(toRemove, String.format("You were removed as a manager of store %s", storeId));
     }
 
     @Override
@@ -407,6 +440,48 @@ public class SystemImplementor implements SystemInterface {
         }
         return userFacade.removeUser(user.getName(), name);
     }
+    @Override
+    public Response<Boolean> deleteAdmin(String name) {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("You must be logged in in order to perform this action");
+        }
+        Response<Boolean> r = userFacade.isAdmin(user.getName());
+        if (r.hadError() || !r.getObject()) {
+            return new Response<>("Only admin users can perform this action");
+        }
+        Response<User> userResponse = userFacade.getUser(name);
+        if (userResponse.hadError()) {
+            return new Response<>(userResponse.getErrorMessage());
+        }
+        if (userResponse.getObject() == null)
+            return new Response<>("not a valid user");
+        Response<Boolean> response = userFacade.removeAdmin(userResponse.getObject().getName());
+        if (response.hadError()) {
+            return response;
+        }
+        return userFacade.removeUser(user.getName(), name);
+    }
+    @Override
+    public Response<Boolean> addAdmin(String name) {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("You must be logged in in order to perform this action");
+        }
+        Response<Boolean> r = userFacade.isAdmin(user.getName());
+        if (r.hadError() || !r.getObject()) {
+            return new Response<>("Only admin users can perform this action");
+        }
+        Response<User> userResponse = userFacade.getUser(name);
+        if (userResponse.hadError()) {
+            return new Response<>(userResponse.getErrorMessage());
+        }
+        if (userResponse.getObject() == null)
+            return new Response<>("not a valid user");
+        Response<Boolean> response = userFacade.addAdmin(userResponse.getObject().getName());
+        if (response.hadError()) {
+            return response;
+        }
+        return userFacade.removeUser(user.getName(), name);
+    }
 
     private Response<Boolean> isOwnerCheck(int store_id) {
         if (user == null) {
@@ -453,9 +528,12 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.getManagersPermissions(user, storeId, managerName);
     }
 
-    public Response<List<INotification>> getUserNotifications(String username)
-    {
-        return this.marketManagementFacade.getUserNotifications(username);
+    @Override
+    public Response<List<INotification>> getUserNotifications() {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
+        }
+        return this.marketManagementFacade.getUserNotifications(user.getName());
     }
 
     public Response<Set<Item>> searchProducts(String productName, String category, List<String> keywords) {

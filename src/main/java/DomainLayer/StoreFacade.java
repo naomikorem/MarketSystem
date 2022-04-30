@@ -162,19 +162,17 @@ public class StoreFacade {
         }
     }
 
-    public Response<Boolean> closeStore(User founder, int storeId) {
+    public Response<Store> closeStore(User founder, int storeId) {
         try {
-            storeController.closeStore(founder, storeId);
-            return new Response<>(true);
+            return new Response<>(storeController.closeStore(founder, storeId));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
     }
 
-    public Response<Boolean> permanentlyCloseStore(int storeId) {
+    public Response<Store> permanentlyCloseStore(int storeId) {
         try {
-            storeController.permanentlyCloseStore(storeId);
-            return new Response<>(true);
+            return new Response<>(storeController.permanentlyCloseStore(storeId));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }

@@ -5,6 +5,7 @@ import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemManagement.HistoryManagement.History;
+import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
@@ -66,7 +67,10 @@ public abstract class Bridge {
     public abstract Response<Boolean> updateManagerPermissions(int storeId, String managerName, Byte newPermission);
     public abstract Response<List<String>> getStoreManagers(int store);
     public abstract Response<Boolean> removeOwner(String toRemove, int storeId);
-
+    public abstract Response<Boolean> closeStore(int storeId);
+    public abstract Response<List<INotification>> getUserNotifications();
+    public abstract Response<Boolean> removeManager(String toRemove, int storeId);
+    public abstract Response<Boolean> permanentlyCloseStore(int storeId);
 
 
 
@@ -77,8 +81,9 @@ public abstract class Bridge {
 
     //Acceptance Tests for use case 5:
     //Acceptance Tests for use case 6:
+    public abstract Response<Boolean> addAdmin(String name);
+    public abstract Response<Boolean> deleteAdmin(String name);
+
 
     public abstract Response<List<ShoppingBasket>> getCartBaskets();
-
-
 }

@@ -29,7 +29,6 @@ public class ShoppingCartTest extends AbstractTest {
         bridge.enter();
         this.u = bridge.register("user111@gmail.com", "user1", "password").getObject();
         bridge.login("user1", "password");
-        bridge.addNewStore("Store1");
         s = bridge.addNewStore("Store1").getObject();
         i1 = bridge.addItemToStore(s.getStoreId(), "Item1", "Food", 100, 9).getObject();
         i2 = bridge.addItemToStore(s.getStoreId(), "Item2", "Food", 100, 10).getObject();

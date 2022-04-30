@@ -140,6 +140,7 @@ public class UserController {
                 }
                 loggedUsers.remove(user.getName());
                 users.remove(user.getName());
+                LogUtility.info(String.format("user %s changed their name to %s", user.getName(), newName));
                 user.setName(newName);
                 users.put(newName, user);
                 loggedUsers.add(newName);
