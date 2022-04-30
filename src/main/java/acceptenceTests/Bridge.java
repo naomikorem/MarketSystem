@@ -17,7 +17,6 @@ import java.util.Set;
 public abstract class Bridge {
     //TODO: change return tipes.
     //Acceptance Tests for use case 1 System:
-    public abstract Response<Boolean> initializeMarket();
     public abstract Response<Boolean> addExternalPurchaseService(String name);
     public abstract Response<Boolean> addExternalSupplyService(String name);
     public abstract Response<Boolean> removeExternalPurchaseService(String name);

@@ -22,8 +22,6 @@ public interface SystemInterface {
 
     public Response<List<String>> getStoreOwners(int storeId);
 
-    public Response<Boolean> initializeMarket();
-
     public Response<Boolean> addExternalPurchaseService(String name);
 
     public Response<Boolean> addExternalSupplyService(String name);

@@ -40,7 +40,7 @@ public class NotificationsTests extends AbstractTest
     @Before
     public void setup()
     {
-        bridge.initializeMarket();
+        //bridge.initializeMarket();
         bridge.enter();
         bridge.register("user111@gmail.com", username1, "password");
         bridge.register("user222@gmail.com", store1_owner_username, "password");

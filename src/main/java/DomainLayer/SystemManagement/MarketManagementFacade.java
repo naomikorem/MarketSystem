@@ -33,6 +33,7 @@ public class MarketManagementFacade
         this.historyController = HistoryController.getInstance();
         this.notificationController = NotificationController.getInstance();
         this.storeController = StoreController.getInstance();
+        initializeMarket();
     }
 
     // Implementation of thread safe singleton
@@ -51,6 +52,7 @@ public class MarketManagementFacade
         this.notificationController.clearNotifications();
         this.historyController.clearHistory();
         this.services.clearServices();
+        initializeMarket();
         return new Response<>(true);
     }
 
@@ -59,21 +61,15 @@ public class MarketManagementFacade
      * After this function, the system will have at least one supply service and one purchase service
      * @return Response - if the initialization succeeded or if there was an error
      */
-    public Response<Boolean> initializeMarket()
+    public synchronized void initializeMarket()
     {
-        try {
-            // check if there is supply service - if not, add the first one
-            if (!services.hasPurchaseService()) {
-                services.addExternalPurchaseService("stub");
-            }
-            // check if there is purchase service - if not, add the first one
-            if (!services.hasSupplyService()) {
-                services.addExternalSupplyService("stub");
-            }
-            return new Response<>(true);
+        // check if there is supply service - if not, add the first one
+        if (!services.hasPurchaseService()) {
+            services.addExternalPurchaseService("stub");
         }
-        catch (Exception e) {
-            return new Response<>(e.getMessage());
+        // check if there is purchase service - if not, add the first one
+        if (!services.hasSupplyService()) {
+            services.addExternalSupplyService("stub");
         }
     }
 

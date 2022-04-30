@@ -24,11 +24,6 @@ public class Real extends Bridge {
     }
 
     @Override
-    public Response<Boolean> initializeMarket() {
-        return this.adaptee.initializeMarket();
-    }
-
-    @Override
     public Response<Boolean> addExternalPurchaseService(String name) {
         return this.adaptee.addExternalPurchaseService(name);
     }

@@ -311,10 +311,6 @@ public class SystemImplementor implements SystemInterface {
         return new Response<>(store.getObject().getOwners());
     }
 
-    public Response<Boolean> initializeMarket() {
-        return this.marketManagementFacade.initializeMarket();
-    }
-
     public Response<Boolean> addExternalPurchaseService(String name) {
         Response<Boolean> is_admin_response = isAdminCheck();
         if (is_admin_response.hadError() || !is_admin_response.getObject()) {

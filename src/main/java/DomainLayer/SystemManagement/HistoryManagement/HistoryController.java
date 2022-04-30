@@ -28,47 +28,50 @@ public class HistoryController {
     }
 
     public void addToUserHistory(String username, List<ShoppingBasket> baskets, Date purchase_date) {
-        if (!this.users_history.containsKey(username))
-        {
-            this.users_history.put(username, new History());
-        }
+        synchronized (users_history) {
+            if (!this.users_history.containsKey(username)) {
+                this.users_history.put(username, new History());
+            }
 
-        for (ShoppingBasket basket : baskets)
-        {
-            this.users_history.get(username).addToHistory(basket.getItemsAndAmounts(), basket.getStoreId(), username, purchase_date);
+            for (ShoppingBasket basket : baskets) {
+                this.users_history.get(username).addToHistory(basket.getItemsAndAmounts(), basket.getStoreId(), username, purchase_date);
+            }
         }
     }
 
     public void addToStoreHistory(String buying_username, List<ShoppingBasket> baskets, Date purchase_date) {
+        synchronized (store_history) {
+            for (ShoppingBasket basket : baskets) {
+                int store_id = basket.getStoreId();
+                if (!this.store_history.containsKey(store_id)) {
+                    this.store_history.put(store_id, new History());
+                }
 
-        for (ShoppingBasket basket : baskets)
-        {
-            int store_id = basket.getStoreId();
-            if (!this.store_history.containsKey(store_id))
-            {
-                this.store_history.put(store_id, new History());
+                this.store_history.get(store_id).addToHistory(basket.getItemsAndAmounts(), store_id, buying_username, purchase_date);
             }
-
-            this.store_history.get(store_id).addToHistory(basket.getItemsAndAmounts(), store_id, buying_username, purchase_date);
         }
     }
 
     public History getPurchaseHistory(String username)
     {
-        if (!this.users_history.containsKey(username)){
-            throw new IllegalArgumentException("User did not buy anything");
-        }
+        synchronized (users_history) {
+            if (!this.users_history.containsKey(username)) {
+                throw new IllegalArgumentException("User did not buy anything");
+            }
 
-        return this.users_history.get(username);
+            return this.users_history.get(username);
+        }
     }
 
-    public History getStoreHistory(int store_id)
+    public synchronized History getStoreHistory(int store_id)
     {
-        if (!this.store_history.containsKey(store_id)){
-            throw new IllegalArgumentException("User did not buy anything");
-        }
+        synchronized (store_history) {
+            if (!this.store_history.containsKey(store_id)) {
+                throw new IllegalArgumentException("User did not buy anything");
+            }
 
-        return this.store_history.get(store_id);
+            return this.store_history.get(store_id);
+        }
     }
 
     public boolean clearHistory()

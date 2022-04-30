@@ -15,17 +15,15 @@ public abstract class AbstractServiceProxy<T extends AbstractExternalService>
      * Add external service to the market system
      * @param name The name of the new external service
      */
-    public void addService(String name)
+    public synchronized void addService(String name)
     {
-        synchronized (services) {
-            if (services.containsKey(name))
-            {
-                LogUtility.error("tried to add a service that already exists in the system");
-                throw new IllegalArgumentException("The service with the name " + name + " already exists in the system.");
-            }
-            services.put(name, ServiceFactory(name));
-            LogUtility.info("Added new external service with the name " + name);
+        if (services.containsKey(name))
+        {
+            LogUtility.error("tried to add a service that already exists in the system");
+            throw new IllegalArgumentException("The service with the name " + name + " already exists in the system.");
         }
+        services.put(name, ServiceFactory(name));
+        LogUtility.info("Added new external service with the name " + name);
     }
 
     /***
@@ -34,21 +32,19 @@ public abstract class AbstractServiceProxy<T extends AbstractExternalService>
      */
     public void removeService(String service_name)
     {
-        synchronized (services) {
-            if (services.size() == 1)
-            {
-                LogUtility.error("tried to remove the last external service from this kind in the system");
-                throw new IllegalArgumentException("cannot remove the service " + service_name + " because it is the last connection to service in the system from this category.");
-            }
-
-            if (!services.containsKey(service_name))
-            {
-                LogUtility.error("tried to remove external service that does not exists in the system");
-                throw new IllegalArgumentException("The service with the name " + service_name + " does not exists in the system.");
-            }
-            services.remove(service_name);
-            LogUtility.info("Removed the external service with the name " + service_name + " from the system");
+        if (services.size() == 1)
+        {
+            LogUtility.error("tried to remove the last external service from this kind in the system");
+            throw new IllegalArgumentException("cannot remove the service " + service_name + " because it is the last connection to service in the system from this category.");
         }
+
+        if (!services.containsKey(service_name))
+        {
+            LogUtility.error("tried to remove external service that does not exists in the system");
+            throw new IllegalArgumentException("The service with the name " + service_name + " does not exists in the system.");
+        }
+        services.remove(service_name);
+        LogUtility.info("Removed the external service with the name " + service_name + " from the system");
     }
 
     /***

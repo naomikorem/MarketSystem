@@ -22,14 +22,6 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<Boolean> initializeMarket() {
-        if (this.real != null) {
-            return real.initializeMarket();
-        }
-        return null;
-    }
-
-    @Override
     public Response<Boolean> addExternalPurchaseService(String name) {
         if (this.real != null) {
             return real.addExternalPurchaseService(name);

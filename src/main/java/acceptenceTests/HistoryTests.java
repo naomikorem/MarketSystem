@@ -50,7 +50,7 @@ public class HistoryTests extends AbstractTest
     @Before
     public void setup()
     {
-        bridge.initializeMarket();
+        //bridge.initializeMarket();
         bridge.enter();
         bridge.register("user111@gmail.com", regular_username1, "password");
         bridge.register("user112@gmail.com", regular_username2, "password");
@@ -224,5 +224,4 @@ public class HistoryTests extends AbstractTest
     {
         return new ItemHistory(item.getId(), store_id, username, item.getProductName(), item.getCategory(), item.getPrice(), amount, date);
     }
-
 }
