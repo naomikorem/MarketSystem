@@ -53,10 +53,6 @@ public class HistoryController {
         }
     }
 
-    public void addToPurchaseStoreHistory(List<ShoppingBasket> baskets, Date purchase_date) {
-        addToStoreHistory(GUEST_DEFAULT_NAME, baskets, purchase_date);
-    }
-
     public History getPurchaseHistory(String username)
     {
         if (!this.users_history.containsKey(username)){

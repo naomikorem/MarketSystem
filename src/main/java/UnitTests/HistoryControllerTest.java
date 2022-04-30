@@ -105,7 +105,7 @@ public class HistoryControllerTest extends AbstractTest
     @Test
     public void addItemsToStoreHistoryUnsubscribedUser()
     {
-        this.historyController.addToPurchaseStoreHistory(baskets, date);
+        this.historyController.addToStoreHistory(HistoryController.GUEST_DEFAULT_NAME, baskets, date);
 
         History history_store_1 = this.historyController.getStoreHistory(store1_id);
         Set<ItemHistory> items_store_1 = history_store_1.getHistoryItems();
