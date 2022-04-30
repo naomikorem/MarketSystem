@@ -328,4 +328,20 @@ public class Proxy extends Bridge {
         }
         return real.getItems(storeId);
     }
+
+    @Override
+    public Response<Boolean> addAdmin(String name) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.addAdmin(name);
+    }
+
+    @Override
+    public Response<Boolean> deleteAdmin(String name) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.deleteAdmin(name);
+    }
 }

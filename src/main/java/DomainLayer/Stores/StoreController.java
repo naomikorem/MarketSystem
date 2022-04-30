@@ -290,7 +290,7 @@ public class StoreController {
         Permission result = s.getPermissionByName(managerName);
         return result;
     }
-      
+
     public List<String> getManagers(User owner, int storeId){
         Store s = getStore(storeId);
         if (s == null) {

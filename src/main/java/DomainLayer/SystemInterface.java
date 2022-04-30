@@ -92,4 +92,7 @@ public interface SystemInterface {
 
     Response<Set<Item>> searchProducts(String productName, String category, List<String> keywords) ;
     Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating);
+
+    Response<Boolean> deleteAdmin(String name);
+    Response<Boolean> addAdmin(String name);
 }

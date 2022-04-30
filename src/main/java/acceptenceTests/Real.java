@@ -228,4 +228,14 @@ public class Real extends Bridge {
     public Response<Map<Item, Integer>> getItems(int storeId) {
         return adaptee.getItems(storeId);
     }
+
+    @Override
+    public Response<Boolean> addAdmin(String name) {
+        return adaptee.addAdmin(name);
+    }
+
+    @Override
+    public Response<Boolean> deleteAdmin(String name) {
+        return adaptee.deleteAdmin(name);
+    }
 }
