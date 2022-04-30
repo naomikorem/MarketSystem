@@ -445,6 +445,7 @@ public class SystemImplementor implements SystemInterface {
     public Response<List<INotification>> getUserNotifications(String username)
     {
         return this.marketManagementFacade.getUserNotifications(username);
+    }
 
     public Response<Set<Item>> searchProducts(String productName, String category, List<String> keywords) {
         if (user == null) {
@@ -460,9 +461,4 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.filterProdacts(items, upLimit, lowLimit, rating);
     }
 
-
-    public Response<List<INotification>> getUserNotifications(String username)
-    {
-        return this.marketManagementFacade.getUserNotifications(username);
-    }
 }
