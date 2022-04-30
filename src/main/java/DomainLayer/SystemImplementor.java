@@ -441,6 +441,11 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.getManagers(user, storeId);
     }
 
+
+    public Response<List<INotification>> getUserNotifications(String username)
+    {
+        return this.marketManagementFacade.getUserNotifications(username);
+
     public Response<Set<Item>> searchProducts(String productName, String category, List<String> keywords) {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");

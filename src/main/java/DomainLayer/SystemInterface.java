@@ -8,7 +8,6 @@ import DomainLayer.Users.User;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public interface SystemInterface {
@@ -85,5 +84,4 @@ public interface SystemInterface {
 
     Response<Set<Item>> searchProducts(String productName, String category, List<String> keywords) ;
     Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating);
-
 }
