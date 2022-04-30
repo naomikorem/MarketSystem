@@ -23,31 +23,27 @@ public class UserTest extends AbstractTest {
 
     @Before
     public void setup() {
-        bridge.enter();
-        this.u = bridge.register("user111@gmail.com", "user1", "password").getObject();
-        bridge.login("user1", "password");
-        bridge.logout();
+        u = new User(new SubscribedState("user@gmail.com", "user", "password"));
+        UserController.getInstance().addUser(u);
 
     }
 
     @After
     public void clean() {
-        UserController.getInstance().removeUser("user1");
+        UserController.getInstance().removeUser(u.getName());
     }
 
     @Test
     public void UserTestTest() {
-        bridge.login("user1", "password");
         assertTrue(u.isSubscribed());
-        assertTrue(u.getName().equals("user1"));
-        assertTrue(u.getEmail().equals("user111@gmail.com"));
+        assertTrue(u.getName().equals("user"));
+        assertTrue(u.getEmail().equals("user@gmail.com"));
         u.setEmail("user123@gmail.com");
-        assertFalse(u.getEmail().equals("user111@gmail.com"));
+        assertFalse(u.getEmail().equals("user@gmail.com"));
         assertTrue(u.getEmail().equals("user123@gmail.com"));
         u.setName("useruser");
-        assertFalse(u.getName().equals("user1"));
+        assertFalse(u.getName().equals("user"));
         assertTrue(u.getName().equals("useruser"));
-        u.setName("user1");
-        bridge.logout();
+        u.setName("user");
     }
 }
