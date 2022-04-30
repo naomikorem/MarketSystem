@@ -22,8 +22,8 @@ public class SavingProductTest extends AbstractTest {
     private static Item i3;
     private Response<Item> r1, r2;
 
-    @BeforeClass
-    public static void setup() {
+    @Before
+    public void setup() {
         Bridge bridge = new Real();
         bridge.enter();
         bridge.register("user111@gmail.com", "user1", "password");
@@ -68,6 +68,7 @@ public class SavingProductTest extends AbstractTest {
     @Test
     public void synchronizedSavingProductTestTwoUsers() {
         Thread t1 = new Thread(() -> {
+            remock();
             Bridge bridge = new Real();
             bridge.enter();
             bridge.login("user1", "password");
@@ -75,6 +76,7 @@ public class SavingProductTest extends AbstractTest {
             bridge.logout();
         });
         Thread t2 = new Thread(() -> {
+            remock();
             Bridge bridge = new Real();
             bridge.enter();
             bridge.login("user2", "password");
@@ -96,6 +98,7 @@ public class SavingProductTest extends AbstractTest {
     @Test
     public void synchronizedSavingProductTestUserOwner() {
         Thread t1 = new Thread(() -> {
+            remock();
             Bridge bridge = new Real();
             bridge.enter();
             bridge.login("user1", "password");
@@ -103,6 +106,7 @@ public class SavingProductTest extends AbstractTest {
             bridge.logout();
         });
         Thread t2 = new Thread(() -> {
+            remock();
             Bridge bridge = new Real();
             bridge.enter();
             bridge.login("user2", "password");

@@ -1,7 +1,9 @@
 package acceptenceTests;
 
+import DomainLayer.AdminFacade;
 import DomainLayer.Stores.Store;
 import DomainLayer.Stores.StoreController;
+import DomainLayer.SystemManagement.NotificationManager.Notification;
 import DomainLayer.SystemManagement.NotificationManager.NotificationController;
 import DomainLayer.Users.AdminController;
 import DomainLayer.Users.SubscribedState;
@@ -25,6 +27,11 @@ public abstract class AbstractTest {
     private MockedStatic<AdminController> ac;
     private MockedStatic<NotificationController> nc;
 
+    private UserController uMock;
+    private StoreController sMock;
+    private AdminController aMock;
+    private NotificationController nMock;
+
 
     public AbstractTest() {
         this.mock();
@@ -33,20 +40,34 @@ public abstract class AbstractTest {
 
     public void mock() {
         Mockito.reset();
-        UserController uMock = new UserController();
+        uMock = new UserController();
         uc = Mockito.mockStatic(UserController.class);
         uc.when(UserController::getInstance).thenReturn(uMock);
 
-        StoreController sMock = new StoreController();
+        sMock = new StoreController();
         sc = Mockito.mockStatic(StoreController.class);
         sc.when(StoreController::getInstance).thenReturn(sMock);
 
-        AdminController aMock = new AdminController();
+        aMock = new AdminController();
         ac = Mockito.mockStatic(AdminController.class);
         ac.when(AdminController::getInstance).thenReturn(aMock);
 
-        NotificationController nMock = new NotificationController();
+        nMock = new NotificationController();
         nc = Mockito.mockStatic(NotificationController.class);
+        nc.when(NotificationController::getInstance).thenReturn(nMock);
+    }
+
+    public void remock() {
+        MockedStatic<UserController> uc = Mockito.mockStatic(UserController.class);
+        uc.when(UserController::getInstance).thenReturn(uMock);
+
+        MockedStatic<StoreController> sc = Mockito.mockStatic(StoreController.class);
+        sc.when(StoreController::getInstance).thenReturn(sMock);
+
+        MockedStatic<AdminController> ac = Mockito.mockStatic(AdminController.class);
+        ac.when(AdminController::getInstance).thenReturn(aMock);
+
+        MockedStatic<NotificationController> nc = Mockito.mockStatic(NotificationController.class);
         nc.when(NotificationController::getInstance).thenReturn(nMock);
     }
 

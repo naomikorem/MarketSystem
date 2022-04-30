@@ -25,7 +25,9 @@ public class RegisterTest extends AbstractTest {
     }
 
     @After
-    public void clean(){bridge.logout();}
+    public void clean() {
+        bridge.logout();
+    }
 
     @Test
     public void testAcceptRegister() {
@@ -48,7 +50,7 @@ public class RegisterTest extends AbstractTest {
         //password is null
         assertTrue(bridge.register("user1@gmail.com", "user", null).hadError());
         //password more then 25
-        assertTrue(bridge.register("user1@gmail.com", "user", "aaaaaaaaaaaaaaaaaaaaaaaaa").hadError());
+        assertTrue(bridge.register("user1@gmail.com", "user", "aaaaaaaaaaaaaaaaaaaaaaaaaa").hadError());
 
     }
 
@@ -66,8 +68,14 @@ public class RegisterTest extends AbstractTest {
 
     @Test
     public void synchronizedRegisterTest() {
-        Thread t1 = new Thread(() -> r1 = bridge.register("user1@gmail.com", "user", "password"));
-        Thread t2 = new Thread(() -> r2 = bridge.register("user1@gmail.com", "user", "password"));
+        Thread t1 = new Thread(() -> {
+            remock();
+            r1 = bridge.register("user1@gmail.com", "user", "password");
+        });
+        Thread t2 = new Thread(() -> {
+            remock();
+            r2 = bridge.register("user1@gmail.com", "user", "password");
+        });
         t1.start();
         t2.start();
         try {
