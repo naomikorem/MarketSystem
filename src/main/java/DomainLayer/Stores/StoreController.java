@@ -13,7 +13,7 @@ public class StoreController {
 
     private int NEXT_STORE_ID = 1;
 
-    private StoreController() {
+    public StoreController() {
         this.stores = new HashMap<>();
     }
 

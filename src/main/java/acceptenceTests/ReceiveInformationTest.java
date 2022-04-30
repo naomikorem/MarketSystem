@@ -24,7 +24,7 @@ public class ReceiveInformationTest extends AbstractTest {
 
     @Before
     public void before() {
-        super.before();
+        //super.before();
         bridge.enter();
         bridge.register("user@gmail.com", "user", "user");
         bridge.login("user", "user");
