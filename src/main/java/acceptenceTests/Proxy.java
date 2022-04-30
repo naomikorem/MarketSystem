@@ -132,6 +132,14 @@ public class Proxy extends Bridge {
     }
 
     @Override
+    public Response<Boolean> setUserName(String userName) {
+        if (this.real != null) {
+            return real.setUserName(userName);
+        }
+        return null;
+    }
+
+    @Override
     public Response<Boolean> logout() {
         if (this.real != null) {
             return real.logout();

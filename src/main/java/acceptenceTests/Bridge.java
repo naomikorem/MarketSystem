@@ -32,6 +32,8 @@ public abstract class Bridge {
     public abstract Response<User> register(String email, String name, String password);
     public abstract Response<User> login(String user, String password);
 
+    public abstract Response<Boolean> setUserName(String userName);
+
 
     //Acceptance Tests for use case 2:
     public abstract Response<Collection<Store>> getStores();

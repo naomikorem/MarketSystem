@@ -26,7 +26,7 @@ public class ActionByPermissionsTest extends AbstractTest{
         bridge.enter();
         this.user1 = bridge.register("user123@gmail.com", "user", "useruser").getObject();
         this.user2 = bridge.register("user2@gmail.com", "user2", "user2").getObject();
-        bridge.login("user", "useruser");
+        bridge.login(user1.getName(), "useruser");
         this.store = bridge.addNewStore("Store1").getObject();
         bridge.addManager("user2", store.getStoreId());
         bridge.logout();
@@ -46,14 +46,14 @@ public class ActionByPermissionsTest extends AbstractTest{
         bridge.login(user1.getName(),"useruser");
         bridge.updateManagerPermissions(store.getStoreId(), user2.getName(), (byte) 0x2);
         bridge.logout();
-        bridge.login("user2","user2");
+        bridge.login(user2.getName(),"user2");
         assertTrue(bridge.addManager(manager.getName(), store.getStoreId()).hadError());
         bridge.logout();
 
         bridge.login(user1.getName(),"useruser");
         bridge.updateManagerPermissions(store.getStoreId(), user2.getName(), (byte) 0x1);
         bridge.logout();
-        bridge.login("user2","user2");
+        bridge.login(user2.getName(),"user2");
         assertFalse(bridge.addManager(manager.getName(), store.getStoreId()).hadError());
         bridge.logout();
     }
