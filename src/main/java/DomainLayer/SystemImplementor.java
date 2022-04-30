@@ -11,10 +11,7 @@ import DomainLayer.Users.GuestState;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class SystemImplementor implements SystemInterface {
     @TODO
@@ -224,9 +221,21 @@ public class SystemImplementor implements SystemInterface {
         Response<Boolean> r1 = userFacade.isAdmin(user.getName());
         if (r1.hadError() || !r1.getObject()) {
             return r1;
-        } else {
-            return storeFacade.permanentlyCloseStore(storeId);
         }
+        Response<Store> s = storeFacade.permanentlyCloseStore(storeId);
+        if (s.hadError()) {
+            return new Response<>(s.getErrorMessage());
+        }
+        List<String> toDelete = new ArrayList<>(s.getObject().getManagers());
+        toDelete.addAll(s.getObject().getOwners());
+        toDelete.remove(user.getName());
+        for (String toRemove : toDelete) {
+            Response<Boolean> r2 = userFacade.removeUser(user.getName(), toRemove);
+            if (r2.hadError()) {
+                return r2;
+            }
+        }
+        return new Response<>(true);
     }
 
     @Override

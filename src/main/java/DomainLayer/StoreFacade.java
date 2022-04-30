@@ -170,10 +170,9 @@ public class StoreFacade {
         }
     }
 
-    public Response<Boolean> permanentlyCloseStore(int storeId) {
+    public Response<Store> permanentlyCloseStore(int storeId) {
         try {
-            storeController.permanentlyCloseStore(storeId);
-            return new Response<>(true);
+            return new Response<>(storeController.permanentlyCloseStore(storeId));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
