@@ -2,9 +2,11 @@ package acceptenceTests;
 
 import DomainLayer.Response;
 import DomainLayer.Stores.Item;
+import DomainLayer.Stores.Store;
 import DomainLayer.SystemManagement.HistoryManagement.ItemHistory;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.SystemManagement.NotificationManager.Notification;
+import DomainLayer.Users.User;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,26 +15,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class NotificationsTests extends AbstractTest
 {
-    private final String username1;
-    private final String store1_owner_username;
-    private final String store2_owner_username;
-
-    private int store1_id;
-    private int store2_id;
-    private Item item1;
-    private Item item2;
-    private Item item3;
-    private Item item4;
-
-    private int item1_id;
-    private int item2_id;
-    private int item3_id;
-    private int item4_id;
+    private final String username1, store1_owner_username, store2_owner_username;
+    private int store1_id, store2_id;
+    private Item item1, item2, item3, item4;
+    private int item1_id, item2_id, item3_id, item4_id;
+    private User user1, user2, user3;
+    private Store store;
 
     public NotificationsTests()
     {
@@ -69,6 +62,15 @@ public class NotificationsTests extends AbstractTest
         this.item2_id = item2.getId();
         this.item3_id = item3.getId();
         this.item4_id = item4.getId();
+
+        this.user1 = bridge.register("user123@gmail.com", "user1", "pass").getObject();
+        this.user2 = bridge.register("user2@gmail.com", "user2", "pass").getObject();
+        this.user3 = bridge.register("user3@gmail.com", "user3", "pass").getObject();
+        bridge.login(user1.getName(), "pass");
+        this.store = bridge.addNewStore("Store3").getObject();
+        bridge.addOwner("user2", store.getStoreId());
+        bridge.addManager("user3", store.getStoreId());
+        bridge.logout();
     }
 
     @Test
@@ -109,6 +111,45 @@ public class NotificationsTests extends AbstractTest
         List<INotification> notification2 = owner2_notification_res.getObject();
         assertTrue(notification2.size() == 1);
         this.bridge.logout();
+    }
+
+    @Test
+    public void testRemovedNotification() {
+        bridge.login(user1.getName(),"pass");
+        bridge.removeOwner("user2", store.getStoreId());
+        bridge.removeManager("user3", store.getStoreId());
+        bridge.logout();
+
+        bridge.login("user2", "pass");
+        assertFalse(bridge.getUserNotifications().hadError());
+        assertEquals(bridge.getUserNotifications().getObject().size(), 1);
+        assertEquals(bridge.getUserNotifications().getObject().get(0).getMessage(), String.format("You were removed as an owner of store %s", store.getStoreId()));
+        bridge.logout();
+
+        bridge.login("user3", "pass");
+        assertFalse(bridge.getUserNotifications().hadError());
+        assertEquals(bridge.getUserNotifications().getObject().size(), 1);
+        assertEquals(bridge.getUserNotifications().getObject().get(0).getMessage(), String.format("You were removed as a manager of store %s", store.getStoreId()));
+        bridge.logout();
+    }
+
+    @Test
+    public void testClosedNotification() {
+        bridge.login(user1.getName(),"pass");
+        bridge.closeStore(store.getStoreId());
+        bridge.logout();
+
+        bridge.login("user2", "pass");
+        assertFalse(bridge.getUserNotifications().hadError());
+        assertEquals(bridge.getUserNotifications().getObject().size(), 1);
+        assertEquals(bridge.getUserNotifications().getObject().get(0).getMessage(), String.format("The store %s that is owned by you was shut down", store.getStoreId()));
+        bridge.logout();
+
+        bridge.login("user3", "pass");
+        assertFalse(bridge.getUserNotifications().hadError());
+        assertEquals(bridge.getUserNotifications().getObject().size(), 1);
+        assertEquals(bridge.getUserNotifications().getObject().get(0).getMessage(), String.format("The store %s that is managed by you was shut down", store.getStoreId()));
+        bridge.logout();
     }
 
 }
