@@ -9,8 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class HistoryController {
 
     private static final String GUEST_DEFAULT_NAME = "guest";
-    private Map<String, History> users_history;
-    private Map<Integer, History> store_history;
+    private final Map<String, History> users_history;
+    private final Map<Integer, History> store_history;
 
     private HistoryController()
     {
