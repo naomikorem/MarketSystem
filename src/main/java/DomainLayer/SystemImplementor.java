@@ -437,6 +437,48 @@ public class SystemImplementor implements SystemInterface {
         }
         return userFacade.removeUser(user.getName(), name);
     }
+    @Override
+    public Response<Boolean> deleteAdmin(String name) {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("You must be logged in in order to perform this action");
+        }
+        Response<Boolean> r = userFacade.isAdmin(user.getName());
+        if (r.hadError() || !r.getObject()) {
+            return new Response<>("Only admin users can perform this action");
+        }
+        Response<User> userResponse = userFacade.getUser(name);
+        if (userResponse.hadError()) {
+            return new Response<>(userResponse.getErrorMessage());
+        }
+        if (userResponse.getObject() == null)
+            return new Response<>("not a valid user");
+        Response<Boolean> response = userFacade.removeAdmin(userResponse.getObject().getName());
+        if (response.hadError()) {
+            return response;
+        }
+        return userFacade.removeUser(user.getName(), name);
+    }
+    @Override
+    public Response<Boolean> addAdmin(String name) {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("You must be logged in in order to perform this action");
+        }
+        Response<Boolean> r = userFacade.isAdmin(user.getName());
+        if (r.hadError() || !r.getObject()) {
+            return new Response<>("Only admin users can perform this action");
+        }
+        Response<User> userResponse = userFacade.getUser(name);
+        if (userResponse.hadError()) {
+            return new Response<>(userResponse.getErrorMessage());
+        }
+        if (userResponse.getObject() == null)
+            return new Response<>("not a valid user");
+        Response<Boolean> response = userFacade.addAdmin(userResponse.getObject().getName());
+        if (response.hadError()) {
+            return response;
+        }
+        return userFacade.removeUser(user.getName(), name);
+    }
 
     private Response<Boolean> isOwnerCheck(int store_id) {
         if (user == null) {

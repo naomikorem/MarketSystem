@@ -77,6 +77,10 @@ public abstract class Bridge {
 
     //Acceptance Tests for use case 5:
     //Acceptance Tests for use case 6:
+    public abstract Response<Boolean> addAdmin(String name);
+    public abstract Response<Boolean> deleteAdmin(String name);
+
 
     public abstract Response<List<ShoppingBasket>> getCartBaskets();
+
 }
