@@ -266,7 +266,7 @@ public class StoreController {
     }
       
       
-    public List<User> getManagers(User owner, int storeId){
+    public List<String> getManagers(User owner, int storeId){
         Store s = getStore(storeId);
         if (s == null) {
             throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
@@ -274,7 +274,7 @@ public class StoreController {
         if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
-        List<User> result = s.getManagers();
+        List<String> result = s.getManagers();
         LogUtility.info(String.format("%s got list of managers: %s from store %s", owner.getName(), result, storeId));
         return result;
     }

@@ -263,8 +263,8 @@ public class Store {
             manager.removedManagedStore(getStoreId());
         }
     }
-    public List<User> getManagers(){
-        return new ArrayList<User>(managers.keySet());
+    public List<String> getManagers(){
+        return managers.keySet().stream().map(User::getName).collect(Collectors.toList());
     }
 
 }

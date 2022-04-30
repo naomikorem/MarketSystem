@@ -207,7 +207,7 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<List<User>> getStoreManagers(int store) {
+    public Response<List<String>> getStoreManagers(int store) {
         if (this.real == null)
             return null;
         return real.getStoreManagers(store);

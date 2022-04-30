@@ -434,11 +434,17 @@ public class SystemImplementor implements SystemInterface {
     }
 
     @Override
-    public Response<List<User>> getStoreManagers(int storeId){
+    public Response<List<String>> getStoreManagers(int storeId){
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
         return storeFacade.getManagers(user, storeId);
+    }
+
+
+    public Response<List<INotification>> getUserNotifications(String username)
+    {
+        return this.marketManagementFacade.getUserNotifications(username);
     }
 
     public Response<Set<Item>> searchProducts(String productName, String category, List<String> keywords) {
@@ -455,9 +461,4 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.filterProdacts(items, upLimit, lowLimit, rating);
     }
 
-
-    public Response<List<INotification>> getUserNotifications(String username)
-    {
-        return this.marketManagementFacade.getUserNotifications(username);
-    }
 }

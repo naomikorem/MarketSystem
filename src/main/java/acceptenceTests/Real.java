@@ -148,7 +148,7 @@ public class Real extends Bridge {
 
 
     @Override
-    public Response<List<User>> getStoreManagers(int store) {
+    public Response<List<String>> getStoreManagers(int store) {
         return adaptee.getStoreManagers(store);
     }
 

@@ -55,7 +55,7 @@ public abstract class Bridge {
     public abstract Response<Boolean> addOwner(String owner, int storeId);
     public abstract Response<Boolean> addManager(String managerName, int storeId);
     public abstract Response<Boolean> updateManagerPermissions(int storeId, String managerName, Byte newPermission);
-    public abstract Response<List<User>> getStoreManagers(int store);
+    public abstract Response<List<String>> getStoreManagers(int store);
     public abstract Response<Boolean> removeOwner(String toRemove, int storeId);
 
 
