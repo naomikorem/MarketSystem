@@ -20,7 +20,7 @@ public class SavingProductTest extends AbstractTest {
     private static Item i1;
     private static Item i2;
     private static Item i3;
-    private Response<Item> r1, r2;
+    private Response<Item> r1, r2; 
 
     @Before
     public void setup() {
