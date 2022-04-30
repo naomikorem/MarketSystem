@@ -10,6 +10,7 @@ import DomainLayer.Users.User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class Real extends Bridge {
@@ -142,6 +143,7 @@ public class Real extends Bridge {
     @Override
     public Response<Boolean> updateManagerPermissions(int storeId, String managerName, Byte newPermission) {
         return adaptee.setManagerPermission(managerName, storeId, newPermission);
+
     }
 
 
@@ -188,5 +190,10 @@ public class Real extends Bridge {
     @Override
     public Response<Item> removeItemFromStore(int storeId, int itemId, int amount) {
         return adaptee.removeItemFromStore(storeId, itemId, amount);
+    }
+
+    @Override
+    public Response<Map<Item, Integer>> getItems(int storeId) {
+        return adaptee.getItems(storeId);
     }
 }

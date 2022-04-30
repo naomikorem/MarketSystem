@@ -2,17 +2,21 @@ package DomainLayer;
 
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
+import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface SystemInterface {
-    Response<Item> removeItemFromStore(int storeId, int itemId, int amount);
+    public Response<Item> removeItemFromStore(int storeId, int itemId, int amount);
 
-    Response<Item> modifyItem(int storeId, int itemId, String productName, String category, double price, List<String> keywords);
+    public Response<Item> modifyItem(int storeId, int itemId, String productName, String category, double price, List<String> keywords);
+
+    public Response<Map<Item, Integer>> getItems(int storeId);
 
     public Response<Boolean> initializeMarket();
 
@@ -33,6 +37,9 @@ public interface SystemInterface {
     public Response<Boolean> hasPurchaseService(String purchase_service_name);
 
     public Response<Boolean> hasSupplyService(String purchase_supply_name);
+
+    public Response<History> getPurchaseHistory(String username);
+    public Response<History> getStoreHistory(int store_id);
 
     public Response<Boolean> enter();
 
@@ -75,6 +82,8 @@ public interface SystemInterface {
     Response<Boolean> deleteUser(String name);
     Response<List<User>> getStoreManagers(int storeId);
 
+
     Response<Set<Item>> searchProducts(String productName, String category, List<String> keywords) ;
     Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating);
+
 }
