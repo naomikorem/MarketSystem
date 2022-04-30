@@ -16,9 +16,9 @@ import static org.junit.Assert.*;
 
 public class OwnerTest extends AbstractTest {
 
-    private User user1, user2, manager;
+    private User user1, user2;
     private Store store;
-    private Response<Boolean> r1,r2;
+    private Response<Boolean> r1;
 
     public OwnerTest() {
         super();
