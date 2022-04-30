@@ -14,6 +14,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class OwnerTest extends AbstractTest {
 
@@ -27,29 +29,25 @@ public class OwnerTest extends AbstractTest {
 
     @Before
     public void setup() {
-        this.user1 = new User(new SubscribedState("user1@gmail.com", "user1", "password"));
-        UserController.getInstance().addUser(user1);
-        this.user2 = new User(new SubscribedState("user2@gmail.com", "user2", "password"));
-        UserController.getInstance().addUser(user2);
-        store = StoreController.getInstance().createStore(user1,"Store1");
+        this.user1 = mock(User.class);
+        when(user1.getName()).thenReturn("user1");
+        when(user1.isSubscribed()).thenReturn(true);
+        this.user2 = mock(User.class);
+        when(user2.getName()).thenReturn("user2");
+        when(user2.isSubscribed()).thenReturn(true);
+        store = StoreController.getInstance().createStore(user1, "Store1");
 
-    }
-
-    @After
-    public void clean(){
-        StoreController.getInstance().removeStore(store);
-        UserController.getInstance().removeUser("user2");
-        UserController.getInstance().removeUser("user1");
     }
 
     @Test
-    public void addOwner(){
-        assertThrows(IllegalArgumentException.class, () -> StoreController.getInstance().addOwner(user2,user2,store.getStoreId()));
-        assertThrows(IllegalArgumentException.class, () -> StoreController.getInstance().addOwner(user1,user1,store.getStoreId()));
-        assertThrows(NullPointerException.class, () -> StoreController.getInstance().addOwner(user1,null,store.getStoreId()));
-        try{
-            StoreController.getInstance().addOwner(user1,user2,store.getStoreId());
-        }catch (Exception e){
+    public void addOwner() {
+        assertThrows(IllegalArgumentException.class, () -> StoreController.getInstance().addOwner(user2, user2, store.getStoreId()));
+        assertThrows(IllegalArgumentException.class, () -> StoreController.getInstance().addOwner(user1, user1, store.getStoreId()));
+        assertThrows(IllegalArgumentException.class, () -> StoreController.getInstance().addOwner(user1, null, store.getStoreId()));
+        try {
+            StoreController.getInstance().addOwner(user1, user2, store.getStoreId());
+        } catch (Exception e) {
+            e.printStackTrace();
             fail();
         }
         assertTrue(store.isOwner(user1));

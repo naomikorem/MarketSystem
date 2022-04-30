@@ -18,6 +18,8 @@ import java.util.List;
 import static DomainLayer.Stores.Category.Food;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ShoppingCartUnit extends AbstractTest {
     private static User u;
@@ -33,18 +35,13 @@ public class ShoppingCartUnit extends AbstractTest {
     @Before
     public void setup() {
         u = new User(new SubscribedState("user@gmail.com", "user", "password"));
-        UserController.getInstance().addUser(u);
-        s = StoreController.getInstance().createStore(u,"Store1");
+        s = mock(Store.class);
+        when(s.getStoreId()).thenReturn(1);
         i1 = new Item("Item1", Food, 100);
         i2 = new Item("Item2", Food, 10);
         i3 = new Item("Item3", Food, 20);
     }
 
-    @After
-    public void clean() {
-        StoreController.getInstance().removeStore(s);
-        UserController.getInstance().removeUser("user");
-    }
 
     @Test
     public void ShoppingCartTest() {

@@ -135,6 +135,9 @@ public class StoreController {
     }
 
     public boolean addManager(User owner, User manager, int storeId) {
+        if (owner == null || manager == null) {
+            throw new IllegalArgumentException("A user cannot be null.");
+        }
         Store s = getInstance().getStore(storeId);
         if (s == null) {
             throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
@@ -151,6 +154,9 @@ public class StoreController {
     }
 
     public boolean addOwner(User owner, User newOwner, int storeId) {
+        if (owner == null || newOwner == null) {
+            throw new IllegalArgumentException("A user cannot be null.");
+        }
         Store s = getInstance().getStore(storeId);
         if (s == null) {
             throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
