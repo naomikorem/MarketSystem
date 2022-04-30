@@ -72,7 +72,7 @@ public abstract class Bridge {
     public abstract Response<Boolean> removeManager(String toRemove, int storeId);
     public abstract Response<Boolean> permanentlyCloseStore(int storeId);
 
-
+    public abstract Response<List<String>> getStoreOwners(int store_id);
 
     public abstract Response<Item> removeItemFromStore(int storeId, int itemId, int amount);
     public abstract Response<Map<Item, Integer>> getItems(int storeId);

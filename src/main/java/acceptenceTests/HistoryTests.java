@@ -43,7 +43,7 @@ public class HistoryTests extends AbstractTest
         this.store2_owner_username = "store2owner";
         this.admin_username = "admin";
         this.store1_id = 1;
-        this.item2_id = 2;
+        this.store2_id = 2;
         this.date = new Date();
     }
 

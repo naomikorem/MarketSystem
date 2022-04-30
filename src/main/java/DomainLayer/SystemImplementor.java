@@ -298,6 +298,19 @@ public class SystemImplementor implements SystemInterface {
         return this.storeFacade.getItems(storeId);
     }
 
+    @Override
+    public Response<List<String>> getStoreOwners(int storeId) // check
+    {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        Response<Store> store = storeFacade.getStore(storeId);
+        if (store.hadError()) {
+            return new Response<>(store.getErrorMessage());
+        }
+        return new Response<>(store.getObject().getOwners());
+    }
+
     public Response<Boolean> initializeMarket() {
         return this.marketManagementFacade.initializeMarket();
     }

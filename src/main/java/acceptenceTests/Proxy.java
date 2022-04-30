@@ -281,6 +281,14 @@ public class Proxy extends Bridge {
     }
 
     @Override
+    public Response<List<String>> getStoreOwners(int store_id) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getStoreOwners(store_id);
+    }
+
+    @Override
     public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount) {
         if (this.real == null) {
             return null;

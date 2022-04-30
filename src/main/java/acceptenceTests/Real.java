@@ -196,6 +196,11 @@ public class Real extends Bridge {
     }
 
     @Override
+    public Response<List<String>> getStoreOwners(int store_id) {
+        return this.adaptee.getStoreOwners(store_id);
+    }
+
+    @Override
     public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount) {
         return adaptee.addItemToStore(storeId, name, category, price, amount);
     }

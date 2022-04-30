@@ -20,6 +20,8 @@ public interface SystemInterface {
 
     public Response<Map<Item, Integer>> getItems(int storeId);
 
+    public Response<List<String>> getStoreOwners(int storeId);
+
     public Response<Boolean> initializeMarket();
 
     public Response<Boolean> addExternalPurchaseService(String name);
