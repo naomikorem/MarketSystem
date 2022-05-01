@@ -24,16 +24,15 @@ public class PurchaseProxy extends AbstractServiceProxy<IExternalPurchaseService
      * @param purchase_service_name The requested external purchase service
      * @return true - if the payment process ends successfully, false otherwise.
      */
-    public boolean pay(double price, String purchase_service_name)
+    public synchronized boolean pay(double price, String purchase_service_name)
     {
-        synchronized (services) {
-            if (!services.containsKey(purchase_service_name))
-            {
-                LogUtility.error("tried to use external service that doesn't exists");
-                throw new IllegalArgumentException("The service with the name " + purchase_service_name + " does not exists in the system.");
-            }
-            LogUtility.info("The purchase service " + purchase_service_name + " will try handle the payment of the user, the price: " + price);
-            return services.get(purchase_service_name).pay(price);
+        if (!services.containsKey(purchase_service_name))
+        {
+            LogUtility.error("tried to use external service that doesn't exists");
+            throw new IllegalArgumentException("The service with the name " + purchase_service_name + " does not exists in the system.");
         }
+        LogUtility.info("The purchase service " + purchase_service_name + " will try handle the payment of the user, the price: " + price);
+        return services.get(purchase_service_name).pay(price);
+
     }
 }

@@ -1,14 +1,27 @@
 package DomainLayer.SystemManagement;
 
 import DomainLayer.Response;
+import DomainLayer.StoreFacade;
+import DomainLayer.Stores.Item;
+import DomainLayer.Stores.Store;
+import DomainLayer.Stores.StoreController;
+
 import DomainLayer.SystemManagement.ExternalServices.ExternalServicesHandler;
 import DomainLayer.SystemManagement.HistoryManagement.HistoryController;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.SystemManagement.NotificationManager.NotificationController;
-import DomainLayer.Users.User;
 
+import DomainLayer.Users.ShoppingBasket;
+import DomainLayer.Users.User;
+import Utility.LogUtility;
+
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 
 public class MarketManagementFacade
 {
@@ -19,40 +32,52 @@ public class MarketManagementFacade
     private MarketManagementFacade()
     {
         this.services = ExternalServicesHandler.getInstance();
-        this.purchaseProcess = PurchaseProcess.getInstance();
+        //this.purchaseProcess = PurchaseProcess.getInstance();
         this.historyController = HistoryController.getInstance();
         this.notificationController = NotificationController.getInstance();
+        this.storeController = StoreController.getInstance();
+        initializeMarket();
+
     }
 
     // Implementation of thread safe singleton
     public static MarketManagementFacade getInstance() {
         return MarketManagementFacadeHolder.INSTANCE;
     }
+
+    public static final String GUEST_DEFAULT_NAME = "guest";
     private final ExternalServicesHandler services;
-    private final PurchaseProcess purchaseProcess;
+    //private final PurchaseProcess purchaseProcess;
     private final HistoryController historyController;
     private final NotificationController notificationController;
+    private final StoreController storeController;
+
+    public Response<Boolean> clearAll()
+    {
+        this.notificationController.clearNotifications();
+        this.historyController.clearHistory();
+        this.services.clearServices();
+        initializeMarket();
+        return new Response<>(true);
+    }
+
 
     /***
      * The function responsible to initialize the connection with the external services, when the system is loaded
      * After this function, the system will have at least one supply service and one purchase service
      * @return Response - if the initialization succeeded or if there was an error
      */
-    public Response<Boolean> initializeMarket()
+
+    public synchronized void initializeMarket()
     {
-        try {
-            // check if there is supply service - if not, add the first one
-            if (!services.hasPurchaseService()) {
-                services.addExternalPurchaseService("stub");
-            }
-            // check if there is purchase service - if not, add the first one
-            if (!services.hasSupplyService()) {
-                services.addExternalSupplyService("stub");
-            }
-            return new Response<>(true);
+        // check if there is supply service - if not, add the first one
+        if (!services.hasPurchaseService()) {
+            services.addExternalPurchaseService("stub");
         }
-        catch (Exception e) {
-            return new Response<>(e.getMessage());
+        // check if there is purchase service - if not, add the first one
+        if (!services.hasSupplyService()) {
+            services.addExternalSupplyService("stub");
+
         }
     }
 
@@ -66,8 +91,34 @@ public class MarketManagementFacade
      */
     public Response<Boolean> purchaseShoppingCart(User user, String address, String purchase_service_name, String supply_service_name)
     {
-        try {
-            purchaseProcess.handlePurchase(user, address, purchase_service_name, supply_service_name);
+
+        try
+        {
+            List<ShoppingBasket> baskets = user.getCartBaskets();
+            double price = PurchaseProcess.CalcPrice(baskets);
+            List<Map.Entry<Item, Integer>> items_and_amounts = PurchaseProcess.getItemsAndAmounts(baskets);
+
+            /* TODO:
+             * 1. choose payment and shipping service
+             * 2. check that every item matches the purchase and discount policy
+             * 3. send the price and user details and store details to the purchase service
+             * 4. should send money to the store owner here or is it the purchase services problem?
+             * */
+
+            this.services.pay(price, purchase_service_name);
+            PurchaseProcess.addToHistory(checkUsername(user), baskets);
+            this.services.supply(address, items_and_amounts, supply_service_name);
+
+            LogUtility.info("The user " + checkUsername(user) + " paid " + price + " shekels to the purchase services.");
+
+            Set<Store> stores = baskets.stream().map(basket -> this.storeController.getStore(basket.getStoreId())).collect(Collectors.toSet());
+            Map<Integer, List<String>> stores_and_owners = stores.stream().collect(Collectors.toMap(Store::getStoreId, Store::getOwners));
+            this.notificationController.notifyStoresOwners(stores_and_owners, checkUsername(user));
+            user.emptyShoppingCart();
+
+            LogUtility.info("The ownerts of the stores " + stores.toString() + " received notification");
+
+
             return new Response<>(true);
         }
         catch (Exception e) {
@@ -235,4 +286,17 @@ public class MarketManagementFacade
             return new Response<>(e.getMessage());
         }
     }
+
+
+    private String checkUsername(User user)
+    {
+        if (user.isSubscribed())
+        {
+            return user.getName();
+        }
+        else {
+            return GUEST_DEFAULT_NAME;
+        }
+    }
+
 }

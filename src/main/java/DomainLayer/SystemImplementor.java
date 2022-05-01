@@ -298,8 +298,19 @@ public class SystemImplementor implements SystemInterface {
         return this.storeFacade.getItems(storeId);
     }
 
-    public Response<Boolean> initializeMarket() {
-        return this.marketManagementFacade.initializeMarket();
+
+    @Override
+    public Response<List<String>> getStoreOwners(int storeId) // check
+    {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        Response<Store> store = storeFacade.getStore(storeId);
+        if (store.hadError()) {
+            return new Response<>(store.getErrorMessage());
+        }
+        return new Response<>(store.getObject().getOwners());
+
     }
 
     public Response<Boolean> addExternalPurchaseService(String name) {
@@ -339,15 +350,12 @@ public class SystemImplementor implements SystemInterface {
         return this.marketManagementFacade.removeExternalSupplyService(name);
     }
 
-    public Response<Boolean> purchaseShoppingCart(String username, String address, String purchase_service_name, String supply_service_name) {
+    public Response<Boolean> purchaseShoppingCart(String address, String purchase_service_name, String supply_service_name) {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
-        Response<User> user_res = userFacade.getUser(username);
-        if (user_res.hadError())
-            return new Response<>(user_res.getErrorMessage());
 
-        User buying_user = user_res.getObject();
+
         /*List<Integer> stores_ids = buying_user.getCartBaskets().stream().map(ShoppingBasket::getStoreId).collect(Collectors.toList());
         List<Response<Store>> stores_response = stores_ids.stream().map(id -> storeFacade.getStore(id)).collect(Collectors.toList());
 
@@ -364,7 +372,9 @@ public class SystemImplementor implements SystemInterface {
 
         Map<Integer, Store> stores = stores_response.stream().map(Response::getObject).collect(Collectors.toConcurrentMap(Store::getStoreId, store -> store));
         */
-        return this.marketManagementFacade.purchaseShoppingCart(buying_user, address, purchase_service_name, supply_service_name);
+
+        return this.marketManagementFacade.purchaseShoppingCart(user, address, purchase_service_name, supply_service_name);
+
     }
 
     public Response<Boolean> hasPurchaseService() {
@@ -397,14 +407,23 @@ public class SystemImplementor implements SystemInterface {
         return this.marketManagementFacade.hasSupplyService(purchase_supply_name);
     }
 
-    public Response<History> getPurchaseHistory(String username)
+
+    public Response<History> getPurchaseHistory()
+
     {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Enter the system properly and be subscribes in order get his purchase history");
         }
-        if(!user.getName().equals(username))
-        {
-            return new Response<>("you can see only your own purchase history");
+
+        return this.marketManagementFacade.getPurchaseHistory(user.getName());
+    }
+
+    public Response<History> getPurchaseHistory(String username)
+    {
+        Response<Boolean> is_admin_response = isAdminCheck();
+        if (is_admin_response.hadError() || !is_admin_response.getObject()) {
+            return new Response<>("The current user is not a system admin");
+
         }
         return this.marketManagementFacade.getPurchaseHistory(username);
     }
@@ -412,8 +431,12 @@ public class SystemImplementor implements SystemInterface {
     public Response<History> getStoreHistory(int store_id)
     {
         Response<Boolean> is_owner_response = isOwnerCheck(store_id);
-        if (is_owner_response.hadError() || !is_owner_response.getObject()) {
-            return new Response<>(is_owner_response.getErrorMessage());
+
+        Response<Boolean> is_admin_response = isAdminCheck();
+        if((is_admin_response.hadError() || !is_admin_response.getObject()) && (is_owner_response.hadError() || !is_owner_response.getObject()))
+        {
+            return new Response<>("The user is not an owner of the store and not an admin of the system");
+
         }
         return this.marketManagementFacade.getStoreHistory(store_id);
     }
@@ -437,6 +460,50 @@ public class SystemImplementor implements SystemInterface {
         }
         return userFacade.removeUser(user.getName(), name);
     }
+
+    @Override
+    public Response<Boolean> deleteAdmin(String name) {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("You must be logged in in order to perform this action");
+        }
+        Response<Boolean> r = userFacade.isAdmin(user.getName());
+        if (r.hadError() || !r.getObject()) {
+            return new Response<>("Only admin users can perform this action");
+        }
+        Response<User> userResponse = userFacade.getUser(name);
+        if (userResponse.hadError()) {
+            return new Response<>(userResponse.getErrorMessage());
+        }
+        if (userResponse.getObject() == null)
+            return new Response<>("not a valid user");
+        Response<Boolean> response = userFacade.removeAdmin(userResponse.getObject().getName());
+        if (response.hadError()) {
+            return response;
+        }
+        return userFacade.removeUser(user.getName(), name);
+    }
+    @Override
+    public Response<Boolean> addAdmin(String name) {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("You must be logged in in order to perform this action");
+        }
+        Response<Boolean> r = userFacade.isAdmin(user.getName());
+        if (r.hadError() || !r.getObject()) {
+            return new Response<>("Only admin users can perform this action");
+        }
+        Response<User> userResponse = userFacade.getUser(name);
+        if (userResponse.hadError()) {
+            return new Response<>(userResponse.getErrorMessage());
+        }
+        if (userResponse.getObject() == null)
+            return new Response<>("not a valid user");
+        Response<Boolean> response = userFacade.addAdmin(userResponse.getObject().getName());
+        if (response.hadError()) {
+            return response;
+        }
+        return userFacade.removeUser(user.getName(), name);
+    }
+
 
     private Response<Boolean> isOwnerCheck(int store_id) {
         if (user == null) {

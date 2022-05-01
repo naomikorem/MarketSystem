@@ -66,6 +66,7 @@ public class UserFacade {
         return adminFacade.removeAdmin(name);
     }
 
+
     public Response<Boolean> removeUser(String removedBy, String name) {
         try {
             userController.removeUser(removedBy, name);

@@ -20,7 +20,9 @@ public interface SystemInterface {
 
     public Response<Map<Item, Integer>> getItems(int storeId);
 
-    public Response<Boolean> initializeMarket();
+
+    public Response<List<String>> getStoreOwners(int storeId);
+
 
     public Response<Boolean> addExternalPurchaseService(String name);
 
@@ -30,7 +32,8 @@ public interface SystemInterface {
 
     public Response<Boolean> removeExternalSupplyService(String name);
 
-    public Response<Boolean> purchaseShoppingCart(String username, String address, String purchase_service_name, String supply_service_name);
+
+    public Response<Boolean> purchaseShoppingCart(String address, String purchase_service_name, String supply_service_name);
 
     public Response<Boolean> hasPurchaseService();
 
@@ -40,7 +43,11 @@ public interface SystemInterface {
 
     public Response<Boolean> hasSupplyService(String purchase_supply_name);
 
+
+    public Response<History> getPurchaseHistory();
     public Response<History> getPurchaseHistory(String username);
+
+
     public Response<History> getStoreHistory(int store_id);
 
     public Response<Boolean> enter();
@@ -92,4 +99,8 @@ public interface SystemInterface {
 
     Response<Set<Item>> searchProducts(String productName, String category, List<String> keywords) ;
     Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating);
+
+    Response<Boolean> deleteAdmin(String name);
+    Response<Boolean> addAdmin(String name);
+
 }
