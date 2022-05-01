@@ -20,7 +20,9 @@ public interface SystemInterface {
 
     public Response<Map<Item, Integer>> getItems(int storeId);
 
+
     public Response<List<String>> getStoreOwners(int storeId);
+
 
     public Response<Boolean> addExternalPurchaseService(String name);
 
@@ -29,6 +31,7 @@ public interface SystemInterface {
     public Response<Boolean> removeExternalPurchaseService(String name);
 
     public Response<Boolean> removeExternalSupplyService(String name);
+
 
     public Response<Boolean> purchaseShoppingCart(String address, String purchase_service_name, String supply_service_name);
 
@@ -40,8 +43,10 @@ public interface SystemInterface {
 
     public Response<Boolean> hasSupplyService(String purchase_supply_name);
 
+
     public Response<History> getPurchaseHistory();
     public Response<History> getPurchaseHistory(String username);
+
 
     public Response<History> getStoreHistory(int store_id);
 
@@ -97,4 +102,5 @@ public interface SystemInterface {
 
     Response<Boolean> deleteAdmin(String name);
     Response<Boolean> addAdmin(String name);
+
 }

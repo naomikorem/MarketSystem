@@ -13,6 +13,7 @@ import java.util.Map;
 
 public class PurchaseProcess
 {
+
     public static final String GUEST_DEFAULT_NAME = "guest";
 
     public static void addToHistory(String username, List<ShoppingBasket> baskets)
@@ -45,5 +46,6 @@ public class PurchaseProcess
             items_and_amounts.addAll(basket.getItemsAndAmounts());
         }
         return items_and_amounts;
+
     }
 }

@@ -24,6 +24,7 @@ public class InitializeSystemTest extends AbstractTest {
     {
         //assertFalse(bridge.initializeMarket().hadError());
 
+
         Response<Boolean> has_purchase_service = bridge.hasPurchaseService();
         assertFalse(has_purchase_service.hadError());
         assertTrue(has_purchase_service.getObject());

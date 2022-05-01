@@ -7,6 +7,7 @@ import DomainLayer.Stores.Store;
 import DomainLayer.SystemImplementor;
 import DomainLayer.SystemInterface;
 import DomainLayer.SystemManagement.HistoryManagement.History;
+
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
@@ -196,6 +197,7 @@ public class Real extends Bridge {
     }
 
     @Override
+
     public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount) {
         return adaptee.addItemToStore(storeId, name, category, price, amount);
     }

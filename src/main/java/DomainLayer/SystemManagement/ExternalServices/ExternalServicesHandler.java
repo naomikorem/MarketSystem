@@ -27,11 +27,13 @@ public class ExternalServicesHandler
         return ExternalServicesHolder.INSTANCE;
     }
 
+
     public void clearServices()
     {
         this.purchase_proxy.clearServices();
         this.supply_proxy.clearServices();
     }
+
 
     /***
      * A system admin can add external purchase service, if it doesn't already exist.

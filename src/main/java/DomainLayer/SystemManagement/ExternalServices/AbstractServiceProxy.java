@@ -7,7 +7,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class AbstractServiceProxy<T extends AbstractExternalService>
 {
     // Holds all the external services from specific type (purchase or supply)
+
     protected ConcurrentHashMap<String, T> services = new ConcurrentHashMap<String, T>();
+
 
     protected abstract T ServiceFactory(String name); // abstract function
 
@@ -15,6 +17,7 @@ public abstract class AbstractServiceProxy<T extends AbstractExternalService>
      * Add external service to the market system
      * @param name The name of the new external service
      */
+
     public synchronized void addService(String name)
     {
         if (services.containsKey(name))
@@ -24,6 +27,7 @@ public abstract class AbstractServiceProxy<T extends AbstractExternalService>
         }
         services.put(name, ServiceFactory(name));
         LogUtility.info("Added new external service with the name " + name);
+
     }
 
     /***
@@ -32,6 +36,7 @@ public abstract class AbstractServiceProxy<T extends AbstractExternalService>
      */
     public void removeService(String service_name)
     {
+
         if (services.size() == 1)
         {
             LogUtility.error("tried to remove the last external service from this kind in the system");
@@ -45,6 +50,7 @@ public abstract class AbstractServiceProxy<T extends AbstractExternalService>
         }
         services.remove(service_name);
         LogUtility.info("Removed the external service with the name " + service_name + " from the system");
+
     }
 
     /***
@@ -66,8 +72,10 @@ public abstract class AbstractServiceProxy<T extends AbstractExternalService>
         return services.containsKey(service_name);
     }
 
+
     public void clearServices()
     {
         this.services = new ConcurrentHashMap<>();
     }
+
 }

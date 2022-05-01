@@ -5,6 +5,7 @@ import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemManagement.HistoryManagement.History;
+
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
@@ -57,6 +58,7 @@ public class Proxy extends Bridge {
     public Response<Boolean> purchaseShoppingCart(String address, String purchase_service_name, String supply_service_name) {
         if (this.real != null) {
             return real.purchaseShoppingCart(address, purchase_service_name, supply_service_name);
+
         }
         return null;
     }
@@ -369,4 +371,5 @@ public class Proxy extends Bridge {
         }
         return real.deleteAdmin(name);
     }
+
 }

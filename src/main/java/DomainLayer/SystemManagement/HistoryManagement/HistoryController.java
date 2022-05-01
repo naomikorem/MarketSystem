@@ -36,10 +36,12 @@ public class HistoryController {
             for (ShoppingBasket basket : baskets) {
                 this.users_history.get(username).addToHistory(basket.getItemsAndAmounts(), basket.getStoreId(), username, purchase_date);
             }
+
         }
     }
 
     public void addToStoreHistory(String buying_username, List<ShoppingBasket> baskets, Date purchase_date) {
+
         synchronized (store_history) {
             for (ShoppingBasket basket : baskets) {
                 int store_id = basket.getStoreId();
@@ -72,6 +74,7 @@ public class HistoryController {
 
             return this.store_history.get(store_id);
         }
+
     }
 
     public boolean clearHistory()

@@ -5,6 +5,7 @@ import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemManagement.HistoryManagement.History;
+
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
@@ -17,11 +18,13 @@ import java.util.Set;
 public abstract class Bridge {
     //TODO: change return tipes.
     //Acceptance Tests for use case 1 System:
+
     public abstract Response<Boolean> addExternalPurchaseService(String name);
     public abstract Response<Boolean> addExternalSupplyService(String name);
     public abstract Response<Boolean> removeExternalPurchaseService(String name);
     public abstract Response<Boolean> removeExternalSupplyService(String name);
     public abstract Response<Boolean> purchaseShoppingCart(String address, String purchase_service_name, String supply_service_name);
+
     public abstract Response<Boolean> hasPurchaseService();
     public abstract Response<Boolean> hasSupplyService();
     public abstract Response<Boolean> hasPurchaseService(String purchase_service_name);
@@ -59,6 +62,7 @@ public abstract class Bridge {
     public abstract Response<History> getPurchaseHistory();
     public abstract Response<History> getPurchaseHistory(String username);
     public abstract Response<History> getStoreHistory(int store_id);
+
     public abstract Response<Boolean> updateStorePolicy(int storeId);
     public abstract Response<Boolean> updateDiscountPolicy(int storeId);
     public abstract Response<Boolean> addOwner(String owner, int storeId);
@@ -73,6 +77,7 @@ public abstract class Bridge {
 
     public abstract Response<List<String>> getStoreOwners(int store_id);
 
+
     public abstract Response<Item> removeItemFromStore(int storeId, int itemId, int amount);
     public abstract Response<Map<Item, Integer>> getItems(int storeId);
 
@@ -82,6 +87,7 @@ public abstract class Bridge {
     //Acceptance Tests for use case 6:
     public abstract Response<Boolean> addAdmin(String name);
     public abstract Response<Boolean> deleteAdmin(String name);
+
 
 
     public abstract Response<List<ShoppingBasket>> getCartBaskets();

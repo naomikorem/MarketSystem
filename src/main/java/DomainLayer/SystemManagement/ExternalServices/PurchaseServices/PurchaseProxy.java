@@ -33,5 +33,6 @@ public class PurchaseProxy extends AbstractServiceProxy<IExternalPurchaseService
         }
         LogUtility.info("The purchase service " + purchase_service_name + " will try handle the payment of the user, the price: " + price);
         return services.get(purchase_service_name).pay(price);
+
     }
 }

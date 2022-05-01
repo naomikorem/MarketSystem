@@ -29,6 +29,7 @@ public class SupplyProxy extends AbstractServiceProxy<IExternalSupplyService>
      * @param supply_service_name The requested external supply service
      * @return
      */
+
     public synchronized boolean supply(String address, List<Map.Entry<Item, Integer>> items, String supply_service_name)
     {
         if (!services.containsKey(supply_service_name)) {
@@ -37,5 +38,6 @@ public class SupplyProxy extends AbstractServiceProxy<IExternalSupplyService>
         }
         LogUtility.info("The supply service " + supply_service_name + " will try supply the items to the address: " + address);
         return services.get(supply_service_name).supply(address, items);
+
     }
 }

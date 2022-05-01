@@ -5,11 +5,13 @@ import DomainLayer.StoreFacade;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
 import DomainLayer.Stores.StoreController;
+
 import DomainLayer.SystemManagement.ExternalServices.ExternalServicesHandler;
 import DomainLayer.SystemManagement.HistoryManagement.HistoryController;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.SystemManagement.NotificationManager.NotificationController;
+
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 import Utility.LogUtility;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 
 public class MarketManagementFacade
 {
@@ -34,12 +37,14 @@ public class MarketManagementFacade
         this.notificationController = NotificationController.getInstance();
         this.storeController = StoreController.getInstance();
         initializeMarket();
+
     }
 
     // Implementation of thread safe singleton
     public static MarketManagementFacade getInstance() {
         return MarketManagementFacadeHolder.INSTANCE;
     }
+
     public static final String GUEST_DEFAULT_NAME = "guest";
     private final ExternalServicesHandler services;
     //private final PurchaseProcess purchaseProcess;
@@ -56,11 +61,13 @@ public class MarketManagementFacade
         return new Response<>(true);
     }
 
+
     /***
      * The function responsible to initialize the connection with the external services, when the system is loaded
      * After this function, the system will have at least one supply service and one purchase service
      * @return Response - if the initialization succeeded or if there was an error
      */
+
     public synchronized void initializeMarket()
     {
         // check if there is supply service - if not, add the first one
@@ -70,6 +77,7 @@ public class MarketManagementFacade
         // check if there is purchase service - if not, add the first one
         if (!services.hasSupplyService()) {
             services.addExternalSupplyService("stub");
+
         }
     }
 
@@ -83,6 +91,7 @@ public class MarketManagementFacade
      */
     public Response<Boolean> purchaseShoppingCart(User user, String address, String purchase_service_name, String supply_service_name)
     {
+
         try
         {
             List<ShoppingBasket> baskets = user.getCartBaskets();
@@ -108,6 +117,7 @@ public class MarketManagementFacade
             user.emptyShoppingCart();
 
             LogUtility.info("The ownerts of the stores " + stores.toString() + " received notification");
+
 
             return new Response<>(true);
         }
@@ -277,6 +287,7 @@ public class MarketManagementFacade
         }
     }
 
+
     private String checkUsername(User user)
     {
         if (user.isSubscribed())
@@ -287,4 +298,5 @@ public class MarketManagementFacade
             return GUEST_DEFAULT_NAME;
         }
     }
+
 }

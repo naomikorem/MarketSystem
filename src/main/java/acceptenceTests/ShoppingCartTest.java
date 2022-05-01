@@ -29,6 +29,7 @@ public class ShoppingCartTest extends AbstractTest {
         bridge.enter();
         this.u = bridge.register("user111@gmail.com", "user1", "password").getObject();
         bridge.login("user1", "password");
+
         s = bridge.addNewStore("Store1").getObject();
         i1 = bridge.addItemToStore(s.getStoreId(), "Item1", "Food", 100, 9).getObject();
         i2 = bridge.addItemToStore(s.getStoreId(), "Item2", "Food", 100, 10).getObject();
@@ -64,6 +65,7 @@ public class ShoppingCartTest extends AbstractTest {
         assertTrue(l.contains(i2));
         assertFalse(l.contains(i3));
         bridge.purchaseShoppingCart("bear shava", "UPS", "hello");
+
         l = bridge.getShoppingCartItems().getObject();
         //assertTrue(l.isEmpty());
         bridge.logout();

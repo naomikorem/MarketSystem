@@ -5,7 +5,9 @@ import DomainLayer.Stores.Item;
 import java.util.*;
 
 public class History {
+
     private final Set<ItemHistory> items;
+
 
     public History()
     {
