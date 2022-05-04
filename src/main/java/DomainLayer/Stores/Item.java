@@ -46,6 +46,7 @@ public class Item {
             throw new IllegalArgumentException("Product name must be a non empty name");
         }
         if (price < 0) {
+            LogUtility.error("tried to change product price to a negative value");
             throw new IllegalArgumentException("Product price must not be below 0");
         }
     }
@@ -57,6 +58,8 @@ public class Item {
     public void setProductName(String product_name) {
         checkParams(product_name, price);
         this.product_name = product_name;
+
+        LogUtility.info(String.format("Item %d name was updated to %s",this.id, product_name));
     }
 
     public Category getCategory() {
@@ -81,6 +84,7 @@ public class Item {
         }
         this.rate = (this.rate * this.numberOfRatings + new_rate) / (this.numberOfRatings + 1);
         this.numberOfRatings++;
+        LogUtility.info(String.format("Item %d Rate was updated",this.id));
     }
 
     public double getPrice() {
