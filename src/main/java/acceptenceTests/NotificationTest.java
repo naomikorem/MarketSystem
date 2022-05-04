@@ -22,9 +22,9 @@ public class NotificationTest extends AbstractTest{
     @Before
     public void before() {
         bridge.enter();
-        this.user1 = bridge.register("user123@gmail.com", "user1", "pass").getObject();
-        this.user2 = bridge.register("user2@gmail.com", "user2", "pass").getObject();
-        this.user3 = bridge.register("user3@gmail.com", "user3", "pass").getObject();
+        this.user1 = bridge.register("user123@gmail.com", "user1","first","last", "pass").getObject();
+        this.user2 = bridge.register("user2@gmail.com", "user2", "first","last","pass").getObject();
+        this.user3 = bridge.register("user3@gmail.com", "user3", "first","last","pass").getObject();
         bridge.login(user1.getName(), "pass");
         this.store = bridge.addNewStore("Store1").getObject();
         bridge.addOwner("user2", store.getStoreId());

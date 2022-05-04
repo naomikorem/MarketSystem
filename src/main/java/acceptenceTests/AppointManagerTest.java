@@ -25,13 +25,13 @@ public class AppointManagerTest extends AbstractTest {
     @Before
     public void before() {
         bridge.enter();
-        this.user1 = bridge.register("user123@gmail.com", "user", "pass").getObject();
-        this.user2 = bridge.register("user2@gmail.com", "user2", "user2").getObject();
+        this.user1 = bridge.register("user123@gmail.com", "user", "first","last","pass").getObject();
+        this.user2 = bridge.register("user2@gmail.com", "user2","first","last", "user2").getObject();
         bridge.login("user", "pass");
         this.store = bridge.addNewStore("Store1").getObject();
         bridge.addOwner("user2", store.getStoreId());
         bridge.logout();
-        this.manager = bridge.register("manger@gmail.com", "manger", "manager1").getObject();
+        this.manager = bridge.register("manger@gmail.com", "manger", "first","last","manager1").getObject();
     }
 
     @After

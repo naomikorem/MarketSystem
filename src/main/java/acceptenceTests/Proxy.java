@@ -112,9 +112,9 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<User> register(String email, String name, String password) {
+    public Response<User> register(String email, String userName, String firstName, String lastName, String password) {
         if (this.real != null) {
-            return real.register(email, name, password);
+            return real.register(email, userName, firstName, lastName, password);
         }
         return null;
     }
@@ -256,6 +256,14 @@ public class Proxy extends Bridge {
             return null;
         }
         return real.getUserNotifications();
+    }
+
+    @Override
+    public Response<User> getUser(String userName) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getUser(userName);
     }
 
     @Override

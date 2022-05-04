@@ -59,11 +59,11 @@ public class SystemImplementor implements SystemInterface {
     }
 
     @Override
-    public Response<User> register(String email, String name, String password) {
+    public Response<User> register(String email, String userName, String firstName, String lastName, String password) {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
-        return userFacade.register(email, name, password);
+        return userFacade.register(email, userName, firstName, lastName, password);
     }
 
     @Override
@@ -539,6 +539,20 @@ public class SystemImplementor implements SystemInterface {
         }
 
         return userFacade.isAdmin(username);
+    }
+    @Override
+    public Response<User> getUser(String userName) {
+        Response <Boolean> r1 = isAdminCheck();
+        if(r1.hadError()){
+            return new Response<>("In order to perform this action you must be an Admin");
+        }
+        Response<User> userResponse = userFacade.getUser(userName);
+        if (userResponse.hadError()) {
+            return new Response<>(userResponse.getErrorMessage());
+        }
+        if (userResponse.getObject() == null)
+            return new Response<>("not a valid user");
+        return userResponse;
     }
 
     @Override

@@ -33,7 +33,7 @@ public abstract class Bridge {
     //Acceptance Tests for use case 1 Users:
     public abstract Response<Boolean> enter();
     public abstract Response<Boolean> exit();
-    public abstract Response<User> register(String email, String name, String password);
+    public abstract Response<User> register(String email, String userName, String firstName, String lastName, String password);
     public abstract Response<User> login(String user, String password);
 
     public abstract Response<Boolean> setUserName(String userName);
@@ -72,6 +72,7 @@ public abstract class Bridge {
     public abstract Response<Boolean> removeOwner(String toRemove, int storeId);
     public abstract Response<Boolean> closeStore(int storeId);
     public abstract Response<List<INotification>> getUserNotifications();
+    public abstract Response<User> getUser(String userName);
     public abstract Response<Boolean> removeManager(String toRemove, int storeId);
     public abstract Response<Boolean> permanentlyCloseStore(int storeId);
 

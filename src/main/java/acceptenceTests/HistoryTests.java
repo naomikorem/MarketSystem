@@ -52,10 +52,10 @@ public class HistoryTests extends AbstractTest
     {
         //bridge.initializeMarket();
         bridge.enter();
-        bridge.register("user111@gmail.com", regular_username1, "password");
-        bridge.register("user112@gmail.com", regular_username2, "password");
-        bridge.register("user222@gmail.com", store1_owner_username, "password");
-        bridge.register("user223@gmail.com", store2_owner_username, "password");
+        bridge.register("user111@gmail.com", regular_username1, "first","last","password");
+        bridge.register("user112@gmail.com", regular_username2,"first","last", "password");
+        bridge.register("user222@gmail.com", store1_owner_username, "first","last","password");
+        bridge.register("user223@gmail.com", store2_owner_username, "first","last","password");
 
         assertFalse(bridge.login(store1_owner_username, "password").hadError());
         this.store1_id = bridge.addNewStore("Store1").getObject().getStoreId();

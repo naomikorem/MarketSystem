@@ -79,8 +79,8 @@ public class Real extends Bridge {
     }
 
     @Override
-    public Response<User> register(String email, String name, String password) {
-        return adaptee.register(email, name, password);
+    public Response<User> register(String email, String userName, String firstName, String lastName, String password) {
+        return adaptee.register(email, userName, firstName, lastName, password);
     }
 
     @Override
@@ -179,6 +179,11 @@ public class Real extends Bridge {
     @Override
     public Response<List<INotification>> getUserNotifications() {
         return this.adaptee.getUserNotifications();
+    }
+
+    @Override
+    public Response<User> getUser(String userName) {
+        return this.adaptee.getUser(userName);
     }
 
     @Override

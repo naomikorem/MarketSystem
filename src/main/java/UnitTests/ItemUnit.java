@@ -37,7 +37,7 @@ public class ItemUnit extends AbstractTest {
 
     @Before
     public void setup() {
-        User u = new User(new SubscribedState("email@gmail.com", "user", "pass"));
+        User u = new User(new SubscribedState("email@gmail.com", "user","first","last", "pass"));
         s = new Store(u, "Store1", 1);
         sc = new StoreController();
         Whitebox.setInternalState(sc, "stores", Map.of(1, s));

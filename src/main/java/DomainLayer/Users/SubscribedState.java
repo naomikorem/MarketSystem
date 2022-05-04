@@ -16,28 +16,39 @@ public class SubscribedState implements UserState {
     private static final int MAX_PASSWORD_LENGTH = 25;
     private static final int MIN_PASSWORD_LENGTH = 4;
 
-    private String name;
+    private String userName;
+    private String firstName;
+    private String lastName;
     private String password;
     private String email;
     private Set<Integer> ownedStores;
     private Set<Integer> managedStores;
 
-    public SubscribedState(String email, String name, String password) {
-        this.name = name;
+    public SubscribedState(String email, String userName, String firstName, String lastName, String password) {
+        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.password = password;
         this.email = email;
         this.ownedStores = new HashSet<>();
         this.managedStores = new HashSet<>();
-        checkParameters(name, password, email);
+        checkParameters(email,userName,firstName,lastName, password);
     }
 
     public static boolean isValidUsername(String name) {
         return name != null && name.length() >= MIN_NAME_LENGTH && name.length() <= MAX_NAME_LENGTH && Pattern.matches("^[a-zA-Z0-9]+$", name);
     }
 
-    private void checkParameters(String name, String password, String email) {
-        if (!isValidUsername(name)) {
-            throw new IllegalArgumentException("A user name must be at least 4 letters long.");
+    private void checkParameters(String email, String userName, String firstName, String lastName, String password) {
+        if (!isValidUsername(userName) ) {
+            throw new IllegalArgumentException("A user name/ last name must be at least 4 letters long.");
+        }
+        if (!isValidUsername(firstName) ) {
+            throw new IllegalArgumentException("A user name/ last name must be at least 4 letters long.");
+        }
+
+        if (!isValidUsername(lastName) ) {
+            throw new IllegalArgumentException("A user name/ last name must be at least 4 letters long.");
         }
         if (password == null || password.length() < MIN_PASSWORD_LENGTH || password.length() > MAX_PASSWORD_LENGTH) {
             throw new IllegalArgumentException("A password must be at least 4 letters long.");
@@ -49,16 +60,26 @@ public class SubscribedState implements UserState {
 
     @Override
     public String getName() {
-        return this.name;
+        return this.userName;
+    }
+
+    @Override
+    public String getFirstName() {
+        return this.firstName;
+    }
+
+    @Override
+    public String getLastName() {
+        return this.lastName;
     }
 
     public void setName(String userName){
         if (!isValidUsername(userName)) {
             throw new IllegalArgumentException("A user name must be at least 4 letters long.");
         }
-        String oldName = this.name;
-        this.name = userName;
-        LogUtility.info(String.format("User %s changed its name to %s", oldName, this.name));
+        String oldName = this.userName;
+        this.userName = userName;
+        LogUtility.info(String.format("User %s changed its name to %s", oldName, this.userName));
     }
 
     public String getEmail() {
@@ -70,7 +91,7 @@ public class SubscribedState implements UserState {
             throw new IllegalArgumentException("The email is invalid.");
         }
         this.email = newEmail;
-        LogUtility.info(String.format("User %s changed its email to %s", this.name, this.email));
+        LogUtility.info(String.format("User %s changed its email to %s", this.userName, this.email));
     }
 
     @Override

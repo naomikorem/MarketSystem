@@ -42,9 +42,9 @@ public class NotificationsTests extends AbstractTest
     {
         //bridge.initializeMarket();
         bridge.enter();
-        bridge.register("user111@gmail.com", username1, "password");
-        bridge.register("user222@gmail.com", store1_owner_username, "password");
-        bridge.register("user223@gmail.com", store2_owner_username, "password");
+        bridge.register("user111@gmail.com", username1, "first","last","password");
+        bridge.register("user222@gmail.com", store1_owner_username, "first","last","password");
+        bridge.register("user223@gmail.com", store2_owner_username, "first","last","password");
 
         assertFalse(bridge.login(store1_owner_username, "password").hadError());
         this.store1_id = bridge.addNewStore("Store1").getObject().getStoreId();
@@ -63,9 +63,9 @@ public class NotificationsTests extends AbstractTest
         this.item3_id = item3.getId();
         this.item4_id = item4.getId();
 
-        this.user1 = bridge.register("user123@gmail.com", "user1", "pass").getObject();
-        this.user2 = bridge.register("user2@gmail.com", "user2", "pass").getObject();
-        this.user3 = bridge.register("user3@gmail.com", "user3", "pass").getObject();
+        this.user1 = bridge.register("user123@gmail.com", "user1","first","last", "pass").getObject();
+        this.user2 = bridge.register("user2@gmail.com", "user2", "first","last","pass").getObject();
+        this.user3 = bridge.register("user3@gmail.com", "user3", "first","last","pass").getObject();
         bridge.login(user1.getName(), "pass");
         this.store = bridge.addNewStore("Store3").getObject();
         bridge.addOwner("user2", store.getStoreId());

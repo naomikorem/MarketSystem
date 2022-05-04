@@ -19,7 +19,7 @@ public class LoginTest extends AbstractTest {
     @Before
     public void setup() {
         bridge.enter();
-        bridge.register("user111@gmail.com", "user", "password");
+        bridge.register("user111@gmail.com", "user","first","last", "password");
     }
 
     @After
