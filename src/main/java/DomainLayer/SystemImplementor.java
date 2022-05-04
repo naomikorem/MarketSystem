@@ -454,10 +454,16 @@ public class SystemImplementor implements SystemInterface {
         if (userResponse.hadError()) {
             return new Response<>(userResponse.getErrorMessage());
         }
-        Response<Boolean> responseRemoveRoles = storeFacade.removeUserRoles(user, userResponse.getObject());
-        if (responseRemoveRoles.hadError()) {
-            return responseRemoveRoles;
+        if(!userResponse.getObject().getManagedStores().isEmpty()) {
+            return new Response<>("The user is a manager of a store, can't be removed");
         }
+        if(!userResponse.getObject().getOwnedStores().isEmpty()) {
+            return new Response<>("The user is a store owner of a store, can't be removed");
+        }
+        //Response<Boolean> responseRemoveRoles = storeFacade.removeUserRoles(user, userResponse.getObject());
+        /*if (responseRemoveRoles.hadError()) {
+            return responseRemoveRoles;
+        }*/
         return userFacade.removeUser(user.getName(), name);
     }
 
