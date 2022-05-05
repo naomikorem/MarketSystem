@@ -2,6 +2,8 @@ package acceptenceTests;
 
 import DomainLayer.Response;
 import DomainLayer.Stores.Item;
+import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
+import DomainLayer.SystemManagement.ExternalServices.AbstractProxyController;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.HistoryManagement.ItemHistory;
 import org.junit.Before;
@@ -11,7 +13,7 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 
-public class HistoryTests extends AbstractTest
+public class PurchaseHistoryTests extends AbstractTest
 {
     private final String regular_username1;
     private final String regular_username2;
@@ -34,7 +36,7 @@ public class HistoryTests extends AbstractTest
 
     private final Date date;
 
-    public HistoryTests()
+    public PurchaseHistoryTests()
     {
         super();
         this.regular_username1 = "regularUser1";
@@ -76,13 +78,13 @@ public class HistoryTests extends AbstractTest
         this.bridge.login(regular_username1, "password");
         this.bridge.addItemToCart(store1_id, item1_id, 1);
         this.bridge.addItemToCart(store1_id, item2_id, 2);
-        this.bridge.purchaseShoppingCart("ashdod", "stub", "stub");
+        this.bridge.purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
         this.bridge.logout();
 
         this.bridge.login(regular_username2, "password");
         this.bridge.addItemToCart(store2_id, item3_id, 1);
         this.bridge.addItemToCart(store2_id, item4_id, 2);
-        this.bridge.purchaseShoppingCart("ashdod", "stub", "stub");
+        this.bridge.purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
         this.bridge.logout();
 
         this.originals_as_items_history_store1_user1 = new HashSet<>();
@@ -99,6 +101,7 @@ public class HistoryTests extends AbstractTest
     public void GuestReceivePersonalPurchaseHistoryTest()
     {
         Response<History> res = this.bridge.getPurchaseHistory();
+
         assertTrue(res.hadError());
     }
 
@@ -199,7 +202,7 @@ public class HistoryTests extends AbstractTest
         this.bridge.addItemToCart(store2_id, item4_id, 2);
 
         // check that the payment and supply confirmed.
-        Response<Boolean> purchase_res = this.bridge.purchaseShoppingCart("ashdod", "stub", "stub");
+        Response<Boolean> purchase_res = this.bridge.purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
         assertFalse(purchase_res.hadError());
         assertTrue(purchase_res.getObject());
 
@@ -218,6 +221,12 @@ public class HistoryTests extends AbstractTest
         assertEquals(items, copy);
 
         this.bridge.logout();
+    }
+
+    @Test
+    public void unsuccessfulPay()
+    {
+
     }
 
     private ItemHistory convertItemToItemHistory(Item item, int amount, int store_id, String username)

@@ -17,8 +17,8 @@ public class EditExternalPurchaseServicesTest extends AbstractEditExternalTest {
     }
 
     @Override
-    protected Response<Boolean> addExternalService(String service_name) {
-        return bridge.addExternalPurchaseService(service_name);
+    protected Response<Boolean> addExternalService(String service_name, String url) {
+        return bridge.addExternalPurchaseService(service_name, url);
     }
 
     @Override

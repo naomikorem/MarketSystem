@@ -2,30 +2,30 @@ package DomainLayer.SystemManagement.ExternalServices;
 
 import Utility.LogUtility;
 
+import java.rmi.ConnectException;
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class AbstractServiceProxy<T extends AbstractExternalService>
+public abstract class AbstractProxyController<T extends AbstractProxy>
 {
     // Holds all the external services from specific type (purchase or supply)
 
-    protected ConcurrentHashMap<String, T> services = new ConcurrentHashMap<String, T>();
+    protected ConcurrentHashMap<String, T> services = new ConcurrentHashMap<>();
 
 
-    protected abstract T ServiceFactory(String name); // abstract function
+    protected abstract T createProxy(String name, String url) throws ConnectException; // abstract function
 
     /***
      * Add external service to the market system
      * @param name The name of the new external service
      */
 
-    public synchronized void addService(String name)
-    {
+    public synchronized void addService(String name, String url) throws ConnectException {
         if (services.containsKey(name))
         {
             LogUtility.error("tried to add a service that already exists in the system");
             throw new IllegalArgumentException("The service with the name " + name + " already exists in the system.");
         }
-        services.put(name, ServiceFactory(name));
+        services.put(name, createProxy(name, url));
         LogUtility.info("Added new external service with the name " + name);
 
     }

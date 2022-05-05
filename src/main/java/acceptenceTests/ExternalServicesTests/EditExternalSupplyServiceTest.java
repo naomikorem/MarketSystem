@@ -10,8 +10,8 @@ public class EditExternalSupplyServiceTest extends AbstractEditExternalTest{
     }
 
     @Override
-    protected Response<Boolean> addExternalService(String service_name) {
-        return bridge.addExternalSupplyService(service_name);
+    protected Response<Boolean> addExternalService(String service_name, String url) {
+        return bridge.addExternalSupplyService(service_name, url);
     }
 
     @Override

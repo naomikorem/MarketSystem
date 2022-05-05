@@ -24,9 +24,9 @@ public interface SystemInterface {
     public Response<List<String>> getStoreOwners(int storeId);
 
 
-    public Response<Boolean> addExternalPurchaseService(String name);
+    public Response<Boolean> addExternalPurchaseService(String name, String url);
 
-    public Response<Boolean> addExternalSupplyService(String name);
+    public Response<Boolean> addExternalSupplyService(String name, String url);
 
     public Response<Boolean> removeExternalPurchaseService(String name);
 

@@ -23,17 +23,17 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<Boolean> addExternalPurchaseService(String name) {
+    public Response<Boolean> addExternalPurchaseService(String name, String url) {
         if (this.real != null) {
-            return real.addExternalPurchaseService(name);
+            return real.addExternalPurchaseService(name, url);
         }
         return null;
     }
 
     @Override
-    public Response<Boolean> addExternalSupplyService(String name) {
+    public Response<Boolean> addExternalSupplyService(String name, String url) {
         if (this.real != null) {
-            return real.addExternalSupplyService(name);
+            return real.addExternalSupplyService(name, url);
         }
         return null;
     }

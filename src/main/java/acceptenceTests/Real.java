@@ -25,13 +25,13 @@ public class Real extends Bridge {
     }
 
     @Override
-    public Response<Boolean> addExternalPurchaseService(String name) {
-        return this.adaptee.addExternalPurchaseService(name);
+    public Response<Boolean> addExternalPurchaseService(String name, String url) {
+        return this.adaptee.addExternalPurchaseService(name, url);
     }
 
     @Override
-    public Response<Boolean> addExternalSupplyService(String name) {
-        return this.adaptee.addExternalSupplyService(name);
+    public Response<Boolean> addExternalSupplyService(String name, String url) {
+        return this.adaptee.addExternalSupplyService(name, url);
     }
 
     @Override
