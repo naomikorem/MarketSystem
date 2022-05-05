@@ -13,12 +13,10 @@ import static org.junit.Assert.assertTrue;
 
 public abstract class AbstractEditExternalTest extends AbstractTest {
     private final String new_service_name;
-    //private final String new_service_name_2;
 
     public AbstractEditExternalTest() {
         super();
         this.new_service_name = AbstractProxy.GOOD_STUB_NAME_2;
-       // this.new_service_name_2 = "some external service2";
     }
 
     protected abstract Response<Boolean> hasService(String service_name);
@@ -30,15 +28,6 @@ public abstract class AbstractEditExternalTest extends AbstractTest {
     {
         bridge.enter();
         bridge.login(UserController.DEFAULT_ADMIN_USER, UserController.DEFAULT_ADMIN_PASSWORD);
-
-        /*Response<Boolean> has_service = hasService(new_service_name);
-        assertFalse(has_service.hadError());
-
-        if (!has_service.getObject()) {
-            Response<Boolean> add_service_response = addExternalService(new_service_name, "url");
-            assertFalse(add_service_response.hadError());
-            assertTrue(add_service_response.getObject());
-        }*/
     }
 
     @After
@@ -163,4 +152,7 @@ public abstract class AbstractEditExternalTest extends AbstractTest {
         bridge.logout();
         assertTrue(addExternalService(new_service_name, "url").hadError());
     }
+
+    // TODO: check that the connection failed (bad stub)
+    // check that the service that his connection failed  doesn't exist in the system
 }

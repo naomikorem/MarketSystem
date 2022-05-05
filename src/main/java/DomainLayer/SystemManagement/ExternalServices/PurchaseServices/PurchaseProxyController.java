@@ -45,7 +45,7 @@ public class PurchaseProxyController extends AbstractProxyController<PurchasePro
     public synchronized boolean pay(double price, String purchase_service_name) throws RemoteException {
         if (!services.containsKey(purchase_service_name))
         {
-            LogUtility.error("tried to use external service that doesn't exists");
+            LogUtility.error("tried to use external purchase service named " + purchase_service_name + " which does not exists in the system");
             throw new IllegalArgumentException("The service with the name " + purchase_service_name + " does not exists in the system.");
         }
         LogUtility.info("The purchase service " + purchase_service_name + " will try handle the payment of the user, the price: " + price);

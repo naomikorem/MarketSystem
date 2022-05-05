@@ -409,7 +409,6 @@ public class SystemImplementor implements SystemInterface {
 
 
     public Response<History> getPurchaseHistory()
-
     {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Enter the system properly and be subscribes in order get his purchase history");

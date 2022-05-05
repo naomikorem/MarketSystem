@@ -94,8 +94,8 @@ public class NotificationsTests extends AbstractTest
         List<String> owners1 = owners_store_1_res.getObject();
         List<String> owners2 = owners_store_2_res.getObject();
 
-        assertTrue(owners1.size() == 1);
-        assertTrue(owners2.size() == 1);
+        assertEquals(1, owners1.size());
+        assertEquals(1, owners2.size());
 
         assertTrue(owners1.contains(store1_owner_username));
         assertTrue(owners2.contains(store2_owner_username));
@@ -103,14 +103,14 @@ public class NotificationsTests extends AbstractTest
         Response<List<INotification>> owner1_notification_res = bridge.getUserNotifications();
         assertFalse(owner1_notification_res.hadError());
         List<INotification> notification1 = owner1_notification_res.getObject();
-        assertTrue(notification1.size() == 1);
+        assertEquals(1, notification1.size());
         this.bridge.logout();
 
         this.bridge.login(store2_owner_username, "password");
         Response<List<INotification>> owner2_notification_res = bridge.getUserNotifications();
         assertFalse(owner2_notification_res.hadError());
         List<INotification> notification2 = owner2_notification_res.getObject();
-        assertTrue(notification2.size() == 1);
+        assertEquals(1, notification2.size());
         this.bridge.logout();
     }
 

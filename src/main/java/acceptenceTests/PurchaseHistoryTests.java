@@ -94,7 +94,6 @@ public class PurchaseHistoryTests extends AbstractTest
         this.originals_as_items_history_store2_user2 = new HashSet<>();
         originals_as_items_history_store2_user2.add(convertItemToItemHistory(item3, 1, store2_id, regular_username2));
         originals_as_items_history_store2_user2.add(convertItemToItemHistory(item4, 2, store2_id, regular_username2));
-
     }
 
     @Test

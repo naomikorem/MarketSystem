@@ -34,7 +34,7 @@ public abstract class AbstractProxyController<T extends AbstractProxy>
      * Remove external service from the market system
      * @param service_name The name of the new external service
      */
-    public void removeService(String service_name)
+    public synchronized void removeService(String service_name)
     {
 
         if (services.size() == 1)

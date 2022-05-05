@@ -94,10 +94,17 @@ public class MarketManagementFacade
      */
     public Response<Boolean> purchaseShoppingCart(User user, String address, String purchase_service_name, String supply_service_name)
     {
-
         try
         {
+            String username = checkUsername(user);
             List<ShoppingBasket> baskets = user.getCartBaskets();
+
+            if (baskets.isEmpty())
+            {
+                LogUtility.error("User " + username + " tried to purchase empty shopping cart");
+                return new Response<>("Purchase shopping cart cannot be empty");
+            }
+
             double price = PurchaseProcess.CalcPrice(baskets);
             List<Map.Entry<Item, Integer>> items_and_amounts = PurchaseProcess.getItemsAndAmounts(baskets);
 
@@ -108,22 +115,25 @@ public class MarketManagementFacade
              * 4. should send money to the store owner here or is it the purchase services problem?
              * */
 
-            if(this.services.pay(price, purchase_service_name) == false)
+            if(!this.services.supply(address, items_and_amounts, supply_service_name))
             {
-                LogUtility.error("The user " + checkUsername(user) + " couldn't pay to the purchase services.");
-                return new Response<>("The purchase process canceled - couldn't contact the purchase service.");
-            }
-            if(this.services.supply(address, items_and_amounts, supply_service_name) == false)
-            {
-                LogUtility.error("The user " + checkUsername(user) + " couldn't get confirmation from the supply services.");
+                LogUtility.error("The user " + username + " couldn't get confirmation from the supply services.");
                 return new Response<>("The purchase process canceled - couldn't contact the supply service.");
             }
-            PurchaseProcess.addToHistory(checkUsername(user), baskets);
-            LogUtility.info("The user " + checkUsername(user) + " paid " + price + " shekels to the purchase services.");
+
+            // do not move payment up: so we want charge user before other checks
+            if(!this.services.pay(price, purchase_service_name))
+            {
+                LogUtility.error("The user " + username + " couldn't pay to the purchase services.");
+                return new Response<>("The purchase process canceled - couldn't contact the purchase service.");
+            }
+
+            PurchaseProcess.addToHistory(username, baskets);
+            LogUtility.info("The user " + username + " paid " + price + " shekels to the purchase services.");
 
             Set<Store> stores = baskets.stream().map(basket -> this.storeController.getStore(basket.getStoreId())).collect(Collectors.toSet());
             Map<Integer, List<String>> stores_and_owners = stores.stream().collect(Collectors.toMap(Store::getStoreId, Store::getOwners));
-            this.notificationController.notifyStoresOwners(stores_and_owners, checkUsername(user));
+            this.notificationController.notifyStoresOwners(stores_and_owners, username);
             user.emptyShoppingCart();
 
             LogUtility.info("The owners of the stores " + stores.toString() + " received notification");

@@ -47,7 +47,7 @@ public class SupplyProxyController extends AbstractProxyController<SupplyProxy> 
 
     public synchronized boolean supply(String address, List<Map.Entry<Item, Integer>> items, String supply_service_name) throws RemoteException {
         if (!services.containsKey(supply_service_name)) {
-            LogUtility.error("tried to use external service that doesn't exists");
+            LogUtility.error("tried to use external supply service named " + supply_service_name + " which does not exists in the system");
             throw new IllegalArgumentException("The service with the name " + supply_service_name + " does not exists in the system.\n");
         }
         LogUtility.info("The supply service " + supply_service_name + " will try supply the items to the address: " + address);

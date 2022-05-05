@@ -32,7 +32,10 @@ public class ItemHistory
     @Override
     public boolean equals(Object item)
     {
-        if(item instanceof ItemHistory)
+        if (this == item) {
+            return true;
+        }
+        else if(item instanceof ItemHistory)
         {
             ItemHistory i = (ItemHistory)item;
             return i.price_per_unit == this.price_per_unit &&
