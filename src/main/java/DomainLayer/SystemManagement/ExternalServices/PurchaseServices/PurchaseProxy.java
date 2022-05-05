@@ -1,38 +1,37 @@
 package DomainLayer.SystemManagement.ExternalServices.PurchaseServices;
 
-import DomainLayer.SystemManagement.ExternalServices.AbstractServiceProxy;
+import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
 import Utility.LogUtility;
 
-public class PurchaseProxy extends AbstractServiceProxy<IExternalPurchaseService>
-{
-    /***
-     * An abstract function that creates an instance of the relevant external purchase service
-     * @param name The name of the new service
-     * @return New external purchase service
-     */
-    @Override
-    protected IExternalPurchaseService ServiceFactory(String name)
-    {
-        return new StubPurchaseService(name);
+import java.rmi.AccessException;
+import java.rmi.RemoteException;
 
-        // TODO: should we know all the services in advance?
+public class PurchaseProxy extends AbstractProxy
+{
+    // add type of purchase support
+    public PurchaseProxy(String name) {
+        super(name);
     }
 
     /***
-     * Call to the requested purchase service and pay the amount with the user details.
-     * @param price The amount to pay
-     * @param purchase_service_name The requested external purchase service
-     * @return true - if the payment process ends successfully, false otherwise.
+     * Interface function that all the external purchase services must have.
+     * The service deals with user's payment using the relevant details (like creditcard).
+     * @param amount The amount to pay
+     * @return true - if the payment process is successful, false - otherwise
      */
-    public synchronized boolean pay(double price, String purchase_service_name)
-    {
-        if (!services.containsKey(purchase_service_name))
-        {
-            LogUtility.warn("tried to use external service that doesn't exists");
-            throw new IllegalArgumentException("The service with the name " + purchase_service_name + " does not exists in the system.");
-        }
-        LogUtility.info("The purchase service " + purchase_service_name + " will try handle the payment of the user, the price: " + price);
-        return services.get(purchase_service_name).pay(price);
 
+    public boolean pay(double amount) throws RemoteException {
+        if (this.name.equals(GOOD_STUB_NAME) || this.name.equals(GOOD_STUB_NAME_2))
+        {
+            return true;
+        }
+        else if (this.name.equals(BAD_STUB_NAME))
+        {
+            LogUtility.error("Could not charge the user with bad stub purchase service");
+            throw new RemoteException("Could not charge the user with bad stub purchase service");
+        }
+
+        LogUtility.error("Could not charge the user with external purchase service named: " + this.name);
+        throw new RemoteException("Could not charge the user with external purchase service named: " + this.name);
     }
 }

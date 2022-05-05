@@ -1,25 +1,27 @@
 package DomainLayer.SystemManagement.ExternalServices;
 
 import DomainLayer.Stores.Item;
-import DomainLayer.SystemManagement.ExternalServices.PurchaseServices.PurchaseProxy;
+import DomainLayer.SystemManagement.ExternalServices.PurchaseServices.PurchaseProxyController;
 import DomainLayer.SystemManagement.ExternalServices.SupplyServices.SupplyProxy;
+import DomainLayer.SystemManagement.ExternalServices.SupplyServices.SupplyProxyController;
 
+import java.rmi.ConnectException;
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
 public class ExternalServicesHandler
 {
-    private PurchaseProxy purchase_proxy;
-    private SupplyProxy supply_proxy;
-
+    private PurchaseProxyController purchaseProxyController;
+    private SupplyProxyController supplyProxyController;
 
     private static class ExternalServicesHolder {
         static final ExternalServicesHandler INSTANCE = new ExternalServicesHandler();
     }
     private ExternalServicesHandler()
     {
-        this.purchase_proxy = new PurchaseProxy();
-        this.supply_proxy = new SupplyProxy();
+        this.purchaseProxyController = PurchaseProxyController.getInstance();
+        this.supplyProxyController = SupplyProxyController.getInstance();
     }
 
     // Implementation of thread safe singleton
@@ -30,19 +32,17 @@ public class ExternalServicesHandler
 
     public void clearServices()
     {
-        this.purchase_proxy.clearServices();
-        this.supply_proxy.clearServices();
+        this.purchaseProxyController.clearServices();
+        this.supplyProxyController.clearServices();
     }
-
 
     /***
      * A system admin can add external purchase service, if it doesn't already exist.
      * @param name The name of the new service
      * @return Response - if the addition succeeded or if there was an error
      */
-    public void addExternalPurchaseService(String name)
-    {
-        purchase_proxy.addService(name);
+    public void addExternalPurchaseService(String name, String url) throws ConnectException {
+        purchaseProxyController.addService(name, url);
     }
 
     /***
@@ -52,7 +52,7 @@ public class ExternalServicesHandler
      */
     public void removeExternalPurchaseService(String name)
     {
-        purchase_proxy.removeService(name);
+        purchaseProxyController.removeService(name);
     }
 
     /***
@@ -60,9 +60,8 @@ public class ExternalServicesHandler
      * @param name The name of the new service
      * @return Response - if the addition succeeded or if there was an error
      */
-    public void addExternalSupplyService(String name)
-    {
-        supply_proxy.addService(name);
+    public void addExternalSupplyService(String name, String url) throws ConnectException {
+        supplyProxyController.addService(name, url);
     }
 
     /***
@@ -72,7 +71,7 @@ public class ExternalServicesHandler
      */
     public void removeExternalSupplyService(String name)
     {
-        supply_proxy.removeService(name);
+        supplyProxyController.removeService(name);
     }
 
     /***
@@ -81,7 +80,7 @@ public class ExternalServicesHandler
      */
     public boolean hasPurchaseService()
     {
-        return purchase_proxy.hasService();
+        return purchaseProxyController.hasService();
     }
 
     /***
@@ -90,7 +89,7 @@ public class ExternalServicesHandler
      */
     public boolean hasSupplyService()
     {
-        return supply_proxy.hasService();
+        return supplyProxyController.hasService();
     }
 
     /***
@@ -99,7 +98,7 @@ public class ExternalServicesHandler
      */
     public boolean hasPurchaseService(String purchase_service_name)
     {
-        return purchase_proxy.hasService(purchase_service_name);
+        return purchaseProxyController.hasService(purchase_service_name);
     }
 
     /***
@@ -108,7 +107,7 @@ public class ExternalServicesHandler
      */
     public boolean hasSupplyService(String supply_service_name)
     {
-        return supply_proxy.hasService(supply_service_name);
+        return supplyProxyController.hasService(supply_service_name);
     }
 
     /***
@@ -116,9 +115,8 @@ public class ExternalServicesHandler
      * @param price The amount to pay
      * @param purchase_service_name The selected external purchase service
      */
-    public boolean pay(double price, String purchase_service_name)
-    {
-         return purchase_proxy.pay(price, purchase_service_name);
+    public void pay(double price, String purchase_service_name) throws RemoteException {
+        purchaseProxyController.pay(price, purchase_service_name);
     }
 
     /***
@@ -127,8 +125,7 @@ public class ExternalServicesHandler
      * @param items The items that the user paid for.
      * @param supply_service_name The selected external purchase service
      */
-    public boolean supply(String address, List<Map.Entry<Item, Integer>> items, String supply_service_name)
-    {
-        return supply_proxy.supply(address, items, supply_service_name);
+    public void supply(String address, List<Map.Entry<Item, Integer>> items, String supply_service_name) throws RemoteException {
+        supplyProxyController.supply(address, items, supply_service_name);
     }
 }

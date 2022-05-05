@@ -313,22 +313,22 @@ public class SystemImplementor implements SystemInterface {
 
     }
 
-    public Response<Boolean> addExternalPurchaseService(String name) {
+    public Response<Boolean> addExternalPurchaseService(String name, String url) {
         Response<Boolean> is_admin_response = isAdminCheck();
         if (is_admin_response.hadError() || !is_admin_response.getObject()) {
             return is_admin_response;
         }
 
-        return this.marketManagementFacade.addExternalPurchaseService(name);
+        return this.marketManagementFacade.addExternalPurchaseService(name, url);
     }
 
-    public Response<Boolean> addExternalSupplyService(String name) {
+    public Response<Boolean> addExternalSupplyService(String name, String url) {
         Response<Boolean> is_admin_response = isAdminCheck();
         if (is_admin_response.hadError() || !is_admin_response.getObject()) {
             return is_admin_response;
         }
 
-        return this.marketManagementFacade.addExternalSupplyService(name);
+        return this.marketManagementFacade.addExternalSupplyService(name, url);
     }
 
     public Response<Boolean> removeExternalPurchaseService(String name) {

@@ -3,6 +3,7 @@ package acceptenceTests;
 import DomainLayer.Response;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
+import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
 import DomainLayer.SystemManagement.HistoryManagement.ItemHistory;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.SystemManagement.NotificationManager.Notification;
@@ -81,7 +82,7 @@ public class NotificationsTests extends AbstractTest
         this.bridge.addItemToCart(store1_id, item2_id, 2);
         this.bridge.addItemToCart(store2_id, item3_id, 1);
         this.bridge.addItemToCart(store2_id, item4_id, 2);
-        this.bridge.purchaseShoppingCart("ashdod", "stub", "stub");
+        this.bridge.purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
         this.bridge.logout();
 
         this.bridge.login(store1_owner_username, "password");

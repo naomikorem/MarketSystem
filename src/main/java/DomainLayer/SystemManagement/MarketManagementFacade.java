@@ -6,6 +6,7 @@ import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
 import DomainLayer.Stores.StoreController;
 
+import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
 import DomainLayer.SystemManagement.ExternalServices.ExternalServicesHandler;
 import DomainLayer.SystemManagement.HistoryManagement.HistoryController;
 import DomainLayer.SystemManagement.HistoryManagement.History;
@@ -16,6 +17,7 @@ import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 import Utility.LogUtility;
 
+import java.rmi.ConnectException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +34,6 @@ public class MarketManagementFacade
     private MarketManagementFacade()
     {
         this.services = ExternalServicesHandler.getInstance();
-        //this.purchaseProcess = PurchaseProcess.getInstance();
         this.historyController = HistoryController.getInstance();
         this.notificationController = NotificationController.getInstance();
         this.storeController = StoreController.getInstance();
@@ -68,13 +69,18 @@ public class MarketManagementFacade
      */
     public synchronized void initializeMarket()
     {
-        // check if there is supply service - if not, add the first one
-        if (!services.hasPurchaseService()) {
-            services.addExternalPurchaseService("stub");
+        try {
+            // check if there is supply service - if not, add the first one
+            if (!services.hasPurchaseService()) {
+                services.addExternalPurchaseService(AbstractProxy.GOOD_STUB_NAME, "url");
+            }
+            // check if there is purchase service - if not, add the first one
+            if (!services.hasSupplyService()) {
+                services.addExternalSupplyService(AbstractProxy.GOOD_STUB_NAME, "url");
+            }
         }
-        // check if there is purchase service - if not, add the first one
-        if (!services.hasSupplyService()) {
-            services.addExternalSupplyService("stub");
+        catch (ConnectException ignored)
+        {
         }
     }
 
@@ -88,6 +94,7 @@ public class MarketManagementFacade
      */
     public Response<Boolean> purchaseShoppingCart(User user, String address, String purchase_service_name, String supply_service_name)
     {
+
         try
         {
             List<ShoppingBasket> baskets = user.getCartBaskets();
@@ -132,10 +139,10 @@ public class MarketManagementFacade
      * @param name The name of the new service
      * @return Response - if the addition succeeded or if there was an error
      */
-    public Response<Boolean> addExternalPurchaseService(String name)
+    public Response<Boolean> addExternalPurchaseService(String name, String url)
     {
         try {
-            this.services.addExternalPurchaseService(name);
+            this.services.addExternalPurchaseService(name, url);
             return new Response<>(true);
         } catch (Exception e) {
             return new Response<>(e.getMessage());
@@ -162,10 +169,10 @@ public class MarketManagementFacade
      * @param name The name of the new service
      * @return Response - if the addition succeeded or if there was an error
      */
-    public Response<Boolean> addExternalSupplyService(String name)
+    public Response<Boolean> addExternalSupplyService(String name, String url)
     {
         try {
-            this.services.addExternalSupplyService(name);
+            this.services.addExternalSupplyService(name, url);
             return new Response<>(true);
         } catch (Exception e) {
             return new Response<>(e.getMessage());
