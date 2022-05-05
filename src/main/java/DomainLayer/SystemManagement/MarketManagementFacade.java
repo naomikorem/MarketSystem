@@ -47,7 +47,6 @@ public class MarketManagementFacade
 
     public static final String GUEST_DEFAULT_NAME = "guest";
     private final ExternalServicesHandler services;
-    //private final PurchaseProcess purchaseProcess;
     private final HistoryController historyController;
     private final NotificationController notificationController;
     private final StoreController storeController;
@@ -67,7 +66,6 @@ public class MarketManagementFacade
      * After this function, the system will have at least one supply service and one purchase service
      * @return Response - if the initialization succeeded or if there was an error
      */
-
     public synchronized void initializeMarket()
     {
         // check if there is supply service - if not, add the first one
@@ -77,7 +75,6 @@ public class MarketManagementFacade
         // check if there is purchase service - if not, add the first one
         if (!services.hasSupplyService()) {
             services.addExternalSupplyService("stub");
-
         }
     }
 
@@ -91,7 +88,6 @@ public class MarketManagementFacade
      */
     public Response<Boolean> purchaseShoppingCart(User user, String address, String purchase_service_name, String supply_service_name)
     {
-
         try
         {
             List<ShoppingBasket> baskets = user.getCartBaskets();
@@ -105,10 +101,17 @@ public class MarketManagementFacade
              * 4. should send money to the store owner here or is it the purchase services problem?
              * */
 
-            this.services.pay(price, purchase_service_name);
+            if(this.services.pay(price, purchase_service_name) == false)
+            {
+                LogUtility.error("The user " + checkUsername(user) + " couldn't pay to the purchase services.");
+                return new Response<>("The purchase process canceled - couldn't contact the purchase service.");
+            }
+            if(this.services.supply(address, items_and_amounts, supply_service_name) == false)
+            {
+                LogUtility.error("The user " + checkUsername(user) + " couldn't get confirmation from the supply services.");
+                return new Response<>("The purchase process canceled - couldn't contact the supply service.");
+            }
             PurchaseProcess.addToHistory(checkUsername(user), baskets);
-            this.services.supply(address, items_and_amounts, supply_service_name);
-
             LogUtility.info("The user " + checkUsername(user) + " paid " + price + " shekels to the purchase services.");
 
             Set<Store> stores = baskets.stream().map(basket -> this.storeController.getStore(basket.getStoreId())).collect(Collectors.toSet());
@@ -116,9 +119,7 @@ public class MarketManagementFacade
             this.notificationController.notifyStoresOwners(stores_and_owners, checkUsername(user));
             user.emptyShoppingCart();
 
-            LogUtility.info("The ownerts of the stores " + stores.toString() + " received notification");
-
-
+            LogUtility.info("The owners of the stores " + stores.toString() + " received notification");
             return new Response<>(true);
         }
         catch (Exception e) {

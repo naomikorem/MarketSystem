@@ -28,7 +28,7 @@ public class PurchaseProxy extends AbstractServiceProxy<IExternalPurchaseService
     {
         if (!services.containsKey(purchase_service_name))
         {
-            LogUtility.error("tried to use external service that doesn't exists");
+            LogUtility.warn("tried to use external service that doesn't exists");
             throw new IllegalArgumentException("The service with the name " + purchase_service_name + " does not exists in the system.");
         }
         LogUtility.info("The purchase service " + purchase_service_name + " will try handle the payment of the user, the price: " + price);

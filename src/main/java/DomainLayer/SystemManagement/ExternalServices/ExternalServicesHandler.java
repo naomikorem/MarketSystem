@@ -116,9 +116,9 @@ public class ExternalServicesHandler
      * @param price The amount to pay
      * @param purchase_service_name The selected external purchase service
      */
-    public void pay(double price, String purchase_service_name)
+    public boolean pay(double price, String purchase_service_name)
     {
-        purchase_proxy.pay(price, purchase_service_name);
+         return purchase_proxy.pay(price, purchase_service_name);
     }
 
     /***
@@ -127,8 +127,8 @@ public class ExternalServicesHandler
      * @param items The items that the user paid for.
      * @param supply_service_name The selected external purchase service
      */
-    public void supply(String address, List<Map.Entry<Item, Integer>> items, String supply_service_name)
+    public boolean supply(String address, List<Map.Entry<Item, Integer>> items, String supply_service_name)
     {
-        supply_proxy.supply(address, items, supply_service_name);
+        return supply_proxy.supply(address, items, supply_service_name);
     }
 }
