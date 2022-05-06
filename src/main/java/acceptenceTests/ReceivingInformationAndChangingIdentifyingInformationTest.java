@@ -23,7 +23,7 @@ public class ReceivingInformationAndChangingIdentifyingInformationTest extends A
         if (UserController.getInstance().isExist("user")) {
             UserController.getInstance().removeUser("user");
         }
-        this.u = bridge.register("user@gmail.com","user","user1").getObject();
+        this.u = bridge.register("user@gmail.com","user","first","last","user1").getObject();
     }
 
     @After

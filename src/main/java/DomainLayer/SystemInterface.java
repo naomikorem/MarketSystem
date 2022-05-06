@@ -46,7 +46,7 @@ public interface SystemInterface {
 
     public Response<History> getPurchaseHistory();
     public Response<History> getPurchaseHistory(String username);
-
+    public Response<User> getUser(String userName);
 
     public Response<History> getStoreHistory(int store_id);
 
@@ -54,7 +54,7 @@ public interface SystemInterface {
 
     public Response<Boolean> exit();
 
-    public Response<User> register(String email, String name, String password);
+    public Response<User> register(String email, String userName, String firstName, String lastName, String password);
 
     public Response<User> login(String user, String password);
 
@@ -104,4 +104,8 @@ public interface SystemInterface {
     public Response<Boolean> addAdmin(String name);
 
     public Response<Boolean> hasAdmin();
+    Response<Set<Item>> searchProducts(String productName, String category, List<String> keywords) ;
+    Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating);
+
+
 }

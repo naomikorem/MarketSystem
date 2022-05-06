@@ -26,8 +26,8 @@ public class SavingProductTest extends AbstractTest {
     public void setup() {
         Bridge bridge = new Real();
         bridge.enter();
-        bridge.register("user111@gmail.com", "user1", "password");
-        bridge.register("user222@gmail.com", "user2", "password");
+        bridge.register("user111@gmail.com", "user1","first","last", "password");
+        bridge.register("user222@gmail.com", "user2","first","last", "password");
         bridge.login("user1", "password");
         bridge.addNewStore("Store1");
         s = bridge.addNewStore("Store1").getObject();

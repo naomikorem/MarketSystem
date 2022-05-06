@@ -27,7 +27,7 @@ public class OpenStoreTest extends AbstractTest {
         if (UserController.getInstance().isExist("user")) {
             UserController.getInstance().removeUser("user");
         }
-        Response<User> u = bridge.register("user1@gmail.com", "user", "password");
+        Response<User> u = bridge.register("user1@gmail.com", "user", "first","last","password");
         this.user = u.getObject();
     }
 

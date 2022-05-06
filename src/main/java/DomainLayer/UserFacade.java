@@ -14,9 +14,9 @@ public class UserFacade {
         this.adminFacade = new AdminFacade();
     }
 
-    public Response<User> register(String email, String name, String password) {
+    public Response<User> register(String email, String userName, String firstName, String lastName, String password) {
         try {
-            return new Response<>(userController.createUser(email, name, password));
+            return new Response<>(userController.createUser(email, userName, firstName, lastName, password));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }

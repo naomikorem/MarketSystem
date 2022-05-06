@@ -27,7 +27,7 @@ public class ShoppingCartTest extends AbstractTest {
     @Before
     public void setup() {
         bridge.enter();
-        this.u = bridge.register("user111@gmail.com", "user1", "password").getObject();
+        this.u = bridge.register("user111@gmail.com", "user1","first","last", "password").getObject();
         bridge.login("user1", "password");
 
         s = bridge.addNewStore("Store1").getObject();
