@@ -21,6 +21,7 @@ public class UserController {
     public static String DEFAULT_ADMIN_USER_LAST_NAME = "admin";
     public static String DEFAULT_ADMIN_PASSWORD = "admin";
     public static String DEFAULT_ADMIN_EMAIL = "admin@mycompany.com";
+    public static int SALT_HASH_ROUND_COUNT = 10;
 
     public static Lock lock = new ReentrantLock();
 

@@ -3,6 +3,7 @@ package DomainLayer.Users;
 import Exceptions.LogException;
 import Utility.Utility;
 import Utility.LogUtility;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,14 +26,14 @@ public class SubscribedState implements UserState {
     private Set<Integer> managedStores;
 
     public SubscribedState(String email, String userName, String firstName, String lastName, String password) {
+        checkParameters(email,userName,firstName,lastName, password);
         this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.password = password;
+        this.password = BCrypt.hashpw(password, BCrypt.gensalt(UserController.SALT_HASH_ROUND_COUNT));
         this.email = email;
         this.ownedStores = new HashSet<>();
         this.managedStores = new HashSet<>();
-        checkParameters(email,userName,firstName,lastName, password);
     }
 
     public static boolean isValidUsername(String name) {
@@ -131,6 +132,6 @@ public class SubscribedState implements UserState {
 
     @Override
     public boolean login(String password) {
-        return password != null && password.equals(this.password);
+        return password != null && BCrypt.checkpw(password, this.password);
     }
 }
