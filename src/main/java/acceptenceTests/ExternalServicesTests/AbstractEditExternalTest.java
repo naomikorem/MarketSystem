@@ -4,30 +4,42 @@ import DomainLayer.Response;
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
 import DomainLayer.Users.UserController;
 import acceptenceTests.AbstractTest;
+import acceptenceTests.Bridge;
+import acceptenceTests.Real;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.RepeatedTest;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public abstract class AbstractEditExternalTest extends AbstractTest {
     private final String new_service_name;
 
+    private final String anotherAdminUsername;
+
+    private Response<Boolean> res1, res2;
+
     public AbstractEditExternalTest() {
         super();
         this.new_service_name = AbstractProxy.GOOD_STUB_NAME_2;
+        this.anotherAdminUsername = "someAdmin12";
     }
 
     protected abstract Response<Boolean> hasService(String service_name);
     protected abstract Response<Boolean> addExternalService(String service_name, String url);
+    protected abstract Response<Boolean> addExternalService(Bridge bridge, String service_name, String url);
     protected abstract Response<Boolean> removeExternalService(String service_name);
+    protected abstract Response<Boolean> removeExternalService(Bridge bridge, String service_name);
+
 
     @Before
     public void setup()
     {
         bridge.enter();
-        bridge.login(UserController.DEFAULT_ADMIN_USER, UserController.DEFAULT_ADMIN_PASSWORD);
+        assertFalse(bridge.login(UserController.DEFAULT_ADMIN_USER, UserController.DEFAULT_ADMIN_PASSWORD).hadError());
+        assertFalse(bridge.register("adminMail@gmail.com", anotherAdminUsername, "pass").hadError());
+        assertFalse(bridge.addAdmin(anotherAdminUsername).hadError());
     }
 
     @After
@@ -60,26 +72,12 @@ public abstract class AbstractEditExternalTest extends AbstractTest {
     @Test
     public void testAddServiceThatAlreadyExists()
     {
-        Response<Boolean> has_service = hasService(new_service_name);
-        assertFalse(has_service.hadError());
-        assertFalse(has_service.getObject());
-
-        // add for the first time
-        if(!has_service.getObject())
-        {
-            Response<Boolean> add_service_response = addExternalService(new_service_name, "url");
-            assertFalse(add_service_response.hadError());
-        }
-
-        Response<Boolean> has_service_again = hasService(new_service_name);
+        Response<Boolean> has_service_again = hasService(AbstractProxy.GOOD_STUB_NAME);
         assertFalse(has_service_again.hadError());
         assertTrue(has_service_again.getObject());
 
-        if(has_service_again.getObject())
-        {
-            Response<Boolean> add_service_response = addExternalService(new_service_name, "url");
-            assertTrue(add_service_response.hadError());
-        }
+        Response<Boolean> add_service_response = addExternalService(AbstractProxy.GOOD_STUB_NAME, "url");
+        assertTrue(add_service_response.hadError());
     }
 
     @Test
@@ -140,6 +138,24 @@ public abstract class AbstractEditExternalTest extends AbstractTest {
     }
 
     @Test
+    public void FailedToAddService_ConnectionFailed()
+    {
+        Response<Boolean> add_service_response = addExternalService(AbstractProxy.BAD_STUB_NAME, "url");
+        assertTrue(add_service_response.hadError());
+
+        Response<Boolean> has_service1 = hasService(AbstractProxy.BAD_STUB_NAME);
+        assertFalse(has_service1.hadError());
+        assertFalse(has_service1.getObject());
+
+        Response<Boolean> remove_first_stub_res = removeExternalService(AbstractProxy.BAD_STUB_NAME);
+        assertTrue(remove_first_stub_res.hadError());
+
+        Response<Boolean> has_service = hasService(AbstractProxy.BAD_STUB_NAME);
+        assertFalse(has_service.hadError());
+        assertFalse(has_service.getObject());
+    }
+
+    @Test
     public void removeServiceGuestUser()
     {
         bridge.logout();
@@ -153,6 +169,79 @@ public abstract class AbstractEditExternalTest extends AbstractTest {
         assertTrue(addExternalService(new_service_name, "url").hadError());
     }
 
-    // TODO: check that the connection failed (bad stub)
-    // check that the service that his connection failed  doesn't exist in the system
+    //@RepeatedTest(5)
+    @Test
+    public void addServiceSimultaneously()
+    {
+        bridge.logout();
+        for (int i = 0; i < 1000; i++) {
+            Thread t1 = new Thread(() -> {
+                assertFalse(bridge.login(UserController.DEFAULT_ADMIN_USER, UserController.DEFAULT_ADMIN_PASSWORD).hadError());
+                res1 = addExternalService(AbstractProxy.GOOD_STUB_NAME_2, "url");
+                bridge.logout();
+            });
+            Thread t2 = new Thread(() -> {
+                Bridge bridge_new_admin = new Real();
+                bridge_new_admin.enter();
+                assertFalse(bridge_new_admin.login(anotherAdminUsername, "pass").hadError());
+                res2 = addExternalService(bridge_new_admin, AbstractProxy.GOOD_STUB_NAME_2, "url");
+                bridge_new_admin.logout();
+            });
+            t1.start();
+            t2.start();
+            try {
+                t1.join();
+                t2.join();
+                assertTrue(res1.hadError() || res2.hadError());
+                assertFalse(res1.hadError() && res2.hadError());
+            } catch (Exception e) {
+                fail(e.getMessage());
+            }
+
+            assertFalse(bridge.login(UserController.DEFAULT_ADMIN_USER, UserController.DEFAULT_ADMIN_PASSWORD).hadError());
+            removeExternalService(AbstractProxy.GOOD_STUB_NAME_2);
+            bridge.logout();
+        }
+    }
+
+    //@RepeatedTest(5)
+    @Test
+    public void removeServiceSimultaneously()
+    {
+        Response<Boolean> addServiceResponse = addExternalService(AbstractProxy.GOOD_STUB_NAME_2, "url");
+        assertFalse(addServiceResponse.hadError());
+        assertTrue(hasService(AbstractProxy.GOOD_STUB_NAME_2).getObject());
+        bridge.logout();
+
+        for (int i = 0; i < 1000; i++) {
+            Thread t1 = new Thread(() -> {
+                assertFalse(bridge.login(UserController.DEFAULT_ADMIN_USER, UserController.DEFAULT_ADMIN_PASSWORD).hadError());
+                res1 = removeExternalService(AbstractProxy.GOOD_STUB_NAME_2);
+                bridge.logout();
+            });
+            Thread t2 = new Thread(() -> {
+                Bridge bridge_new_admin = new Real();
+                bridge_new_admin.enter();
+                assertFalse(bridge_new_admin.login(anotherAdminUsername, "pass").hadError());
+                res2 = removeExternalService(bridge_new_admin, AbstractProxy.GOOD_STUB_NAME_2);
+                bridge_new_admin.logout();
+            });
+            t1.start();
+            t2.start();
+            try {
+                t1.join();
+                t2.join();
+                assertTrue(res1.hadError() || res2.hadError());
+                assertFalse(res1.hadError() && res2.hadError());
+            } catch (Exception e) {
+                fail(e.getMessage());
+            }
+
+            assertFalse(bridge.login(UserController.DEFAULT_ADMIN_USER, UserController.DEFAULT_ADMIN_PASSWORD).hadError());
+            addServiceResponse = addExternalService(AbstractProxy.GOOD_STUB_NAME_2, "url");
+            assertFalse(addServiceResponse.hadError());
+            assertTrue(hasService(AbstractProxy.GOOD_STUB_NAME_2).getObject());
+            bridge.logout();
+        }
+    }
 }

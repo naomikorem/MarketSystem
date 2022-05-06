@@ -314,7 +314,7 @@ public class SystemImplementor implements SystemInterface {
     }
 
     public Response<Boolean> addExternalPurchaseService(String name, String url) {
-        Response<Boolean> is_admin_response = isAdminCheck();
+        Response<Boolean> is_admin_response = isLoggedInAdminCheck();
         if (is_admin_response.hadError() || !is_admin_response.getObject()) {
             return is_admin_response;
         }
@@ -323,7 +323,7 @@ public class SystemImplementor implements SystemInterface {
     }
 
     public Response<Boolean> addExternalSupplyService(String name, String url) {
-        Response<Boolean> is_admin_response = isAdminCheck();
+        Response<Boolean> is_admin_response = isLoggedInAdminCheck();
         if (is_admin_response.hadError() || !is_admin_response.getObject()) {
             return is_admin_response;
         }
@@ -332,7 +332,7 @@ public class SystemImplementor implements SystemInterface {
     }
 
     public Response<Boolean> removeExternalPurchaseService(String name) {
-        Response<Boolean> is_admin_response = isAdminCheck();
+        Response<Boolean> is_admin_response = isLoggedInAdminCheck();
         if (is_admin_response.hadError() || !is_admin_response.getObject()) {
             return is_admin_response;
         }
@@ -342,7 +342,7 @@ public class SystemImplementor implements SystemInterface {
 
     @Override
     public Response<Boolean> removeExternalSupplyService(String name) {
-        Response<Boolean> is_admin_response = isAdminCheck();
+        Response<Boolean> is_admin_response = isLoggedInAdminCheck();
         if (is_admin_response.hadError() || !is_admin_response.getObject()) {
             return is_admin_response;
         }
@@ -419,7 +419,7 @@ public class SystemImplementor implements SystemInterface {
 
     public Response<History> getPurchaseHistory(String username)
     {
-        Response<Boolean> is_admin_response = isAdminCheck();
+        Response<Boolean> is_admin_response = isLoggedInAdminCheck();
         if (is_admin_response.hadError() || !is_admin_response.getObject()) {
             return new Response<>("The current user is not a system admin");
 
@@ -429,9 +429,9 @@ public class SystemImplementor implements SystemInterface {
 
     public Response<History> getStoreHistory(int store_id)
     {
-        Response<Boolean> is_owner_response = isOwnerCheck(store_id);
+        Response<Boolean> is_owner_response = isLoggedInOwnerCheck(store_id);
 
-        Response<Boolean> is_admin_response = isAdminCheck();
+        Response<Boolean> is_admin_response = isLoggedInAdminCheck();
         if((is_admin_response.hadError() || !is_admin_response.getObject()) && (is_owner_response.hadError() || !is_owner_response.getObject()))
         {
             return new Response<>("The user is not an owner of the store and not an admin of the system");
@@ -510,9 +510,13 @@ public class SystemImplementor implements SystemInterface {
     }
 
 
-    private Response<Boolean> isOwnerCheck(int store_id) {
+    private Response<Boolean> isLoggedInOwnerCheck(int store_id) {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        if(!user.isSubscribed())
+        {
+            return new Response<>("You must be logged in admin in order to perform this action");
         }
 
         String username;
@@ -525,9 +529,13 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.isOwner(store_id, username);
     }
 
-    private Response<Boolean> isAdminCheck() {
+    private Response<Boolean> isLoggedInAdminCheck() {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        if(!user.isSubscribed())
+        {
+            return new Response<>("You must be logged in admin in order to perform this action");
         }
 
         String username;
