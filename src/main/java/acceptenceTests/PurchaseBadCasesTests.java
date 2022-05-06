@@ -49,7 +49,7 @@ public class PurchaseBadCasesTests extends AbstractTest
     public void setup()
     {
         bridge.enter();
-        bridge.register("storeOwner111@gmail.com", storeOwnerUsername, storeOwnerPassword);
+        bridge.register("storeOwner111@gmail.com", storeOwnerUsername,"first","last", storeOwnerPassword);
 
         assertFalse(bridge.login(storeOwnerUsername, storeOwnerPassword).hadError());
         store1_id = bridge.addNewStore("Store1").getObject().getStoreId();
@@ -68,7 +68,7 @@ public class PurchaseBadCasesTests extends AbstractTest
         int item_id = item.getId();
         bridge.logout();
 
-        bridge.register("regularUser222@gmail.com", regularUsername, "password");
+        bridge.register("regularUser222@gmail.com", regularUsername,"first","last", "password");
         this.bridge.login(regularUsername, "password");
 
         // one successful purchase

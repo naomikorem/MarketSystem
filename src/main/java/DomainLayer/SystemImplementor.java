@@ -552,7 +552,7 @@ public class SystemImplementor implements SystemInterface {
     }
     @Override
     public Response<User> getUser(String userName) {
-        Response <Boolean> r1 = isAdminCheck();
+        Response <Boolean> r1 = isLoggedInAdminCheck();
         if(r1.hadError()){
             return new Response<>("In order to perform this action you must be an Admin");
         }

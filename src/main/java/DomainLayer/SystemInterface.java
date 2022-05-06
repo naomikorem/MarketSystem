@@ -104,8 +104,6 @@ public interface SystemInterface {
     public Response<Boolean> addAdmin(String name);
 
     public Response<Boolean> hasAdmin();
-    Response<Set<Item>> searchProducts(String productName, String category, List<String> keywords) ;
-    Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating);
 
 
 }

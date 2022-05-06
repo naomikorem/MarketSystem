@@ -38,7 +38,7 @@ public abstract class AbstractEditExternalTest extends AbstractTest {
     {
         bridge.enter();
         assertFalse(bridge.login(UserController.DEFAULT_ADMIN_USER, UserController.DEFAULT_ADMIN_PASSWORD).hadError());
-        assertFalse(bridge.register("adminMail@gmail.com", anotherAdminUsername, "pass").hadError());
+        assertFalse(bridge.register("adminMail@gmail.com", anotherAdminUsername,"first", "last", "pass").hadError());
         assertFalse(bridge.addAdmin(anotherAdminUsername).hadError());
     }
 
