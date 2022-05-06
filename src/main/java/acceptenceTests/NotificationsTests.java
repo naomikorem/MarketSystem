@@ -4,6 +4,7 @@ import DomainLayer.Response;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
+import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.HistoryManagement.ItemHistory;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.SystemManagement.NotificationManager.Notification;
@@ -27,6 +28,9 @@ public class NotificationsTests extends AbstractTest
     private int item1_id, item2_id, item3_id, item4_id;
     private User user1, user2, user3;
     private Store store;
+    private Response<Boolean> user_purchase_res, store1_owner_purchase_res;
+    private Response<List<INotification>> store1_owner_notification_res;
+    private Response<History> store1_history_res;
 
     public NotificationsTests()
     {
@@ -49,14 +53,14 @@ public class NotificationsTests extends AbstractTest
 
         assertFalse(bridge.login(store1_owner_username, "password").hadError());
         this.store1_id = bridge.addNewStore("Store1").getObject().getStoreId();
-        this.item1 = bridge.addItemToStore(store1_id, "Item1", "Food", 10, 10).getObject();
-        this.item2 = bridge.addItemToStore(store1_id, "Item2", "Food", 8, 6).getObject();
+        this.item1 = bridge.addItemToStore(store1_id, "Item1", "Food", 10, 100000).getObject();
+        this.item2 = bridge.addItemToStore(store1_id, "Item2", "Food", 8, 60000).getObject();
         bridge.logout();
 
         assertFalse(bridge.login(store2_owner_username, "password").hadError());
         this.store2_id = bridge.addNewStore("Store2").getObject().getStoreId();
-        this.item3 = bridge.addItemToStore(store2_id, "Item3", "Food", 10, 10).getObject();
-        this.item4 = bridge.addItemToStore(store2_id, "Item4", "Food", 8, 6).getObject();
+        this.item3 = bridge.addItemToStore(store2_id, "Item3", "Food", 10, 100000).getObject();
+        this.item4 = bridge.addItemToStore(store2_id, "Item4", "Food", 8, 600000).getObject();
         bridge.logout();
 
         this.item1_id = item1.getId();
@@ -153,4 +157,61 @@ public class NotificationsTests extends AbstractTest
         bridge.logout();
     }
 
+    @Test
+    public void synchronizedNotificationTest() {
+        for(int i = 1; i < 10000; i++)
+        {
+            Thread t1 = new Thread(() -> {
+                Bridge bridge_user = new Real();
+                bridge_user.enter();
+                bridge_user.login(username1, "password");
+                bridge_user.addItemToCart(store1_id, item1_id, 1);
+                bridge_user.addItemToCart(store1_id, item2_id, 2);
+                this.user_purchase_res = bridge_user.purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
+                bridge_user.logout();
+            });
+            Thread t2 = new Thread(() -> {
+                Bridge bridge_owner = new Real();
+                bridge_owner.enter();
+                bridge_owner.login(store1_owner_username, "password");
+                assertFalse(bridge_owner.addItemToCart(store2_id, item3_id, 1).hadError());
+                assertFalse(bridge_owner.addItemToCart(store2_id, item4_id, 2).hadError());
+                this.store1_owner_purchase_res = bridge_owner.purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
+                bridge_owner.logout();
+            });
+            t1.start();
+            t2.start();
+            try {
+                t1.join();
+                t2.join();
+                assertFalse(this.user_purchase_res.hadError() || this.store1_owner_purchase_res.hadError());
+                //check that the store 1 owner received notifications
+                this.bridge.login(this.store1_owner_username, "password");
+                this.store1_owner_notification_res = this.bridge.getUserNotifications(); // supposed to be one notification from regular user per round
+                this.store1_history_res = this.bridge.getStoreHistory(store1_id); // supposed to be 2 history items from user purchase
+                this.bridge.logout();
+
+                assertFalse(store1_owner_notification_res.hadError());
+                assertEquals(1*i, store1_owner_notification_res.getObject().size());
+                // check that the purchase history of user 1 added to store 1
+                assertFalse(store1_history_res.hadError());
+                assertEquals(2*i, store1_history_res.getObject().getHistoryItems().size());
+
+                // receive information about store 2
+                this.bridge.login(this.store2_owner_username, "password");
+                Response<List<INotification>> store2_owner_notification_res = this.bridge.getUserNotifications(); // supposed to be 1 from store owner 1
+                Response<History> store2_history_res = this.bridge.getStoreHistory(store2_id); // supposed to be 2 from store owner 1 purchase
+                this.bridge.logout();
+                // check that the store 2 owner received notifications
+                assertFalse(store2_owner_notification_res.hadError());
+                assertEquals(1*i, store2_owner_notification_res.getObject().size());
+
+                // check that the purchase history of store owner 1 added to store 2
+                assertFalse(store2_history_res.hadError());
+                assertEquals(2*i, store2_history_res.getObject().getHistoryItems().size());
+            } catch (Exception e) {
+                fail(null);
+            }
+        }
+    }
 }

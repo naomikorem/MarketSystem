@@ -1,33 +1,33 @@
 package DomainLayer.SystemManagement;
 
 import DomainLayer.Response;
-import DomainLayer.StoreFacade;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
 import DomainLayer.Stores.StoreController;
-
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
-
 import DomainLayer.SystemManagement.ExternalServices.ExternalServicesHandler;
 import DomainLayer.SystemManagement.HistoryManagement.HistoryController;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.SystemManagement.NotificationManager.NotificationController;
-
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 import Utility.LogUtility;
 
 import java.rmi.ConnectException;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
 public class MarketManagementFacade
 {
+    public static final String GUEST_DEFAULT_NAME = "guest";
+    private final ExternalServicesHandler services;
+    private final HistoryController historyController;
+    private final NotificationController notificationController;
+    private final StoreController storeController;
+
     private static class MarketManagementFacadeHolder
     {
         static final MarketManagementFacade INSTANCE = new MarketManagementFacade();
@@ -39,7 +39,6 @@ public class MarketManagementFacade
         this.notificationController = NotificationController.getInstance();
         this.storeController = StoreController.getInstance();
         initializeMarket();
-
     }
 
     // Implementation of thread safe singleton
@@ -47,12 +46,10 @@ public class MarketManagementFacade
         return MarketManagementFacadeHolder.INSTANCE;
     }
 
-    public static final String GUEST_DEFAULT_NAME = "guest";
-    private final ExternalServicesHandler services;
-    private final HistoryController historyController;
-    private final NotificationController notificationController;
-    private final StoreController storeController;
-
+    /***
+     * Clear all the data structures
+     * @return Response with true
+     */
     public Response<Boolean> clearAll()
     {
         this.notificationController.clearNotifications();
@@ -61,7 +58,6 @@ public class MarketManagementFacade
         initializeMarket();
         return new Response<>(true);
     }
-
 
     /***
      * The function responsible to initialize the connection with the external services, when the system is loaded
@@ -82,6 +78,7 @@ public class MarketManagementFacade
         }
         catch (ConnectException ignored)
         {
+            // can't reach here
         }
     }
 
@@ -95,6 +92,12 @@ public class MarketManagementFacade
      */
     public Response<Boolean> purchaseShoppingCart(User user, String address, String purchase_service_name, String supply_service_name)
     {
+        /* TODO:
+         * 1. choose payment and shipping service
+         * 2. check that every item matches the purchase and discount policy
+         * 3. send the price and user details and store details to the purchase service
+         * 4. should send money to the store owner here or is it the purchase services problem?
+         * */
         try
         {
             String username = checkUsername(user);
@@ -109,20 +112,13 @@ public class MarketManagementFacade
             double price = PurchaseProcess.CalcPrice(baskets);
             List<Map.Entry<Item, Integer>> items_and_amounts = PurchaseProcess.getItemsAndAmounts(baskets);
 
-            /* TODO:
-             * 1. choose payment and shipping service
-             * 2. check that every item matches the purchase and discount policy
-             * 3. send the price and user details and store details to the purchase service
-             * 4. should send money to the store owner here or is it the purchase services problem?
-             * */
-
             if(!this.services.supply(address, items_and_amounts, supply_service_name))
             {
                 LogUtility.error("The user " + username + " couldn't get confirmation from the supply services.");
                 return new Response<>("The purchase process canceled - couldn't contact the supply service.");
             }
 
-            // do not move payment up: so we want charge user before other checks
+            // do not move payment up: so we won't charge user before other checks
             if(!this.services.pay(price, purchase_service_name))
             {
                 LogUtility.error("The user " + username + " couldn't pay to the purchase services.");
@@ -130,14 +126,13 @@ public class MarketManagementFacade
             }
 
             PurchaseProcess.addToHistory(username, baskets);
-            LogUtility.info("The user " + username + " paid " + price + " shekels to the purchase services.");
 
             Set<Store> stores = baskets.stream().map(basket -> this.storeController.getStore(basket.getStoreId())).collect(Collectors.toSet());
             Map<Integer, List<String>> stores_and_owners = stores.stream().collect(Collectors.toMap(Store::getStoreId, Store::getOwners));
             this.notificationController.notifyStoresOwners(stores_and_owners, username);
             user.emptyShoppingCart();
 
-            LogUtility.info("The owners of the stores " + stores.toString() + " received notification");
+            LogUtility.info("Purchase process of shopping cart that the user " + username + " owned ended successfully");
             return new Response<>(true);
         }
         catch (Exception e) {
@@ -257,6 +252,11 @@ public class MarketManagementFacade
         }
     }
 
+    /***
+     * Receive the purchase history of a subscribed user.
+     * @param username The name of the requested user
+     * @return Response of the History of the given user - if found in users_history
+     */
     public Response<History> getPurchaseHistory(String username)
     {
         try {
@@ -266,7 +266,13 @@ public class MarketManagementFacade
         }
     }
 
-    public Response<History> getStoreHistory(int store_id) {
+    /***
+     * Receive the purchase history of a given store
+     * @param store_id The requested store
+     * @return Response of the History of the relevant store, if exists in store_history
+     */
+    public Response<History> getStoreHistory(int store_id)
+    {
         try {
             return new Response<>(this.historyController.getStoreHistory(store_id));
         } catch (Exception e) {
@@ -274,6 +280,11 @@ public class MarketManagementFacade
         }
     }
 
+    /***
+     * Add notification to given user
+     * @param username The given user
+     * @param message The message of the notification
+     */
     public Response<Boolean> addNotification(String username, String message)
     {
         try
@@ -285,6 +296,10 @@ public class MarketManagementFacade
         }
     }
 
+    /***
+     * Remove all the notifications of given user
+     * @param username The given user
+     */
     public Response<Boolean> removeUserNotifications(String username)
     {
         try
@@ -296,6 +311,11 @@ public class MarketManagementFacade
         }
     }
 
+    /***
+     * Receive all the notifications of some user
+     * @param username The given user
+     * @return List of notifications
+     */
     public Response<List<INotification>> getUserNotifications(String username)
     {
         try
@@ -306,16 +326,20 @@ public class MarketManagementFacade
         }
     }
 
-
+    /***
+     * Check if a given user is subscribed or not
+     * @param user The given user to check
+     * @return If the user is guest - default guest name, if the user is subscribed - his username
+     */
     private String checkUsername(User user)
     {
         if (user.isSubscribed())
         {
             return user.getName();
         }
-        else {
+        else
+        {
             return GUEST_DEFAULT_NAME;
         }
     }
-
 }

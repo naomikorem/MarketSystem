@@ -1,10 +1,8 @@
 package DomainLayer.SystemManagement.HistoryManagement;
 
 import DomainLayer.Stores.Category;
-import DomainLayer.Stores.Item;
 
 import java.util.Date;
-import java.util.Objects;
 
 public class ItemHistory
 {
@@ -27,33 +25,5 @@ public class ItemHistory
         this.price_per_unit = price_per_unit;
         this.amount = amount;
         this.date = date;
-    }
-
-    @Override
-    public boolean equals(Object item)
-    {
-        if (this == item) {
-            return true;
-        }
-        else if(item instanceof ItemHistory)
-        {
-            ItemHistory i = (ItemHistory)item;
-            return i.price_per_unit == this.price_per_unit &&
-                    i.product_name.equals(this.product_name) &&
-                    i.id == this.id &&
-                    i.store_id == this.store_id &&
-                    i.amount == this.amount &&
-
-                    i.category == this.category;
-
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(id, store_id, username, product_name, category, price_per_unit, amount);
-
     }
 }

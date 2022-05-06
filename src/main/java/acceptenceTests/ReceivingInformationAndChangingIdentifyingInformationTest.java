@@ -5,7 +5,6 @@ import DomainLayer.Users.UserController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.AfterAll;
 
 import static org.junit.Assert.*;
 

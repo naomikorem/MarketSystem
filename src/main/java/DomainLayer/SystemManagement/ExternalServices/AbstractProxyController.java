@@ -8,17 +8,15 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class AbstractProxyController<T extends AbstractProxy>
 {
     // Holds all the external services from specific type (purchase or supply)
-
     protected ConcurrentHashMap<String, T> services = new ConcurrentHashMap<>();
-
 
     protected abstract T createProxy(String name, String url) throws ConnectException; // abstract function
 
     /***
      * Add external service to the market system
      * @param name The name of the new external service
+     * @param url The connection with the external service
      */
-
     public synchronized void addService(String name, String url) throws ConnectException {
         if (services.containsKey(name))
         {
@@ -27,7 +25,6 @@ public abstract class AbstractProxyController<T extends AbstractProxy>
         }
         services.put(name, createProxy(name, url));
         LogUtility.info("Added new external service with the name " + name);
-
     }
 
     /***
@@ -48,7 +45,6 @@ public abstract class AbstractProxyController<T extends AbstractProxy>
         }
         services.remove(service_name);
         LogUtility.info("Removed the external service with the name " + service_name + " from the system");
-
     }
 
     /***
@@ -70,10 +66,8 @@ public abstract class AbstractProxyController<T extends AbstractProxy>
         return services.containsKey(service_name);
     }
 
-
     public void clearServices()
     {
         this.services = new ConcurrentHashMap<>();
     }
-
 }

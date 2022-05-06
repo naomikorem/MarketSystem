@@ -2,7 +2,6 @@ package DomainLayer.SystemManagement.ExternalServices.SupplyServices;
 
 import DomainLayer.Stores.Item;
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
-import DomainLayer.SystemManagement.ExternalServices.AbstractProxyController;
 import Utility.LogUtility;
 
 import java.rmi.RemoteException;
@@ -19,11 +18,12 @@ public class SupplyProxy extends AbstractProxy
      * Call to the requested supply service and ship the items to the user
      * @param address Shipping address, The user's address
      * @param items The items that the user paid for
-     * @return
+     * @return true if the supply service supplied the items to the user
      */
     public synchronized boolean supply(String address, List<Map.Entry<Item, Integer>> items) throws RemoteException {
         if (this.name.equals(GOOD_STUB_NAME) || this.name.equals(GOOD_STUB_NAME_2))
         {
+            LogUtility.info("Supplied the items to the user with " + this.name + " supply service to address " + address);
             return true;
         }
         else if (this.name.equals(BAD_STUB_NAME))

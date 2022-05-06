@@ -18,7 +18,8 @@ public abstract class AbstractProxy
         this.url = "";
     }
 
-    public boolean connect(String url) throws ConnectException {
+    public boolean connect(String url) throws ConnectException
+    {
         this.url = url;
 
         if (this.name.equals(GOOD_STUB_NAME) || this.name.equals(GOOD_STUB_NAME_2))

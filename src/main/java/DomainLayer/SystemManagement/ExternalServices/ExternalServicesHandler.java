@@ -2,7 +2,6 @@ package DomainLayer.SystemManagement.ExternalServices;
 
 import DomainLayer.Stores.Item;
 import DomainLayer.SystemManagement.ExternalServices.PurchaseServices.PurchaseProxyController;
-import DomainLayer.SystemManagement.ExternalServices.SupplyServices.SupplyProxy;
 import DomainLayer.SystemManagement.ExternalServices.SupplyServices.SupplyProxyController;
 
 import java.rmi.ConnectException;
@@ -15,7 +14,8 @@ public class ExternalServicesHandler
     private PurchaseProxyController purchaseProxyController;
     private SupplyProxyController supplyProxyController;
 
-    private static class ExternalServicesHolder {
+    private static class ExternalServicesHolder
+    {
         static final ExternalServicesHandler INSTANCE = new ExternalServicesHandler();
     }
     private ExternalServicesHandler()
@@ -29,7 +29,6 @@ public class ExternalServicesHandler
         return ExternalServicesHolder.INSTANCE;
     }
 
-
     public void clearServices()
     {
         this.purchaseProxyController.clearServices();
@@ -39,6 +38,7 @@ public class ExternalServicesHandler
     /***
      * A system admin can add external purchase service, if it doesn't already exist.
      * @param name The name of the new service
+     * @param url The connection to the external service.
      * @return Response - if the addition succeeded or if there was an error
      */
     public void addExternalPurchaseService(String name, String url) throws ConnectException {
@@ -58,6 +58,7 @@ public class ExternalServicesHandler
     /***
      * A system admin can add external supply service, if it doesn't already exist.
      * @param name The name of the new service
+     * @param url The connection to the external service.
      * @return Response - if the addition succeeded or if there was an error
      */
     public void addExternalSupplyService(String name, String url) throws ConnectException {
@@ -75,7 +76,7 @@ public class ExternalServicesHandler
     }
 
     /***
-     * Check if the system contains purchase services
+     * Check if the system contains at least one purchase services
      * @return Response - true if there is at least one purchase service, false otherwise
      */
     public boolean hasPurchaseService()
@@ -84,7 +85,7 @@ public class ExternalServicesHandler
     }
 
     /***
-     * Check if the system contains supply services
+     * Check if the system contains at least one supply services
      * @return Response - true if there is at least one supply service, false otherwise
      */
     public boolean hasSupplyService()
@@ -94,6 +95,7 @@ public class ExternalServicesHandler
 
     /***
      * Check if the system contains purchase services with the given name
+     * @param purchase_service_name - The name of the external service
      * @return Response - true if the service was found, false otherwise
      */
     public boolean hasPurchaseService(String purchase_service_name)
@@ -103,6 +105,7 @@ public class ExternalServicesHandler
 
     /***
      * Check if the system contains supply services with the given name
+     * @param supply_service_name - The name of the external service
      * @return Response - true if the service was found, false otherwise
      */
     public boolean hasSupplyService(String supply_service_name)
@@ -114,6 +117,7 @@ public class ExternalServicesHandler
      * Use the given purchase service name and the user's details to pay the requested amount
      * @param price The amount to pay
      * @param purchase_service_name The selected external purchase service
+     * return true if the payment succeeded.
      */
     public boolean pay(double price, String purchase_service_name) throws RemoteException {
         return purchaseProxyController.pay(price, purchase_service_name);
@@ -124,6 +128,7 @@ public class ExternalServicesHandler
      * @param address The User's shipping address.
      * @param items The items that the user paid for.
      * @param supply_service_name The selected external purchase service
+     * return true if the supply company shipped the items.
      */
     public boolean supply(String address, List<Map.Entry<Item, Integer>> items, String supply_service_name) throws RemoteException {
         return supplyProxyController.supply(address, items, supply_service_name);

@@ -2,8 +2,6 @@ package DomainLayer.SystemManagement.ExternalServices.SupplyServices;
 
 import DomainLayer.Stores.Item;
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxyController;
-import DomainLayer.SystemManagement.ExternalServices.PurchaseServices.PurchaseProxy;
-import DomainLayer.SystemManagement.ExternalServices.PurchaseServices.PurchaseProxyController;
 import Utility.LogUtility;
 
 import java.rmi.ConnectException;
@@ -31,7 +29,8 @@ public class SupplyProxyController extends AbstractProxyController<SupplyProxy> 
      * @return New external supply service
      */
     @Override
-    protected SupplyProxy createProxy(String name, String url) throws ConnectException {
+    protected SupplyProxy createProxy(String name, String url) throws ConnectException
+    {
         SupplyProxy connection = new SupplyProxy(name);
         connection.connect(url);
         return connection;
@@ -44,14 +43,13 @@ public class SupplyProxyController extends AbstractProxyController<SupplyProxy> 
      * @param supply_service_name The requested external supply service
      * @return
      */
-
     public synchronized boolean supply(String address, List<Map.Entry<Item, Integer>> items, String supply_service_name) throws RemoteException {
-        if (!services.containsKey(supply_service_name)) {
+        if (!services.containsKey(supply_service_name))
+        {
             LogUtility.error("tried to use external supply service named " + supply_service_name + " which does not exists in the system");
             throw new IllegalArgumentException("The service with the name " + supply_service_name + " does not exists in the system.\n");
         }
         LogUtility.info("The supply service " + supply_service_name + " will try supply the items to the address: " + address);
         return services.get(supply_service_name).supply(address, items);
-
     }
 }

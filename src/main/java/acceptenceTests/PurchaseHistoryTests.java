@@ -3,7 +3,6 @@ package acceptenceTests;
 import DomainLayer.Response;
 import DomainLayer.Stores.Item;
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
-import DomainLayer.SystemManagement.ExternalServices.AbstractProxyController;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.HistoryManagement.ItemHistory;
 import org.junit.Before;
@@ -15,25 +14,11 @@ import static org.junit.Assert.*;
 
 public class PurchaseHistoryTests extends AbstractTest
 {
-    private final String regular_username1;
-    private final String regular_username2;
-    private final String store1_owner_username;
-    private final String store2_owner_username;
-
-    private final String admin_username;
-    private int store1_id;
-    private int store2_id;
-    private Item item1;
-    private Item item2;
-    private Item item3;
-    private Item item4;
-    private int item1_id;
-    private int item2_id;
-    private int item3_id;
-    private int item4_id;
-    private Set<ItemHistory> originals_as_items_history_store1_user1;
-    private Set<ItemHistory> originals_as_items_history_store2_user2;
-
+    private final String regular_username1, regular_username2, store1_owner_username, store2_owner_username, admin_username;
+    private int store1_id, store2_id;
+    private Item item3, item4;
+    private int item3_id, item4_id;
+    private Set<Item> originals_items_store1_user1, originals_items_store2_user2;
     private final Date date;
 
     public PurchaseHistoryTests()
@@ -52,20 +37,18 @@ public class PurchaseHistoryTests extends AbstractTest
     @Before
     public void setup()
     {
-        //bridge.initializeMarket();
         bridge.enter();
         bridge.register("user111@gmail.com", regular_username1,"first","last", "password");
         bridge.register("user112@gmail.com", regular_username2,"first","last", "password");
         bridge.register("user222@gmail.com", store1_owner_username, "first","last","password");
         bridge.register("user223@gmail.com", store2_owner_username, "first","last","password");
 
-
         assertFalse(bridge.login(store1_owner_username, "password").hadError());
         this.store1_id = bridge.addNewStore("Store1").getObject().getStoreId();
-        this.item1 = bridge.addItemToStore(store1_id, "Item1", "Food", 10, 10).getObject();
-        this.item1_id = this.item1.getId();
-        this.item2 = bridge.addItemToStore(store1_id, "Item2", "Food", 8, 6).getObject();
-        this.item2_id = this.item2.getId();
+        Item item1 = bridge.addItemToStore(store1_id, "Item1", "Food", 10, 10).getObject();
+        int item1_id = item1.getId();
+        Item item2 = bridge.addItemToStore(store1_id, "Item2", "Food", 8, 6).getObject();
+        int item2_id = item2.getId();
         bridge.logout();
 
         assertFalse(bridge.login(store2_owner_username, "password").hadError());
@@ -88,20 +71,19 @@ public class PurchaseHistoryTests extends AbstractTest
         this.bridge.purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
         this.bridge.logout();
 
-        this.originals_as_items_history_store1_user1 = new HashSet<>();
-        originals_as_items_history_store1_user1.add(convertItemToItemHistory(item1, 1, store1_id, regular_username1));
-        originals_as_items_history_store1_user1.add(convertItemToItemHistory(item2, 2, store1_id, regular_username1));
+        this.originals_items_store1_user1 = new HashSet<>();
+        originals_items_store1_user1.add(item1);
+        originals_items_store1_user1.add(item2);
 
-        this.originals_as_items_history_store2_user2 = new HashSet<>();
-        originals_as_items_history_store2_user2.add(convertItemToItemHistory(item3, 1, store2_id, regular_username2));
-        originals_as_items_history_store2_user2.add(convertItemToItemHistory(item4, 2, store2_id, regular_username2));
+        this.originals_items_store2_user2 = new HashSet<>();
+        originals_items_store2_user2.add(item3);
+        originals_items_store2_user2.add(item4);
     }
 
     @Test
     public void GuestReceivePersonalPurchaseHistoryTest()
     {
         Response<History> res = this.bridge.getPurchaseHistory();
-
         assertTrue(res.hadError());
     }
 
@@ -114,7 +96,7 @@ public class PurchaseHistoryTests extends AbstractTest
         assertFalse(res.hadError());
 
         Set<ItemHistory> items = res.getObject().getHistoryItems();
-        assertEquals(items, originals_as_items_history_store1_user1);
+        assertTrue(compareHistoryItemsToRegularItems(items, originals_items_store1_user1));
 
         this.bridge.logout();
     }
@@ -128,7 +110,7 @@ public class PurchaseHistoryTests extends AbstractTest
         assertFalse(res.hadError());
 
         Set<ItemHistory> items = res.getObject().getHistoryItems();
-        assertEquals(items, originals_as_items_history_store1_user1);
+        assertTrue(compareHistoryItemsToRegularItems(items, originals_items_store1_user1));
 
         this.bridge.logout();
     }
@@ -151,14 +133,13 @@ public class PurchaseHistoryTests extends AbstractTest
         assertFalse(res.hadError());
 
         Set<ItemHistory> items = res.getObject().getHistoryItems();
-        assertEquals(items, originals_as_items_history_store1_user1);
+        assertTrue(compareHistoryItemsToRegularItems(items, originals_items_store1_user1));
 
         // Try to get history of a store that you are not it's owner
         Response<History> res_error = this.bridge.getStoreHistory(store2_id);
         assertTrue(res_error.hadError());
 
         this.bridge.logout();
-
     }
 
     @Test
@@ -184,12 +165,12 @@ public class PurchaseHistoryTests extends AbstractTest
         Response<History> res1 = this.bridge.getStoreHistory(store1_id);
         assertFalse(res1.hadError());
         Set<ItemHistory> items1 = res1.getObject().getHistoryItems();
-        assertEquals(items1, originals_as_items_history_store1_user1);
+        assertTrue(compareHistoryItemsToRegularItems(items1, originals_items_store1_user1));
 
         Response<History> res2 = this.bridge.getStoreHistory(store2_id);
         assertFalse(res2.hadError());
         Set<ItemHistory> items2 = res2.getObject().getHistoryItems();
-        assertEquals(items2, originals_as_items_history_store2_user2);
+        assertTrue(compareHistoryItemsToRegularItems(items2, originals_items_store2_user2));
 
         this.bridge.logout();
     }
@@ -212,25 +193,14 @@ public class PurchaseHistoryTests extends AbstractTest
         assertTrue(shopping_cart_left_items_res.getObject().isEmpty());
 
         // check that the history contains all the items that the user bought
-        Set<ItemHistory> copy = new HashSet<>(originals_as_items_history_store1_user1);
-        copy.add(convertItemToItemHistory(item3, 1, store2_id, regular_username1));
-        copy.add(convertItemToItemHistory(item4, 2, store2_id, regular_username1));
+        Set<Item> copy = new HashSet<>(originals_items_store1_user1);
+        copy.add(item3);
+        copy.add(item4);
         Response<History> res = this.bridge.getPurchaseHistory();
         assertFalse(res.hadError());
         Set<ItemHistory> items = res.getObject().getHistoryItems();
-        assertEquals(items, copy);
+        assertTrue(compareHistoryItemsToRegularItems(items, copy));
 
         this.bridge.logout();
-    }
-
-    @Test
-    public void unsuccessfulPay()
-    {
-
-    }
-
-    private ItemHistory convertItemToItemHistory(Item item, int amount, int store_id, String username)
-    {
-        return new ItemHistory(item.getId(), store_id, username, item.getProductName(), item.getCategory(), item.getPrice(), amount, date);
     }
 }

@@ -1,8 +1,6 @@
 package DomainLayer.SystemManagement.ExternalServices.PurchaseServices;
 
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxyController;
-import DomainLayer.SystemManagement.ExternalServices.ExternalServicesHandler;
-import DomainLayer.SystemManagement.ExternalServices.SupplyServices.SupplyProxyController;
 import Utility.LogUtility;
 
 import java.rmi.ConnectException;
@@ -10,7 +8,8 @@ import java.rmi.RemoteException;
 
 public class PurchaseProxyController extends AbstractProxyController<PurchaseProxy>
 {
-    private static class PurchaseProxyControllerHolder {
+    private static class PurchaseProxyControllerHolder
+    {
         static final PurchaseProxyController INSTANCE = new PurchaseProxyController();
     }
     private PurchaseProxyController()
@@ -32,8 +31,6 @@ public class PurchaseProxyController extends AbstractProxyController<PurchasePro
         PurchaseProxy connection = new PurchaseProxy(name);
         connection.connect(url);
         return connection;
-
-        // TODO: should we know all the services in advance?
     }
 
     /***
@@ -50,6 +47,5 @@ public class PurchaseProxyController extends AbstractProxyController<PurchasePro
         }
         LogUtility.info("The purchase service " + purchase_service_name + " will try handle the payment of the user, the price: " + price);
         return services.get(purchase_service_name).pay(price);
-
     }
 }
