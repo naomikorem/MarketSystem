@@ -36,17 +36,15 @@ public abstract class AbstractProxyController<T extends AbstractProxy>
      */
     public synchronized void removeService(String service_name)
     {
-
-        if (services.size() == 1)
-        {
-            LogUtility.error("tried to remove the last external service from this kind in the system");
-            throw new IllegalArgumentException("cannot remove the service " + service_name + " because it is the last connection to service in the system from this category.");
-        }
-
         if (!services.containsKey(service_name))
         {
             LogUtility.error("tried to remove external service that does not exists in the system");
             throw new IllegalArgumentException("The service with the name " + service_name + " does not exists in the system.");
+        }
+        if (services.size() == 1)
+        {
+            LogUtility.error("tried to remove the last external service from this kind in the system");
+            throw new IllegalArgumentException("cannot remove the service " + service_name + " because it is the last connection to service in the system from this category.");
         }
         services.remove(service_name);
         LogUtility.info("Removed the external service with the name " + service_name + " from the system");

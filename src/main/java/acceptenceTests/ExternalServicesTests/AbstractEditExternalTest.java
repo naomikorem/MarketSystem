@@ -169,12 +169,11 @@ public abstract class AbstractEditExternalTest extends AbstractTest {
         assertTrue(addExternalService(new_service_name, "url").hadError());
     }
 
-    //@RepeatedTest(5)
     @Test
     public void addServiceSimultaneously()
     {
         bridge.logout();
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10000; i++) {
             Thread t1 = new Thread(() -> {
                 assertFalse(bridge.login(UserController.DEFAULT_ADMIN_USER, UserController.DEFAULT_ADMIN_PASSWORD).hadError());
                 res1 = addExternalService(AbstractProxy.GOOD_STUB_NAME_2, "url");
@@ -204,16 +203,16 @@ public abstract class AbstractEditExternalTest extends AbstractTest {
         }
     }
 
-    //@RepeatedTest(5)
     @Test
     public void removeServiceSimultaneously()
     {
         Response<Boolean> addServiceResponse = addExternalService(AbstractProxy.GOOD_STUB_NAME_2, "url");
         assertFalse(addServiceResponse.hadError());
         assertTrue(hasService(AbstractProxy.GOOD_STUB_NAME_2).getObject());
+        assertTrue(hasService(AbstractProxy.GOOD_STUB_NAME).getObject());
         bridge.logout();
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 20000; i++) {
             Thread t1 = new Thread(() -> {
                 assertFalse(bridge.login(UserController.DEFAULT_ADMIN_USER, UserController.DEFAULT_ADMIN_PASSWORD).hadError());
                 res1 = removeExternalService(AbstractProxy.GOOD_STUB_NAME_2);
@@ -241,6 +240,7 @@ public abstract class AbstractEditExternalTest extends AbstractTest {
             addServiceResponse = addExternalService(AbstractProxy.GOOD_STUB_NAME_2, "url");
             assertFalse(addServiceResponse.hadError());
             assertTrue(hasService(AbstractProxy.GOOD_STUB_NAME_2).getObject());
+            assertTrue(hasService(AbstractProxy.GOOD_STUB_NAME).getObject());
             bridge.logout();
         }
     }
