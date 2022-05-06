@@ -496,11 +496,7 @@ public class SystemImplementor implements SystemInterface {
         }
         if (userResponse.getObject() == null)
             return new Response<>("not a valid user");
-        Response<Boolean> response = userFacade.addAdmin(userResponse.getObject().getName());
-        if (response.hadError()) {
-            return response;
-        }
-        return userFacade.removeUser(user.getName(), name);
+        return userFacade.addAdmin(userResponse.getObject().getName());
     }
 
     @Override
