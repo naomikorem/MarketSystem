@@ -20,4 +20,6 @@ public class AdminFacade {
     public Response<Boolean> removeAdmin(String name) {
         return new Response<>(adminController.removeAdmin(name));
     }
+
+    public Response<Boolean> hasAdmin() { return new Response<>(adminController.hasAdmin()); }
 }

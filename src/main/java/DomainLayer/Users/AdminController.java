@@ -60,6 +60,13 @@ public class AdminController {
         }
     }
 
+    public boolean hasAdmin()
+    {
+        synchronized (admins) {
+            return !this.admins.isEmpty();
+        }
+    }
+
     private static class AdminControllerHolder {
         static final AdminController instance = new AdminController();
     }

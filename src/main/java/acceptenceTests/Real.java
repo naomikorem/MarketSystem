@@ -248,6 +248,11 @@ public class Real extends Bridge {
     }
 
     @Override
+    public Response<Boolean> hasAdmin() {
+        return adaptee.hasAdmin();
+    }
+
+    @Override
     public Response<Boolean> addAdmin(String name) {
         return adaptee.addAdmin(name);
     }

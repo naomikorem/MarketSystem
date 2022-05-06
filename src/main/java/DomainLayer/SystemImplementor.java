@@ -503,6 +503,12 @@ public class SystemImplementor implements SystemInterface {
         return userFacade.removeUser(user.getName(), name);
     }
 
+    @Override
+    public Response<Boolean> hasAdmin()
+    {
+        return userFacade.hasAdmin();
+    }
+
 
     private Response<Boolean> isOwnerCheck(int store_id) {
         if (user == null) {

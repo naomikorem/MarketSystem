@@ -84,4 +84,9 @@ public class UserFacade {
             return new Response<>(e.getMessage());
         }
     }
+
+    public Response<Boolean> hasAdmin()
+    {
+        return adminFacade.hasAdmin();
+    }
 }

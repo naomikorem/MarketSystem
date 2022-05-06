@@ -88,19 +88,20 @@ public interface SystemInterface {
 
     public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount);
 
-    Response<Boolean> deleteUser(String name);
-    Response<List<String>> getStoreManagers(int storeId);
+    public Response<Boolean> deleteUser(String name);
+    public Response<List<String>> getStoreManagers(int storeId);
 
-    Response<Permission> getManagersPermissions(int storeId, String managerName);
+    public Response<Permission> getManagersPermissions(int storeId, String managerName);
 
-    Response<Boolean> setUserName(String newUserName);
+    public Response<Boolean> setUserName(String newUserName);
 
-    Response<List<INotification>> getUserNotifications();
+    public Response<List<INotification>> getUserNotifications();
 
-    Response<Set<Item>> searchProducts(String productName, String category, List<String> keywords) ;
-    Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating);
+    public Response<Set<Item>> searchProducts(String productName, String category, List<String> keywords) ;
+    public Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating);
 
-    Response<Boolean> deleteAdmin(String name);
-    Response<Boolean> addAdmin(String name);
+    public Response<Boolean> deleteAdmin(String name);
+    public Response<Boolean> addAdmin(String name);
 
+    public Response<Boolean> hasAdmin();
 }

@@ -357,6 +357,14 @@ public class Proxy extends Bridge {
     }
 
     @Override
+    public Response<Boolean> hasAdmin() {
+        if (this.real == null) {
+            return null;
+        }
+        return real.hasAdmin();
+    }
+
+    @Override
     public Response<Boolean> addAdmin(String name) {
         if (this.real == null) {
             return null;
