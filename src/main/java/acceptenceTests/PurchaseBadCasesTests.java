@@ -98,6 +98,7 @@ public class PurchaseBadCasesTests extends AbstractTest
     {
         Response<Boolean> res = this.bridge.purchaseShoppingCart("address", "not existing purchase service", AbstractProxy.GOOD_STUB_NAME);
         assertTrue(res.hadError());
+        savedPreviousStateCheck();
     }
 
     @Test
@@ -105,6 +106,7 @@ public class PurchaseBadCasesTests extends AbstractTest
     {
         Response<Boolean> res = this.bridge.purchaseShoppingCart("address", AbstractProxy.GOOD_STUB_NAME, "not existing supply service");
         assertTrue(res.hadError());
+        savedPreviousStateCheck();
     }
 
     @Test
@@ -112,6 +114,7 @@ public class PurchaseBadCasesTests extends AbstractTest
     {
         Response<Boolean> res = this.bridge.purchaseShoppingCart("address", AbstractProxy.BAD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
         assertTrue(res.hadError());
+        savedPreviousStateCheck();
     }
 
     @Test
@@ -119,18 +122,22 @@ public class PurchaseBadCasesTests extends AbstractTest
     {
         Response<Boolean> res = this.bridge.purchaseShoppingCart("address", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.BAD_STUB_NAME);
         assertTrue(res.hadError());
+        savedPreviousStateCheck();
     }
 
     @Test
     public void FailedToPay_EmptyShoppingCart()
     {
-        // how to empty the shopping cart
+        // purchase the second time - ok
+        Response<Boolean> res = this.bridge.purchaseShoppingCart("address", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
+        assertFalse(res.hadError());
+        assertTrue(res.getObject());
 
-//        Response<Boolean> res = this.bridge.purchaseShoppingCart("address", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.BAD_STUB_NAME);
-//        assertTrue(res.hadError());
+        // purchase an empty shopping cart - fail
+        Response<Boolean> res_empty = this.bridge.purchaseShoppingCart("address", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
+        assertTrue(res_empty.hadError());
     }
 
-    @After
     public void savedPreviousStateCheck()
     {
         // here, the user should have bought "item" in the first successful purchase,
