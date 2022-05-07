@@ -1,6 +1,7 @@
 package acceptenceTests;
 
 import DomainLayer.Response;
+import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
 import DomainLayer.Stores.StoreController;
@@ -41,9 +42,9 @@ public class StoreOwnerManageSupplyTest extends AbstractTest{
 
     @Test
     public void testAcceptOpenStore() {
-        Item i1 = bridge.addItemToStore(store.getStoreId(),"prudect","Food", 100, 9).getObject();
+        Item i1 = bridge.addItemToStore(store.getStoreId(),"prudect", Category.Food, 100, 9).getObject();
         //isn't its store
-        assertTrue(bridge.addItemToStore(store.getStoreId()+1,"prudect1","Food", 100, 9).hadError());
+        assertTrue(bridge.addItemToStore(store.getStoreId()+1,"prudect1",Category.Food, 100, 9).hadError());
         //back to it's store
         assertFalse(bridge.getItems(store.getStoreId()).getObject().isEmpty());
         assertTrue(bridge.getItems(store.getStoreId()).getObject().containsKey(i1));

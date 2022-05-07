@@ -49,18 +49,18 @@ public class PurchaseBadCasesTests extends AbstractTest
 
         assertFalse(bridge.login(storeOwnerUsername, storeOwnerPassword).hadError());
         store1_id = bridge.addNewStore("Store1").getObject().getStoreId();
-        item1 = bridge.addItemToStore(store1_id, "Item1", "Food", 10, 10).getObject();
+        item1 = bridge.addItemToStore(store1_id, "Item1", Category.Food, 10, 10).getObject();
         int item1_id = item1.getId();
-        item2 = bridge.addItemToStore(store1_id, "Item2", "Food", 8, 6).getObject();
+        item2 = bridge.addItemToStore(store1_id, "Item2", Category.Food, 8, 6).getObject();
         int item2_id = item2.getId();
 
         store2_id = bridge.addNewStore("Store2").getObject().getStoreId();
-        item3 = bridge.addItemToStore(store2_id, "Item3", "Food", 10, 10).getObject();
+        item3 = bridge.addItemToStore(store2_id, "Item3", Category.Food, 10, 10).getObject();
         int item3_id = item3.getId();
-        item4 = bridge.addItemToStore(store2_id, "Item4", "Food", 8, 6).getObject();
+        item4 = bridge.addItemToStore(store2_id, "Item4", Category.Food, 8, 6).getObject();
         int item4_id = item4.getId();
 
-        item = bridge.addItemToStore(store2_id, successfulItemProductName, "Food", 8, 6).getObject();
+        item = bridge.addItemToStore(store2_id, successfulItemProductName, Category.Food, 8, 6).getObject();
         int item_id = item.getId();
         bridge.logout();
 

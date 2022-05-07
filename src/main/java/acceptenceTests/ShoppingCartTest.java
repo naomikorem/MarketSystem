@@ -1,5 +1,6 @@
 package acceptenceTests;
 
+import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
 import DomainLayer.Users.User;
@@ -31,9 +32,9 @@ public class ShoppingCartTest extends AbstractTest {
         bridge.login("user1", "password");
 
         s = bridge.addNewStore("Store1").getObject();
-        i1 = bridge.addItemToStore(s.getStoreId(), "Item1", "Food", 100, 9).getObject();
-        i2 = bridge.addItemToStore(s.getStoreId(), "Item2", "Food", 100, 10).getObject();
-        i3 = bridge.addItemToStore(s.getStoreId(), "Item3", "Food", 100, 10).getObject();
+        i1 = bridge.addItemToStore(s.getStoreId(), "Item1", Category.Food, 100, 9).getObject();
+        i2 = bridge.addItemToStore(s.getStoreId(), "Item2", Category.Food, 100, 10).getObject();
+        i3 = bridge.addItemToStore(s.getStoreId(), "Item3", Category.Food, 100, 10).getObject();
         bridge.logout();
 
     }

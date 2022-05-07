@@ -1,6 +1,7 @@
 package acceptenceTests;
 
 import DomainLayer.Response;
+import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
 import DomainLayer.SystemManagement.HistoryManagement.History;
@@ -45,17 +46,17 @@ public class PurchaseHistoryTests extends AbstractTest
 
         assertFalse(bridge.login(store1_owner_username, "password").hadError());
         this.store1_id = bridge.addNewStore("Store1").getObject().getStoreId();
-        Item item1 = bridge.addItemToStore(store1_id, "Item1", "Food", 10, 10).getObject();
+        Item item1 = bridge.addItemToStore(store1_id, "Item1", Category.Food, 10, 10).getObject();
         int item1_id = item1.getId();
-        Item item2 = bridge.addItemToStore(store1_id, "Item2", "Food", 8, 6).getObject();
+        Item item2 = bridge.addItemToStore(store1_id, "Item2", Category.Food, 8, 6).getObject();
         int item2_id = item2.getId();
         bridge.logout();
 
         assertFalse(bridge.login(store2_owner_username, "password").hadError());
         this.store2_id = bridge.addNewStore("Store2").getObject().getStoreId();
-        this.item3 = bridge.addItemToStore(store2_id, "Item3", "Food", 10, 10).getObject();
+        this.item3 = bridge.addItemToStore(store2_id, "Item3", Category.Food, 10, 10).getObject();
         this.item3_id = this.item3.getId();
-        this.item4 = bridge.addItemToStore(store2_id, "Item4", "Food", 8, 6).getObject();
+        this.item4 = bridge.addItemToStore(store2_id, "Item4", Category.Food, 8, 6).getObject();
         this.item4_id = this.item4.getId();
         bridge.logout();
 

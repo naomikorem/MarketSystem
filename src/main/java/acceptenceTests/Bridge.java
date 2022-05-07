@@ -1,6 +1,7 @@
 package acceptenceTests;
 
 import DomainLayer.Response;
+import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
@@ -57,7 +58,7 @@ public abstract class Bridge {
     public abstract Response<Store> addNewStore(String storeName);
 
     //Acceptance Tests for use case 4:
-    public abstract Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount);
+    public abstract Response<Item> addItemToStore(int storeId, String name, Category category, double price, int amount);
 
     public abstract Response<History> getPurchaseHistory();
     public abstract Response<History> getPurchaseHistory(String username);

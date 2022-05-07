@@ -1,6 +1,7 @@
 package acceptenceTests;
 
 import DomainLayer.Response;
+import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
@@ -203,7 +204,7 @@ public class Real extends Bridge {
 
     @Override
 
-    public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount) {
+    public Response<Item> addItemToStore(int storeId, String name, Category category, double price, int amount) {
         return adaptee.addItemToStore(storeId, name, category, price, amount);
     }
 

@@ -1,5 +1,6 @@
 package DomainLayer;
 
+import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
@@ -86,7 +87,7 @@ public interface SystemInterface {
 
     public Response<Store> addNewStore(String name);
 
-    public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount);
+    public Response<Item> addItemToStore(int storeId, String name, Category category, double price, int amount);
 
     public Response<Boolean> deleteUser(String name);
     public Response<List<String>> getStoreManagers(int storeId);

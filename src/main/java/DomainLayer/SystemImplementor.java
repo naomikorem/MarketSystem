@@ -1,9 +1,6 @@
 package DomainLayer;
 
-import DomainLayer.Stores.Item;
-import DomainLayer.Stores.Permission;
-import DomainLayer.Stores.Store;
-import DomainLayer.Stores.TODO;
+import DomainLayer.Stores.*;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.MarketManagementFacade;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
@@ -276,7 +273,7 @@ public class SystemImplementor implements SystemInterface {
     }
 
     @Override
-    public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount) {
+    public Response<Item> addItemToStore(int storeId, String name, Category category, double price, int amount) {
         return storeFacade.addItemToStore(user, storeId, name, category, price, amount);
     }
 
