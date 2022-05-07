@@ -50,6 +50,7 @@ public abstract class Bridge {
     public abstract Response<Set<Item>> filterResults(Set<Item> items, int upLimit, int lowLimit, int rating);
 
     public abstract Response<Item> addItemToCart(int storeId, int itemId, int amount);
+    public abstract Response<Boolean> removeItemFromCart(int storeId, Item item, int amount);
     public abstract Response<List<Item>> getShoppingCartItems();
     public abstract Response<List<Item>> updateItemInCart(int storeId, int itemId, int amount);
 

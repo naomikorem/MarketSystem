@@ -157,7 +157,7 @@ public class NotificationsTests extends AbstractTest
         assertEquals(bridge.getUserNotifications().getObject().get(0).getMessage(), String.format("The store %s that is managed by you was shut down", store.getStoreId()));
         bridge.logout();
     }
-/*
+
     @Test
     public void synchronizedNotificationTest() {
         for(int i = 1; i < 100; i++)
@@ -214,5 +214,5 @@ public class NotificationsTests extends AbstractTest
                 fail(null);
             }
         }
-    }*/
+    }
 }

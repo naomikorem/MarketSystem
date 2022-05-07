@@ -342,6 +342,14 @@ public class Proxy extends Bridge {
     }
 
     @Override
+    public Response<Boolean> removeItemFromCart(int storeId, Item item, int amount) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.removeItemFromCart(storeId, item, amount);
+    }
+
+    @Override
     public Response<List<ShoppingBasket>> getCartBaskets() {
         if (this.real == null) {
             return null;

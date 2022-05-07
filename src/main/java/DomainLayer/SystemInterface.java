@@ -107,4 +107,5 @@ public interface SystemInterface {
     public Response<Boolean> hasAdmin();
 
 
+    public Response<Boolean> removeItemFromCart(int storeId, Item item, int amount);
 }

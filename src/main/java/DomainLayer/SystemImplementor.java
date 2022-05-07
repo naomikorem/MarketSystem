@@ -509,6 +509,45 @@ public class SystemImplementor implements SystemInterface {
         return userFacade.hasAdmin();
     }
 
+    @Override
+    public Response<Boolean> removeItemFromCart(int storeId, Item item, int amount) {
+        try {
+            if (user == null) {
+                return new Response<>("Enter the system properly in order to perform actions in it.");
+            }
+            ShoppingBasket store_baskets = null;
+            for (ShoppingBasket basket : user.getCartBaskets()) {
+                if(basket.getStoreId() == storeId) {
+                    store_baskets = basket;
+                    break;
+                }
+            }
+            if(store_baskets == null) {
+                return new Response<>("Costumer have no basket in this store, cannot return items.");
+            }
+            if(!store_baskets.hasItem(item)) {
+                return new Response<>("Costumer don't acquire this item in the basket of this store, cannot return items.");
+            }
+            if(amount<=0) {
+                return new Response<>("Returning amount should be a positive number");
+            }
+            if(amount > store_baskets.amountFromItem(item)) {
+                return new Response<>("Returning amount cannot be larger then the amount in the basket");
+            }
+
+            for(int i =0 ; i<amount ; i++) {
+                store_baskets.removeItem(item);
+            }
+            Response<Item> itemRes = storeFacade.returnItemToStore(storeId, item, amount);
+            if (itemRes.hadError()) {
+                return new Response<>(itemRes.getErrorMessage());
+            }
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
 
     private Response<Boolean> isLoggedInOwnerCheck(int store_id) {
         if (user == null) {
