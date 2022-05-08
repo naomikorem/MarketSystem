@@ -6,9 +6,11 @@ import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
 import DomainLayer.SystemManagement.HistoryManagement.History;
+import DomainLayer.SystemManagement.HistoryManagement.HistoryController;
 import DomainLayer.SystemManagement.HistoryManagement.ItemHistory;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.SystemManagement.NotificationManager.Notification;
+import DomainLayer.SystemManagement.NotificationManager.NotificationController;
 import DomainLayer.Users.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -116,6 +118,33 @@ public class NotificationsTests extends AbstractTest
         assertFalse(owner2_notification_res.hadError());
         List<INotification> notification2 = owner2_notification_res.getObject();
         assertEquals(1, notification2.size());
+        this.bridge.logout();
+    }
+
+    @Test
+    public void notifyStoresOwnersAfterGuestPurchaseTest()
+    {
+        this.bridge.addItemToCart(store1_id, item1_id, 1);
+        this.bridge.addItemToCart(store1_id, item2_id, 2);
+        this.bridge.addItemToCart(store2_id, item3_id, 1);
+        this.bridge.addItemToCart(store2_id, item4_id, 2);
+        this.bridge.purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
+
+        // check that store 1 owner received notification
+        this.bridge.login(store1_owner_username, "password");
+        Response<List<INotification>> owner1_notification_res = bridge.getUserNotifications();
+        assertFalse(owner1_notification_res.hadError());
+        assertEquals(1, owner1_notification_res.getObject().size());
+        assertTrue(owner1_notification_res.getObject().iterator().next().getMessage().contains(HistoryController.GUEST_DEFAULT_NAME));
+        this.bridge.logout();
+
+        // check that store  owner received notification
+        this.bridge.login(store2_owner_username, "password");
+        Response<List<INotification>> owner2_notification_res = bridge.getUserNotifications();
+        assertFalse(owner2_notification_res.hadError());
+        List<INotification> notification2 = owner2_notification_res.getObject();
+        assertEquals(1, notification2.size());
+        assertTrue(notification2.iterator().next().getMessage().contains(HistoryController.GUEST_DEFAULT_NAME));
         this.bridge.logout();
     }
 
