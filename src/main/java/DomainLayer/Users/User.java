@@ -86,6 +86,14 @@ public class User {
         this.shoppingCart.emptyShoppingCart();
     }
 
+    public String getFirstName() {
+        return this.state.getFirstName();
+    }
+
+    public String getLastName() {
+        return this.state.getLastName();
+    }
+
     @Override
     public boolean equals(Object other) {
         return this == other || ((other instanceof User) &&

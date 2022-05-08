@@ -1,6 +1,7 @@
 package acceptenceTests;
 
 import DomainLayer.Response;
+import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
 import DomainLayer.Users.ShoppingBasket;
@@ -26,14 +27,14 @@ public class SavingProductTest extends AbstractTest {
     public void setup() {
         Bridge bridge = new Real();
         bridge.enter();
-        bridge.register("user111@gmail.com", "user1", "password");
-        bridge.register("user222@gmail.com", "user2", "password");
+        bridge.register("user111@gmail.com", "user1","first","last", "password");
+        bridge.register("user222@gmail.com", "user2","first","last", "password");
         bridge.login("user1", "password");
         bridge.addNewStore("Store1");
         s = bridge.addNewStore("Store1").getObject();
-        i1 = bridge.addItemToStore(s.getStoreId(), "Item1", "Food", 100, 9).getObject();
-        i2 = bridge.addItemToStore(s.getStoreId(), "Item2", "Food", 100, 10).getObject();
-        i3 = bridge.addItemToStore(s.getStoreId(), "Item3", "Food", 100, 10).getObject();
+        i1 = bridge.addItemToStore(s.getStoreId(), "Item1", Category.Food, 100, 9).getObject();
+        i2 = bridge.addItemToStore(s.getStoreId(), "Item2", Category.Food, 100, 10).getObject();
+        i3 = bridge.addItemToStore(s.getStoreId(), "Item3", Category.Food, 100, 10).getObject();
         bridge.logout();
     }
 

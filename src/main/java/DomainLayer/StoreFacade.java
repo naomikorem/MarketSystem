@@ -1,9 +1,6 @@
 package DomainLayer;
 
-import DomainLayer.Stores.Item;
-import DomainLayer.Stores.Permission;
-import DomainLayer.Stores.Store;
-import DomainLayer.Stores.StoreController;
+import DomainLayer.Stores.*;
 import DomainLayer.Users.User;
 
 import java.util.*;
@@ -137,7 +134,7 @@ public class StoreFacade {
         }
     }
 
-    public Response<Item> addItemToStore(User manager, int storeId, String name, String category, double price, int amount) {
+    public Response<Item> addItemToStore(User manager, int storeId, String name, Category category, double price, int amount) {
         try {
             return new Response<>(storeController.addItemToStore(manager, storeId, name, category, price, amount));
         } catch (Exception e) {

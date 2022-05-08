@@ -36,7 +36,7 @@ public class ManagerTest extends AbstractTest {
         when(user2.getName()).thenReturn("user2");
         when(user2.isSubscribed()).thenReturn(true);
         store = StoreController.getInstance().createStore(user1,"Store1");
-        this.manager = new User(new SubscribedState("userM@gmail.com", "manager", "password"));
+        this.manager = new User(new SubscribedState("userM@gmail.com", "manager", "first", "last","password"));
     }
 
 

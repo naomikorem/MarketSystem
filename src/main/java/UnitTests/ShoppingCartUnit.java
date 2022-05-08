@@ -34,7 +34,7 @@ public class ShoppingCartUnit extends AbstractTest {
 
     @Before
     public void setup() {
-        u = new User(new SubscribedState("user@gmail.com", "user", "password"));
+        u = new User(new SubscribedState("user@gmail.com", "user","first","last", "password"));
         s = mock(Store.class);
         when(s.getStoreId()).thenReturn(1);
         i1 = new Item("Item1", Food, 100);

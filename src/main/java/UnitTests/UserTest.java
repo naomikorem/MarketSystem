@@ -21,7 +21,7 @@ public class UserTest extends AbstractTest {
 
     @Before
     public void setup() {
-        u = new User(new SubscribedState("user@gmail.com", "user", "password"));
+        u = new User(new SubscribedState("user@gmail.com", "user","first", "last", "password"));
 
     }
 

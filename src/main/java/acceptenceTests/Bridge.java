@@ -1,6 +1,7 @@
 package acceptenceTests;
 
 import DomainLayer.Response;
+import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
@@ -19,8 +20,8 @@ public abstract class Bridge {
     //TODO: change return tipes.
     //Acceptance Tests for use case 1 System:
 
-    public abstract Response<Boolean> addExternalPurchaseService(String name);
-    public abstract Response<Boolean> addExternalSupplyService(String name);
+    public abstract Response<Boolean> addExternalPurchaseService(String name, String url);
+    public abstract Response<Boolean> addExternalSupplyService(String name, String url);
     public abstract Response<Boolean> removeExternalPurchaseService(String name);
     public abstract Response<Boolean> removeExternalSupplyService(String name);
     public abstract Response<Boolean> purchaseShoppingCart(String address, String purchase_service_name, String supply_service_name);
@@ -33,7 +34,7 @@ public abstract class Bridge {
     //Acceptance Tests for use case 1 Users:
     public abstract Response<Boolean> enter();
     public abstract Response<Boolean> exit();
-    public abstract Response<User> register(String email, String name, String password);
+    public abstract Response<User> register(String email, String userName, String firstName, String lastName, String password);
     public abstract Response<User> login(String user, String password);
 
     public abstract Response<Boolean> setUserName(String userName);
@@ -49,6 +50,7 @@ public abstract class Bridge {
     public abstract Response<Set<Item>> filterResults(Set<Item> items, int upLimit, int lowLimit, int rating);
 
     public abstract Response<Item> addItemToCart(int storeId, int itemId, int amount);
+    public abstract Response<Boolean> removeItemFromCart(int storeId, Item item, int amount);
     public abstract Response<List<Item>> getShoppingCartItems();
     public abstract Response<List<Item>> updateItemInCart(int storeId, int itemId, int amount);
 
@@ -57,7 +59,7 @@ public abstract class Bridge {
     public abstract Response<Store> addNewStore(String storeName);
 
     //Acceptance Tests for use case 4:
-    public abstract Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount);
+    public abstract Response<Item> addItemToStore(int storeId, String name, Category category, double price, int amount);
 
     public abstract Response<History> getPurchaseHistory();
     public abstract Response<History> getPurchaseHistory(String username);
@@ -72,6 +74,7 @@ public abstract class Bridge {
     public abstract Response<Boolean> removeOwner(String toRemove, int storeId);
     public abstract Response<Boolean> closeStore(int storeId);
     public abstract Response<List<INotification>> getUserNotifications();
+    public abstract Response<User> getUser(String userName);
     public abstract Response<Boolean> removeManager(String toRemove, int storeId);
     public abstract Response<Boolean> permanentlyCloseStore(int storeId);
 
@@ -85,10 +88,13 @@ public abstract class Bridge {
 
     //Acceptance Tests for use case 5:
     //Acceptance Tests for use case 6:
+    public abstract Response<Boolean> hasAdmin();
     public abstract Response<Boolean> addAdmin(String name);
     public abstract Response<Boolean> deleteAdmin(String name);
 
 
 
     public abstract Response<List<ShoppingBasket>> getCartBaskets();
+
+
 }

@@ -24,7 +24,7 @@ public class StoreInformationTest extends AbstractTest {
         if (!isInit) {
             isInit = true;
             bridge.enter();
-            bridge.register("user111@gmail.com", "user", "password");
+            bridge.register("user111@gmail.com", "user", "first","last","password");
             bridge.login("user", "password");
             this.storeName = "MyStore";
             this.storeId = bridge.addNewStore(storeName).getObject().getStoreId();
