@@ -5,11 +5,13 @@ import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
 import DomainLayer.SystemManagement.HistoryManagement.History;
+import DomainLayer.SystemManagement.HistoryManagement.HistoryController;
 import DomainLayer.SystemManagement.HistoryManagement.ItemHistory;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
@@ -183,6 +185,10 @@ public class PurchaseHistoryTests extends AbstractTest
         this.bridge.addItemToCart(store2_id, item3_id, 1);
         this.bridge.addItemToCart(store2_id, item4_id, 2);
 
+        Set<Item> originals_items_store2_user1 = new HashSet<>();
+        originals_items_store2_user1.add(item3);
+        originals_items_store2_user1.add(item4);
+
         // check that the payment and supply confirmed.
         Response<Boolean> purchase_res = this.bridge.purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
         assertFalse(purchase_res.hadError());
@@ -193,15 +199,62 @@ public class PurchaseHistoryTests extends AbstractTest
         assertFalse(shopping_cart_left_items_res.hadError());
         assertTrue(shopping_cart_left_items_res.getObject().isEmpty());
 
-        // check that the history contains all the items that the user bought
+        // check that the personal history contains all the items that the user bought
         Set<Item> copy = new HashSet<>(originals_items_store1_user1);
-        copy.add(item3);
-        copy.add(item4);
+        copy.addAll(originals_items_store2_user1);
         Response<History> res = this.bridge.getPurchaseHistory();
+        this.bridge.logout();
         assertFalse(res.hadError());
         Set<ItemHistory> items = res.getObject().getHistoryItems();
         assertTrue(compareHistoryItemsToRegularItems(items, copy));
 
+        // check that store 1 contains item1,2 in it's purchase history
+        this.bridge.login(store1_owner_username, "password");
+        Response<History> store1_history_res = this.bridge.getStoreHistory(store1_id);
+        assertFalse(store1_history_res.hadError());
+        assertTrue(compareHistoryItemsToRegularItems(store1_history_res.getObject().getHistoryItems(), originals_items_store1_user1));
         this.bridge.logout();
+
+        // check that store 2 contains item3,4 of user 1 in it's purchase history
+        this.bridge.login(store2_owner_username, "password");
+        Response<History> store2_history_res = this.bridge.getStoreHistory(store2_id);
+        assertFalse(store2_history_res.hadError());
+        assertTrue(compareHistoryItemsToRegularItems(store2_history_res.getObject().getHistoryItems().stream().filter(item -> item.username.equals(regular_username1)).collect(Collectors.toSet()),
+                originals_items_store2_user1));
+        this.bridge.logout();
+    }
+
+    @Test
+    public void guestPurchaseShoppingCart()
+    {
+        this.bridge.addItemToCart(store2_id, item3_id, 1);
+        this.bridge.addItemToCart(store2_id, item4_id, 2);
+
+        // check that the payment and supply confirmed.
+        Response<Boolean> purchase_res = this.bridge.purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
+        assertFalse(purchase_res.hadError());
+        assertTrue(purchase_res.getObject());
+
+        // check that the user's shopping cart is now empty
+        Response<List<Item>> shopping_cart_left_items_res = bridge.getShoppingCartItems();
+        assertFalse(shopping_cart_left_items_res.hadError());
+        assertTrue(shopping_cart_left_items_res.getObject().isEmpty());
+
+        // check that the guest user doesn't have personal purchase history
+        assertTrue(this.bridge.getPurchaseHistory().hadError());
+
+        // check that admin user can't receive history of guest
+        assertFalse(this.bridge.login(admin_username, "admin").hadError());
+        assertTrue(this.bridge.getPurchaseHistory(HistoryController.GUEST_DEFAULT_NAME).hadError());
+        assertFalse(this.bridge.logout().hadError());
+
+        // check that the store history contains all the items that the user bought
+        assertFalse(this.bridge.login(store2_owner_username, "password").hadError());
+        Response<History> res = this.bridge.getStoreHistory(store2_id);
+        this.bridge.logout();
+        assertFalse(res.hadError());
+        Set<ItemHistory> items = res.getObject().getHistoryItems();
+        items = items.stream().filter(item -> item.username.equals(HistoryController.GUEST_DEFAULT_NAME)).collect(Collectors.toSet());
+        assertTrue(compareHistoryItemsToRegularItems(items, originals_items_store2_user2));
     }
 }
