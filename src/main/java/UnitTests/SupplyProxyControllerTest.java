@@ -3,6 +3,7 @@ package UnitTests;
 import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.SystemManagement.ExternalServices.SupplyServices.SupplyProxy;
+import DomainLayer.SystemManagement.ExternalServices.SupplyServices.SupplyProxyController;
 import acceptenceTests.AbstractTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,15 +14,15 @@ import java.util.Map;
 
 import static org.junit.Assert.assertThrows;
 
-public class SupplyProxyTest extends AbstractTest {
+public class SupplyProxyControllerTest extends AbstractTest {
 
-    private SupplyProxy supplyProxy;
+    private SupplyProxyController supplyProxyController;
     private List<Map.Entry<Item, Integer>> items;
 
     @Before
     public void setup()
     {
-        this.supplyProxy = new SupplyProxy();
+        this.supplyProxyController = SupplyProxyController.getInstance();
 
         items = new LinkedList<>();
 
@@ -38,8 +39,8 @@ public class SupplyProxyTest extends AbstractTest {
     @Test
     public void supplyServiceNotExists()
     {
-        this.supplyProxy.addService("Moshe and Avi");
+        //this.supplyProxyController.addService("Moshe and Avi");
         assertThrows(IllegalArgumentException.class, () ->
-                this.supplyProxy.supply("user address", items, "another supply"));
+                this.supplyProxyController.supply("user address", items, "not existing supply"));
     }
 }

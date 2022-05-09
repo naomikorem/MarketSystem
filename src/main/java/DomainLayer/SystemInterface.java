@@ -1,5 +1,6 @@
 package DomainLayer;
 
+import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
@@ -24,9 +25,9 @@ public interface SystemInterface {
     public Response<List<String>> getStoreOwners(int storeId);
 
 
-    public Response<Boolean> addExternalPurchaseService(String name);
+    public Response<Boolean> addExternalPurchaseService(String name, String url);
 
-    public Response<Boolean> addExternalSupplyService(String name);
+    public Response<Boolean> addExternalSupplyService(String name, String url);
 
     public Response<Boolean> removeExternalPurchaseService(String name);
 
@@ -46,7 +47,7 @@ public interface SystemInterface {
 
     public Response<History> getPurchaseHistory();
     public Response<History> getPurchaseHistory(String username);
-
+    public Response<User> getUser(String userName);
 
     public Response<History> getStoreHistory(int store_id);
 
@@ -54,7 +55,7 @@ public interface SystemInterface {
 
     public Response<Boolean> exit();
 
-    public Response<User> register(String email, String name, String password);
+    public Response<User> register(String email, String userName, String firstName, String lastName, String password);
 
     public Response<User> login(String user, String password);
 
@@ -86,21 +87,25 @@ public interface SystemInterface {
 
     public Response<Store> addNewStore(String name);
 
-    public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount);
+    public Response<Item> addItemToStore(int storeId, String name, Category category, double price, int amount);
 
-    Response<Boolean> deleteUser(String name);
-    Response<List<String>> getStoreManagers(int storeId);
+    public Response<Boolean> deleteUser(String name);
+    public Response<List<String>> getStoreManagers(int storeId);
 
-    Response<Permission> getManagersPermissions(int storeId, String managerName);
+    public Response<Permission> getManagersPermissions(int storeId, String managerName);
 
-    Response<Boolean> setUserName(String newUserName);
+    public Response<Boolean> setUserName(String newUserName);
 
-    Response<List<INotification>> getUserNotifications();
+    public Response<List<INotification>> getUserNotifications();
 
-    Response<Set<Item>> searchProducts(String productName, String category, List<String> keywords) ;
-    Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating);
+    public Response<Set<Item>> searchProducts(String productName, String category, List<String> keywords) ;
+    public Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating);
 
-    Response<Boolean> deleteAdmin(String name);
-    Response<Boolean> addAdmin(String name);
+    public Response<Boolean> deleteAdmin(String name);
+    public Response<Boolean> addAdmin(String name);
 
+    public Response<Boolean> hasAdmin();
+
+
+    public Response<Boolean> removeItemFromCart(int storeId, Item item, int amount);
 }

@@ -2,6 +2,7 @@ package acceptenceTests;
 
 
 import DomainLayer.Response;
+import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
 import org.junit.Before;
@@ -25,10 +26,10 @@ public class ReceiveInformationTest extends AbstractTest {
     @Before
     public void before() {
         bridge.enter();
-        bridge.register("user@gmail.com", "user", "user");
+        bridge.register("user@gmail.com", "user","first","last", "user");
         bridge.login("user", "user");
         s = bridge.addNewStore("theStore").getObject();
-        i = bridge.addItemToStore(s.getStoreId(), "item1", "Food", 10, 10).getObject();
+        i = bridge.addItemToStore(s.getStoreId(), "item1", Category.Food, 10, 10).getObject();
         bridge.logout();
     }
 

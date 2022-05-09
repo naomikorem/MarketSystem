@@ -1,6 +1,7 @@
 package acceptenceTests;
 
 import DomainLayer.Response;
+import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
@@ -25,13 +26,13 @@ public class Real extends Bridge {
     }
 
     @Override
-    public Response<Boolean> addExternalPurchaseService(String name) {
-        return this.adaptee.addExternalPurchaseService(name);
+    public Response<Boolean> addExternalPurchaseService(String name, String url) {
+        return this.adaptee.addExternalPurchaseService(name, url);
     }
 
     @Override
-    public Response<Boolean> addExternalSupplyService(String name) {
-        return this.adaptee.addExternalSupplyService(name);
+    public Response<Boolean> addExternalSupplyService(String name, String url) {
+        return this.adaptee.addExternalSupplyService(name, url);
     }
 
     @Override
@@ -79,8 +80,8 @@ public class Real extends Bridge {
     }
 
     @Override
-    public Response<User> register(String email, String name, String password) {
-        return adaptee.register(email, name, password);
+    public Response<User> register(String email, String userName, String firstName, String lastName, String password) {
+        return adaptee.register(email, userName, firstName, lastName, password);
     }
 
     @Override
@@ -182,6 +183,11 @@ public class Real extends Bridge {
     }
 
     @Override
+    public Response<User> getUser(String userName) {
+        return this.adaptee.getUser(userName);
+    }
+
+    @Override
     public Response<Boolean> removeManager(String toRemove, int storeId) {
         return this.adaptee.removeManager(toRemove, storeId);
     }
@@ -198,7 +204,7 @@ public class Real extends Bridge {
 
     @Override
 
-    public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount) {
+    public Response<Item> addItemToStore(int storeId, String name, Category category, double price, int amount) {
         return adaptee.addItemToStore(storeId, name, category, price, amount);
     }
 
@@ -233,6 +239,11 @@ public class Real extends Bridge {
     }
 
     @Override
+    public Response<Boolean> removeItemFromCart(int storeId, Item item, int amount) {
+        return adaptee.removeItemFromCart(storeId, item, amount);
+    }
+
+    @Override
     public Response<List<ShoppingBasket>> getCartBaskets() {
         return adaptee.getCartBaskets();
     }
@@ -245,6 +256,11 @@ public class Real extends Bridge {
     @Override
     public Response<Map<Item, Integer>> getItems(int storeId) {
         return adaptee.getItems(storeId);
+    }
+
+    @Override
+    public Response<Boolean> hasAdmin() {
+        return adaptee.hasAdmin();
     }
 
     @Override

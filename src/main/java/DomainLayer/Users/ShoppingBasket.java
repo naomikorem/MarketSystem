@@ -37,7 +37,13 @@ public class ShoppingBasket {
         return items.entrySet();
     }
 
+    public boolean hasItem(Item item) {
+        return items.containsKey(item);
+    }
 
+    public int amountFromItem(Item item) {
+        return items.getOrDefault(item, 0);
+    }
     public double calculatePrice() {
         // 3.1 The system checks that the basket follows the purchase rules of the store's purchase policy.
         double price = 0;

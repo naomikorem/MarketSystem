@@ -17,8 +17,11 @@ public class UserController {
     private Set<String> loggedUsers;
 
     public static String DEFAULT_ADMIN_USER = "admin";
+    public static String DEFAULT_ADMIN_USER_FIRST_NAME = "admin";
+    public static String DEFAULT_ADMIN_USER_LAST_NAME = "admin";
     public static String DEFAULT_ADMIN_PASSWORD = "admin";
     public static String DEFAULT_ADMIN_EMAIL = "admin@mycompany.com";
+    public static int SALT_HASH_ROUND_COUNT = 10;
 
     public static Lock lock = new ReentrantLock();
 
@@ -29,7 +32,7 @@ public class UserController {
         //load database
 
         if (!users.containsKey(DEFAULT_ADMIN_USER)) {
-            createUser(DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_USER, DEFAULT_ADMIN_PASSWORD);
+            createUser(DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_USER, DEFAULT_ADMIN_USER_FIRST_NAME, DEFAULT_ADMIN_USER_LAST_NAME, DEFAULT_ADMIN_PASSWORD);
         }
     }
 
@@ -38,7 +41,7 @@ public class UserController {
         loggedUsers = new HashSet<>();
 
         if (!users.containsKey(DEFAULT_ADMIN_USER)) {
-            createUser(DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_USER, DEFAULT_ADMIN_PASSWORD);
+            createUser(DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_USER, DEFAULT_ADMIN_USER_FIRST_NAME, DEFAULT_ADMIN_USER_LAST_NAME, DEFAULT_ADMIN_PASSWORD);
         }
     }
 
@@ -50,14 +53,14 @@ public class UserController {
         return UserControllerHolder.instance;
     }
 
-    public synchronized User createUser(String email, String name, String password) {
-        if (isExist(name)) {
-            throw new LogException("There is already a user with the given name", String.format("There was a failed attempt to create a user with the name %s", name));
+    public synchronized User createUser(String email, String userName, String firstName, String lastName, String password) {
+        if (isExist(userName)) {
+            throw new LogException("There is already a user with the given name", String.format("There was a failed attempt to create a user with the name %s", userName));
         }
-        UserState state = new SubscribedState(email, name, password);
+        UserState state = new SubscribedState(email, userName,firstName,lastName, password);
         User u = new User(state);
         addUser(u);
-        LogUtility.info(String.format("A new user named %s was created", name));
+        LogUtility.info(String.format("A new user named %s was created", userName));
         return u;
     }
 
@@ -77,6 +80,7 @@ public class UserController {
     public void removeUser(String userName) {
         synchronized (lock) {
             if (!isExist(userName)) {
+                LogUtility.warn("tried to remove a nonexistent user");
                 throw new IllegalArgumentException(String.format("Could not find user with name %s", userName));
             }
             users.remove(userName);
@@ -152,5 +156,6 @@ public class UserController {
         if (user.isSubscribed()) {
             user.setEmail(newEmail);
         }
+        LogUtility.info("User "+user.getName()+" changed its email to "+newEmail);
     }
 }

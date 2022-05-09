@@ -1,5 +1,6 @@
 package acceptenceTests;
 
+import DomainLayer.Response;
 import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
@@ -14,14 +15,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ShoppingCartTest extends AbstractTest {
+public class ChangesInShoppingCartTest extends AbstractTest{
     private static User u;
     private static Store s;
     private static Item i1;
     private static Item i2;
     private static Item i3;
 
-    public ShoppingCartTest() {
+    public ChangesInShoppingCartTest() {
         super();
     }
 
@@ -43,7 +44,7 @@ public class ShoppingCartTest extends AbstractTest {
     public void clean() {
 
         bridge.removeItemFromStore(s.getStoreId(),i1.getId(),7);
-        bridge.removeItemFromStore(s.getStoreId(),i2.getId(),8);
+        bridge.removeItemFromStore(s.getStoreId(),i2.getId(),9);
         bridge.removeItemFromStore(s.getStoreId(),i3.getId(),10);
         UserController.getInstance().removeUser("user1");
 
@@ -65,12 +66,16 @@ public class ShoppingCartTest extends AbstractTest {
         assertTrue(l.contains(i1));
         assertTrue(l.contains(i2));
         assertFalse(l.contains(i3));
-        bridge.purchaseShoppingCart("bear shava", "UPS", "hello");
-
+        Response<Boolean> res = bridge.removeItemFromCart(s.getStoreId(),i1,1);
+        assertFalse(res.hadError());
         l = bridge.getShoppingCartItems().getObject();
-        //assertTrue(l.isEmpty());
+        assertTrue(l.contains(i1));
+        assertTrue(l.contains(i2));
+        res = bridge.removeItemFromCart(s.getStoreId(),i1,1);
+        assertFalse(res.hadError());
+        l = bridge.getShoppingCartItems().getObject();
+        assertFalse(l.contains(i1));
+        assertTrue(l.contains(i2));
         bridge.logout();
     }
-
 }
-

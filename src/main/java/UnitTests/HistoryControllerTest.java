@@ -19,12 +19,9 @@ public class HistoryControllerTest extends AbstractTest
 {
     private HistoryController historyController;
     private List<ShoppingBasket> baskets;
-    private Set<ItemHistory> originals_as_items_history_store1;
-    private Set<ItemHistory> originals_as_items_history_store5;
-    private Set<ItemHistory> originals_as_items_history;
+    private Set<Item> originals_items_store1, originals_items_store5, originals_items;
     private final String username;
-    private final int store1_id;
-    private final int store5_id;
+    private final int store1_id, store5_id;
     private final Date date;
 
     public HistoryControllerTest()
@@ -50,8 +47,7 @@ public class HistoryControllerTest extends AbstractTest
         basket1.addItem(item3, 1);
         basket1.addItem(item4, 2);
 
-        originals_as_items_history_store1 = basket1.getItemsAndAmounts().stream().
-                map(item_amount ->convertItemToItemHistory(item_amount, store1_id, username, date)).collect(Collectors.toSet());
+        originals_items_store1 = basket1.getItems();
 
         Item item5 = new Item("shirt", Category.Clothing, 65);
         Item item6 = new Item("shoes", Category.Clothing, 200);
@@ -64,12 +60,11 @@ public class HistoryControllerTest extends AbstractTest
         basket2.addItem(item7, 1);
         basket2.addItem(item8, 3);
 
-        originals_as_items_history_store5 = basket2.getItemsAndAmounts().stream().
-                map(item_amount ->convertItemToItemHistory(item_amount, store5_id, username, date)).collect(Collectors.toSet());
+        originals_items_store5 = basket2.getItems();
 
-        originals_as_items_history = new HashSet<>();
-        originals_as_items_history.addAll(originals_as_items_history_store1);
-        originals_as_items_history.addAll(originals_as_items_history_store5);
+        originals_items = new HashSet<>();
+        originals_items.addAll(originals_items_store1);
+        originals_items.addAll(originals_items_store5);
 
         baskets = new LinkedList<>();
         baskets.add(basket1);
@@ -79,14 +74,12 @@ public class HistoryControllerTest extends AbstractTest
     @Test
     public void addItemsToUserHistory()
     {
-
         this.historyController.addToUserHistory(username, baskets, date);
-
 
         History res = this.historyController.getPurchaseHistory(username);
         Set<ItemHistory> items = res.getHistoryItems();
 
-        assertEquals(items, originals_as_items_history);
+        assertTrue(compareHistoryItemsToRegularItems(items, originals_items));
     }
 
     @Test
@@ -100,8 +93,8 @@ public class HistoryControllerTest extends AbstractTest
         History history_store_2 = this.historyController.getStoreHistory(store5_id);
         Set<ItemHistory> items_store_5 = history_store_2.getHistoryItems();
 
-        assertEquals(items_store_1, originals_as_items_history_store1);
-        assertEquals(items_store_5, originals_as_items_history_store5);
+        assertTrue(compareHistoryItemsToRegularItems(items_store_1, originals_items_store1));
+        assertTrue(compareHistoryItemsToRegularItems(items_store_5, originals_items_store5));
     }
 
     @Test
@@ -109,19 +102,11 @@ public class HistoryControllerTest extends AbstractTest
     {
         this.historyController.addToStoreHistory(HistoryController.GUEST_DEFAULT_NAME, baskets, date);
 
-
         History history_store_1 = this.historyController.getStoreHistory(store1_id);
         Set<ItemHistory> items_store_1 = history_store_1.getHistoryItems();
         Set<String> users_items = items_store_1.stream().map(item -> item.username).collect(Collectors.toSet());
 
         assertEquals(1, users_items.size());
         assertTrue(users_items.contains(HistoryController.GUEST_DEFAULT_NAME));
-    }
-
-    private static ItemHistory convertItemToItemHistory(Map.Entry<Item, Integer> item_amount, int store_id, String username, Date date)
-    {
-        Item item = item_amount.getKey();
-        int amount = item_amount.getValue();
-        return new ItemHistory(item.getId(), store_id, username, item.getProductName(), item.getCategory(), item.getPrice(), amount, date);
     }
 }

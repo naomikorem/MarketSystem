@@ -23,7 +23,7 @@ public class PurchaseProcessTest extends AbstractTest
     private ShoppingBasket basket1, basket2;
     private List<ShoppingBasket> baskets;
     private Map<Item, Integer> items_basket_1, items_basket_2;
-    private Set<ItemHistory> items_history_basket_1, items_history_basket_2;
+    private Set<Item> items_history_basket_1, items_history_basket_2;
     private final int store1_id;
     private final int store5_id;
     private String username;
@@ -58,16 +58,14 @@ public class PurchaseProcessTest extends AbstractTest
         this.items_basket_1.put(item2, 2);
 
         Date date = new Date();
-        items_history_basket_1 = basket1.getItemsAndAmounts().stream().
-                map(item_amount ->convertItemToItemHistory(item_amount, store1_id, username, date)).collect(Collectors.toSet());
+        items_history_basket_1 = basket1.getItems();
 
         basket2.addItem(item3, 5);
         basket2.addItem(item4, 3);
         this.items_basket_2.put(item3, 5);
         this.items_basket_2.put(item4, 3);
 
-        items_history_basket_2 = basket2.getItemsAndAmounts().stream().
-                map(item_amount ->convertItemToItemHistory(item_amount, store5_id, username, date)).collect(Collectors.toSet());
+        items_history_basket_2 = basket2.getItems();
 
         baskets.add(basket1);
         baskets.add(basket2);
@@ -77,16 +75,20 @@ public class PurchaseProcessTest extends AbstractTest
     public void addBasketsItemsToHistory()
     {
         PurchaseProcess.addToHistory(username, baskets);
+
+        // check that the user contains the purchase history
         History user_history = this.historyController.getPurchaseHistory(username);
         Set<ItemHistory> user_items = user_history.getHistoryItems();
-        Set<ItemHistory> real_user_items = new HashSet<>(this.items_history_basket_1);
+        Set<Item> real_user_items = new HashSet<>(this.items_history_basket_1);
         real_user_items.addAll(this.items_history_basket_2);
-        assertEquals(user_items, real_user_items);
+        assertTrue(compareHistoryItemsToRegularItems(user_items, real_user_items));
 
+        // check that store 1 has all the purchase history
         Set<ItemHistory> store_1_history = this.historyController.getStoreHistory(store1_id).getHistoryItems();
-        assertEquals(store_1_history, items_history_basket_1);
+        assertTrue(compareHistoryItemsToRegularItems(store_1_history, items_history_basket_1));
+        // check that store 5 has all the purchase history
         Set<ItemHistory> store_5_history = this.historyController.getStoreHistory(store5_id).getHistoryItems();
-        assertEquals(store_5_history, items_history_basket_2);
+        assertTrue(compareHistoryItemsToRegularItems(store_5_history, items_history_basket_2));
     }
 
     @Test
@@ -107,12 +109,5 @@ public class PurchaseProcessTest extends AbstractTest
 
         assertEquals(items_and_amounts_in_baskets.size(), 4);
         assertEquals(items_and_amounts_in_baskets, real_items_and_amounts);
-    }
-
-    private static ItemHistory convertItemToItemHistory(Map.Entry<Item, Integer> item_amount, int store_id, String username, Date date)
-    {
-        Item item = item_amount.getKey();
-        int amount = item_amount.getValue();
-        return new ItemHistory(item.getId(), store_id, username, item.getProductName(), item.getCategory(), item.getPrice(), amount, date);
     }
 }

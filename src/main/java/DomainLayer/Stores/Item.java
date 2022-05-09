@@ -16,6 +16,8 @@ public class Item {
     private int numberOfRatings; // amount of people rated
     private double price;
     private List<String> keyWords;
+    private static int TOP_RATE = 5;
+    private static int BOTTOM_RATE = 0;
 
     public synchronized static int getNextItemId() {
         return NEXT_ITEM_ID++;
@@ -42,10 +44,11 @@ public class Item {
 
     public void checkParams(String product_name, double price) {
         if (product_name == null || product_name.equals("")) {
-            LogUtility.error("tried to change product name to an empty word / null");
+            LogUtility.warn("tried to change product name to an empty word / null");
             throw new IllegalArgumentException("Product name must be a non empty name");
         }
         if (price < 0) {
+            LogUtility.warn("tried to change product price to a negative value");
             throw new IllegalArgumentException("Product price must not be below 0");
         }
     }
@@ -57,6 +60,8 @@ public class Item {
     public void setProductName(String product_name) {
         checkParams(product_name, price);
         this.product_name = product_name;
+
+        LogUtility.info(String.format("Item %d name was updated to %s",this.id, product_name));
     }
 
     public Category getCategory() {
@@ -72,15 +77,16 @@ public class Item {
     }
 
     public void updateRate(double new_rate) {
-        if (new_rate > 5 || new_rate < 0) {
-            if (new_rate > 5)
-                LogUtility.error("tried to add a new rate for a number bigger then 5");
+        if (new_rate > TOP_RATE || new_rate < BOTTOM_RATE) {
+            if (new_rate > TOP_RATE)
+                LogUtility.warn("tried to add a new rate for a number bigger then 5");
             else
-                LogUtility.error("tried to add a new rate for a number lower then 0");
+                LogUtility.warn("tried to add a new rate for a number lower then 0");
             throw new IllegalArgumentException("Product rate must be between 0-5");
         }
         this.rate = (this.rate * this.numberOfRatings + new_rate) / (this.numberOfRatings + 1);
         this.numberOfRatings++;
+        LogUtility.info(String.format("Item %d Rate was updated",this.id));
     }
 
     public double getPrice() {
@@ -89,7 +95,7 @@ public class Item {
 
     public void setPrice(double price) {
         if (price < 0) {
-            LogUtility.error("tried to change product price to a negative value");
+            LogUtility.warn("tried to change product price to a negative value");
             throw new IllegalArgumentException("Product price must be a non negative number");
         }
         this.price = price;

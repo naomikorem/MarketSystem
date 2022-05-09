@@ -76,7 +76,7 @@ public class StoreController {
     }
 
 
-    public Item addItemToStore(User manager, int storeId, String name, String category, double price, int amount) {
+    public Item addItemToStore(User manager, int storeId, String name, Category category, double price, int amount) {
         if (!manager.isSubscribed()) {
             throw new IllegalArgumentException("Use has to be logged in to do this action.");
         }
@@ -87,7 +87,7 @@ public class StoreController {
         if (!s.canManageItems(manager)) {
             throw new LogException("You cannot add items to this store", String.format("User %s tried to add an item to a store that they do not manager", manager));
         }
-        Item i = new Item(name, Category.valueOf(category), price);
+        Item i = new Item(name, category, price);
         s.addItem(i, amount);
         LogUtility.info(String.format("%s added %s %s to store id %s", manager.getName(), amount, name, storeId));
         return i;

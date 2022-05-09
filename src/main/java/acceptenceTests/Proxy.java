@@ -1,6 +1,7 @@
 package acceptenceTests;
 
 import DomainLayer.Response;
+import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
@@ -23,17 +24,17 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<Boolean> addExternalPurchaseService(String name) {
+    public Response<Boolean> addExternalPurchaseService(String name, String url) {
         if (this.real != null) {
-            return real.addExternalPurchaseService(name);
+            return real.addExternalPurchaseService(name, url);
         }
         return null;
     }
 
     @Override
-    public Response<Boolean> addExternalSupplyService(String name) {
+    public Response<Boolean> addExternalSupplyService(String name, String url) {
         if (this.real != null) {
-            return real.addExternalSupplyService(name);
+            return real.addExternalSupplyService(name, url);
         }
         return null;
     }
@@ -112,9 +113,9 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<User> register(String email, String name, String password) {
+    public Response<User> register(String email, String userName, String firstName, String lastName, String password) {
         if (this.real != null) {
-            return real.register(email, name, password);
+            return real.register(email, userName, firstName, lastName, password);
         }
         return null;
     }
@@ -259,6 +260,14 @@ public class Proxy extends Bridge {
     }
 
     @Override
+    public Response<User> getUser(String userName) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getUser(userName);
+    }
+
+    @Override
     public Response<Boolean> removeManager(String toRemove, int storeId) {
         if (this.real == null) {
             return null;
@@ -283,7 +292,7 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount) {
+    public Response<Item> addItemToStore(int storeId, String name, Category category, double price, int amount) {
         if (this.real == null) {
             return null;
         }
@@ -333,6 +342,14 @@ public class Proxy extends Bridge {
     }
 
     @Override
+    public Response<Boolean> removeItemFromCart(int storeId, Item item, int amount) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.removeItemFromCart(storeId, item, amount);
+    }
+
+    @Override
     public Response<List<ShoppingBasket>> getCartBaskets() {
         if (this.real == null) {
             return null;
@@ -354,6 +371,14 @@ public class Proxy extends Bridge {
             return null;
         }
         return real.getItems(storeId);
+    }
+
+    @Override
+    public Response<Boolean> hasAdmin() {
+        if (this.real == null) {
+            return null;
+        }
+        return real.hasAdmin();
     }
 
     @Override

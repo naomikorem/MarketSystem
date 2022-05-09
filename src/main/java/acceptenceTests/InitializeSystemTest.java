@@ -22,9 +22,6 @@ public class InitializeSystemTest extends AbstractTest {
     @Test
     public void testInitializeMarket()
     {
-        //assertFalse(bridge.initializeMarket().hadError());
-
-
         Response<Boolean> has_purchase_service = bridge.hasPurchaseService();
         assertFalse(has_purchase_service.hadError());
         assertTrue(has_purchase_service.getObject());
@@ -33,7 +30,9 @@ public class InitializeSystemTest extends AbstractTest {
         assertFalse(has_supply_service.hadError());
         assertTrue(has_supply_service.getObject());
 
-        // add has admin check
+        Response<Boolean> has_admin = bridge.hasAdmin();
+        assertFalse(has_admin.hadError());
+        assertTrue(has_admin.getObject());
     }
 
 }
