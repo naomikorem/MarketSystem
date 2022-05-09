@@ -45,4 +45,14 @@ public class ItemDiscountPolicy extends AbstractDiscountPolicy {
         return sb.calculatePrice();
     }
 
+    public AbstarctPredicate minBasketTotalPrice(double minTotalPrice) {
+        return new AbstarctPredicate() {
+            @Override
+            boolean canApply(Item item, ShoppingBasket shoppingBasket) {
+                return shoppingBasket.calculatePrice() >= minTotalPrice;
+            }
+        };
+    }
+
+
 }
