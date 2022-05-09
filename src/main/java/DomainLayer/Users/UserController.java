@@ -80,6 +80,7 @@ public class UserController {
     public void removeUser(String userName) {
         synchronized (lock) {
             if (!isExist(userName)) {
+                LogUtility.warn("tried to remove a nonexistent user");
                 throw new IllegalArgumentException(String.format("Could not find user with name %s", userName));
             }
             users.remove(userName);
@@ -155,5 +156,6 @@ public class UserController {
         if (user.isSubscribed()) {
             user.setEmail(newEmail);
         }
+        LogUtility.info("User "+user.getName()+" changed its email to "+newEmail);
     }
 }

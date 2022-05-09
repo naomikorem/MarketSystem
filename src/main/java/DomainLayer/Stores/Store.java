@@ -65,7 +65,7 @@ public class Store {
             throw new IllegalArgumentException("This store is closed");
         }
         if (store_name == null || store_name.equals("")) {
-            LogUtility.error("tried to change store name to an empty word / null");
+            LogUtility.warn("tried to change store name to an empty word / null");
             throw new IllegalArgumentException("Store name must be a non empty name");
         }
         this.name = store_name;
@@ -261,6 +261,7 @@ public class Store {
             }
             managers.remove(manager);
             manager.removedManagedStore(getStoreId());
+            LogUtility.info("Store manager "+manager.getName()+" was removed from position by "+removedBy);
         }
     }
     public List<String> getManagers(){
@@ -283,6 +284,7 @@ public class Store {
                 }
             });
         }
+        LogUtility.info("User named "+oldName+" changed it's name to "+newName);
     }
 
 }
