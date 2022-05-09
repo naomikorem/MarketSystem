@@ -7,8 +7,11 @@ public abstract class CompositeDiscountPolicy extends AbstractDiscountPolicy {
     protected List<AbstractDiscountPolicy> discountPolicies;
 
 
-    public CompositeDiscountPolicy(double percentage) {
-        super(percentage);
+    public CompositeDiscountPolicy() {
         this.discountPolicies = new ArrayList<>();
+    }
+
+    public void addDiscount(AbstractDiscountPolicy adc) {
+        this.discountPolicies.add(adc);
     }
 }

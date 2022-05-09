@@ -1,8 +1,12 @@
-package DomainLayer.Stores.DiscountPolicy;
+package DomainLayer.Stores.DiscountPolicy.Predicates;
 
 import java.util.List;
 
-public class AndCompositePredicate extends ComositePredicate {
+public class AndCompositePredicate extends CompositePredicate {
+
+    public AndCompositePredicate() {
+        super();
+    }
     public AndCompositePredicate(List<AbstarctPredicate> preds) {
         super(preds);
     }
