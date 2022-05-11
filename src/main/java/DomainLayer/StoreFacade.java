@@ -1,6 +1,8 @@
 package DomainLayer;
 
 import DomainLayer.Stores.*;
+import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
+import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
 import java.util.*;
@@ -246,6 +248,58 @@ public Response<Map<Item, Integer>> getItems(int storeId) {
         try {
             storeController.applyChangeName(u, oldName, newName);
             return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<AbstractDiscountPolicy> addDiscount(User u, int storeId, double percentage) {
+        try {
+            return new Response<>(storeController.addDiscount(u, storeId, percentage));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<AbstractDiscountPolicy> addExclusiveDiscount(User u, int storeId, double percentage) {
+        try {
+            return new Response<>(storeController.addExclusiveDiscount(u, storeId, percentage));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Boolean> addItemPredicateToDiscount(User owner, int storeId, int discountId, String type, int itemId) {
+        try {
+            storeController.addItemPredicateToDiscount(owner, storeId, discountId, type, itemId);
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+
+    public Response<Boolean> addCategoryPredicateToDiscount(User owner, int storeId, int discountId, String type, String categoryName) {
+        try {
+            storeController.addCategoryPredicateToDiscount(owner, storeId, discountId, type, categoryName);
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Boolean> addBasketRequirementPredicateToDiscount(User owner, int storeId, int discountId, String type, double minPrice) {
+        try {
+            storeController.addBasketRequirementPredicateToDiscount(owner, storeId, discountId, type, minPrice);
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Double> getShoppingBasketPrice(ShoppingBasket sb) {
+        try {
+            return new Response<>(storeController.getShoppingBasketPrice(sb));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }

@@ -8,10 +8,16 @@ public abstract class CompositeDiscountPolicy extends AbstractDiscountPolicy {
 
 
     public CompositeDiscountPolicy() {
+        super();
         this.discountPolicies = new ArrayList<>();
     }
 
     public void addDiscount(AbstractDiscountPolicy adc) {
         this.discountPolicies.add(adc);
+    }
+
+    @Override
+    public List<AbstractDiscountPolicy> getDiscountPolicies() {
+        return this.discountPolicies;
     }
 }
