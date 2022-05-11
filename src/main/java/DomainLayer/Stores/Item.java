@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Item {
 
-    private static int NEXT_ITEM_ID = 1;
+    public static int NEXT_ITEM_ID = 1;
 
     private int id;
     private String product_name;

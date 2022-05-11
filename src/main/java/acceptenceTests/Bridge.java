@@ -138,4 +138,6 @@ public abstract class Bridge {
     public abstract Response<Boolean> addBasketRequirementPredicateToDiscount(int storeId, int discountId, String type, double minPrice);
 
     public abstract Response<AbstractDiscountPolicy> addExclusiveDiscount(int storeId, double percentage);
+
+    public abstract Response<Boolean> removeDiscount(int storeId, int discountId);
 }

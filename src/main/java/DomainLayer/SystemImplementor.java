@@ -701,6 +701,13 @@ public class SystemImplementor implements SystemInterface {
         return new Response<>(total);
     }
 
+    public Response<Boolean> removeDiscount(int storeId, int discountId) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.removeDiscount(user, storeId, discountId);
+    }
+
     //public Response<Boolean> addAndPredicateToDiscount()
 
 }

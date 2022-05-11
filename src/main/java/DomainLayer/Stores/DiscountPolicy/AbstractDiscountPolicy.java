@@ -53,15 +53,33 @@ public abstract class AbstractDiscountPolicy {
         return null;
     }
 
-    public void addAndPredicate(AbstarctPredicate predicate) {
+    public boolean removeDiscount(int discountId) {
+        if (getDiscountPolicies() == null) {
+            return false;
+        }
+        AbstractDiscountPolicy discount = getDiscountPolicies().stream().filter(d -> d.getId() == discountId).findFirst().orElse(null);
+        if (discount != null) {
+            getDiscountPolicies().remove(discount);
+            return true;
+        }
+        for (AbstractDiscountPolicy adp : getDiscountPolicies()) {
+            boolean removed = adp.removeDiscount(discountId);
+            if (removed) {
+                return removed;
+            }
+        }
+        return false;
+    }
+
+    public synchronized void addAndPredicate(AbstarctPredicate predicate) {
         throw new IllegalArgumentException("This discount policy does not have a predicate");
     }
 
-    public void addOrPredicate(AbstarctPredicate predicate) {
+    public synchronized void addOrPredicate(AbstarctPredicate predicate) {
         throw new IllegalArgumentException("This discount policy does not have a predicate");
     }
 
-    public void addXorPredicate(AbstarctPredicate predicate) {
+    public synchronized void addXorPredicate(AbstarctPredicate predicate) {
         throw new IllegalArgumentException("This discount policy does not have a predicate");
     }
 }

@@ -126,4 +126,6 @@ public interface SystemInterface {
     public Response<Boolean> addBasketRequirementPredicateToDiscount(int storeId, int discountId, String type, double minPrice);
 
     public Response<AbstractDiscountPolicy> addExclusiveDiscount(int storeId, double percentage);
+
+    public Response<Boolean> removeDiscount(int storeId, int discountId);
 }

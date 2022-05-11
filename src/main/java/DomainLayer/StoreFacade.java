@@ -261,6 +261,15 @@ public Response<Map<Item, Integer>> getItems(int storeId) {
         }
     }
 
+    public Response<Boolean> removeDiscount(User u, int storeId, int discountId) {
+        try {
+            storeController.removeDiscount(u, storeId, discountId);
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
     public Response<AbstractDiscountPolicy> addExclusiveDiscount(User u, int storeId, double percentage) {
         try {
             return new Response<>(storeController.addExclusiveDiscount(u, storeId, percentage));
