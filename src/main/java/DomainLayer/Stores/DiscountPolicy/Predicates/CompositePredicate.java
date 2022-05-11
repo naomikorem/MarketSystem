@@ -1,5 +1,6 @@
 package DomainLayer.Stores.DiscountPolicy.Predicates;
 
+import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.Item;
 import DomainLayer.Users.ShoppingBasket;
 
@@ -7,6 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class CompositePredicate extends AbstarctPredicate {
+
+    public enum PredicateEnum {
+        AND,
+        OR,
+        XOR,
+    }
+
     private List<AbstarctPredicate> preds;
 
     public CompositePredicate() {
@@ -33,4 +41,5 @@ public abstract class CompositePredicate extends AbstarctPredicate {
         }
         return output;
     }
+
 }

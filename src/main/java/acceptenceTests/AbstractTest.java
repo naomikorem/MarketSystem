@@ -26,9 +26,7 @@ public abstract class AbstractTest {
         UserController.getInstance().clearAll();
         StoreController.getInstance().clearAll();
         AdminController.getInstance().clearAll();
-
         MarketManagementFacade.getInstance().clearAll();
-
     }
 
     public boolean compareHistoryItemsToRegularItems(Set<ItemHistory> history_items, Set<Item> regular_items)

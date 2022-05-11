@@ -2,6 +2,7 @@ package acceptenceTests;
 
 import DomainLayer.Response;
 import DomainLayer.Stores.Category;
+import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
@@ -246,6 +247,36 @@ public class Real extends Bridge {
     @Override
     public Response<List<ShoppingBasket>> getCartBaskets() {
         return adaptee.getCartBaskets();
+    }
+
+    @Override
+    public Response<AbstractDiscountPolicy> addDiscount(int storeId, double percentage) {
+        return this.adaptee.addDiscount(storeId, percentage);
+    }
+
+    @Override
+    public Response<Boolean> addItemPredicateToDiscount(int storeId, int discountId, String type, int itemId) {
+        return this.adaptee.addItemPredicateToDiscount(storeId, discountId, type, itemId);
+    }
+
+    @Override
+    public Response<Boolean> addCategoryPredicateToDiscount(int storeId, int discountId, String type, String categoryName) {
+        return this.adaptee.addCategoryPredicateToDiscount(storeId, discountId, type, categoryName);
+    }
+
+    @Override
+    public Response<Double> getCartPrice() {
+        return this.adaptee.getCartPrice();
+    }
+
+    @Override
+    public Response<Boolean> addBasketRequirementPredicateToDiscount(int storeId, int discountId, String type, double minPrice) {
+        return this.adaptee.addBasketRequirementPredicateToDiscount(storeId, discountId, type, minPrice);
+    }
+
+    @Override
+    public Response<AbstractDiscountPolicy> addExclusiveDiscount(int storeId, double percentage) {
+        return this.adaptee.addExclusiveDiscount(storeId, percentage);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package DomainLayer;
 
 import DomainLayer.Stores.*;
+import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.MarketManagementFacade;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
@@ -649,5 +650,57 @@ public class SystemImplementor implements SystemInterface {
         }
         return storeFacade.applyChangeName(user, oldName, newUserName);
     }
+
+    public Response<AbstractDiscountPolicy> addDiscount(int storeId, double percentage) {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
+        }
+        return storeFacade.addDiscount(user, storeId, percentage);
+    }
+
+    public Response<AbstractDiscountPolicy> addExclusiveDiscount(int storeId, double percentage) {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
+        }
+        return storeFacade.addExclusiveDiscount(user, storeId, percentage);
+    }
+
+    public Response<Boolean> addItemPredicateToDiscount(int storeId, int discountId, String type, int itemId) {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
+        }
+        return storeFacade.addItemPredicateToDiscount(user, storeId, discountId, type, itemId);
+    }
+
+    public Response<Boolean> addCategoryPredicateToDiscount(int storeId, int discountId, String type, String categoryName) {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
+        }
+        return storeFacade.addCategoryPredicateToDiscount(user, storeId, discountId, type, categoryName);
+    }
+
+    public Response<Boolean> addBasketRequirementPredicateToDiscount(int storeId, int discountId, String type, double minPrice) {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
+        }
+        return storeFacade.addBasketRequirementPredicateToDiscount(user, storeId, discountId, type, minPrice);
+    }
+
+    public Response<Double> getCartPrice() {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        double total = 0;
+        for (ShoppingBasket sb : user.getCartBaskets()) {
+            Response<Double> response = storeFacade.getShoppingBasketPrice(sb);
+            if (response.hadError()) {
+                return response;
+            }
+            total += response.getObject();
+        }
+        return new Response<>(total);
+    }
+
+    //public Response<Boolean> addAndPredicateToDiscount()
 
 }

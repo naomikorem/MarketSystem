@@ -1,5 +1,10 @@
 package DomainLayer.Stores;
 
+import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
+import DomainLayer.Stores.DiscountPolicy.AddDiscountPolicy;
+import DomainLayer.Stores.DiscountPolicy.CompositeDiscountPolicy;
+import DomainLayer.Stores.DiscountPolicy.MaxDiscountPolicy;
+import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 import Exceptions.LogException;
 import Utility.LogUtility;
@@ -19,7 +24,9 @@ public class Store {
     private Map<User, Permission> managers;
     private Map<Item, Integer> items;
     private final Lock lock;
+    private final Lock discountLock;
     private boolean permanentlyClosed;
+    private CompositeDiscountPolicy discountPolicy;
 
     public Store(User founder, String store_name, int id) {
         this.founder = founder.getName();
@@ -30,6 +37,7 @@ public class Store {
         this.managers = new HashMap<>();
         this.items = new HashMap<>();
         this.lock = new ReentrantLock();
+        this.discountLock = new ReentrantLock();
         owners.put(founder, null);
         founder.addOwnedStore(getStoreId());
         setName(store_name);
@@ -229,7 +237,7 @@ public class Store {
         p.setPermissionsMask(permission);
     }
 
-    public String getFounder(){
+    public String getFounder() {
         return this.founder;
     }
 
@@ -248,7 +256,7 @@ public class Store {
             user.removedOwnedStore(getStoreId());
             this.managers.entrySet().removeIf(entry -> entry.getValue().getGivenBy().equals(user.getName()));
             //create new list so no concurrent modification exception
-            new ArrayList<>(this.owners.entrySet()).stream().filter(entry -> entry.getValue() != null  && entry.getValue().equals(user.getName())).forEach(e -> {
+            new ArrayList<>(this.owners.entrySet()).stream().filter(entry -> entry.getValue() != null && entry.getValue().equals(user.getName())).forEach(e -> {
                 removeAndRemoveEveryoneAssignedBy(e.getKey());
             });
         }
@@ -261,14 +269,15 @@ public class Store {
             }
             managers.remove(manager);
             manager.removedManagedStore(getStoreId());
-            LogUtility.info("Store manager "+manager.getName()+" was removed from position by "+removedBy);
+            LogUtility.info("Store manager " + manager.getName() + " was removed from position by " + removedBy);
         }
     }
-    public List<String> getManagers(){
+
+    public List<String> getManagers() {
         return managers.keySet().stream().map(User::getName).collect(Collectors.toList());
     }
 
-    public List<String> getOwners(){
+    public List<String> getOwners() {
         return owners.keySet().stream().map(User::getName).collect(Collectors.toList());
     }
 
@@ -284,7 +293,42 @@ public class Store {
                 }
             });
         }
-        LogUtility.info("User named "+oldName+" changed it's name to "+newName);
+        LogUtility.info("User named " + oldName + " changed it's name to " + newName);
     }
 
+    public void addDiscount(AbstractDiscountPolicy adp) {
+        synchronized (discountLock) {
+            if (this.discountPolicy == null) {
+                this.discountPolicy = new AddDiscountPolicy();
+                this.discountPolicy.addDiscount(adp);
+                return;
+            }
+            AddDiscountPolicy add = new AddDiscountPolicy();
+            add.addDiscount(this.discountPolicy);
+            add.addDiscount(adp);
+            this.discountPolicy = add;
+        }
+    }
+
+    public void addExclusiveDiscount(AbstractDiscountPolicy adp) {
+        synchronized (discountLock) {
+            if (this.discountPolicy == null) {
+                this.discountPolicy = new MaxDiscountPolicy();
+                this.discountPolicy.addDiscount(adp);
+                return;
+            }
+            MaxDiscountPolicy max = new MaxDiscountPolicy();
+            max.addDiscount(this.discountPolicy);
+            max.addDiscount(adp);
+            this.discountPolicy = max;
+        }
+    }
+
+    public AbstractDiscountPolicy getDiscount(int discountId) {
+        return discountPolicy.getDiscount(discountId);
+    }
+
+    public double applyDiscount(ShoppingBasket sb) {
+        return this.discountPolicy.applyDiscount(sb);
+    }
 }

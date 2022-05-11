@@ -1,23 +1,31 @@
 package DomainLayer.Stores;
 
 import DomainLayer.Response;
+import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
+import DomainLayer.Stores.DiscountPolicy.Predicates.CompositePredicate;
+import DomainLayer.Stores.DiscountPolicy.Predicates.CompositePredicate.PredicateEnum;
+import DomainLayer.Stores.DiscountPolicy.Predicates.SimplePredicate;
+import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
+import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 import Exceptions.LogException;
 import Utility.LogUtility;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class StoreController {
 
     private Map<Integer, Store> stores; // store-id , stores
 
-    private int NEXT_STORE_ID = 1;
+    private AtomicInteger NEXT_STORE_ID = new AtomicInteger(1);
+    private AtomicInteger NEXT_DISCOUNT_ID = new AtomicInteger(1);
 
     public StoreController() {
         this.stores = new HashMap<>();
     }
-
 
     private static class StoreControllerHolder {
         static final StoreController instance = new StoreController();
@@ -32,7 +40,11 @@ public class StoreController {
     }
 
     private synchronized int getNewStoreId() {
-        return NEXT_STORE_ID++;
+        return NEXT_STORE_ID.getAndIncrement();
+    }
+
+    private synchronized int getNewDiscountId() {
+        return NEXT_DISCOUNT_ID.getAndIncrement();
     }
 
     public Store createStore(User owner, String store_name) {
@@ -52,6 +64,14 @@ public class StoreController {
 
     public Store getStore(int id) {
         return stores.getOrDefault(id, null);
+    }
+
+    public Store getStoreAndThrow(int storeId) {
+        Store s = getStore(storeId);
+        if (s == null) {
+            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
+        }
+        return s;
     }
 
     public Collection<Store> getAllStores() {
@@ -80,10 +100,7 @@ public class StoreController {
         if (!manager.isSubscribed()) {
             throw new IllegalArgumentException("Use has to be logged in to do this action.");
         }
-        Store s = getStore(storeId);
-        if (s == null) {
-            throw new IllegalArgumentException(String.format("There is no store with id: %s", storeId));
-        }
+        Store s = getStoreAndThrow(storeId);
         if (!s.canManageItems(manager)) {
             throw new LogException("You cannot add items to this store", String.format("User %s tried to add an item to a store that they do not manager", manager));
         }
@@ -94,10 +111,7 @@ public class StoreController {
     }
 
     public Item reserveItemFromStore(int storeId, int itemId, int amount) {
-        Store s = getInstance().getStore(storeId);
-        if (s == null) {
-            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
-        }
+        Store s = getStoreAndThrow(storeId);
         Item i = s.getItemAndDeduct(itemId, amount);
         if (i == null) {
             throw new IllegalArgumentException(String.format("There is no item with item id %s in the store", itemId));
@@ -107,10 +121,7 @@ public class StoreController {
     }
 
     public Item removeItemFromStore(User owner, int storeId, int itemId, int amount) {
-        Store s = getInstance().getStore(storeId);
-        if (s == null) {
-            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
-        }
+        Store s = getStoreAndThrow(storeId);
         if (!owner.isSubscribed() || !s.canManageItems(owner)) {
             throw new LogException("You cannot remove items from this store.", String.format("a user tried to illegally edit store %s", storeId));
         }
@@ -123,10 +134,7 @@ public class StoreController {
     }
 
     public Item getItemFromStore(int storeId, int itemId) {
-        Store s = getInstance().getStore(storeId);
-        if (s == null) {
-            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
-        }
+        Store s = getStoreAndThrow(storeId);
         Item i = s.getItemById(itemId);
         if (i == null) {
             throw new IllegalArgumentException(String.format("There is no item with item id %s in the store", itemId));
@@ -138,10 +146,7 @@ public class StoreController {
         if (owner == null || manager == null) {
             throw new IllegalArgumentException("A user cannot be null.");
         }
-        Store s = getInstance().getStore(storeId);
-        if (s == null) {
-            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
-        }
+        Store s = getStoreAndThrow(storeId);
         if (!owner.isSubscribed() || !s.canAssignManager(owner)) {
             throw new IllegalArgumentException("This user cannot assign a manager");
         }
@@ -157,10 +162,7 @@ public class StoreController {
         if (owner == null || newOwner == null) {
             throw new IllegalArgumentException("A user cannot be null.");
         }
-        Store s = getInstance().getStore(storeId);
-        if (s == null) {
-            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
-        }
+        Store s = getStoreAndThrow(storeId);
         if (!owner.isSubscribed() || !s.canAssignOwner(owner.getName())) {
             throw new IllegalArgumentException("This user cannot assign another user to be an owner");
         }
@@ -173,10 +175,7 @@ public class StoreController {
     }
 
     public Item returnItemToStore(int storeId, Item item, int amount) {
-        Store s = getStore(storeId);
-        if (s == null) {
-            throw new IllegalArgumentException(String.format("There is no store with id: %s", storeId));
-        }
+        Store s = getStoreAndThrow(storeId);
         s.addItem(item, amount);
         LogUtility.info(String.format("%s %s were returned to store %s", amount, item.getProductName(), storeId));
         return item;
@@ -187,10 +186,7 @@ public class StoreController {
     }
 
     public void setManagerPermission(User owner, String manager, int storeId, byte permission) {
-        Store s = getInstance().getStore(storeId);
-        if (s == null) {
-            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
-        }
+        Store s = getStoreAndThrow(storeId);
         if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
             throw new IllegalArgumentException("This user cannot assign manager's permission");
         }
@@ -211,20 +207,14 @@ public class StoreController {
     }
 
     public Store permanentlyCloseStore(int storeId) {
-        if (!isExist(storeId)) {
-            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
-        }
-        Store s = getStore(storeId);
+        Store s = getStoreAndThrow(storeId);
         s.setPermanentlyClosed(true);
         LogUtility.info(String.format("store %s was permanently closed by an admin", storeId));
         return s;
     }
 
     public void removeOwner(User owner, User toRemove, int storeId) {
-        Store s = getInstance().getStore(storeId);
-        if (s == null) {
-            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
-        }
+        Store s = getStoreAndThrow(storeId);
         if (!owner.isSubscribed()) {
             throw new IllegalArgumentException("Guest users can not perform this action.");
         }
@@ -233,10 +223,7 @@ public class StoreController {
     }
 
     public void removeManager(User owner, User toRemove, int storeId) {
-        Store s = getInstance().getStore(storeId);
-        if (s == null) {
-            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
-        }
+        Store s = getStoreAndThrow(storeId);
         if (!owner.isSubscribed()) {
             throw new IllegalArgumentException("Guest users can not perform this action.");
         }
@@ -256,10 +243,7 @@ public class StoreController {
     }
 
     public Item modifyItem(User owner, int storeId, int itemId, String productName, String category, double price, List<String> keywords) {
-        Store s = getStore(storeId);
-        if (s == null) {
-            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
-        }
+        Store s = getStoreAndThrow(storeId);
         Item i = s.getItemById(itemId);
         if (i == null) {
             throw new IllegalArgumentException(String.format("There is no item with id %s in store %s", itemId, storeId));
@@ -272,18 +256,12 @@ public class StoreController {
     }
 
     public Map<Item, Integer> getItems(int storeId) {
-        Store s = getStore(storeId);
-        if (s == null) {
-            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
-        }
+        Store s = getStoreAndThrow(storeId);
         return s.getItems();
     }
 
     public Permission getManagersPermissions(User owner, int storeId, String managerName){
-        Store s = getStore(storeId);
-        if (s == null) {
-            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
-        }
+        Store s = getStoreAndThrow(storeId);
         if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
@@ -292,10 +270,7 @@ public class StoreController {
     }
 
     public List<String> getManagers(User owner, int storeId){
-        Store s = getStore(storeId);
-        if (s == null) {
-            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
-        }
+        Store s = getStoreAndThrow(storeId);
         if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
@@ -328,5 +303,81 @@ public class StoreController {
                 s.changeName(oldName, newName);
             }
         }
+    }
+
+    private SimpleDiscountPolicy createNewDiscount(User owner, Store s, double percentage) {
+        if (percentage < 0 || percentage > 1) {
+            throw new IllegalArgumentException("Discount cannot be lower than 0 or higher than 1");
+        }
+        if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
+            throw new IllegalArgumentException("This user cannot see the managers");
+        }
+        SimpleDiscountPolicy sdp = new SimpleDiscountPolicy(percentage, new SimplePredicate());
+        sdp.setId(getNewDiscountId());
+        return sdp;
+    }
+
+    public AbstractDiscountPolicy addDiscount(User owner, int storeId, double percentage) {
+        Store s = getStoreAndThrow(storeId);
+        SimpleDiscountPolicy sdp = createNewDiscount(owner, s, percentage);
+        s.addDiscount(sdp);
+        return sdp;
+    }
+
+    public AbstractDiscountPolicy addExclusiveDiscount(User owner, int storeId, double percentage) {
+        Store s = getStoreAndThrow(storeId);
+        SimpleDiscountPolicy sdp = createNewDiscount(owner, s, percentage);
+        s.addExclusiveDiscount(sdp);
+        return sdp;
+    }
+
+    public void addPredicateToDiscount(User owner, Store s, int discountId, PredicateEnum type, SimplePredicate sp) {
+        AbstractDiscountPolicy adp = s.getDiscount(discountId);
+        if (adp == null) {
+            throw new LogException(String.format("There is no discount with id %s", discountId), String.format("user %s tried to add a predicate to non existing discount with id %s", owner.getName(), discountId));
+        }
+        switch (type) {
+            case AND:
+                adp.addAndPredicate(sp);
+                break;
+            case OR:
+                adp.addOrPredicate(sp);
+                break;
+            case XOR:
+                adp.addXorPredicate(sp);
+                break;
+        }
+    }
+
+    public void addItemPredicateToDiscount(User owner, int storeId, int discountId, String type, int itemId) {
+        Store s = getStoreAndThrow(storeId);
+        if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
+            throw new IllegalArgumentException("This user cannot see the managers");
+        }
+        SimplePredicate sp = new SimplePredicate(itemId);
+        addPredicateToDiscount(owner, s, discountId, PredicateEnum.valueOf(type), sp);
+    }
+
+    public void addCategoryPredicateToDiscount(User owner, int storeId, int discountId, String type, String categoryName) {
+        Store s = getStoreAndThrow(storeId);
+        if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
+            throw new IllegalArgumentException("This user cannot see the managers");
+        }
+        SimplePredicate sp = new SimplePredicate(Category.valueOf(categoryName));
+        addPredicateToDiscount(owner, s, discountId, PredicateEnum.valueOf(type), sp);
+    }
+
+    public void addBasketRequirementPredicateToDiscount(User owner, int storeId, int discountId, String type, double minPrice) {
+        Store s = getStoreAndThrow(storeId);
+        if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
+            throw new IllegalArgumentException("This user cannot see the managers");
+        }
+        SimplePredicate sp = new SimplePredicate((i) -> true, (b) -> b.calculatePrice() >= minPrice);
+        addPredicateToDiscount(owner, s, discountId, PredicateEnum.valueOf(type), sp);
+    }
+
+    public double getShoppingBasketPrice(ShoppingBasket sb) {
+        Store s = getStoreAndThrow(sb.getStoreId());
+        return s.applyDiscount(sb);
     }
 }

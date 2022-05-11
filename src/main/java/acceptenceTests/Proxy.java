@@ -2,6 +2,7 @@ package acceptenceTests;
 
 import DomainLayer.Response;
 import DomainLayer.Stores.Category;
+import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
@@ -355,6 +356,54 @@ public class Proxy extends Bridge {
             return null;
         }
         return real.getCartBaskets();
+    }
+
+    @Override
+    public Response<AbstractDiscountPolicy> addDiscount(int storeId, double percentage) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.addDiscount(storeId, percentage);
+    }
+
+    @Override
+    public Response<Boolean> addItemPredicateToDiscount(int storeId, int discountId, String type, int itemId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.addItemPredicateToDiscount(storeId, discountId, type, itemId);
+    }
+
+    @Override
+    public Response<Boolean> addCategoryPredicateToDiscount(int storeId, int discountId, String type, String categoryName) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.addCategoryPredicateToDiscount(storeId, discountId, type, categoryName);
+    }
+
+    @Override
+    public Response<Double> getCartPrice() {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getCartPrice();
+    }
+
+    @Override
+    public Response<Boolean> addBasketRequirementPredicateToDiscount(int storeId, int discountId, String type, double minPrice) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.addBasketRequirementPredicateToDiscount(storeId, discountId, type, minPrice);
+    }
+
+    @Override
+    public Response<AbstractDiscountPolicy> addExclusiveDiscount(int storeId, double percentage) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.addExclusiveDiscount(storeId, percentage);
     }
 
     @Override

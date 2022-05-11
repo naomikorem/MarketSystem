@@ -17,6 +17,11 @@ public class SimplePredicate extends AbstarctPredicate {
     private ItemPredicateCallback ipc;
     private BasketPredicateCallback bpc;
 
+    public SimplePredicate(ItemPredicateCallback ipc, BasketPredicateCallback bpc) {
+        this.ipc = ipc;
+        this.bpc = bpc;
+    }
+
     public SimplePredicate(int itemId) {
         this.ipc = (i) -> i.getId() == itemId;
         this.bpc = (b) -> true;
@@ -30,6 +35,11 @@ public class SimplePredicate extends AbstarctPredicate {
     public SimplePredicate(BasketPredicateCallback bpc) {
         this.ipc = (i) -> true;
         this.bpc = bpc;
+    }
+
+    public SimplePredicate() {
+        this.ipc = (i) -> true;
+        this.bpc = (b) -> true;
     }
 
 
