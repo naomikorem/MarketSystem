@@ -41,5 +41,4 @@ public abstract class CompositePredicate extends AbstarctPredicate {
         }
         return output;
     }
-
 }

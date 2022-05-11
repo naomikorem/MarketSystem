@@ -3,7 +3,6 @@ package DomainLayer.Stores.DiscountPolicy.Predicates;
 import java.util.List;
 
 public class OrCompositePredicate extends CompositePredicate {
-
     public OrCompositePredicate() {
         super();
     }

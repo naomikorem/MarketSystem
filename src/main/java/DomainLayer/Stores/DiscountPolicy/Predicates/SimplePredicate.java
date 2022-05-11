@@ -42,7 +42,6 @@ public class SimplePredicate extends AbstarctPredicate {
         this.bpc = (b) -> true;
     }
 
-
     @Override
     public boolean canApply(Item item, ShoppingBasket shoppingBasket) {
         return ipc.checkItem(item) && bpc.checkBasket(shoppingBasket);
