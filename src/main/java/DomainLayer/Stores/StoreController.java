@@ -339,7 +339,7 @@ public class StoreController {
         }
         s.removeDiscount(discountId);
     }
-
+  
     public void addPredicateToDiscount(User owner, Store s, int discountId, PredicateEnum type, SimplePredicate sp) {
         AbstractDiscountPolicy adp = s.getDiscount(discountId);
         if (adp == null) {
