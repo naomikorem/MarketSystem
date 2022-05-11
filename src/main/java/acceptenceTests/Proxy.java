@@ -407,6 +407,14 @@ public class Proxy extends Bridge {
     }
 
     @Override
+    public Response<Boolean> removeDiscount(int storeId, int discountId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.removeDiscount(storeId, discountId);
+    }
+
+    @Override
     public Response<Item> removeItemFromStore(int storeId, int itemId, int amount) {
         if (this.real == null) {
             return null;

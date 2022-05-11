@@ -325,10 +325,31 @@ public class Store {
     }
 
     public AbstractDiscountPolicy getDiscount(int discountId) {
-        return discountPolicy.getDiscount(discountId);
+        synchronized (discountLock) {
+            return discountPolicy.getDiscount(discountId);
+        }
+    }
+
+    public void removeDiscount(int discountId) {
+        boolean res = false;
+        synchronized (discountLock) {
+            if (discountPolicy.getId() == discountId) {
+                this.discountPolicy = null;
+                return;
+            }
+            res = discountPolicy.removeDiscount(discountId);
+        }
+        if (!res) {
+            throw new IllegalArgumentException(String.format("There is no discount in store %s with id %s", getStoreId(), discountId));
+        }
     }
 
     public double applyDiscount(ShoppingBasket sb) {
-        return this.discountPolicy.applyDiscount(sb);
+        synchronized (discountLock) {
+            if (this.discountPolicy == null) {
+                return sb.calculatePrice();
+            }
+            return this.discountPolicy.applyDiscount(sb);
+        }
     }
 }

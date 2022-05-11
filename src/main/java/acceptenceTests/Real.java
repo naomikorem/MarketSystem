@@ -280,6 +280,11 @@ public class Real extends Bridge {
     }
 
     @Override
+    public Response<Boolean> removeDiscount(int storeId, int discountId) {
+        return this.adaptee.removeDiscount(storeId, discountId);
+    }
+
+    @Override
     public Response<Item> removeItemFromStore(int storeId, int itemId, int amount) {
         return adaptee.removeItemFromStore(storeId, itemId, amount);
     }

@@ -17,6 +17,7 @@ public class StoreDiscountTest extends AbstractTest {
     private Item i1;
     private Item i2;
     private Item i3;
+    private Response<AbstractDiscountPolicy> r1, r2;
 
     public StoreDiscountTest() {
         super();
@@ -185,5 +186,57 @@ public class StoreDiscountTest extends AbstractTest {
         assertEquals(priceRes.getObject(), (i1.getPrice() + i3.getPrice()) * 0.1 + i2.getPrice(), 0.00000001);
     }
 
+    @Test
+    public void addDiscountSynchronizedTest() {
+        Thread t1 = new Thread(() -> {
+            r1 = bridge.addDiscount(s.getStoreId(), 0.4);
+        });
+        Thread t2 = new Thread(() -> {
+            r2 = bridge.addDiscount(s.getStoreId(), 0.4);
+        });
+        t1.start();
+        t2.start();
+        try {
+            t1.join();
+            t2.join();
+            assertFalse(r1.hadError() || r2.hadError()); //not both failed
 
+            assertFalse(bridge.addItemToCart(s.getStoreId(), i1.getId(), 1).hadError());
+            Response<Double> priceRes = bridge.getCartPrice();
+            assertFalse(priceRes.hadError());
+            assertEquals(priceRes.getObject(), i1.getPrice() * 0.2, 0.00000001);
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void addPredicateSynchronizedTest() {
+        assertFalse(bridge.addItemToCart(s.getStoreId(), i1.getId(), 1).hadError());
+        assertFalse(bridge.addItemToCart(s.getStoreId(), i3.getId(), 1).hadError());
+        for (int i = 0; i < 10; i ++) {
+            Response<AbstractDiscountPolicy> res = bridge.addDiscount(s.getStoreId(), 0.4);
+            assertFalse(res.hadError());
+            Thread t1 = new Thread(() -> {
+                assertFalse(bridge.addItemPredicateToDiscount(s.getStoreId(), res.getObject().getId(), "AND", 1).hadError());
+            });
+            Thread t2 = new Thread(() -> {
+                assertFalse(bridge.addCategoryPredicateToDiscount(s.getStoreId(), res.getObject().getId(), "AND", "Food").hadError());
+            });
+            t1.start();
+            t2.start();
+            try {
+                t1.join();
+                t2.join();
+
+                Response<Double> priceRes = bridge.getCartPrice();
+                assertFalse(priceRes.hadError());
+                assertEquals(priceRes.getObject(), i1.getPrice() * 0.6 + i3.getPrice(), 0.00000001);
+
+                bridge.removeDiscount(s.getStoreId(), res.getObject().getId());
+            } catch (Exception e) {
+                fail();
+            }
+        }
+    }
 }

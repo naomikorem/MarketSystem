@@ -37,6 +37,7 @@ public class StoreController {
 
     public void clearAll() {
         stores = new HashMap<>();
+        Item.NEXT_ITEM_ID = 1;
     }
 
     private synchronized int getNewStoreId() {
@@ -329,6 +330,14 @@ public class StoreController {
         SimpleDiscountPolicy sdp = createNewDiscount(owner, s, percentage);
         s.addExclusiveDiscount(sdp);
         return sdp;
+    }
+
+    public void removeDiscount(User owner, int storeId, int discountId) {
+        Store s = getStoreAndThrow(storeId);
+        if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
+            throw new IllegalArgumentException("This user cannot see the managers");
+        }
+        s.removeDiscount(discountId);
     }
 
     public void addPredicateToDiscount(User owner, Store s, int discountId, PredicateEnum type, SimplePredicate sp) {
