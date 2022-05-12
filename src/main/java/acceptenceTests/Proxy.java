@@ -137,14 +137,6 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<Boolean> logout() {
-        if (this.real != null) {
-            return real.logout();
-        }
-        return null;
-    }
-
-    @Override
     public Response<Collection<Store>> getStores() {
         if (this.real == null) {
             return null;
@@ -158,6 +150,14 @@ public class Proxy extends Bridge {
             return null;
         }
         return real.getStoreInformation(storeID);
+    }
+
+    @Override
+    public Response<Map<Item, Integer>> getItems(int storeId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getItems(storeId);
     }
 
     @Override
@@ -185,6 +185,22 @@ public class Proxy extends Bridge {
     }
 
     @Override
+    public Response<Item> addItemToCart(int storeId, int itemId, int amount) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.addItemToCart(storeId, itemId, amount);
+    }
+
+    @Override
+    public Response<Boolean> removeItemFromCart(int storeId, Item item, int amount) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.removeItemFromCart(storeId, item, amount);
+    }
+
+    @Override
     public Response<List<Item>> getShoppingCartItems() {
         if (this.real == null) {
             return null;
@@ -193,7 +209,23 @@ public class Proxy extends Bridge {
     }
 
     @Override
+    public Response<List<ShoppingBasket>> getCartBaskets() {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getCartBaskets();
+    }
+
+    @Override
     public Response<List<Item>> updateItemInCart(int storeId, int itemId, int amount) {
+        return null;
+    }
+
+    @Override
+    public Response<Boolean> logout() {
+        if (this.real != null) {
+            return real.logout();
+        }
         return null;
     }
 
@@ -203,6 +235,32 @@ public class Proxy extends Bridge {
             return null;
         }
         return real.addNewStore(storeName);
+    }
+
+    @Override
+    public Response<Item> addItemToStore(int storeId, String name, Category category, double price, int amount) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.addItemToStore(storeId, name, category, price, amount);
+    }
+
+    @Override
+    public Response<Boolean> updateStorePolicy(int storeId) {
+        return null;
+    }
+
+    @Override
+    public Response<Boolean> updateDiscountPolicy(int storeId) {
+        return null;
+    }
+
+    @Override
+    public Response<Boolean> addOwner(String owner, int storeId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.addOwner(owner, storeId);
     }
 
     @Override
@@ -228,14 +286,6 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<Boolean> addOwner(String owner, int storeId) {
-        if (this.real == null) {
-            return null;
-        }
-        return real.addOwner(owner, storeId);
-    }
-
-    @Override
     public Response<Boolean> removeOwner(String toRemove, int storeId) {
         if (this.real == null) {
             return null;
@@ -252,11 +302,51 @@ public class Proxy extends Bridge {
     }
 
     @Override
+    public Response<Item> removeItemFromStore(int storeId, int itemId, int amount) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.removeItemFromStore(storeId, itemId, amount);
+    }
+
+    @Override
+    public Response<History> getPurchaseHistory() {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getPurchaseHistory();
+    }
+
+    @Override
+    public Response<History> getPurchaseHistory(String username) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getPurchaseHistory(username);
+    }
+
+    @Override
+    public Response<History> getStoreHistory(int store_id) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getStoreHistory(store_id);
+    }
+
+    @Override
     public Response<List<INotification>> getUserNotifications() {
         if (this.real == null) {
             return null;
         }
         return real.getUserNotifications();
+    }
+
+    @Override
+    public Response<List<INotification>> getUserRealTimeNotifications() {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getUserRealTimeNotifications();
     }
 
     @Override
@@ -292,88 +382,6 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<Item> addItemToStore(int storeId, String name, Category category, double price, int amount) {
-        if (this.real == null) {
-            return null;
-        }
-        return real.addItemToStore(storeId, name, category, price, amount);
-    }
-
-    @Override
-    public Response<History> getPurchaseHistory() {
-        if (this.real == null) {
-            return null;
-        }
-        return real.getPurchaseHistory();
-    }
-
-    @Override
-    public Response<History> getPurchaseHistory(String username) {
-        if (this.real == null) {
-            return null;
-        }
-        return real.getPurchaseHistory(username);
-    }
-
-    @Override
-    public Response<History> getStoreHistory(int store_id) {
-        if (this.real == null) {
-            return null;
-        }
-        return real.getStoreHistory(store_id);
-    }
-
-    @Override
-    public Response<Boolean> updateStorePolicy(int storeId) {
-        return null;
-    }
-
-    @Override
-    public Response<Boolean> updateDiscountPolicy(int storeId) {
-        return null;
-    }
-
-    @Override
-    public Response<Item> addItemToCart(int storeId, int itemId, int amount) {
-        if (this.real == null) {
-            return null;
-        }
-        return real.addItemToCart(storeId, itemId, amount);
-    }
-
-    @Override
-    public Response<Boolean> removeItemFromCart(int storeId, Item item, int amount) {
-        if (this.real == null) {
-            return null;
-        }
-        return real.removeItemFromCart(storeId, item, amount);
-    }
-
-    @Override
-    public Response<List<ShoppingBasket>> getCartBaskets() {
-        if (this.real == null) {
-            return null;
-        }
-        return real.getCartBaskets();
-    }
-
-    @Override
-    public Response<Item> removeItemFromStore(int storeId, int itemId, int amount) {
-        if (this.real == null) {
-            return null;
-        }
-        return real.removeItemFromStore(storeId, itemId, amount);
-    }
-
-    @Override
-    public Response<Map<Item, Integer>> getItems(int storeId) {
-        if (this.real == null) {
-            return null;
-        }
-        return real.getItems(storeId);
-    }
-
-    @Override
     public Response<Boolean> hasAdmin() {
         if (this.real == null) {
             return null;
@@ -396,5 +404,4 @@ public class Proxy extends Bridge {
         }
         return real.deleteAdmin(name);
     }
-
 }

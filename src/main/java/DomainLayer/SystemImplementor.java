@@ -4,6 +4,8 @@ import DomainLayer.Stores.*;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.MarketManagementFacade;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
+import DomainLayer.SystemManagement.NotificationManager.Notification;
+import DomainLayer.SystemManagement.NotificationManager.NotificationController;
 import DomainLayer.Users.GuestState;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
@@ -17,6 +19,7 @@ public class SystemImplementor implements SystemInterface {
     private StoreFacade storeFacade;
     private UserFacade userFacade;
     private MarketManagementFacade marketManagementFacade;
+    private NotificationController notificationController;
     private User user;
 
     //Add catch to every function here.
@@ -25,6 +28,7 @@ public class SystemImplementor implements SystemInterface {
         this.userFacade = new UserFacade();
         this.storeFacade = new StoreFacade();
         this.marketManagementFacade = MarketManagementFacade.getInstance();
+        this.notificationController = NotificationController.getInstance();
     }
 
     @Override
@@ -72,8 +76,10 @@ public class SystemImplementor implements SystemInterface {
             return new Response<>("You have to log out before attempting to log in to a user.");
         }
         Response<User> r = userFacade.login(name, password);
+
         if (!r.hadError()) {
             this.user.setState(r.getObject().getState());
+            this.marketManagementFacade.attachObserver(r.getObject());
         }
         return r;
     }
@@ -83,9 +89,11 @@ public class SystemImplementor implements SystemInterface {
         if (this.user == null || !this.user.isSubscribed()) {
             return new Response<>("You have to be logged in to perform this action.");
         }
+        User current = this.user;
         Response<Boolean> res = userFacade.logout(user.getName());
         if (res.getObject()) {
             this.user = new User(new GuestState());
+            this.marketManagementFacade.detachObserver(current);
         }
         return res;
     }
@@ -195,18 +203,24 @@ public class SystemImplementor implements SystemInterface {
             return new Response<>(response.getErrorMessage());
         }
         Store s = response.getObject();
-        for (String manager : s.getManagers()) {
-            Response<Boolean> msgResponse = marketManagementFacade.addNotification(manager, String.format("The store %s that is managed by you was shut down", s.getStoreId()));
-            if (msgResponse.hadError() || !msgResponse.getObject()) {
-                return msgResponse;
-            }
+        Response<Boolean> notify_managers_response = marketManagementFacade.notifyUsers(s.getManagers(), String.format("The store %s that is managed by you was shut down", s.getStoreId()));
+        if (notify_managers_response.hadError() || !notify_managers_response.getObject()) {
+            return notify_managers_response;
         }
-        for (String manager : s.getOwners()) {
+        Response<Boolean> notify_owners_response = marketManagementFacade.notifyUsers(s.getOwners(), String.format("The store %s that is owned by you was shut down", s.getStoreId()));
+        if (notify_owners_response.hadError() || !notify_owners_response.getObject()) {
+            return notify_owners_response;
+        }
+        /*for (String manager : s.getManagers()) {
+            Response<Boolean> msgResponse = marketManagementFacade.addNotification(manager, );
+
+        }*/
+        /*for (String manager : s.getOwners()) {
             Response<Boolean> msgResponse = marketManagementFacade.addNotification(manager, String.format("The store %s that is owned by you was shut down", s.getStoreId()));
             if (msgResponse.hadError() || !msgResponse.getObject()) {
                 return msgResponse;
             }
-        }
+        }*/
         return new Response<>(true);
     }
 
@@ -226,6 +240,19 @@ public class SystemImplementor implements SystemInterface {
         List<String> toDelete = new ArrayList<>(s.getObject().getManagers());
         toDelete.addAll(s.getObject().getOwners());
         toDelete.remove(user.getName());
+
+        Response<Boolean> msgResponse = marketManagementFacade.notifyUsers(toDelete, String.format("The store %s that is managed by you was shut down permanently", storeId));
+        if (msgResponse.hadError() || !msgResponse.getObject()) {
+            return msgResponse;
+        }
+        /*for(String user_to_delete : toDelete)
+        {
+            Response<Boolean> msgResponse = marketManagementFacade.addNotification(user_to_delete, String.format("The store %s that is managed by you was shut down permanently", storeId));
+            if (msgResponse.hadError() || !msgResponse.getObject()) {
+                return msgResponse;
+            }
+        }*/
+
         for (String toRemove : toDelete) {
             Response<Boolean> r2 = userFacade.removeUser(user.getName(), toRemove);
             if (r2.hadError()) {
@@ -248,7 +275,9 @@ public class SystemImplementor implements SystemInterface {
         if (r2.hadError() || !r2.getObject()) {
             return r2;
         }
-        return marketManagementFacade.addNotification(toRemove, String.format("You were removed as an owner of store %s", storeId));
+        List<String> user_to_notify_remove = new LinkedList<>();
+        user_to_notify_remove.add(toRemove);
+        return marketManagementFacade.notifyUsers(user_to_notify_remove, String.format("You were removed as an owner of store %s", storeId));
     }
 
     @Override
@@ -264,7 +293,9 @@ public class SystemImplementor implements SystemInterface {
         if (r2.hadError() || !r2.getObject()) {
             return r2;
         }
-        return marketManagementFacade.addNotification(toRemove, String.format("You were removed as a manager of store %s", storeId));
+        List<String> user_to_notify_remove = new LinkedList<>();
+        user_to_notify_remove.add(toRemove);
+        return marketManagementFacade.notifyUsers(user_to_notify_remove, String.format("You were removed as a manager of store %s", storeId));
     }
 
     @Override
@@ -546,6 +577,15 @@ public class SystemImplementor implements SystemInterface {
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
+    }
+
+    @Override
+    public Response<List<INotification>> getUserRealTimeNotifications()
+    {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
+        }
+        return this.marketManagementFacade.getUserRealTimeNotifications(user.getName());
     }
 
 

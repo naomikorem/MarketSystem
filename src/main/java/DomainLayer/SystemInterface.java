@@ -108,4 +108,6 @@ public interface SystemInterface {
 
 
     public Response<Boolean> removeItemFromCart(int storeId, Item item, int amount);
+
+    public Response<List<INotification>> getUserRealTimeNotifications();
 }

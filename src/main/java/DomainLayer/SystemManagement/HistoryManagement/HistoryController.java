@@ -1,6 +1,7 @@
 package DomainLayer.SystemManagement.HistoryManagement;
 
 import DomainLayer.Users.ShoppingBasket;
+import Utility.LogUtility;
 
 import java.util.Date;
 import java.util.List;
@@ -45,6 +46,8 @@ public class HistoryController
             {
                 this.users_history.get(username).addToHistory(basket.getItemsAndAmounts(), basket.getStoreId(), username, purchase_date);
             }
+
+            LogUtility.info("Added history to user's " + username + " personal purchase history");
         }
     }
 
@@ -67,6 +70,7 @@ public class HistoryController
                 }
 
                 this.store_history.get(store_id).addToHistory(basket.getItemsAndAmounts(), store_id, buying_username, purchase_date);
+                LogUtility.info("Added history to store " + store_id + " history by " + buying_username);
             }
         }
     }

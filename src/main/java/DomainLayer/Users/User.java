@@ -1,12 +1,14 @@
 package DomainLayer.Users;
 
+import DomainLayer.Observer;
 import DomainLayer.Stores.Item;
+import DomainLayer.SystemManagement.NotificationManager.INotification;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-public class User {
+public class User implements Observer {
     private UserState state;
     private ShoppingCart shoppingCart;
 
@@ -17,6 +19,13 @@ public class User {
 
     public String getName() {
         return state.getName();
+    }
+
+    @Override
+    public List<INotification> updateNotifications()
+    {
+        // TODO: change implementation
+        return null;
     }
 
     public String getEmail() {
