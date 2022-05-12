@@ -41,6 +41,10 @@ public class ShoppingBasket {
         return items.containsKey(item);
     }
 
+    public boolean hasItem(int itemId) {
+        return items.keySet().stream().anyMatch(i -> i.getId() == itemId);
+    }
+
     public int amountFromItem(Item item) {
         return items.getOrDefault(item, 0);
     }

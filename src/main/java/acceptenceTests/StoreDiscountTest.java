@@ -107,7 +107,7 @@ public class StoreDiscountTest extends AbstractTest {
     public void testOrDiscount() {
         Response<AbstractDiscountPolicy> disRes = bridge.addDiscount(s.getStoreId(), 0.6);
         assertFalse(disRes.hadError());
-        assertFalse(bridge.addCategoryPredicateToDiscount(s.getStoreId(), disRes.getObject().getId(), "AND", "Food").hadError());
+        assertFalse(bridge.addCategoryPredicateToDiscount(s.getStoreId(), disRes.getObject().getId(), "OR", "Food").hadError());
 
         assertFalse(bridge.addItemToCart(s.getStoreId(), i1.getId(), 1).hadError());
         assertFalse(bridge.addItemToCart(s.getStoreId(), i2.getId(), 1).hadError());

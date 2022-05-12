@@ -2,6 +2,10 @@ package DomainLayer;
 
 import DomainLayer.Stores.*;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
+import DomainLayer.Stores.Predicates.CompositePredicate;
+import DomainLayer.Stores.Predicates.SimplePredicate;
+import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
+import DomainLayer.Stores.PurchasePolicy.SimplePurchasePolicy;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
@@ -261,9 +265,26 @@ public Response<Map<Item, Integer>> getItems(int storeId) {
         }
     }
 
+    public Response<AbstractPurchasePolicy> addPolicy(User u, int storeId) {
+        try {
+            return new Response<>(storeController.addPolicy(u, storeId));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
     public Response<Boolean> removeDiscount(User u, int storeId, int discountId) {
         try {
             storeController.removeDiscount(u, storeId, discountId);
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Boolean> removePolicy(User u, int storeId, int policyId) {
+        try {
+            storeController.removePolicy(u, storeId, policyId);
             return new Response<>(true);
         } catch (Exception e) {
             return new Response<>(e.getMessage());
@@ -281,6 +302,24 @@ public Response<Map<Item, Integer>> getItems(int storeId) {
     public Response<Boolean> addItemPredicateToDiscount(User owner, int storeId, int discountId, String type, int itemId) {
         try {
             storeController.addItemPredicateToDiscount(owner, storeId, discountId, type, itemId);
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Boolean> addItemPredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, int hour) {
+        try {
+            storeController.addItemPredicateToPolicy(owner, storeId, policyId, type, itemId,hour);
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, Calendar date) {
+        try {
+            storeController.addItemNotAllowedInDatePredicateToPolicy(owner, storeId, policyId, type, itemId,date);
             return new Response<>(true);
         } catch (Exception e) {
             return new Response<>(e.getMessage());
@@ -309,6 +348,14 @@ public Response<Map<Item, Integer>> getItems(int storeId) {
     public Response<Double> getShoppingBasketPrice(ShoppingBasket sb) {
         try {
             return new Response<>(storeController.getShoppingBasketPrice(sb));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Boolean> getShoppingBasketPurchesPolicy(ShoppingBasket sb) {
+        try {
+            return new Response<>(storeController.getShoppingBasketPolicy(sb));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }

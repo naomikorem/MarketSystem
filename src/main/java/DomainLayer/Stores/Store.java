@@ -4,6 +4,9 @@ import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.AddDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.CompositeDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.MaxDiscountPolicy;
+import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
+import DomainLayer.Stores.PurchasePolicy.AddPurchasePolicy;
+import DomainLayer.Stores.PurchasePolicy.CompositePurchasePolicy;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 import Exceptions.LogException;
@@ -25,8 +28,10 @@ public class Store {
     private Map<Item, Integer> items;
     private final Lock lock;
     private final Lock discountLock;
+    private final Lock purchaseLock;
     private boolean permanentlyClosed;
     private CompositeDiscountPolicy discountPolicy;
+    private CompositePurchasePolicy purchasePolicy;
 
     public Store(User founder, String store_name, int id) {
         this.founder = founder.getName();
@@ -38,6 +43,7 @@ public class Store {
         this.items = new HashMap<>();
         this.lock = new ReentrantLock();
         this.discountLock = new ReentrantLock();
+        this.purchaseLock = new ReentrantLock();
         owners.put(founder, null);
         founder.addOwnedStore(getStoreId());
         setName(store_name);
@@ -310,6 +316,20 @@ public class Store {
         }
     }
 
+    public void addPolicy(AbstractPurchasePolicy app) {
+        synchronized (purchaseLock) {
+            if (this.purchasePolicy == null) {
+                this.purchasePolicy = new AddPurchasePolicy();
+                this.purchasePolicy.addPolicy(app);
+                return;
+            }
+            AddPurchasePolicy ap = new AddPurchasePolicy();
+            ap.addPolicy(this.purchasePolicy);
+            ap.addPolicy(app);
+            this.purchasePolicy = ap;
+        }
+    }
+
     public void addExclusiveDiscount(AbstractDiscountPolicy adp) {
         synchronized (discountLock) {
             if (this.discountPolicy == null) {
@@ -330,6 +350,12 @@ public class Store {
         }
     }
 
+    public AbstractPurchasePolicy getPolicy(int purchaseId) {
+        synchronized (purchaseLock) {
+            return purchasePolicy.getPolicies(purchaseId);
+        }
+    }
+
     public void removeDiscount(int discountId) {
         boolean res = false;
         synchronized (discountLock) {
@@ -344,12 +370,35 @@ public class Store {
         }
     }
 
+    public void removePolicy(int purchaseId) {
+        boolean res = false;
+        synchronized (purchaseLock) {
+            if (purchasePolicy.getId() == purchaseId) {
+                this.purchasePolicy = null;
+                return;
+            }
+            res = purchasePolicy.removePolicy(purchaseId);
+        }
+        if (!res) {
+            throw new IllegalArgumentException(String.format("There is no policy in store %s with id %s", getStoreId(), purchaseId));
+        }
+    }
+
     public double applyDiscount(ShoppingBasket sb) {
         synchronized (discountLock) {
             if (this.discountPolicy == null) {
                 return sb.calculatePrice();
             }
             return this.discountPolicy.applyDiscount(sb);
+        }
+    }
+
+    public boolean applyPolicy(ShoppingBasket sb) {
+        synchronized (purchaseLock) {
+            if (this.purchasePolicy == null) {
+                return true;
+            }
+            return this.purchasePolicy.applyPolicy(sb);
         }
     }
 }

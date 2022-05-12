@@ -5,6 +5,7 @@ import DomainLayer.Stores.Category;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
+import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 
@@ -12,10 +13,7 @@ import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Proxy extends Bridge {
     private Bridge real;
@@ -367,6 +365,38 @@ public class Proxy extends Bridge {
     }
 
     @Override
+    public Response<AbstractPurchasePolicy> addPolicy (int storeId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.addPolicy(storeId);
+    }
+
+    @Override
+    public Response<Boolean> removePolicy(int storeId, int policyId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.removePolicy(storeId,policyId);
+    }
+
+    @Override
+    public Response<Boolean> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.addItemPredicateToPolicy(storeId,policyId,type,itemId,hour);
+    }
+
+    @Override
+    public Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.addItemNotAllowedInDatePredicateToPolicy(storeId,policyId,type,itemId,date);
+    }
+
+    @Override
     public Response<Boolean> addItemPredicateToDiscount(int storeId, int discountId, String type, int itemId) {
         if (this.real == null) {
             return null;
@@ -388,6 +418,13 @@ public class Proxy extends Bridge {
             return null;
         }
         return real.getCartPrice();
+    }
+
+    public Response<Boolean> getIsLegalToPurchase(int storeId) {
+        if(this.real == null) {
+            return null;
+        }
+        return real.getIsLegalToPurchase(storeId);
     }
 
     @Override

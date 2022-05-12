@@ -2,6 +2,7 @@ package DomainLayer;
 
 import DomainLayer.Stores.*;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
+import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.MarketManagementFacade;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
@@ -658,6 +659,14 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.addDiscount(user, storeId, percentage);
     }
 
+
+    public Response<AbstractPurchasePolicy> addPolicy(int storeId) {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
+        }
+        return storeFacade.addPolicy(user, storeId);
+    }
+
     public Response<AbstractDiscountPolicy> addExclusiveDiscount(int storeId, double percentage) {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Only logged in users can perform this action.");
@@ -670,6 +679,28 @@ public class SystemImplementor implements SystemInterface {
             return new Response<>("Only logged in users can perform this action.");
         }
         return storeFacade.addItemPredicateToDiscount(user, storeId, discountId, type, itemId);
+    }
+
+    public Response<Boolean> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour) {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
+        }
+        return storeFacade.addItemPredicateToPolicy(user, storeId, policyId, type, itemId, hour);
+    }
+
+    @Override
+    public Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date) {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
+        }
+        return storeFacade.addItemNotAllowedInDatePredicateToPolicy(user, storeId, policyId, type, itemId, date);
+    }
+
+    public Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, Calendar date) {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
+        }
+        return storeFacade.addItemNotAllowedInDatePredicateToPolicy(user, storeId, policyId, type, itemId, date);
     }
 
     public Response<Boolean> addCategoryPredicateToDiscount(int storeId, int discountId, String type, String categoryName) {
@@ -701,6 +732,23 @@ public class SystemImplementor implements SystemInterface {
         return new Response<>(total);
     }
 
+    public Response<Boolean> getIsLegalToPurchase(int storeId) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        for (ShoppingBasket sb : user.getCartBaskets()) {
+            if(sb.getStoreId() == storeId) {
+                Response<Boolean> response = storeFacade.getShoppingBasketPurchesPolicy(sb);
+                if (response.hadError()) {
+                    return response;
+                }
+                if (response.getObject() == false)
+                    return new Response<>(false);
+            }
+        }
+        return new Response<>(true);
+    }
+
     public Response<Boolean> removeDiscount(int storeId, int discountId) {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
@@ -708,6 +756,12 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.removeDiscount(user, storeId, discountId);
     }
 
-    //public Response<Boolean> addAndPredicateToDiscount()
+    public Response<Boolean> removePolicy(int storeId, int policyId) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.removePolicy(user, storeId, policyId);
+    }
+
 
 }

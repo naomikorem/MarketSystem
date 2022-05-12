@@ -5,6 +5,7 @@ import DomainLayer.Stores.Category;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
+import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemImplementor;
 import DomainLayer.SystemInterface;
@@ -14,10 +15,7 @@ import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Real extends Bridge {
     private SystemInterface adaptee;
@@ -255,6 +253,25 @@ public class Real extends Bridge {
     }
 
     @Override
+    public Response<AbstractPurchasePolicy> addPolicy(int storeId) {
+        return this.adaptee.addPolicy(storeId);
+    }
+
+    @Override
+    public Response<Boolean> removePolicy(int storeId, int policyId) {
+        return this.adaptee.removePolicy(storeId, policyId);
+    }
+
+    @Override
+    public Response<Boolean> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour) {
+        return this.adaptee.addItemPredicateToPolicy(storeId, policyId, type,itemId,hour);
+    }
+
+    public Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date) {
+        return this.adaptee.addItemNotAllowedInDatePredicateToPolicy(storeId, policyId, type, itemId, date);
+    }
+
+    @Override
     public Response<Boolean> addItemPredicateToDiscount(int storeId, int discountId, String type, int itemId) {
         return this.adaptee.addItemPredicateToDiscount(storeId, discountId, type, itemId);
     }
@@ -267,6 +284,10 @@ public class Real extends Bridge {
     @Override
     public Response<Double> getCartPrice() {
         return this.adaptee.getCartPrice();
+    }
+
+    public Response<Boolean> getIsLegalToPurchase(int storeId) {
+        return adaptee.getIsLegalToPurchase(storeId);
     }
 
     @Override

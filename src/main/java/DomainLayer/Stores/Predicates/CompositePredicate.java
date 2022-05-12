@@ -1,6 +1,5 @@
-package DomainLayer.Stores.DiscountPolicy.Predicates;
+package DomainLayer.Stores.Predicates;
 
-import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.Item;
 import DomainLayer.Users.ShoppingBasket;
 
@@ -13,6 +12,7 @@ public abstract class CompositePredicate extends AbstarctPredicate {
         AND,
         OR,
         XOR,
+        COND
     }
 
     private List<AbstarctPredicate> preds;

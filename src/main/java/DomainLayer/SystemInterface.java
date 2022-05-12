@@ -4,16 +4,16 @@ import DomainLayer.Stores.Category;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
+import DomainLayer.Stores.Predicates.CompositePredicate;
+import DomainLayer.Stores.Predicates.SimplePredicate;
+import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public interface SystemInterface {
     public Response<Item> removeItemFromStore(int storeId, int itemId, int amount);
@@ -117,15 +117,25 @@ public interface SystemInterface {
 
     public Response<AbstractDiscountPolicy> addDiscount(int storeId, double percentage);
 
+    public Response<AbstractPurchasePolicy> addPolicy(int storeId);
+
     public Response<Boolean> addItemPredicateToDiscount(int storeId, int discountId, String type, int itemId);
+
+    public Response<Boolean> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour) ;
+
+    public Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date) ;
 
     public Response<Boolean> addCategoryPredicateToDiscount(int storeId, int discountId, String type, String categoryName);
 
     public Response<Double> getCartPrice();
+
+    public Response<Boolean> getIsLegalToPurchase(int storeId);
 
     public Response<Boolean> addBasketRequirementPredicateToDiscount(int storeId, int discountId, String type, double minPrice);
 
     public Response<AbstractDiscountPolicy> addExclusiveDiscount(int storeId, double percentage);
 
     public Response<Boolean> removeDiscount(int storeId, int discountId);
+
+    public Response<Boolean> removePolicy(int storeId, int policyId);
 }

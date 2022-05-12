@@ -5,6 +5,7 @@ import DomainLayer.Stores.Category;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
+import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 
@@ -12,10 +13,7 @@ import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public abstract class Bridge {
     //TODO: change return tipes.
@@ -135,9 +133,33 @@ public abstract class Bridge {
 
     public abstract Response<Double> getCartPrice();
 
+    public abstract Response<Boolean> getIsLegalToPurchase(int storeId);
+
     public abstract Response<Boolean> addBasketRequirementPredicateToDiscount(int storeId, int discountId, String type, double minPrice);
 
     public abstract Response<AbstractDiscountPolicy> addExclusiveDiscount(int storeId, double percentage);
 
     public abstract Response<Boolean> removeDiscount(int storeId, int discountId);
+
+    public abstract Response<AbstractPurchasePolicy> addPolicy(int storeId);
+
+   public abstract Response<Boolean> removePolicy(int storeId, int policyId);
+
+
+    public abstract Response<Boolean> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour);
+
+
+    public abstract Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date);
+
+/*
+    public abstract Response<Boolean> addCategoryPredicateToDiscount(int storeId, int discountId, String type, String categoryName);
+
+    public abstract Response<Double> getCartPrice();
+
+    public abstract Response<Boolean> addBasketRequirementPredicateToDiscount(int storeId, int discountId, String type, double minPrice);
+
+    public abstract Response<AbstractDiscountPolicy> addExclusiveDiscount(int storeId, double percentage);
+
+
+    */
 }

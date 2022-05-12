@@ -1,29 +1,26 @@
-package DomainLayer.Stores.DiscountPolicy;
+package DomainLayer.Stores.PurchasePolicy;
 
-import DomainLayer.Stores.Predicates.AbstarctPredicate;
-import DomainLayer.Stores.Predicates.AndCompositePredicate;
-import DomainLayer.Stores.Predicates.OrCompositePredicate;
-import DomainLayer.Stores.Predicates.XorCompositePredicate;
 import DomainLayer.Stores.Item;
+import DomainLayer.Stores.Predicates.*;
 import DomainLayer.Users.ShoppingBasket;
 
 import java.util.Map;
 
-public class SimpleDiscountPolicy extends AbstractDiscountPolicy {
-
-    private double percentage;
+public class SimplePurchasePolicy extends AbstractPurchasePolicy{
     private AbstarctPredicate abstarctPredicate;
 
-    public SimpleDiscountPolicy(double percentage, AbstarctPredicate abstarctPredicate) {
+    public SimplePurchasePolicy(AbstarctPredicate abstarctPredicate) {
         super();
-        this.percentage = percentage;
         this.abstarctPredicate = abstarctPredicate;
     }
 
+
     @Override
-    public double applyDiscount(ShoppingBasket sb, Map<Item, Double> discounts) {
-        sb.getItems().stream().filter(i -> abstarctPredicate == null || abstarctPredicate.canApply(i, sb)).forEach(i -> discounts.put(i, Math.min(discounts.getOrDefault(i, 0.0) + percentage, 1)));
-        return sb.calculatePrice(discounts);
+    public boolean applyPolicy(ShoppingBasket sb) {
+        if(abstarctPredicate == null){
+            return true;
+        }
+        return abstarctPredicate.canApply(sb) ;
     }
 
     @Override
@@ -49,13 +46,13 @@ public class SimpleDiscountPolicy extends AbstractDiscountPolicy {
     }
 
     @Override
-    public synchronized void addXorPredicate(AbstarctPredicate predicate) {
+    public synchronized void addCondPredicate(AbstarctPredicate predicate) {
         if(this.abstarctPredicate == null) {
             this.abstarctPredicate = predicate;
         }
-        XorCompositePredicate acp = new XorCompositePredicate();
-        acp.addPredicate(predicate);
-        acp.addPredicate(this.abstarctPredicate);
-        this.abstarctPredicate = acp;
+        CondCompositePredicate ccp = new CondCompositePredicate();
+        ccp.addPredicate(predicate);
+        ccp.addPredicate(this.abstarctPredicate);
+        this.abstarctPredicate = ccp;
     }
 }

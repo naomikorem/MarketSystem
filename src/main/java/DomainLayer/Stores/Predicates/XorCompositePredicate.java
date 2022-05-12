@@ -1,4 +1,4 @@
-package DomainLayer.Stores.DiscountPolicy.Predicates;
+package DomainLayer.Stores.Predicates;
 
         import java.util.List;
 

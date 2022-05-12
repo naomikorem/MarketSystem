@@ -1,9 +1,8 @@
 package DomainLayer.Stores.DiscountPolicy;
 
-import DomainLayer.Stores.DiscountPolicy.Predicates.AbstarctPredicate;
+import DomainLayer.Stores.Predicates.AbstarctPredicate;
 import DomainLayer.Stores.Item;
 import DomainLayer.Users.ShoppingBasket;
-import Exceptions.LogException;
 
 import java.util.HashMap;
 import java.util.List;
