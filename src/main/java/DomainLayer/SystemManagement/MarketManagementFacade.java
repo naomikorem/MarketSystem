@@ -111,7 +111,8 @@ public class MarketManagementFacade
                 return new Response<>("Purchase shopping cart cannot be empty");
             }
 
-            double price = PurchaseProcess.CalcPrice(baskets);
+            List<Double> basket_prices = baskets.stream().map(b -> storeController.getShoppingBasketPrice(b)).collect(Collectors.toList());
+            double price = basket_prices.stream().reduce(0.0, (subtotal, element) -> subtotal + element);
             List<Map.Entry<Item, Integer>> items_and_amounts = PurchaseProcess.getItemsAndAmounts(baskets);
 
             if(!this.services.supply(address, items_and_amounts, supply_service_name))

@@ -83,9 +83,6 @@ public abstract class Bridge {
     public abstract Response<Boolean> addAdmin(String name);
     public abstract Response<Boolean> deleteAdmin(String name);
 
-
-    public abstract Response<List<ShoppingBasket>> getCartBaskets();
-
     public abstract Response<AbstractDiscountPolicy> addDiscount(int storeId, double percentage);
 
     public abstract Response<Boolean> addItemPredicateToDiscount(int storeId, int discountId, String type, int itemId);

@@ -34,7 +34,7 @@ public class PurchaseProcess
      * @param baskets The baskets that the user bought
      * @return double represents the price
      */
-    public static double CalcPrice(List<ShoppingBasket> baskets)
+    /*public static double CalcPrice(List<ShoppingBasket> baskets)
     {
         double price = 0;
         for (ShoppingBasket basket : baskets)
@@ -44,7 +44,7 @@ public class PurchaseProcess
             // TODO: calculate discount percents
         }
         return price;
-    }
+    }*/
 
     /***
      * Return list of items and the amount that the user contains from each item in his shopping cart

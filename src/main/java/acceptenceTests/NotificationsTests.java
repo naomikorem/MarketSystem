@@ -209,7 +209,6 @@ public class NotificationsTests extends AbstractTest
     public void synchronizedNotificationTest() {
         for(int i = 1; i < 1000; i++)
         {
-            System.out.println("Current i: " + i);
             Thread t1 = new Thread(() -> {
                 Bridge bridge_user = new Real();
                 bridge_user.enter();

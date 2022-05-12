@@ -73,7 +73,7 @@ public class NotificationController implements Observable
         {
             synchronized (this.real_time_users_messages)
             {
-                if(!this.users_messages.containsKey(username) || !this.real_time_users_messages.containsKey(username))
+                if(!this.users_messages.containsKey(username) && !this.real_time_users_messages.containsKey(username))
                     throw new IllegalArgumentException("The user doesn't have notifications.");
 
                 this.users_messages.remove(username);
