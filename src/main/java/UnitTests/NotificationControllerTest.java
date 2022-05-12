@@ -3,10 +3,7 @@ package UnitTests;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.SystemManagement.NotificationManager.NotificationController;
 import acceptenceTests.AbstractTest;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +12,6 @@ import static org.junit.Assert.*;
 
 
 public class NotificationControllerTest extends AbstractTest {
-    //private final NotificationController notificationController;
 
     private final String username1;
     private final String username2;

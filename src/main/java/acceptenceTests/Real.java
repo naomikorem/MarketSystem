@@ -94,11 +94,6 @@ public class Real extends Bridge {
     }
 
     @Override
-    public Response<Boolean> logout() {
-        return adaptee.logout();
-    }
-
-    @Override
     public Response<Collection<Store>> getStores() {
         return adaptee.getAllStores();
     }
@@ -110,6 +105,11 @@ public class Real extends Bridge {
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
+    }
+
+    @Override
+    public Response<Map<Item, Integer>> getItems(int storeId) {
+        return adaptee.getItems(storeId);
     }
 
     @Override
@@ -130,8 +130,23 @@ public class Real extends Bridge {
     }
 
     @Override
+    public Response<Item> addItemToCart(int storeId, int itemId, int amount) {
+        return adaptee.addItemToCart(storeId, itemId, amount);
+    }
+
+    @Override
+    public Response<Boolean> removeItemFromCart(int storeId, Item item, int amount) {
+        return adaptee.removeItemFromCart(storeId, item, amount);
+    }
+
+    @Override
     public Response<List<Item>> getShoppingCartItems() {
         return adaptee.getShoppingCartItems();
+    }
+
+    @Override
+    public Response<List<ShoppingBasket>> getCartBaskets() {
+        return adaptee.getCartBaskets();
     }
 
     @Override
@@ -140,8 +155,33 @@ public class Real extends Bridge {
     }
 
     @Override
+    public Response<Boolean> logout() {
+        return adaptee.logout();
+    }
+
+    @Override
     public Response<Store> addNewStore(String name) {
         return adaptee.addNewStore(name);
+    }
+
+    @Override
+    public Response<Item> addItemToStore(int storeId, String name, Category category, double price, int amount) {
+        return adaptee.addItemToStore(storeId, name, category, price, amount);
+    }
+
+    @Override
+    public Response<Boolean> updateStorePolicy(int storeId) {
+        return null;
+    }
+
+    @Override
+    public Response<Boolean> updateDiscountPolicy(int storeId) {
+        return null;
+    }
+
+    @Override
+    public Response<Boolean> addOwner(String owner, int storeId) {
+        return adaptee.addOwner(owner, storeId);
     }
 
     @Override
@@ -152,18 +192,11 @@ public class Real extends Bridge {
     @Override
     public Response<Boolean> updateManagerPermissions(int storeId, String managerName, Byte newPermission) {
         return adaptee.setManagerPermission(managerName, storeId, newPermission);
-
     }
-
 
     @Override
     public Response<List<String>> getStoreManagers(int store) {
         return adaptee.getStoreManagers(store);
-    }
-
-    @Override
-    public Response<Boolean> addOwner(String owner, int storeId) {
-        return adaptee.addOwner(owner, storeId);
     }
 
     @Override
@@ -177,34 +210,8 @@ public class Real extends Bridge {
     }
 
     @Override
-    public Response<List<INotification>> getUserNotifications() {
-        return this.adaptee.getUserNotifications();
-    }
-
-    @Override
-    public Response<User> getUser(String userName) {
-        return this.adaptee.getUser(userName);
-    }
-
-    @Override
-    public Response<Boolean> removeManager(String toRemove, int storeId) {
-        return this.adaptee.removeManager(toRemove, storeId);
-    }
-
-    @Override
-    public Response<Boolean> permanentlyCloseStore(int storeId) {
-        return this.adaptee.permanentlyCloseStore(storeId);
-    }
-
-    @Override
-    public Response<List<String>> getStoreOwners(int store_id) {
-        return this.adaptee.getStoreOwners(store_id);
-    }
-
-    @Override
-
-    public Response<Item> addItemToStore(int storeId, String name, Category category, double price, int amount) {
-        return adaptee.addItemToStore(storeId, name, category, price, amount);
+    public Response<Item> removeItemFromStore(int storeId, int itemId, int amount) {
+        return adaptee.removeItemFromStore(storeId, itemId, amount);
     }
 
     @Override
@@ -223,28 +230,23 @@ public class Real extends Bridge {
     }
 
     @Override
-    public Response<Boolean> updateStorePolicy(int storeId) {
-        return null;
+    public Response<List<INotification>> getUserNotifications() {
+        return this.adaptee.getUserNotifications();
     }
 
     @Override
-    public Response<Boolean> updateDiscountPolicy(int storeId) {
-        return null;
+    public Response<List<INotification>> getUserRealTimeNotifications() {
+        return this.adaptee.getUserRealTimeNotifications();
     }
 
     @Override
-    public Response<Item> addItemToCart(int storeId, int itemId, int amount) {
-        return adaptee.addItemToCart(storeId, itemId, amount);
+    public Response<User> getUser(String userName) {
+        return this.adaptee.getUser(userName);
     }
 
     @Override
-    public Response<Boolean> removeItemFromCart(int storeId, Item item, int amount) {
-        return adaptee.removeItemFromCart(storeId, item, amount);
-    }
-
-    @Override
-    public Response<List<ShoppingBasket>> getCartBaskets() {
-        return adaptee.getCartBaskets();
+    public Response<Boolean> removeManager(String toRemove, int storeId) {
+        return this.adaptee.removeManager(toRemove, storeId);
     }
 
     @Override
@@ -306,13 +308,13 @@ public class Real extends Bridge {
     }
 
     @Override
-    public Response<Item> removeItemFromStore(int storeId, int itemId, int amount) {
-        return adaptee.removeItemFromStore(storeId, itemId, amount);
+    public Response<Boolean> permanentlyCloseStore(int storeId) {
+        return this.adaptee.permanentlyCloseStore(storeId);
     }
 
     @Override
-    public Response<Map<Item, Integer>> getItems(int storeId) {
-        return adaptee.getItems(storeId);
+    public Response<List<String>> getStoreOwners(int store_id) {
+        return this.adaptee.getStoreOwners(store_id);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package DomainLayer.SystemManagement;
 
+import DomainLayer.Observer;
 import DomainLayer.Response;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
@@ -27,6 +28,7 @@ public class MarketManagementFacade
     private final HistoryController historyController;
     private final NotificationController notificationController;
     private final StoreController storeController;
+
 
     private static class MarketManagementFacadeHolder
     {
@@ -136,6 +138,7 @@ public class MarketManagementFacade
             return new Response<>(true);
         }
         catch (Exception e) {
+           //throw new IllegalArgumentException(e.getMessage());
             return new Response<>(e.getMessage());
         }
     }
@@ -280,12 +283,45 @@ public class MarketManagementFacade
         }
     }
 
+    public Response<Boolean> attachObserver(Observer observer)
+    {
+        try
+        {
+            this.notificationController.attachObserver(observer);
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Boolean> detachObserver(Observer observer)
+    {
+        try
+        {
+            this.notificationController.detachObserver(observer);
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Boolean> notifyUsers(List<String> users_to_notify, String message)
+    {
+        try
+        {
+            this.notificationController.notifyUsers(users_to_notify, message);
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
     /***
      * Add notification to given user
      * @param username The given user
      * @param message The message of the notification
      */
-    public Response<Boolean> addNotification(String username, String message)
+    /*public Response<Boolean> addNotification(String username, String message)
     {
         try
         {
@@ -294,13 +330,13 @@ public class MarketManagementFacade
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
-    }
+    }*/
 
     /***
      * Remove all the notifications of given user
      * @param username The given user
      */
-    public Response<Boolean> removeUserNotifications(String username)
+    /*public Response<Boolean> removeUserNotifications(String username)
     {
         try
         {
@@ -309,7 +345,7 @@ public class MarketManagementFacade
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
-    }
+    }*/
 
     /***
      * Receive all the notifications of some user
@@ -321,6 +357,16 @@ public class MarketManagementFacade
         try
         {
             return new Response<>(this.notificationController.getUserNotifications(username));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<List<INotification>> getUserRealTimeNotifications(String username)
+    {
+        try
+        {
+            return new Response<>(this.notificationController.getUserRealTimeNotifications(username));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }

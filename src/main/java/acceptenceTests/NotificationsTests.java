@@ -7,18 +7,18 @@ import DomainLayer.Stores.Store;
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.HistoryManagement.HistoryController;
-import DomainLayer.SystemManagement.HistoryManagement.ItemHistory;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
-import DomainLayer.SystemManagement.NotificationManager.Notification;
 import DomainLayer.SystemManagement.NotificationManager.NotificationController;
 import DomainLayer.Users.User;
+import Utility.LogUtility;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
@@ -32,8 +32,6 @@ public class NotificationsTests extends AbstractTest
     private User user1, user2, user3;
     private Store store;
     private Response<Boolean> user_purchase_res, store1_owner_purchase_res;
-    private Response<List<INotification>> store1_owner_notification_res;
-    private Response<History> store1_history_res;
 
     public NotificationsTests()
     {
@@ -91,7 +89,7 @@ public class NotificationsTests extends AbstractTest
         this.bridge.addItemToCart(store2_id, item4_id, 2);
         this.bridge.purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
         this.bridge.logout();
-
+        Date timestamp = new Date();
         this.bridge.login(store1_owner_username, "password");
         Response<List<String>> owners_store_1_res = bridge.getStoreOwners(store1_id);
         assertFalse(owners_store_1_res.hadError());
@@ -107,6 +105,7 @@ public class NotificationsTests extends AbstractTest
         assertTrue(owners1.contains(store1_owner_username));
         assertTrue(owners2.contains(store2_owner_username));
 
+  //      assertTrue(checkRealTimeNotifications(1, timestamp, store1_owner_username));
         Response<List<INotification>> owner1_notification_res = bridge.getUserNotifications();
         assertFalse(owner1_notification_res.hadError());
         List<INotification> notification1 = owner1_notification_res.getObject();
@@ -119,6 +118,25 @@ public class NotificationsTests extends AbstractTest
         List<INotification> notification2 = owner2_notification_res.getObject();
         assertEquals(1, notification2.size());
         this.bridge.logout();
+    }
+
+    private boolean checkRealTimeNotifications(int expected_amount, Date timestamp, String username)
+    {
+        try
+        {
+            BufferedReader br = new BufferedReader(new FileReader(NotificationController.NOTIFICATION_FILE_NAME));
+
+            List<String> lines_to_user = br.lines().filter(s -> s.contains(" To: " + username)).collect(Collectors.toList());
+            if(lines_to_user.size() != expected_amount)
+            {
+                System.out.println("Expeced: " + expected_amount + " Real: " + lines_to_user.size());
+                return false;
+            }
+           /* DEAL WITH TIME*/
+        } catch (IOException e) {
+            LogUtility.error("Could not read from notification file");
+        }
+        return true;
     }
 
     @Test
@@ -189,8 +207,9 @@ public class NotificationsTests extends AbstractTest
 
     @Test
     public void synchronizedNotificationTest() {
-        for(int i = 1; i < 100; i++)
+        for(int i = 1; i < 1000; i++)
         {
+            System.out.println("Current i: " + i);
             Thread t1 = new Thread(() -> {
                 Bridge bridge_user = new Real();
                 bridge_user.enter();
@@ -214,15 +233,23 @@ public class NotificationsTests extends AbstractTest
             try {
                 t1.join();
                 t2.join();
+                if(this.user_purchase_res.hadError())
+                    System.out.println("User regular fail");
+                else if(this.store1_owner_purchase_res.hadError())
+                    System.out.println("Store 1 owner fail");
+
                 assertFalse(this.user_purchase_res.hadError() || this.store1_owner_purchase_res.hadError());
                 //check that the store 1 owner received notifications
                 this.bridge.login(this.store1_owner_username, "password");
-                this.store1_owner_notification_res = this.bridge.getUserNotifications(); // supposed to be one notification from regular user per round
-                this.store1_history_res = this.bridge.getStoreHistory(store1_id); // supposed to be 2 history items from user purchase
+                Response<List<INotification>> store1_owner_notification_res = this.bridge.getUserNotifications(); // supposed to be one notification from regular user per round
+                Response<List<INotification>> store1_owner_realtime_notification_res = this.bridge.getUserRealTimeNotifications(); // supposed to be one notification from regular user per round
+                Response<History> store1_history_res = this.bridge.getStoreHistory(store1_id); // supposed to be 2 history items from user purchase
                 this.bridge.logout();
 
-                assertFalse(store1_owner_notification_res.hadError());
-                assertEquals(1*i, store1_owner_notification_res.getObject().size());
+                //assertTrue(store1_owner_notification_res.hadError() || store1_owner_realtime_notification_res.hadError());
+                //assertFalse(store1_owner_notification_res.hadError() && store1_owner_realtime_notification_res.hadError());
+                assertTrue(checkAmountOfGoodListAndBadList(1*i, /*timestamp*/ new Date(), store1_owner_notification_res, store1_owner_realtime_notification_res));//
+
                 // check that the purchase history of user 1 added to store 1
                 assertFalse(store1_history_res.hadError());
                 assertEquals(2*i, store1_history_res.getObject().getHistoryItems().size());
@@ -243,5 +270,15 @@ public class NotificationsTests extends AbstractTest
                 fail(null);
             }
         }
+    }
+
+    private boolean checkAmountOfGoodListAndBadList(int expected, Date timestamp, Response<List<INotification>> response_notification, Response<List<INotification>> response_realtime_notification)
+    {
+        if(response_notification.hadError())
+            return response_realtime_notification.getObject().size() == expected;
+        else if(response_realtime_notification.hadError())
+            return response_notification.getObject().size() == expected;
+        else
+            return (response_notification.getObject().size() + response_realtime_notification.getObject().size()) == expected;
     }
 }

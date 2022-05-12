@@ -47,9 +47,7 @@ public interface SystemInterface {
 
 
     public Response<History> getPurchaseHistory();
-
     public Response<History> getPurchaseHistory(String username);
-
     public Response<User> getUser(String userName);
 
     public Response<History> getStoreHistory(int store_id);
@@ -93,7 +91,6 @@ public interface SystemInterface {
     public Response<Item> addItemToStore(int storeId, String name, Category category, double price, int amount);
 
     public Response<Boolean> deleteUser(String name);
-
     public Response<List<String>> getStoreManagers(int storeId);
 
     public Response<Permission> getManagersPermissions(int storeId, String managerName);
@@ -107,13 +104,14 @@ public interface SystemInterface {
     public Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating);
 
     public Response<Boolean> deleteAdmin(String name);
-
     public Response<Boolean> addAdmin(String name);
 
     public Response<Boolean> hasAdmin();
 
 
     public Response<Boolean> removeItemFromCart(int storeId, Item item, int amount);
+
+    public Response<List<INotification>> getUserRealTimeNotifications();
 
     public Response<AbstractDiscountPolicy> addDiscount(int storeId, double percentage);
 
