@@ -111,8 +111,7 @@ public class MarketManagementFacade
                 return new Response<>("Purchase shopping cart cannot be empty");
             }
 
-            List<Double> basket_prices = baskets.stream().map(b -> storeController.getShoppingBasketPrice(b)).collect(Collectors.toList());
-            double price = basket_prices.stream().reduce(0.0, (subtotal, element) -> subtotal + element);
+            double price = calculateShoppingCartPrice(baskets);
             List<Map.Entry<Item, Integer>> items_and_amounts = PurchaseProcess.getItemsAndAmounts(baskets);
 
             if(!this.services.supply(address, items_and_amounts, supply_service_name))
@@ -142,6 +141,17 @@ public class MarketManagementFacade
            //throw new IllegalArgumentException(e.getMessage());
             return new Response<>(e.getMessage());
         }
+    }
+
+    /***
+     * Calculate the price of the baskets in the user's shopping cart
+     * @param baskets The baskets that the user bought
+     * @return double represents the price
+     */
+    public double calculateShoppingCartPrice(List<ShoppingBasket> baskets)
+    {
+        List<Double> basket_prices = baskets.stream().map(b -> storeController.getShoppingBasketPrice(b)).collect(Collectors.toList());
+        return basket_prices.stream().reduce(0.0, (subtotal, element) -> subtotal + element);
     }
 
     /***

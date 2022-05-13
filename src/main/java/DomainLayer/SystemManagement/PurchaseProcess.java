@@ -29,22 +29,6 @@ public class PurchaseProcess
         HistoryController.getInstance().addToStoreHistory(username, baskets, purchase_date);
     }
 
-    /***
-     * Calculate the price of the baskets in the user's shopping cart
-     * @param baskets The baskets that the user bought
-     * @return double represents the price
-     */
-    /*public static double CalcPrice(List<ShoppingBasket> baskets)
-    {
-        double price = 0;
-        for (ShoppingBasket basket : baskets)
-        {
-            price += basket.calculatePrice();
-
-            // TODO: calculate discount percents
-        }
-        return price;
-    }*/
 
     /***
      * Return list of items and the amount that the user contains from each item in his shopping cart
