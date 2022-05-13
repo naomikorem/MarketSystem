@@ -1,25 +1,17 @@
 package acceptenceTests;
 
-import DomainLayer.Response;
 import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
-import DomainLayer.Stores.StoreController;
-import DomainLayer.Users.User;
 import DomainLayer.Users.UserController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.powermock.reflect.Whitebox;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class StoreSearchProducts extends AbstractTest {
 
@@ -27,8 +19,6 @@ public class StoreSearchProducts extends AbstractTest {
     private static Item i1;
     private static Item i2;
     private static Item i3;
-    private User user;
-    private static String storeName;
     private static boolean isInit = false;
 
     public StoreSearchProducts() {
@@ -40,9 +30,9 @@ public class StoreSearchProducts extends AbstractTest {
         if (!isInit) {
             isInit = true;
             bridge.enter();
-            this.user = bridge.register("user111@gmail.com", "user", "first","last","password").getObject();
+            bridge.register("user111@gmail.com", "user", "first", "last", "password").getObject();
             bridge.login("user", "password");
-            this.storeName = "MyStore";
+            String storeName = "MyStore";
             this.store = bridge.addNewStore(storeName).getObject();
             this.i1 = bridge.addItemToStore(store.getStoreId(), "Item1", Category.Food, 100, 9).getObject();
             this.i2 = bridge.addItemToStore(store.getStoreId(), "Item2", Category.Food, 100, 10).getObject();

@@ -22,7 +22,6 @@ public class PurchaseHistoryTests extends AbstractTest
     private Item item3, item4;
     private int item3_id, item4_id;
     private Set<Item> originals_items_store1_user1, originals_items_store2_user2;
-    private final Date date;
 
     public PurchaseHistoryTests()
     {
@@ -34,7 +33,6 @@ public class PurchaseHistoryTests extends AbstractTest
         this.admin_username = "admin";
         this.store1_id = 1;
         this.store2_id = 2;
-        this.date = new Date();
     }
 
     @Before

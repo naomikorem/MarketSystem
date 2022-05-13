@@ -2,12 +2,10 @@ package acceptenceTests;
 
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.StoreController;
-import DomainLayer.SystemManagement.HistoryManagement.HistoryController;
 
 import DomainLayer.SystemManagement.HistoryManagement.ItemHistory;
 import DomainLayer.SystemManagement.MarketManagementFacade;
 
-import DomainLayer.SystemManagement.NotificationManager.NotificationController;
 import DomainLayer.Users.AdminController;
 import DomainLayer.Users.UserController;
 

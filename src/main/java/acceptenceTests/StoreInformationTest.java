@@ -1,9 +1,7 @@
 package acceptenceTests;
 
-
 import DomainLayer.Response;
 import DomainLayer.Stores.Store;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,6 +42,4 @@ public class StoreInformationTest extends AbstractTest {
         assertTrue(bridge.getStoreInformation(-1).hadError());
         assertTrue(bridge.getStoreInformation(storeId++).hadError());
     }
-
-
 }

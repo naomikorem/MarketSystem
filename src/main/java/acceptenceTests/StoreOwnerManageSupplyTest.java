@@ -4,7 +4,6 @@ import DomainLayer.Response;
 import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
-import DomainLayer.Stores.StoreController;
 import DomainLayer.Users.User;
 import DomainLayer.Users.UserController;
 import org.junit.After;
@@ -14,7 +13,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class StoreOwnerManageSupplyTest extends AbstractTest{
-    private Response<User> r1, r2;
     private User user;
     private Store store;
     public StoreOwnerManageSupplyTest() {
@@ -49,9 +47,6 @@ public class StoreOwnerManageSupplyTest extends AbstractTest{
         assertFalse(bridge.getItems(store.getStoreId()).getObject().isEmpty());
         assertTrue(bridge.getItems(store.getStoreId()).getObject().containsKey(i1));
         bridge.removeItemFromStore(store.getStoreId(),i1.getId(),9);
-        assertTrue(bridge.getItems(store.getStoreId()).getObject().get(i1).equals(0));
-
+        assertEquals(0, (int) bridge.getItems(store.getStoreId()).getObject().get(i1));
     }
-
-
 }

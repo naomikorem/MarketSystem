@@ -22,7 +22,6 @@ public class PurchaseBadCasesTests extends AbstractTest
     private Item item2;
     private Item item3;
     private Item item4;
-    private Item item; // the successful item
     private final int successfulPurchasedItemAmount;
     private final String successfulItemProductName;
     private final Category successfulItemCategory;
@@ -60,7 +59,8 @@ public class PurchaseBadCasesTests extends AbstractTest
         item4 = bridge.addItemToStore(store2_id, "Item4", Category.Food, 8, 6).getObject();
         int item4_id = item4.getId();
 
-        item = bridge.addItemToStore(store2_id, successfulItemProductName, Category.Food, 8, 6).getObject();
+        // the successful item
+        Item item = bridge.addItemToStore(store2_id, successfulItemProductName, Category.Food, 8, 6).getObject();
         int item_id = item.getId();
         bridge.logout();
 

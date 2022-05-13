@@ -4,19 +4,15 @@ import DomainLayer.Response;
 import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
-import DomainLayer.Users.User;
 import DomainLayer.Users.UserController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ChangesInShoppingCartTest extends AbstractTest{
-    private static User u;
     private static Store s;
     private static Item i1;
     private static Item i2;
@@ -29,7 +25,7 @@ public class ChangesInShoppingCartTest extends AbstractTest{
     @Before
     public void setup() {
         bridge.enter();
-        this.u = bridge.register("user111@gmail.com", "user1","first","last", "password").getObject();
+        bridge.register("user111@gmail.com", "user1","first","last", "password").getObject();
         bridge.login("user1", "password");
 
         s = bridge.addNewStore("Store1").getObject();
@@ -37,7 +33,6 @@ public class ChangesInShoppingCartTest extends AbstractTest{
         i2 = bridge.addItemToStore(s.getStoreId(), "Item2", Category.Food, 100, 10).getObject();
         i3 = bridge.addItemToStore(s.getStoreId(), "Item3", Category.Food, 100, 10).getObject();
         bridge.logout();
-
     }
 
     @After

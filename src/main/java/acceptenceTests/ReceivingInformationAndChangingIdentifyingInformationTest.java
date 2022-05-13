@@ -33,10 +33,10 @@ public class ReceivingInformationAndChangingIdentifyingInformationTest extends A
     @Test
     public void testAcceptReceivingInformation() {
         bridge.login(u.getName(),"user1");
-        assertTrue(u.getName().equals("user"));
-        assertTrue(u.getEmail().equals("user@gmail.com"));
-        assertFalse(u.getEmail().equals("user1"));
-        assertFalse(u.getEmail().equals("user"));
+        assertEquals("user", u.getName());
+        assertEquals("user@gmail.com", u.getEmail());
+        assertNotEquals("user1", u.getEmail());
+        assertNotEquals("user", u.getEmail());
         bridge.logout();
     }
 
@@ -44,11 +44,11 @@ public class ReceivingInformationAndChangingIdentifyingInformationTest extends A
     public void testAcceptModifyInformation() {
         bridge.login(u.getName(),"user1");
         bridge.setUserName("uuser");
-        assertTrue(u.getName().equals("uuser"));
-        assertFalse(u.getName().equals("user"));
+        assertEquals("uuser", u.getName());
+        assertNotEquals("user", u.getName());
         u.setEmail("user11@gmail.com");
-        assertTrue(u.getEmail().equals("user11@gmail.com"));
-        assertFalse(u.getEmail().equals("user@gmail.com"));
+        assertEquals("user11@gmail.com", u.getEmail());
+        assertNotEquals("user@gmail.com", u.getEmail());
         bridge.logout();
 
     }

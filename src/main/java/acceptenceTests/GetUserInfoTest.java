@@ -3,7 +3,6 @@ package acceptenceTests;
 import DomainLayer.Response;
 import DomainLayer.Users.User;
 import DomainLayer.Users.UserController;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 

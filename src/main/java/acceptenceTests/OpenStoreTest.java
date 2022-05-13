@@ -8,11 +8,9 @@ import DomainLayer.Users.UserController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import static org.junit.Assert.*;
 
 public class OpenStoreTest extends AbstractTest {
-    private Response<User> r1, r2;
     private User user;
 
     public OpenStoreTest() {
@@ -40,7 +38,7 @@ public class OpenStoreTest extends AbstractTest {
     @Test
     public void testAcceptOpenStore() {
         Store store = StoreController.getInstance().createStore(user, "Mystore");
-        assertTrue(StoreController.getInstance().getStore(store.getStoreId()).equals(store));
+        assertEquals(StoreController.getInstance().getStore(store.getStoreId()), store);
         assertTrue(StoreController.getInstance().getAllStores().contains(store));
         assertTrue(StoreController.getInstance().isShopOwner(store, "user"));
         Store s = new Store(user, "Use", 3);

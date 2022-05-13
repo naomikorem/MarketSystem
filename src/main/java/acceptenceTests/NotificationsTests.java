@@ -8,17 +8,10 @@ import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.HistoryManagement.HistoryController;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
-import DomainLayer.SystemManagement.NotificationManager.NotificationController;
 import DomainLayer.Users.User;
-import Utility.LogUtility;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
@@ -27,9 +20,8 @@ public class NotificationsTests extends AbstractTest
 {
     private final String username1, store1_owner_username, store2_owner_username;
     private int store1_id, store2_id;
-    private Item item1, item2, item3, item4;
     private int item1_id, item2_id, item3_id, item4_id;
-    private User user1, user2, user3;
+    private User user1;
     private Store store;
     private Response<Boolean> user_purchase_res, store1_owner_purchase_res;
 
@@ -54,14 +46,14 @@ public class NotificationsTests extends AbstractTest
 
         assertFalse(bridge.login(store1_owner_username, "password").hadError());
         this.store1_id = bridge.addNewStore("Store1").getObject().getStoreId();
-        this.item1 = bridge.addItemToStore(store1_id, "Item1", Category.Food, 10, 100000).getObject();
-        this.item2 = bridge.addItemToStore(store1_id, "Item2", Category.Food, 8, 60000).getObject();
+        Item item1 = bridge.addItemToStore(store1_id, "Item1", Category.Food, 10, 100000).getObject();
+        Item item2 = bridge.addItemToStore(store1_id, "Item2", Category.Food, 8, 60000).getObject();
         bridge.logout();
 
         assertFalse(bridge.login(store2_owner_username, "password").hadError());
         this.store2_id = bridge.addNewStore("Store2").getObject().getStoreId();
-        this.item3 = bridge.addItemToStore(store2_id, "Item3", Category.Food, 10, 100000).getObject();
-        this.item4 = bridge.addItemToStore(store2_id, "Item4", Category.Food, 8, 600000).getObject();
+        Item item3 = bridge.addItemToStore(store2_id, "Item3", Category.Food, 10, 100000).getObject();
+        Item item4 = bridge.addItemToStore(store2_id, "Item4", Category.Food, 8, 600000).getObject();
         bridge.logout();
 
         this.item1_id = item1.getId();
@@ -70,8 +62,8 @@ public class NotificationsTests extends AbstractTest
         this.item4_id = item4.getId();
 
         this.user1 = bridge.register("user123@gmail.com", "user1","first","last", "pass").getObject();
-        this.user2 = bridge.register("user2@gmail.com", "user2", "first","last","pass").getObject();
-        this.user3 = bridge.register("user3@gmail.com", "user3", "first","last","pass").getObject();
+        bridge.register("user2@gmail.com", "user2", "first", "last", "pass").getObject();
+        bridge.register("user3@gmail.com", "user3", "first", "last", "pass").getObject();
         bridge.login(user1.getName(), "pass");
         this.store = bridge.addNewStore("Store3").getObject();
         bridge.addOwner("user2", store.getStoreId());
@@ -89,7 +81,6 @@ public class NotificationsTests extends AbstractTest
         this.bridge.addItemToCart(store2_id, item4_id, 2);
         this.bridge.purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
         this.bridge.logout();
-        Date timestamp = new Date();
         this.bridge.login(store1_owner_username, "password");
         Response<List<String>> owners_store_1_res = bridge.getStoreOwners(store1_id);
         assertFalse(owners_store_1_res.hadError());
@@ -105,7 +96,6 @@ public class NotificationsTests extends AbstractTest
         assertTrue(owners1.contains(store1_owner_username));
         assertTrue(owners2.contains(store2_owner_username));
 
-  //      assertTrue(checkRealTimeNotifications(1, timestamp, store1_owner_username));
         Response<List<INotification>> owner1_notification_res = bridge.getUserNotifications();
         assertFalse(owner1_notification_res.hadError());
         List<INotification> notification1 = owner1_notification_res.getObject();
@@ -118,25 +108,6 @@ public class NotificationsTests extends AbstractTest
         List<INotification> notification2 = owner2_notification_res.getObject();
         assertEquals(1, notification2.size());
         this.bridge.logout();
-    }
-
-    private boolean checkRealTimeNotifications(int expected_amount, Date timestamp, String username)
-    {
-        try
-        {
-            BufferedReader br = new BufferedReader(new FileReader(NotificationController.NOTIFICATION_FILE_NAME));
-
-            List<String> lines_to_user = br.lines().filter(s -> s.contains(" To: " + username)).collect(Collectors.toList());
-            if(lines_to_user.size() != expected_amount)
-            {
-                System.out.println("Expeced: " + expected_amount + " Real: " + lines_to_user.size());
-                return false;
-            }
-           /* DEAL WITH TIME*/
-        } catch (IOException e) {
-            LogUtility.error("Could not read from notification file");
-        }
-        return true;
     }
 
     @Test
@@ -207,7 +178,7 @@ public class NotificationsTests extends AbstractTest
 
     @Test
     public void synchronizedNotificationTest() {
-        for(int i = 1; i < 1000; i++)
+        for(int i = 1; i < 100; i++)
         {
             Thread t1 = new Thread(() -> {
                 Bridge bridge_user = new Real();
@@ -238,6 +209,7 @@ public class NotificationsTests extends AbstractTest
                     System.out.println("Store 1 owner fail");
 
                 assertFalse(this.user_purchase_res.hadError() || this.store1_owner_purchase_res.hadError());
+
                 //check that the store 1 owner received notifications
                 this.bridge.login(this.store1_owner_username, "password");
                 Response<List<INotification>> store1_owner_notification_res = this.bridge.getUserNotifications(); // supposed to be one notification from regular user per round
@@ -245,9 +217,7 @@ public class NotificationsTests extends AbstractTest
                 Response<History> store1_history_res = this.bridge.getStoreHistory(store1_id); // supposed to be 2 history items from user purchase
                 this.bridge.logout();
 
-                //assertTrue(store1_owner_notification_res.hadError() || store1_owner_realtime_notification_res.hadError());
-                //assertFalse(store1_owner_notification_res.hadError() && store1_owner_realtime_notification_res.hadError());
-                assertTrue(checkAmountOfGoodListAndBadList(1*i, /*timestamp*/ new Date(), store1_owner_notification_res, store1_owner_realtime_notification_res));//
+                 assertTrue(checkAmountOfGoodListAndBadList(i, /*timestamp*/ new Date(), store1_owner_notification_res, store1_owner_realtime_notification_res));//
 
                 // check that the purchase history of user 1 added to store 1
                 assertFalse(store1_history_res.hadError());
@@ -260,7 +230,7 @@ public class NotificationsTests extends AbstractTest
                 this.bridge.logout();
                 // check that the store 2 owner received notifications
                 assertFalse(store2_owner_notification_res.hadError());
-                assertEquals(1*i, store2_owner_notification_res.getObject().size());
+                assertEquals(i, store2_owner_notification_res.getObject().size());
 
                 // check that the purchase history of store owner 1 added to store 2
                 assertFalse(store2_history_res.hadError());

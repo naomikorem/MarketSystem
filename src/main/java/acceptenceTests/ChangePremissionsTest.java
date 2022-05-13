@@ -1,6 +1,5 @@
 package acceptenceTests;
 
-import DomainLayer.Response;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
 import DomainLayer.Stores.StoreController;
@@ -9,9 +8,6 @@ import DomainLayer.Users.UserController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.List;
-
 import static org.junit.Assert.*;
 
 public class ChangePremissionsTest extends AbstractTest {

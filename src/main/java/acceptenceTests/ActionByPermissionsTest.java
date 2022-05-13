@@ -1,6 +1,5 @@
 package acceptenceTests;
 
-import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
 import DomainLayer.Stores.StoreController;
 import DomainLayer.Users.User;

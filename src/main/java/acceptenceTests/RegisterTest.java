@@ -2,10 +2,7 @@ package acceptenceTests;
 
 
 import DomainLayer.Response;
-import DomainLayer.Users.GuestState;
 import DomainLayer.Users.User;
-import DomainLayer.Users.UserController;
-import Utility.Utility;
 import org.junit.*;
 
 import static org.junit.Assert.assertFalse;
@@ -31,10 +28,10 @@ public class RegisterTest extends AbstractTest {
 
     @Test
     public void testAcceptRegister() {
-        /**invalid email**/
+        //invalid email
         assertTrue(bridge.register("user1@gm@ail.com", "user","first","last", "password").hadError());
         assertTrue(bridge.register("user1.com", "user", "first","last","password").hadError());
-        /**invalid name**/
+        //invalid name
         //less then 4 characters
         assertTrue(bridge.register("user1@gmail.com", "use", "first","last","password").hadError());
         assertTrue(bridge.register("user1@gmail.com", "", "first","last","password").hadError());
@@ -44,7 +41,7 @@ public class RegisterTest extends AbstractTest {
         //contains invalid characters
         assertTrue(bridge.register("user1@gmail.com", "u!", "first","last","password").hadError());
         assertTrue(bridge.register("user1@gmail.com", "123","first","last", "password").hadError());
-        /**invalid password**/
+        //invalid password
         //password less then 4
         assertTrue(bridge.register("user1@gmail.com", "user","first","last", "p").hadError());
         //password is null

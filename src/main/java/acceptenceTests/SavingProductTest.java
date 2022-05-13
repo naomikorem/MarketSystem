@@ -5,10 +5,8 @@ import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
 import DomainLayer.Users.ShoppingBasket;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.BeforeClass;
 
 import java.util.List;
 import java.util.Map;

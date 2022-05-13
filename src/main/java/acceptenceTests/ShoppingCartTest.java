@@ -3,7 +3,6 @@ package acceptenceTests;
 import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
-import DomainLayer.Users.User;
 import DomainLayer.Users.UserController;
 import org.junit.After;
 import org.junit.Before;
@@ -15,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ShoppingCartTest extends AbstractTest {
-    private static User u;
     private static Store s;
     private static Item i1;
     private static Item i2;
@@ -28,7 +26,7 @@ public class ShoppingCartTest extends AbstractTest {
     @Before
     public void setup() {
         bridge.enter();
-        this.u = bridge.register("user111@gmail.com", "user1","first","last", "password").getObject();
+        bridge.register("user111@gmail.com", "user1", "first", "last", "password").getObject();
         bridge.login("user1", "password");
 
         s = bridge.addNewStore("Store1").getObject();
@@ -50,7 +48,7 @@ public class ShoppingCartTest extends AbstractTest {
     }
 
     @Test
-    public void ShoppingCartTest() {
+    public void ShoppingCartGoodItemsTest() {
         bridge.login("user1", "password");
         List<Item> l = bridge.getShoppingCartItems().getObject();
         assertTrue(l.isEmpty());
@@ -67,7 +65,7 @@ public class ShoppingCartTest extends AbstractTest {
         assertFalse(l.contains(i3));
         bridge.purchaseShoppingCart("bear shava", "UPS", "hello");
 
-        l = bridge.getShoppingCartItems().getObject();
+        bridge.getShoppingCartItems().getObject();
         //assertTrue(l.isEmpty());
         bridge.logout();
     }
