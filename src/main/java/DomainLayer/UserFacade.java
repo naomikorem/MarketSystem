@@ -3,7 +3,6 @@ package DomainLayer;
 import DomainLayer.Users.AdminController;
 import DomainLayer.Users.User;
 import DomainLayer.Users.UserController;
-import Networking.RequestMessage;
 
 public class UserFacade {
     private UserController userController;
