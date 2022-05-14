@@ -9,7 +9,7 @@ stompClient.connect();
 
 function activateLasers() {
     stompClient.send('/app/market/enter/aaa', {}, {}, 0);
-    stompClient.send('/app/market/echo/test', {}, {var1: "asd"}, 0)
+    stompClient.send('/app/market/login', {}, JSON.stringify({'user': "user", 'pass': "pass"}), 0)
     console.log("here");
 }
 function App() {

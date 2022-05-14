@@ -6,8 +6,6 @@ import com.google.gson.JsonObject;
 import lombok.extern.java.Log;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.boot.autoconfigure.jackson.JacksonProperties;
 import org.springframework.boot.json.GsonJsonParser;
 import org.springframework.boot.json.JacksonJsonParser;
@@ -37,7 +35,7 @@ public class MyController {
 
 
     @MessageMapping("/market/login")
-    public void login(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) throws JSONException {
+    public void login(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
         ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).login(map.get("user"), map.get("pass"));
     }
 
