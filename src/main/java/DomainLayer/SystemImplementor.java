@@ -11,6 +11,10 @@ import DomainLayer.SystemManagement.NotificationManager.NotificationController;
 import DomainLayer.Users.GuestState;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 
@@ -33,7 +37,6 @@ public class SystemImplementor implements SystemInterface {
         this.notificationController = NotificationController.getInstance();
     }
 
-    @Override
     public Response<Boolean> enter() {
         try {
             if (this.user != null) {
