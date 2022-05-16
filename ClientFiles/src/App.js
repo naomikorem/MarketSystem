@@ -12,10 +12,7 @@ const socket = new SockJS("http://localhost:8080/market");
 export const stompClient = Stomp.over(socket);
 
 stompClient.connect({}, function( frame ){
-  console.log("connect");
   stompClient.subscribe('/user/topic/loginResult', function( notifications ) {
-  });
-  stompClient.subscribe('/user/topic/registerResult', function( notifications ) {
   });
 }, function( error ) {
   alert( error );

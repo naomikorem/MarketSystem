@@ -145,3 +145,11 @@
 .socialMediaButtons {
   padding: 10px 100px 10px 0px;
 }
+
+.errorLabel {
+
+  display: block;
+  padding: 5%;
+  color: #ff8a89;
+  margin-left: 10%;
+}
