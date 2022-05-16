@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="27e77440-2a39-4402-a83d-fe45af9706d9" name="Changes" comment="sign up sign in form" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="29FS8gJoArXpO2xITW9pglEDkq7" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/Users/sagib/OneDrive/Desktop/market/react-login-form",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="27e77440-2a39-4402-a83d-fe45af9706d9" name="Changes" comment="" />
+      <created>1652707182531</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1652707182531</updated>
+      <workItem from="1652707183810" duration="1798000" />
+      <workItem from="1652709092382" duration="3212000" />
+    </task>
+    <task id="LOCAL‎00001" summary="sign in sign up files">
+      <created>1652709137509</created>
+      <option name="number" value="LOCAL‎00001" />
+      <option name="presentableId" value="LOCAL‎00001" />
+      <updated>1652709137509</updated>
+    </task>
+    <task id="LOCAL‎00002" summary="sign in sign up files">
+      <created>1652709404526</created>
+      <option name="number" value="LOCAL‎00002" />
+      <option name="presentableId" value="LOCAL‎00002" />
+      <updated>1652709404526</updated>
+    </task>
+    <task id="LOCAL‎00003" summary="sign up sign in form">
+      <created>1652709691821</created>
+      <option name="number" value="LOCAL‎00003" />
+      <option name="presentableId" value="LOCAL‎00003" />
+      <updated>1652709691821</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="sign in sign up files" />
+    <MESSAGE value="sign up sign in form" />
+    <option name="LAST_COMMIT_MESSAGE" value="sign up sign in form" />
+  </component>
+</project>
