@@ -16,7 +16,7 @@ class SignInForm extends Component {
   }
 
   handleClick = () => {
-    stompClient.send("/app/market/login", {}, JSON.stringify({"user" : "username", "pass" : "pass"}));
+    stompClient.send("/app/market/login", {}, JSON.stringify({"user" : this.state.username, "pass" : this.state.password}));
   }
 
   handleChange(event) {

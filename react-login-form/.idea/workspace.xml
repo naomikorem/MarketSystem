@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="27e77440-2a39-4402-a83d-fe45af9706d9" name="Changes" comment=".">
+    <list default="true" id="27e77440-2a39-4402-a83d-fe45af9706d9" name="Changes" comment="sign in and register messages to server">
       <change beforePath="$PROJECT_DIR$/../ClientFiles/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientFiles/src/App.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../ClientFiles/src/pages/SignInForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientFiles/src/pages/SignInForm.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../ClientFiles/src/pages/SignUpForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientFiles/src/pages/SignUpForm.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../ServerFiles/src/main/java/DomainLayer/Networking/MyController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ServerFiles/src/main/java/DomainLayer/Networking/MyController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -61,7 +62,7 @@
       <option name="presentableId" value="Default" />
       <updated>1652707182531</updated>
       <workItem from="1652707183810" duration="1798000" />
-      <workItem from="1652709092382" duration="11332000" />
+      <workItem from="1652709092382" duration="16549000" />
     </task>
     <task id="LOCAL‎00001" summary="sign in sign up files">
       <created>1652709137509</created>
@@ -87,7 +88,13 @@
       <option name="presentableId" value="LOCAL‎00004" />
       <updated>1652714696234</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL‎00005" summary="sign in and register messages to server">
+      <created>1652723206910</created>
+      <option name="number" value="LOCAL‎00005" />
+      <option name="presentableId" value="LOCAL‎00005" />
+      <updated>1652723206910</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -108,6 +115,7 @@
     <MESSAGE value="sign in sign up files" />
     <MESSAGE value="sign up sign in form" />
     <MESSAGE value="." />
-    <option name="LAST_COMMIT_MESSAGE" value="." />
+    <MESSAGE value="sign in and register messages to server" />
+    <option name="LAST_COMMIT_MESSAGE" value="sign in and register messages to server" />
   </component>
 </project>

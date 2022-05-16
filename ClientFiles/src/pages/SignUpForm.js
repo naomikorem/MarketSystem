@@ -30,7 +30,8 @@ class SignUpForm extends Component {
 
   handleClick = () => {
     stompClient.send("/app/market/register", {}, JSON.stringify(
-        {"email" : "email@gmail.com", "username" : "username", "firstname" : "firstname", "lastname" : "lastname", "pass" : "pass"}));
+        {"email" : this.state.email, "username" : this.state.username, "firstname" : this.state.firstname,
+          "lastname" : this.state.lastname, "pass" : this.state.password}));
   }
 
   handleSubmit(e) {
@@ -45,19 +46,50 @@ class SignUpForm extends Component {
       <div className="formCenter">
         <form onSubmit={this.handleSubmit} className="formFields">
           <div className="formField">
-            <label className="formFieldLabel" htmlFor="name">
-              Full Name
+            <label className="formFieldLabel" htmlFor="username">
+              Username
             </label>
             <input
               type="text"
-              id="name"
+              id="username"
               className="formFieldInput"
-              placeholder="Enter your full name"
-              name="name"
-              value={this.state.name}
+              placeholder="Enter your username"
+              name="username"
+              value={this.state.username}
               onChange={this.handleChange}
             />
           </div>
+
+          <div className="formField">
+            <label className="formFieldLabel" htmlFor="firstname">
+              First Name
+            </label>
+            <input
+                type="text"
+                id="firstname"
+                className="formFieldInput"
+                placeholder="Enter your first name"
+                name="firstname"
+                value={this.state.firstname}
+                onChange={this.handleChange}
+            />
+          </div>
+
+          <div className="formField">
+            <label className="formFieldLabel" htmlFor="lastname">
+              Last Name
+            </label>
+            <input
+                type="text"
+                id="lastname"
+                className="formFieldInput"
+                placeholder="Enter your last name"
+                name="lastname"
+                value={this.state.lastname}
+                onChange={this.handleChange}
+            />
+          </div>
+
           <div className="formField">
             <label className="formFieldLabel" htmlFor="password">
               Password
