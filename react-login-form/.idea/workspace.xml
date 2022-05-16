@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="27e77440-2a39-4402-a83d-fe45af9706d9" name="Changes" comment="sign in and register messages to server">
-      <change beforePath="$PROJECT_DIR$/../ClientFiles/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientFiles/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ClientFiles/src/pages/SignInForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientFiles/src/pages/SignInForm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ClientFiles/src/pages/SignUpForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientFiles/src/pages/SignUpForm.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../ServerFiles/src/main/java/DomainLayer/Networking/MyController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ServerFiles/src/main/java/DomainLayer/Networking/MyController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,7 +57,7 @@
       <option name="presentableId" value="Default" />
       <updated>1652707182531</updated>
       <workItem from="1652707183810" duration="1798000" />
-      <workItem from="1652709092382" duration="16549000" />
+      <workItem from="1652709092382" duration="16904000" />
     </task>
     <task id="LOCAL‎00001" summary="sign in sign up files">
       <created>1652709137509</created>
