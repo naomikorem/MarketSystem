@@ -6,17 +6,37 @@ class SignInForm extends Component {
   constructor() {
     super();
 
+    this.mounted = false
+
     this.state = {
       username: "",
-      password: ""
+      password: "",
+      error: ""
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  componentDidMount() {
+    this.mounted = true;
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+  }
+
   handleClick = () => {
+    stompClient.subscribe('/user/topic/loginResult', (r) => {
+      if (this.mounted) {
+        this.state.error = JSON.parse(r["body"]).errorMessage;
+        this.setState({[this.state.error]: this.state.error});
+      }
+    });
+
     stompClient.send("/app/market/login", {}, JSON.stringify({"user" : this.state.username, "pass" : this.state.password}));
+
+    stompClient.unsubscribe('/user/topic/loginResult');
   }
 
   handleChange(event) {
@@ -75,6 +95,10 @@ class SignInForm extends Component {
             <Link to="/" className="formFieldLink">
               Create an account
             </Link>
+
+            <label className="errorLabel">
+              {this.state.error}
+            </label>
           </div>
 
           {/*<div className="socialMediaButtons">*/}

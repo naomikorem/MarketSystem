@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="49a0a7bf-ec93-4d04-af03-6de8ff202d8f" name="Changes" comment="remove external services simultaneously test" />
+    <list default="true" id="49a0a7bf-ec93-4d04-af03-6de8ff202d8f" name="Changes" comment="remove external services simultaneously test">
+      <change beforePath="$PROJECT_DIR$/react-login-form/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/react-login-form/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -52,7 +54,11 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "last_opened_file_path": "C:/Users/sagib/OneDrive/Desktop/market/ServerFiles"
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/Users/sagib/OneDrive/Desktop/market/ServerFiles",
+    "nodejs_package_manager_path": "npm"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -156,7 +162,7 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="8d22534b-7cdd-4d28-af21-7a9f4bfcb76f" name="Changes" comment="" />
+      <changelist id="49a0a7bf-ec93-4d04-af03-6de8ff202d8f" name="Changes" comment="remove external services simultaneously test" />
       <created>1650468409532</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -193,6 +199,7 @@
       <workItem from="1652481300317" duration="5105000" />
       <workItem from="1652520211501" duration="3559000" />
       <workItem from="1652541332639" duration="9909000" />
+      <workItem from="1652730495999" duration="86000" />
     </task>
     <task id="LOCAL-00001" summary="started web socket">
       <created>1652543228714</created>

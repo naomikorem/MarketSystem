@@ -1,11 +1,12 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
 import {stompClient} from "../App";
-import {ResponseDto} from "../Shared/Shared"
 
 class SignUpForm extends Component {
     constructor() {
         super();
+
+        this.mounted = false
 
         this.state = {
             email: "",
@@ -30,10 +31,20 @@ class SignUpForm extends Component {
         });
     }
 
+    componentDidMount() {
+        this.mounted = true;
+    }
+
+    componentWillUnmount() {
+        this.mounted = false;
+    }
+
     handleClick = () => {
         stompClient.subscribe('/user/topic/registerResult', (r) => {
-            this.state.error = JSON.parse(r["body"]).errorMessage;
-            //this.handleChange()
+            if (this.mounted) {
+                this.state.error = JSON.parse(r["body"]).errorMessage;
+                this.setState({[this.state.error]: this.state.error});
+            }
         });
 
         stompClient.send("/app/market/register", {}, JSON.stringify(
