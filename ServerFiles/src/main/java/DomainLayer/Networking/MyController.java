@@ -1,6 +1,8 @@
 package DomainLayer.Networking;
 
+import DomainLayer.Response;
 import DomainLayer.SystemImplementor;
+import DomainLayer.Users.User;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import lombok.extern.java.Log;
@@ -13,6 +15,7 @@ import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,8 +38,9 @@ public class MyController {
 
 
     @MessageMapping("/market/login")
-    public void login(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
-        ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).login(map.get("user"), map.get("pass"));
+    @SendToUser("/topic/loginResult")
+    public Response<User> login(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).login(map.get("user"), map.get("pass"));
     }
 
 
