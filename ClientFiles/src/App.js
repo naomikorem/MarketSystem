@@ -8,9 +8,11 @@ import "./App.css";
 import Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 
-var socket = new SockJS("http://localhost:8080/market");
-var stompClient = Stomp.over(socket);
+const socket = new SockJS("http://localhost:8080/market");
+export const stompClient = Stomp.over(socket);
+
 stompClient.connect({}, function( frame ){
+  console.log("connect");
   stompClient.subscribe('/user/topic/loginResult', function( notifications ) {
   });
 }, function( error ) {

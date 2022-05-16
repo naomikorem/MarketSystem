@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="27e77440-2a39-4402-a83d-fe45af9706d9" name="Changes" comment="sign up sign in form" />
+    <list default="true" id="27e77440-2a39-4402-a83d-fe45af9706d9" name="Changes" comment=".">
+      <change beforePath="$PROJECT_DIR$/../ClientFiles/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientFiles/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ClientFiles/src/pages/SignInForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientFiles/src/pages/SignInForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ClientFiles/src/pages/SignUpForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientFiles/src/pages/SignUpForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ServerFiles/src/main/java/DomainLayer/Networking/MyController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ServerFiles/src/main/java/DomainLayer/Networking/MyController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -26,9 +39,19 @@
     "WebServerToolWindowFactoryState": "false",
     "last_opened_file_path": "C:/Users/sagib/OneDrive/Desktop/market/react-login-form",
     "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "C:\\Users\\sagib\\OneDrive\\Desktop\\market\\ClientFiles\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RunManager">
+    <configuration name="start" type="js.build_tools.npm" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/../ClientFiles/package.json" />
+      <command value="start" />
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -38,7 +61,7 @@
       <option name="presentableId" value="Default" />
       <updated>1652707182531</updated>
       <workItem from="1652707183810" duration="1798000" />
-      <workItem from="1652709092382" duration="3212000" />
+      <workItem from="1652709092382" duration="11332000" />
     </task>
     <task id="LOCAL‎00001" summary="sign in sign up files">
       <created>1652709137509</created>
@@ -58,7 +81,13 @@
       <option name="presentableId" value="LOCAL‎00003" />
       <updated>1652709691821</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL‎00004" summary=".">
+      <created>1652714696234</created>
+      <option name="number" value="LOCAL‎00004" />
+      <option name="presentableId" value="LOCAL‎00004" />
+      <updated>1652714696234</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -78,6 +107,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="sign in sign up files" />
     <MESSAGE value="sign up sign in form" />
-    <option name="LAST_COMMIT_MESSAGE" value="sign up sign in form" />
+    <MESSAGE value="." />
+    <option name="LAST_COMMIT_MESSAGE" value="." />
   </component>
 </project>

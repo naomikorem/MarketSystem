@@ -1,17 +1,22 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import {stompClient} from "../App";
 
 class SignInForm extends Component {
   constructor() {
     super();
 
     this.state = {
-      email: "",
+      username: "",
       password: ""
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleClick = () => {
+    stompClient.send("/app/market/login", {}, JSON.stringify({"user" : "username", "pass" : "pass"}));
   }
 
   handleChange(event) {
@@ -36,16 +41,16 @@ class SignInForm extends Component {
       <div className="formCenter">
         <form className="formFields" onSubmit={this.handleSubmit}>
           <div className="formField">
-            <label className="formFieldLabel" htmlFor="email">
-              E-Mail Address
+            <label className="formFieldLabel" htmlFor="username">
+              Username
             </label>
             <input
-              type="email"
-              id="email"
+              type="username"
+              id="username"
               className="formFieldInput"
-              placeholder="Enter your email"
-              name="email"
-              value={this.state.email}
+              placeholder="Enter your username"
+              name="username"
+              value={this.state.username}
               onChange={this.handleChange}
             />
           </div>
@@ -66,7 +71,7 @@ class SignInForm extends Component {
           </div>
 
           <div className="formField">
-            <button className="formFieldButton">Sign In</button>{" "}
+            <button onClick={this.handleClick} className="formFieldButton">Sign In</button>{" "}
             <Link to="/" className="formFieldLink">
               Create an account
             </Link>

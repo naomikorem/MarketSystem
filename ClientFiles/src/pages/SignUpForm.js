@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import {stompClient} from "../App";
 
 class SignUpForm extends Component {
   constructor() {
@@ -8,8 +9,9 @@ class SignUpForm extends Component {
     this.state = {
       email: "",
       password: "",
-      name: "",
-      hasAgreed: false
+      username: "",
+      firstname: "",
+      lastname: "",
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -24,6 +26,11 @@ class SignUpForm extends Component {
     this.setState({
       [name]: value
     });
+  }
+
+  handleClick = () => {
+    stompClient.send("/app/market/register", {}, JSON.stringify(
+        {"email" : "email@gmail.com", "username" : "username", "firstname" : "firstname", "lastname" : "lastname", "pass" : "pass"}));
   }
 
   handleSubmit(e) {
@@ -97,7 +104,7 @@ class SignUpForm extends Component {
           {/*</div>*/}
 
           <div className="formField">
-            <button className="formFieldButton">Sign Up</button>{" "}
+            <button onClick={this.handleClick} className="formFieldButton">Sign Up</button>{" "}
             <Link to="/sign-in" className="formFieldLink">
               I'm already member
             </Link>

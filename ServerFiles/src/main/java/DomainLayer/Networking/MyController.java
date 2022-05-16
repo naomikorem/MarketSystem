@@ -43,5 +43,10 @@ public class MyController {
         return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).login(map.get("user"), map.get("pass"));
     }
 
-
+    @MessageMapping("/market/register")
+    @SendToUser("/topic/loginResult")
+    public Response<User> register(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).
+                register(map.get("email"), map.get("username"),  map.get("firstname"), map.get("lastname"), map.get("pass"));
+    }
 }
