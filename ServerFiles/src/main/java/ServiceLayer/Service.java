@@ -6,18 +6,13 @@ import DomainLayer.Stores.Store;
 import DomainLayer.SystemImplementor;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
-import ServiceLayer.DTOs.ItemDTO;
-import ServiceLayer.DTOs.ShoppingBasketDTO;
-import ServiceLayer.DTOs.ShoppingCartDTO;
-import ServiceLayer.DTOs.UserDTO;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
+import ServiceLayer.DTOs.*;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -69,6 +64,15 @@ public class Service {
     private StoreDTO convertToStoreDTO(Store store)
     {
         StoreDTO dto_store = new StoreDTO();
+        dto_store.id = store.getStoreId();
+        dto_store.isOpen = store.isOpen();
+        dto_store.founder = store.getFounder();
+        for(Map.Entry<Item, Integer> item_amount: store.getItems().entrySet())
+        {
+            ItemDTO item = convertToItemDTO(item_amount.getKey());
+            Integer amount = item_amount.getValue();
+            dto_store.items.put(item, amount);
+        }
         return dto_store;
     }
 
