@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import {stompClient} from "../App";
+import {stompClient, connectedPromise} from "../App";
 
 class SignInForm extends Component {
   constructor() {
@@ -18,25 +18,24 @@ class SignInForm extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentDidMount() {
-    this.mounted = true;
-  }
-
-  componentWillUnmount() {
-    this.mounted = false;
-  }
-
-  handleClick = () => {
+  async componentDidMount() {
+    await connectedPromise;
     stompClient.subscribe('/user/topic/loginResult', (r) => {
       if (this.mounted) {
         this.state.error = JSON.parse(r["body"]).errorMessage;
         this.setState({[this.state.error]: this.state.error});
       }
     });
+    this.mounted = true;
+  }
 
-    stompClient.send("/app/market/login", {}, JSON.stringify({"user" : this.state.username, "pass" : this.state.password}));
-
+  componentWillUnmount() {
+    this.mounted = false;
     stompClient.unsubscribe('/user/topic/loginResult');
+  }
+
+  handleClick = () => {
+    stompClient.send("/app/market/login", {}, JSON.stringify({"user" : this.state.username, "pass" : this.state.password}));
   }
 
   handleChange(event) {

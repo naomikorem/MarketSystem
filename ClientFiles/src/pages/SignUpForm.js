@@ -1,12 +1,14 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
-import {stompClient} from "../App";
+import {stompClient, connectedPromise} from "../App";
 
 class SignUpForm extends Component {
     constructor() {
         super();
 
         this.mounted = false
+
+        this.labelClass = "errorLabel"
 
         this.state = {
             email: "",
@@ -31,29 +33,27 @@ class SignUpForm extends Component {
         });
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        await connectedPromise;
+        stompClient.subscribe('/user/topic/registerResult', (r) => {
+            var errorMsg = JSON.parse(r["body"]).errorMessage;
+            this.state.error = errorMsg ? errorMsg : "User was registered successfully";
+            this.labelClass = errorMsg ? "errorLabel" : "successLabel";
+            this.setState({[this.state.error]: this.state.error});
+        });
         this.mounted = true;
     }
 
     componentWillUnmount() {
         this.mounted = false;
+        stompClient.unsubscribe('/user/topic/registerResult');
     }
 
     handleClick = () => {
-        stompClient.subscribe('/user/topic/registerResult', (r) => {
-            if (this.mounted) {
-                this.state.error = JSON.parse(r["body"]).errorMessage;
-                this.setState({[this.state.error]: this.state.error});
-            }
-        });
-
-        stompClient.send("/app/market/register", {}, JSON.stringify(
-            {
+        stompClient.send("/app/market/register", {}, JSON.stringify( {
                 "email": this.state.email, "username": this.state.username, "firstname": this.state.firstname,
                 "lastname": this.state.lastname, "pass": this.state.password
             }));
-
-        stompClient.unsubscribe('/user/topic/registerResult');
     }
 
     handleSubmit(e) {
@@ -163,7 +163,9 @@ class SignUpForm extends Component {
                         <Link to="/sign-in" className="formFieldLink">
                             I'm already member
                         </Link>
-                        <label className="errorLabel">
+                        <label className={
+                            this.labelClass
+                        }>
                             {this.state.error}
                         </label>
                     </div>

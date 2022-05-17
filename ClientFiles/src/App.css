@@ -153,3 +153,11 @@
   color: #ff8a89;
   margin-left: 10%;
 }
+
+.successLabel {
+
+  display: block;
+  padding: 5%;
+  color: lightgreen;
+  margin-left: 10%;
+}

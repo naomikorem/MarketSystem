@@ -10,13 +10,13 @@ import * as SockJS from 'sockjs-client';
 
 const socket = new SockJS("http://localhost:8080/market");
 export const stompClient = Stomp.over(socket);
-
-stompClient.connect({}, function( frame ){
-  stompClient.subscribe('/user/topic/loginResult', function( notifications ) {
+export const connectedPromise = new Promise(resolve => {
+  stompClient.connect({}, function (frame) {
+    resolve(true)
+  }, function (error) {
+    alert(error);
   });
-}, function( error ) {
-  alert( error );
-});
+})
 
 
 class App extends Component {
