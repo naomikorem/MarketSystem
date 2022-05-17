@@ -1,5 +1,7 @@
 import {stompClient, connectedPromise} from "../App";
 import React, { Component } from "react";
+import {Link} from "react-router-dom";
+//import { useNavigate } from "react-router-dom";
 //import {useNavigate} from "react-router-dom";
 //
 // // v6 examples
@@ -21,6 +23,8 @@ class HomePage extends Component {
     handleClick = (index) => {
         console.log("click" + index);
         console.log(this.state.listitems[index]);
+        // const navigate = useNavigate();
+        // navigate('sign-in');
     }
 
 
@@ -47,8 +51,11 @@ class HomePage extends Component {
                 <h1>Choose store</h1>
                 <ul className="list-group">
                     {this.state.listitems.map((listitem, index) => (
-                        <li onClick={() => this.handleClick(index)}>
-                            {listitem}
+                        // <li onClick={() => this.handleClick(index)}>
+                        <li>
+                            <Link to={"/sign-in"}>
+                                {listitem}
+                            </Link>
                         </li>
                     ))}
                 </ul>
