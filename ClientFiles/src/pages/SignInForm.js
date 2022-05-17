@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {stompClient, connectedPromise} from "../App";
+import MainPage from "./MainPage";
 
-class SignInForm extends Component {
+class SignInForm extends MainPage {
   constructor() {
     super();
 
@@ -34,7 +35,7 @@ class SignInForm extends Component {
     stompClient.unsubscribe('/user/topic/loginResult');
   }
 
-  handleClickLogin = () => {
+  handleClick = () => {
     stompClient.send("/app/market/login", {}, JSON.stringify({"user" : this.state.username, "pass" : this.state.password}));
   }
 
@@ -55,8 +56,7 @@ class SignInForm extends Component {
     console.log(this.state);
   }
 
-  render() {
-    return (
+  render() { return  <div> {super.render()}
       <div className="formCenter">
         <form className="formFields" onSubmit={this.handleSubmit}>
           <div className="formField">
@@ -90,20 +90,17 @@ class SignInForm extends Component {
           </div>
 
           <div className="formField">
-            <button onClick={this.handleClickLogin} className="formFieldButton">Sign In</button>{" "}
+            <button onClick={this.handleClick} className="formFieldButton">Sign In</button>{" "}
+            <Link to="/home" className="formFieldButton" style={{ textDecoration: 'none' }}>
+              Continue as a guest
+            </Link>
             <Link to="/sign-up" className="formFieldLink">
               Create an account
             </Link>
-
             <label className="errorLabel">
               {this.state.error}
             </label>
           </div>
-
-          {/*<div className="formField">*/}
-          {/*  <button onClick={this.handleClickGuest} className="formFieldButton">Continue as Guest</button>{" "}*/}
-          {/*</div>*/}
-          <Link to="/guest-home-page" className="btn btn-primary">Continue as guest</Link>
 
           {/*<div className="socialMediaButtons">*/}
           {/*  <div className="facebookButton">*/}
@@ -114,12 +111,9 @@ class SignInForm extends Component {
           {/*    <InstagramLoginButton onClick={() => alert("Hello")} />*/}
           {/*  </div>*/}
           {/*</div>*/}
-
-          {/*<Route exact path="/" component={SignUpForm} />*/}
-          {/*<Route path="/guest-home-page" component={GuestHomePage} />*/}
         </form>
-      </div>
-    );
+      </div></div>
+    ;
   }
 }
 

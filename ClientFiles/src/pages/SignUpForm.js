@@ -1,8 +1,9 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
 import {stompClient, connectedPromise} from "../App";
+import MainPage from "./MainPage";
 
-class SignUpForm extends Component {
+class SignUpForm extends MainPage {
     constructor() {
         super();
 
@@ -65,6 +66,7 @@ class SignUpForm extends Component {
 
     render() {
         return (
+            <div> {super.render()}
             <div className="formCenter">
                 <form onSubmit={this.handleSubmit} className="formFields">
                     <div className="formField">
@@ -171,7 +173,7 @@ class SignUpForm extends Component {
                     </div>
                 </form>
             </div>
-        );
+            </div>);
     }
 }
 
