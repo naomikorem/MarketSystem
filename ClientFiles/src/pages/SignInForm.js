@@ -102,6 +102,9 @@ class SignInForm extends MainPage {
             </label>
           </div>
 
+
+
+
           {/*<div className="socialMediaButtons">*/}
           {/*  <div className="facebookButton">*/}
           {/*    <FacebookLoginButton onClick={() => alert("Hello")} />*/}

@@ -51,19 +51,28 @@ public class Service {
     }
 
     @MessageMapping("/market/getStores")
-    @SendToUser("/topic/setStoresResult")
-    public Response<List<StoreDTO>> getStores (SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
+    @SendToUser("/topic/getStoresResult")
+    public Response<List<StoreDTO>> getStores (SimpMessageHeaderAccessor headerAccessor) {
+
+        ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).register("store@gmail.com", "store", "store", "store", "store");
+        ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).login("store", "store");
+        ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addNewStore("store");
+        ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addNewStore("another store");
+
+
         Response<Collection<Store>> stores = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getAllStores();
 
         if (stores.hadError())
             return new Response<>(stores.getErrorMessage());
         List<StoreDTO> dto_stores = stores.getObject().stream().map(s-> convertToStoreDTO(s)).collect(Collectors.toList());
+
         return new Response<>(dto_stores);
     }
 
     private StoreDTO convertToStoreDTO(Store store)
     {
         StoreDTO dto_store = new StoreDTO();
+        dto_store.name = store.getName();
         dto_store.id = store.getStoreId();
         dto_store.isOpen = store.isOpen();
         dto_store.founder = store.getFounder();
