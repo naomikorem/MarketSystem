@@ -86,7 +86,7 @@ public class SystemImplementor implements SystemInterface {
             this.user.setState(r.getObject().getState());
             this.marketManagementFacade.attachObserver(r.getObject());
         }
-        return r;
+        return new Response<>(r.getObject());
     }
 
     @Override
