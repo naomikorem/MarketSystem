@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { HashRouter as Router, Route, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import {stompClient, connectedPromise} from "../App";
 
 class MainPage extends Component {

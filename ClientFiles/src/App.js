@@ -1,5 +1,9 @@
 import React, { Component } from "react";
-import { HashRouter as Router, Route, NavLink } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+} from "react-router-dom";
 import SignUpForm from "./pages/SignUpForm";
 import SignInForm from "./pages/SignInForm";
 import MainPage from "./pages/MainPage";
@@ -24,17 +28,19 @@ export const connectedPromise = new Promise(resolve => {
 class App extends Component {
   render() {
     return (
-      <Router basename="/react-auth-ui/">
+      <BrowserRouter >
         <div className="App">
           <div className="appAside" />
           <div className="appForm">
-            <Route exact path="/" component={SignInForm} />
-            <Route path="/sign-in" component={SignInForm} />
-            <Route path="/sign-up" component={SignUpForm} />
-            <Route path="/home" component={HomePage} />
+            <Routes>
+            <Route exact path="/" element={<SignInForm/>} />
+            <Route path="/sign-in" element={<SignInForm/>} />
+            <Route path="/sign-up" element={<SignUpForm/>} />
+            <Route path="/home" element={<HomePage/>} />
+            </Routes>
           </div>
         </div>
-      </Router>
+      </BrowserRouter>
     );
   }
 }
