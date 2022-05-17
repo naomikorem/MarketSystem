@@ -34,7 +34,7 @@ class SignInForm extends Component {
     stompClient.unsubscribe('/user/topic/loginResult');
   }
 
-  handleClick = () => {
+  handleClickLogin = () => {
     stompClient.send("/app/market/login", {}, JSON.stringify({"user" : this.state.username, "pass" : this.state.password}));
   }
 
@@ -90,8 +90,8 @@ class SignInForm extends Component {
           </div>
 
           <div className="formField">
-            <button onClick={this.handleClick} className="formFieldButton">Sign In</button>{" "}
-            <Link to="/" className="formFieldLink">
+            <button onClick={this.handleClickLogin} className="formFieldButton">Sign In</button>{" "}
+            <Link to="/sign-up" className="formFieldLink">
               Create an account
             </Link>
 
@@ -99,6 +99,11 @@ class SignInForm extends Component {
               {this.state.error}
             </label>
           </div>
+
+          {/*<div className="formField">*/}
+          {/*  <button onClick={this.handleClickGuest} className="formFieldButton">Continue as Guest</button>{" "}*/}
+          {/*</div>*/}
+          <Link to="/guest-home-page" className="btn btn-primary">Continue as guest</Link>
 
           {/*<div className="socialMediaButtons">*/}
           {/*  <div className="facebookButton">*/}
@@ -109,6 +114,9 @@ class SignInForm extends Component {
           {/*    <InstagramLoginButton onClick={() => alert("Hello")} />*/}
           {/*  </div>*/}
           {/*</div>*/}
+
+          {/*<Route exact path="/" component={SignUpForm} />*/}
+          {/*<Route path="/guest-home-page" component={GuestHomePage} />*/}
         </form>
       </div>
     );
