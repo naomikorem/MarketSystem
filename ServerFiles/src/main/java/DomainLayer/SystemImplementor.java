@@ -152,6 +152,21 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.getAllStores();
     }
 
+    public Response<Collection<Store>> getUsersStores() {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only Logged-in users can perform this action.");
+        }
+        List<Store> stores = new ArrayList<>();
+        for (int id : user.getOwnedStores()) {
+            Response<Store> r = storeFacade.getStore(id);
+            if (r.hadError()) {
+                return new Response<>(r.getErrorMessage());
+            }
+            stores.add(r.getObject());
+        }
+        return new Response<>(stores);
+    }
+
     @Override
     public Response<Store> getStore(int id) {
         if (user == null) {

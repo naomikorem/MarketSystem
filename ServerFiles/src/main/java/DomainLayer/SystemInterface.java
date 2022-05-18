@@ -136,4 +136,6 @@ public interface SystemInterface {
     public Response<Boolean> removeDiscount(int storeId, int discountId);
 
     public Response<Boolean> removePolicy(int storeId, int policyId);
+
+    public Response<Collection<Store>> getUsersStores();
 }

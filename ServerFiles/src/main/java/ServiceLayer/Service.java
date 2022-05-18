@@ -78,6 +78,17 @@ public class Service {
     }
 
 
+    @MessageMapping("/market/getUsersStores")
+    @SendToUser("/topic/getUsersStoresResult")
+    public Response<List<StoreDTO>> getUsersStores(SimpMessageHeaderAccessor headerAccessor) {
+        Response<Collection<Store>> stores = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getUsersStores();
+        if (stores.hadError())
+            return new Response<>(stores.getErrorMessage());
+        List<StoreDTO> dto_stores = stores.getObject().stream().map(this::convertToStoreDTO).collect(Collectors.toList());
+        return new Response<>(dto_stores);
+    }
+
+
 
     private StoreDTO convertToStoreDTO(Store store)
     {
@@ -152,6 +163,14 @@ public class Service {
         return new Response<>(dtoStore);
     }
 
+    @MessageMapping("/market/logout")
+    @SendToUser("/topic/logoutResult")
+    public Response<Boolean> logout (SimpMessageHeaderAccessor headerAccessor) {
+
+
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).logout();
+    }
+
     @MessageMapping("/market/getStoreItems")
     @SendToUser("/topic/getStoreItemsResult")
     public Response<List<ItemDTO>> getStoreItems (SimpMessageHeaderAccessor headerAccessor, Map<String, Integer> map) {
@@ -166,13 +185,6 @@ public class Service {
         return new Response<>(storeItems);
     }
 
-    @MessageMapping("/market/logout")
-    @SendToUser("/topic/logoutResult")
-    public Response<Boolean> logout (SimpMessageHeaderAccessor headerAccessor) {
-
-
-        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).logout();
-    }
 
     @MessageMapping("/market/openNewStore")
     @SendToUser("/topic/openNewStoreResult")

@@ -1,24 +1,24 @@
 import React, {Component} from "react";
 import {useParams} from "react-router-dom";
 import {stompClient, connectedPromise} from "../App";
+//import { View } from 'react-native';
+//import { Text } from 'react-native-paper';
+
+//import Basket from "../components/basket";
 
 class StoreItem extends Component {
-    addToCart() {
-        console.log("dsfdgfhg")
-    }
-
     render() {
         const item = this.props.item;
         return (
 
-            <button onClick={this.addToCart} key={item.id} className={"items-grid"}>
+            <article key={item.id} className={"items-grid"}>
                 <div>
                     <h1>{item.product_name}</h1>
                     <p>Amount Left: {item.amount}<br/>
                         Category: {item.category}</p>
                     <h2>₪{item.price}</h2>
                 </div>
-            </button>
+            </article>
         );
     }
 }
