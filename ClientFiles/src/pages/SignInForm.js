@@ -25,6 +25,9 @@ class SignInForm extends MainPage {
       if (this.mounted) {
         this.state.error = JSON.parse(r["body"]).errorMessage;
         this.setState({[this.state.error]: this.state.error});
+        if (!this.state.error) {
+          this.props.navigate('/home')
+        }
       }
     });
     this.mounted = true;
@@ -120,4 +123,11 @@ class SignInForm extends MainPage {
   }
 }
 
-export default SignInForm;
+function wrapRender() {
+  let navigate = useNavigate();
+  return <div>
+    <SignInForm navigate={navigate}/>
+  </div>
+}
+
+export default wrapRender;

@@ -4,6 +4,8 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
+import { useNavigate } from 'react-router';
+
 import SignUpForm from "./pages/SignUpForm";
 import SignInForm from "./pages/SignInForm";
 import MainPage from "./pages/MainPage";
