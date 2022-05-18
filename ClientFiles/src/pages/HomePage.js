@@ -1,6 +1,6 @@
 import {stompClient, connectedPromise} from "../App";
 import React, { Component } from "react";
-import {Link} from "react-router-dom";
+import {Link, NavLink, useNavigate} from "react-router-dom";
 
 //import { useNavigate } from "react-router-dom";
 //import {useNavigate} from "react-router-dom";
@@ -11,14 +11,18 @@ import {Link} from "react-router-dom";
 //navigate("/keyhole")
 
 class HomePage extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+        this.state = {
+            listitems: [],
+            error: "",
+            user: JSON.parse(sessionStorage.getItem('user'))
+        };
+
+        this.onLogoutButton = this.onLogoutButton.bind(this)
     }
 
-    state = {
-        listitems: [],
-        error: ""
-    };
+
 
     handleClick = (index) => {
         console.log("click" + index);
@@ -50,11 +54,26 @@ class HomePage extends Component {
         stompClient.unsubscribe('/user/topic/getStoresResult');
     }
 
+    onLogoutButton() {
+        stompClient.send("/app/market/logout", {}, {});
+        this.props.navigate('/');
+    }
+
     render() {
         return (
             <React.Fragment>
-                <h1>Choose store</h1>
-
+                <div>
+                <NavLink
+                    to="/home"
+                    className={(navData) => navData.isActive ? "pageSwitcherItem-active" : "pageSwitcherItem"}
+                >
+                    Home
+                </NavLink>
+                    <button className={"pageSwitcherItem"} onClick={this.onLogoutButton}>
+                        Logout
+                    </button>
+                </div>
+                <h1>Hello {this.state.user ? this.state.user.userName : "Guest"}, Choose a store to view</h1>
                 <div className="store-grid-container">
                     {this.state.listitems.map((listitem, index) => (
                         <div key={index} className={"store-grid-item"}>
@@ -73,4 +92,11 @@ class HomePage extends Component {
     }
 }
 
-export default HomePage;
+function wrapRender() {
+    let navigate = useNavigate();
+    return <div>
+        <HomePage navigate={navigate}/>
+    </div>
+}
+
+export default wrapRender;

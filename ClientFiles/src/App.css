@@ -37,7 +37,13 @@
 
 .pageSwitcherItem-active {
   background-color: #6b5b95;
-  color: white;
+  padding: 10px 25px;
+  cursor: pointer;
+  font-size: 0.9em;
+  border: none;
+  outline: none;
+  display: inline-block;
+  text-decoration: none;
 }
 
 .pageSwitcherItem:first-child {

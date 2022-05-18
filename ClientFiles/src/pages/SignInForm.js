@@ -23,9 +23,11 @@ class SignInForm extends MainPage {
     await connectedPromise;
     stompClient.subscribe('/user/topic/loginResult', (r) => {
       if (this.mounted) {
-        this.state.error = JSON.parse(r["body"]).errorMessage;
+        let res = JSON.parse(r["body"]);
+        this.state.error = res.errorMessage;
         this.setState({[this.state.error]: this.state.error});
         if (!this.state.error) {
+          sessionStorage.setItem('user', JSON.stringify(res.object))
           this.props.navigate('/home')
         }
       }
