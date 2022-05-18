@@ -143,5 +143,13 @@ public class Service {
         return new Response<>(dtoStore);
     }
 
+    @MessageMapping("/market/logout")
+    @SendToUser("/topic/logoutResult")
+    public Response<Boolean> logout (SimpMessageHeaderAccessor headerAccessor) {
+
+
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).logout();
+    }
+
 
 }
