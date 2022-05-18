@@ -143,5 +143,16 @@ public class Service {
         return new Response<>(dtoStore);
     }
 
+    @MessageMapping("/market/openNewStore")
+    @SendToUser("/topic/openNewStoreResult")
+    public Response<StoreDTO> openNewStore (SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
+        //((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).login("admin", "admin");
+        Response<Store> stores = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addNewStore(map.get("name"));
 
+        if (stores.hadError())
+            return new Response<>(stores.getErrorMessage());
+        StoreDTO dtoStore = convertToStoreDTO(stores.getObject());
+
+        return new Response<>(dtoStore);
+    }
 }

@@ -9,9 +9,6 @@ class StorePage extends Component {
         this.state = {
             storeName: "",
         };
-
-
-
     }
 
     async componentDidMount() {

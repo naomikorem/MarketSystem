@@ -16,6 +16,7 @@ import "./App.css";
 
 import Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
+import OpenNewStore from "./pages/OpenNewStore";
 
 const socket = new SockJS("http://localhost:8080/market");
 export const stompClient = Stomp.over(socket);
@@ -40,6 +41,7 @@ class App extends Component {
             <Route path="/sign-in" element={<SignInForm/>} />
             <Route path="/sign-up" element={<SignUpForm/>} />
             <Route path="/home" element={<HomePage/>} />
+            <Route path="/open-new-store" element={<OpenNewStore/>} />
             <Route path="/store/:storeid" element={<StorePage/>} />
             </Routes>
           </div>
