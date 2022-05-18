@@ -17,6 +17,8 @@ import "./App.css";
 import Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import OpenNewStore from "./pages/OpenNewStore";
+import ErrorPage from "./pages/ErrorPage";
+import Cart from "./components/cart";
 
 const socket = new SockJS("http://localhost:8080/market");
 export const stompClient = Stomp.over(socket);
@@ -37,12 +39,14 @@ class App extends Component {
           <div className="appAside" />
           <div className="appForm">
             <Routes>
-            <Route exact path="/" element={<SignInForm/>} />
-            <Route path="/sign-in" element={<SignInForm/>} />
-            <Route path="/sign-up" element={<SignUpForm/>} />
-            <Route path="/home" element={<HomePage/>} />
-            <Route path="/open-new-store" element={<OpenNewStore/>} />
-            <Route path="/store/:storeid" element={<StorePage/>} />
+              <Route exact path="/" element={<SignInForm/>} />
+              <Route path="/sign-in" element={<SignInForm/>} />
+              <Route path="/sign-up" element={<SignUpForm/>} />
+              <Route path="/home" element={<HomePage/>} />
+              <Route path="/open-new-store" element={<OpenNewStore/>} />
+              <Route path="/store/:storeid" element={<StorePage/>} />
+              <Route path="/modify-cart" element={<Cart/>} />
+              <Route path="/*" element={<ErrorPage/>} />
             </Routes>
           </div>
         </div>

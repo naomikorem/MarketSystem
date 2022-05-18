@@ -232,7 +232,7 @@ public class StoreFacade {
         }
     }
 
-public Response<Map<Item, Integer>> getItems(int storeId) {
+    public Response<Map<Item, Integer>> getItems(int storeId) {
         try {
             return new Response<>(storeController.getItems(storeId));
         } catch (Exception e) {
