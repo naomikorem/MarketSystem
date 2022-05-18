@@ -1,9 +1,10 @@
-import React, { Component } from "react";
+import React, {Component, useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {stompClient, connectedPromise} from "../App";
+import {stompClient, connectedPromise, UserContext, setUser} from "../App";
 import MainPage from "./MainPage";
 
-class SignInForm extends MainPage {
+
+class SignInForm extends Component {
   constructor() {
     super();
 
@@ -28,6 +29,7 @@ class SignInForm extends MainPage {
         this.setState({[this.state.error]: this.state.error});
         if (!this.state.error) {
           sessionStorage.setItem('user', JSON.stringify(res.object))
+          setUser("a")
           this.props.navigate('/home')
         }
       }
@@ -61,7 +63,7 @@ class SignInForm extends MainPage {
     console.log(this.state);
   }
 
-  render() { return  <div> {super.render()}
+  render() { return  <div>
       <div className="formCenter">
         <form className="formFields" onSubmit={this.handleSubmit}>
           <div className="formField">
