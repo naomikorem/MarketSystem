@@ -11,7 +11,6 @@ class MainPage extends Component {
         return (
             <div>
         </div>
-
     );
     }
 }

@@ -29,7 +29,7 @@ class SignInForm extends Component {
         this.setState({[this.state.error]: this.state.error});
         if (!this.state.error) {
           sessionStorage.setItem('user', JSON.stringify(res.object))
-          setUser("a")
+          setUser(res.object)
           this.props.navigate('/home')
         }
       }

@@ -44,6 +44,11 @@ class HomePage extends Component {
         stompClient.unsubscribe('/user/topic/getStoresResult');
     }
 
+    onLogoutButton() {
+        stompClient.send("/app/market/logout", {}, {});
+        this.props.navigate('/');
+    }
+
     render() {
         return (
             <div>
