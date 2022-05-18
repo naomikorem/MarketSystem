@@ -3,14 +3,6 @@ import React, { Component } from "react";
 import {Link, NavLink, useNavigate} from "react-router-dom";
 import ObjectsGrid from "../Components/ObjectsGrid";
 
-//import { useNavigate } from "react-router-dom";
-//import {useNavigate} from "react-router-dom";
-//
-// // v6 examples
-
-// Navigate to new URL
-//navigate("/keyhole")
-
 class HomePage extends Component {
     constructor(props) {
         super(props);
@@ -19,7 +11,6 @@ class HomePage extends Component {
             error: "",
         };
     }
-
 
 
     async componentDidMount() {

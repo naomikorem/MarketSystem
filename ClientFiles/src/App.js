@@ -23,7 +23,7 @@ import Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import OpenNewStore from "./pages/OpenNewStore";
 import ErrorPage from "./pages/ErrorPage";
-import Cart from "./components/cart";
+import Cart from "./Components/cart";
 
 const socket = new SockJS("http://localhost:8080/market");
 export const stompClient = Stomp.over(socket);
@@ -86,7 +86,6 @@ function  render() {
         </div>
       </BrowserRouter>
     );
-  }
 }
 
 

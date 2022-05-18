@@ -4,7 +4,7 @@ import {stompClient, connectedPromise} from "../App";
 //import { View } from 'react-native';
 //import { Text } from 'react-native-paper';
 
-//import Basket from "../components/basket";
+//import Basket from "../Components/basket";
 
 class StoreItem extends Component {
     render() {

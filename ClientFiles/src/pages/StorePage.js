@@ -23,6 +23,7 @@ class StoreItem extends Component {
     }
 }
 
+
 class StorePage extends Component {
 
     constructor() {
