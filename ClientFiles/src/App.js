@@ -10,6 +10,7 @@ import SignUpForm from "./pages/SignUpForm";
 import SignInForm from "./pages/SignInForm";
 import MainPage from "./pages/MainPage";
 import HomePage from "./pages/HomePage";
+import StorePage from "./pages/StorePage";
 
 import "./App.css";
 
@@ -39,6 +40,7 @@ class App extends Component {
             <Route path="/sign-in" element={<SignInForm/>} />
             <Route path="/sign-up" element={<SignUpForm/>} />
             <Route path="/home" element={<HomePage/>} />
+            <Route path="/store/:storeid" element={<StorePage/>} />
             </Routes>
           </div>
         </div>

@@ -129,4 +129,19 @@ public class Service {
         return item_dto;
     }
 
+    @MessageMapping("/market/getStoreInfo")
+    @SendToUser("/topic/getStoreInfoResult")
+    public Response<StoreDTO> getStore (SimpMessageHeaderAccessor headerAccessor, Map<String, Integer> map) {
+
+
+        Response<Store> stores = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getStore(map.get("id"));
+
+        if (stores.hadError())
+            return new Response<>(stores.getErrorMessage());
+        StoreDTO dtoStore = convertToStoreDTO(stores.getObject());
+
+        return new Response<>(dtoStore);
+    }
+
+
 }

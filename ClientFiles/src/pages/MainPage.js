@@ -13,7 +13,7 @@ class MainPage extends Component {
             <div className="pageSwitcher">
             <NavLink
                 to="/sign-in"
-                activeClassName="pageSwitcherItem-active"
+                className="pageSwitcherItem-active"
                 className="pageSwitcherItem"
             >
                 Sign In
@@ -21,7 +21,7 @@ class MainPage extends Component {
             <NavLink
                 exact
                 to="/sign-up"
-                activeClassName="pageSwitcherItem-active"
+                className="pageSwitcherItem-active"
                 className="pageSwitcherItem"
             >
                 Sign Up
@@ -31,7 +31,7 @@ class MainPage extends Component {
         <div className="formTitle">
             <NavLink
                 to="/sign-in"
-                activeClassName="formTitleLink-active"
+                className="formTitleLink-active"
                 className="formTitleLink"
             >
                 Sign In
@@ -40,7 +40,7 @@ class MainPage extends Component {
             <NavLink
                 exact
                 to="/sign-up"
-                activeClassName="formTitleLink-active"
+                className="formTitleLink-active"
                 className="formTitleLink"
             >
                 Sign Up
