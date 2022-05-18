@@ -11,9 +11,11 @@ import SignInForm from "./pages/SignInForm";
 import MainPage from "./pages/MainPage";
 import HomePage from "./pages/HomePage";
 import StorePage from "./pages/StorePage";
+import ManageStores from "./pages/ManageStores";
 import LogoutButton from "./Components/LogoutButton";
 import LoginButton from "./Components/LoginButton";
 import RegisterButton from "./Components/RegisterButton";
+import ManageStoresButton from "./Components/ManageStoresButton";
 
 import "./App.css";
 
@@ -55,6 +57,7 @@ function  render() {
                 >
                   Home
                 </NavLink>
+                <ManageStoresButton/>
                 <LoginButton/>
                 <RegisterButton/>
                 <LogoutButton/>
@@ -69,6 +72,7 @@ function  render() {
             <Route path="/home" element={<HomePage/>} />
             <Route path="/open-new-store" element={<OpenNewStore/>} />
             <Route path="/store/:storeid" element={<StorePage/>} />
+            <Route path="/manage-stores" element={<ManageStores/>} />
             </Routes>
 
 

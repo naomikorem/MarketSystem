@@ -11,7 +11,7 @@ import ObjectsGrid from "../Components/ObjectsGrid";
 // Navigate to new URL
 //navigate("/keyhole")
 
-class HomePage extends Component {
+class ManageStores extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -24,7 +24,7 @@ class HomePage extends Component {
 
     async componentDidMount() {
         await connectedPromise;
-        stompClient.subscribe('/user/topic/getStoresResult', (r) => {
+        stompClient.subscribe('/user/topic/getUsersStoresResult', (r) => {
             const res = JSON.parse(r["body"]);
             if (res.errorMessage == null)
             {
@@ -37,7 +37,7 @@ class HomePage extends Component {
                 this.setState({[this.state.error]: this.state.error});
             }
         });
-        stompClient.send("/app/market/getStores", {}, {});
+        stompClient.send("/app/market/getUsersStores", {}, {});
     }
 
     componentWillUnmount() {
@@ -47,10 +47,10 @@ class HomePage extends Component {
     render() {
         return (
             <div>
-            <h1>Hello {user ? user.userName : "Guest"}, Choose a store to view</h1>
-        <div className="store-grid-container">
-            <ObjectsGrid listitems={this.state.listitems} link={"store"}/>
-        </div>
+                <h1>Hello {user ? user.userName : "Guest"}, Choose a store to manage</h1>
+                <div className="store-grid-container">
+                    <ObjectsGrid listitems={this.state.listitems} link={"edit-store"}/>
+                </div>
             </div>
 
         );
@@ -59,7 +59,7 @@ class HomePage extends Component {
 
 function wrapRender() {
     return <div>
-        <HomePage/>
+        <ManageStores/>
     </div>
 }
 

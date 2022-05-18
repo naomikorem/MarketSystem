@@ -78,6 +78,17 @@ public class Service {
     }
 
 
+    @MessageMapping("/market/getUsersStores")
+    @SendToUser("/topic/getUsersStoresResult")
+    public Response<List<StoreDTO>> getUsersStores(SimpMessageHeaderAccessor headerAccessor) {
+        Response<Collection<Store>> stores = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getUsersStores();
+        if (stores.hadError())
+            return new Response<>(stores.getErrorMessage());
+        List<StoreDTO> dto_stores = stores.getObject().stream().map(this::convertToStoreDTO).collect(Collectors.toList());
+        return new Response<>(dto_stores);
+    }
+
+
 
     private StoreDTO convertToStoreDTO(Store store)
     {
