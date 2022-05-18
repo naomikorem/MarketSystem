@@ -4,7 +4,7 @@ import {stompClient, connectedPromise, UserContext, user, setUser} from "../App"
 
 function onLogoutButton() {
     stompClient.send("/app/market/logout", {}, {});
-    setUser(undefined);
+    setUser(null);
 }
 
 function render() {

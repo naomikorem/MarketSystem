@@ -174,13 +174,6 @@ public class Service {
         return new Response<>(storeItems);
     }
 
-    @MessageMapping("/market/logout")
-    @SendToUser("/topic/logoutResult")
-    public Response<Boolean> logout (SimpMessageHeaderAccessor headerAccessor) {
-
-
-        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).logout();
-    }
 
     @MessageMapping("/market/openNewStore")
     @SendToUser("/topic/openNewStoreResult")

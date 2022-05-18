@@ -1,4 +1,4 @@
-import {stompClient, connectedPromise} from "../App";
+import {stompClient, connectedPromise, user} from "../App";
 import React, { Component } from "react";
 import {Link, NavLink, useNavigate} from "react-router-dom";
 
@@ -16,7 +16,6 @@ class HomePage extends Component {
         this.state = {
             listitems: [],
             error: "",
-            user: JSON.parse(sessionStorage.getItem('user'))
         };
     }
 
@@ -52,7 +51,7 @@ class HomePage extends Component {
     render() {
         return (
             <div>
-            <h1>Hello {this.state.user ? this.state.user.userName : "Guest"}, Choose a store to view</h1>
+            <h1>Hello {user ? user.userName : "Guest"}, Choose a store to view</h1>
         <div className="store-grid-container">
             {this.state.listitems.map((listitem, index) => (
                 <div key={index} className={"store-grid-item"}>
