@@ -18,18 +18,8 @@ class HomePage extends Component {
             error: "",
             user: JSON.parse(sessionStorage.getItem('user'))
         };
-
-        this.onLogoutButton = this.onLogoutButton.bind(this)
     }
 
-
-
-    handleClick = (index) => {
-        console.log("click" + index);
-        console.log(this.state.listitems[index]);
-        // const navigate = useNavigate();
-        // navigate('sign-in');
-    }
 
 
     async componentDidMount() {
@@ -61,33 +51,19 @@ class HomePage extends Component {
 
     render() {
         return (
-            <React.Fragment>
-                <div>
-                <NavLink
-                    to="/home"
-                    className={(navData) => navData.isActive ? "pageSwitcherItem-active" : "pageSwitcherItem"}
-                >
-                    Home
-                </NavLink>
-                    <button className={"pageSwitcherItem"} onClick={this.onLogoutButton}>
-                        Logout
-                    </button>
+            <div>
+            <h1>Hello {this.state.user ? this.state.user.userName : "Guest"}, Choose a store to view</h1>
+        <div className="store-grid-container">
+            {this.state.listitems.map((listitem, index) => (
+                <div key={index} className={"store-grid-item"}>
+                    <Link to={`/store/${listitem.id}`} className="storeLink">
+                        {listitem.name}
+                    </Link>
                 </div>
-                <h1>Hello {this.state.user ? this.state.user.userName : "Guest"}, Choose a store to view</h1>
-                <div className="store-grid-container">
-                    {this.state.listitems.map((listitem, index) => (
-                        <div key={index} className={"store-grid-item"}>
-                        <Link to={`/store/${listitem.id}`} className="storeLink">
-                            {listitem.name}
-                        </Link>
-                        </div>
-                    ))}
-                </div>
+            ))}
+        </div>
+            </div>
 
-                <label className="errorLabel">
-                    {this.state.error}
-                </label>
-            </React.Fragment>
         );
     }
 }
