@@ -1,6 +1,7 @@
 package ServiceLayer;
 
 import DomainLayer.Response;
+import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemImplementor;
@@ -56,8 +57,15 @@ public class Service {
 
         ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).register("store@gmail.com", "store", "store", "store", "store");
         ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).login("store", "store");
-        ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addNewStore("store");
-        ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addNewStore("another store");
+        Response<Store> rStore1 = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addNewStore("store");
+        Response<Store> rStore2 = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addNewStore("another store");
+
+        ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToStore(rStore1.getObject().getStoreId(), "banana", Category.Food, 55, 5);
+        Response<Item> rBanana = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToStore(rStore1.getObject().getStoreId(), "banana", Category.Food, 55, 5);
+        Response<Item> rOrange= ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToStore(rStore1.getObject().getStoreId(), "orange", Category.Food, 20, 9);
+        Response<Item> rApple = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToStore(rStore1.getObject().getStoreId(), "apple", Category.Food, 10, 2);
+        Response<Item> rShirt= ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToStore(rStore1.getObject().getStoreId(), "shirt", Category.Clothing, 20, 3);
+
 
 
         Response<Collection<Store>> stores = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getAllStores();
@@ -69,6 +77,8 @@ public class Service {
         return new Response<>(dto_stores);
     }
 
+
+
     private StoreDTO convertToStoreDTO(Store store)
     {
         StoreDTO dto_store = new StoreDTO();
@@ -78,7 +88,7 @@ public class Service {
         dto_store.founder = store.getFounder();
         for(Map.Entry<Item, Integer> item_amount: store.getItems().entrySet())
         {
-            ItemDTO item = convertToItemDTO(item_amount.getKey());
+            ItemDTO item = convertToItemDTO(item_amount.getKey(), item_amount.getValue());
             Integer amount = item_amount.getValue();
             dto_store.items.put(item, amount);
         }
@@ -111,14 +121,14 @@ public class Service {
         basket_dto.Store_id = basket.getStoreId();
         for(Map.Entry<Item, Integer> item_amount: basket.getItemsAndAmounts())
         {
-            ItemDTO item = convertToItemDTO(item_amount.getKey());
+            ItemDTO item = convertToItemDTO(item_amount.getKey(), item_amount.getValue());
             Integer amount = item_amount.getValue();
             basket_dto.items_and_amounts.put(item, amount);
         }
         return basket_dto;
     }
 
-    private ItemDTO convertToItemDTO(Item item)
+    private ItemDTO convertToItemDTO(Item item, int amount)
     {
         ItemDTO item_dto = new ItemDTO();
         item_dto.item_id = item.getId();
@@ -126,14 +136,13 @@ public class Service {
         item_dto.price = item.getPrice();
         item_dto.product_name = item.getProductName();
         item_dto.category = item.getCategory().toString();
+        item_dto.amount = amount;
         return item_dto;
     }
 
     @MessageMapping("/market/getStoreInfo")
     @SendToUser("/topic/getStoreInfoResult")
     public Response<StoreDTO> getStore (SimpMessageHeaderAccessor headerAccessor, Map<String, Integer> map) {
-
-
         Response<Store> stores = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getStore(map.get("id"));
 
         if (stores.hadError())
@@ -141,6 +150,20 @@ public class Service {
         StoreDTO dtoStore = convertToStoreDTO(stores.getObject());
 
         return new Response<>(dtoStore);
+    }
+
+    @MessageMapping("/market/getStoreItems")
+    @SendToUser("/topic/getStoreItemsResult")
+    public Response<List<ItemDTO>> getStoreItems (SimpMessageHeaderAccessor headerAccessor, Map<String, Integer> map) {
+        Response<Map<Item, Integer>> items = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getItems(map.get("id"));
+
+        if (items.hadError())
+            return new Response<>(items.getErrorMessage());
+
+        List<ItemDTO> storeItems = items.getObject().entrySet().stream()
+                .map(entry -> convertToItemDTO(entry.getKey(), entry.getValue())).collect(Collectors.toList());
+
+        return new Response<>(storeItems);
     }
 
     @MessageMapping("/market/logout")
@@ -163,4 +186,28 @@ public class Service {
 
         return new Response<>(dtoStore);
     }
+
+//    @MessageMapping("/market/openNewStore")
+//    @SendToUser("/topic/getCartItemsResult")
+//    public Response<List<ShoppingBasket>> getCartItemsResult (SimpMessageHeaderAccessor headerAccessor) {
+//        ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).login("admin", "admin");
+//
+////        Response<Store> rStore1 = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addNewStore("admin store");
+////        ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToStore(rStore1.getObject().getStoreId(), "banana", Category.Food, 55, 5);
+////        Response<Item> rBanana = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToStore(rStore1.getObject().getStoreId(), "banana", Category.Food, 55, 5);
+////        Response<Item> rOrange= ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToStore(rStore1.getObject().getStoreId(), "orange", Category.Food, 20, 9);
+//
+//
+//        //((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToCart(rStore1.getObject().getStoreId(), rBanana.getObject().getId(), 2);
+//        //((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToCart(rStore1.getObject().getStoreId(), rBanana.getObject().getId(), 2);
+//
+//        Response<List<ShoppingBasket>> shoppingBaskets = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getCartBaskets();
+//
+//        if (shoppingBaskets.hadError())
+//            return new Response<>(shoppingBaskets.getErrorMessage());
+//        //StoreDTO dtoStore = convertToStoreDTO(shoppingBaskets);
+//
+//        //return new Response<>(shoppingBaskets);
+//        return shoppingBaskets;
+//    }
 }

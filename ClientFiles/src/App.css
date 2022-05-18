@@ -192,3 +192,14 @@
   margin: 5%;
   border-radius: 15px;
 }
+
+.items-grid {
+
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  /*padding: 20px;*/
+  font-size: 13px;
+  text-align: center;
+  margin: 5%;
+  border-radius: 15px;
+}
