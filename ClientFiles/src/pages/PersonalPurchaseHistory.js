@@ -13,7 +13,7 @@ class PersonalPurchaseHistoryItem extends Component {
         const history_item = this.props.item;
 
         return (
-            <div className="formCenter">
+            <div className="formCenterHistoryItem">
                 <div className="formField">
                     <h3>{history_item.product_name}</h3>
                 </div>
@@ -56,7 +56,7 @@ class PersonalPurchaseHistoryItem extends Component {
                     <button className="formFieldButton">Rate Item And Store</button>
                 </div>
                 <div className="formField">
-                    <button className="formFieldButton">Review Item</button>
+                    <button className="formFieldButton">Complain</button>
                 </div>
             </div>
         );
@@ -68,7 +68,7 @@ export default class PersonalPurchaseHistory extends Component{
     constructor() {
         super();
         this.state = {
-           history_items: [],
+            history_items: [],
             error: ""
         };
     }
@@ -78,7 +78,7 @@ export default class PersonalPurchaseHistory extends Component{
         stompClient.subscribe('/user/topic/getPersonalHistoryResult', (r) => {
             let response = JSON.parse(r["body"]);
             if (!response.errorMessage) {
-                this.state.history_items = response.object
+                this.state.history_items = response.object.items
                 this.setState({[this.state.history_items]: this.state.history_items});
                 console.log(this.state.history_items);
 
@@ -89,7 +89,8 @@ export default class PersonalPurchaseHistory extends Component{
                 this.setState({[this.state.error]: this.state.error});
             }
         });
-        stompClient.send("/app/market/getPersonalHistory", {}, JSON.stringify({'username' : user.name}));
+        console.log(user);
+        stompClient.send("/app/market/getPersonalHistory", {}, JSON.stringify({"username" : user.userName}));
     }
 
     componentWillUnmount() {
@@ -98,21 +99,22 @@ export default class PersonalPurchaseHistory extends Component{
 
     render() {
         return (
+            user != null ?
             <React.Fragment>
                 <div className="formCenter">
-                    <h1>Choose store to close permanently</h1>
+                    <h1>Personal Purchase History</h1>
                 </div>
-                <div className="store-grid-container">
+                <div className="grid-container">
                     {this.state.history_items.map((item) => (
 
-                        <HistoryItem
+                        <PersonalPurchaseHistoryItem
                             key={item.id}
                             item = {item}
                         />
                     ))}
                 </div>
                 <ResultLabel text={this.state.message} hadError={this.state.hadError}/>
-            </React.Fragment>
+            </React.Fragment> : null
         );
     }
 }

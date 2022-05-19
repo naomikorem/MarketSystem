@@ -21,6 +21,8 @@ import ProfileButton from "./Components/ProfileButton"
 import ManageStoresButton from "./Components/ManageStoresButton";
 import RemoveUserSubscription from "./pages/RemoveUserSubscriptionPage"
 import UserProfile from "./pages/UserProfilePage"
+import PersonalPurchaseHistory from "./pages/PersonalPurchaseHistory"
+import PersonalPurchaseHistoryButton from "./Components/PersonalPurchaseHistoryButton"
 
 import "./App.css";
 
@@ -71,6 +73,7 @@ function  render() {
                 <LoginButton/>
                 <RegisterButton/>
                 <LogoutButton/>
+                <PersonalPurchaseHistoryButton/>
                 <ProfileButton/>
               </div>
 
@@ -88,6 +91,7 @@ function  render() {
               <Route path="/manage-stores" element={<ManageStores/>} />
               <Route path="/remove-user-subscription-admin" element={<RemoveUserSubscription/>}/>
               <Route path="/user-profile-subscriber" element={<UserProfile/>} />
+              <Route path="/personal-purchase-history" element={<PersonalPurchaseHistory/>}/>
               <Route path="/popup" element={<Modal/>} />
               <Route path="/edit-store/:storeid" element={<EditStorePage/>} />
               <Route path="/*" element={<ErrorPage/>} />

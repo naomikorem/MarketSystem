@@ -348,3 +348,10 @@
   margin: 25px;
   font-size: 25px;
 }
+
+.formCenterHistoryItem {
+    background-color: #aba1e1;
+    border: none;
+    outline: none;
+    border-radius: 60px;
+}
