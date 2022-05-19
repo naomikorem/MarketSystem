@@ -77,6 +77,16 @@ public class Service {
         return new Response<>(dto_stores);
     }
 
+    @MessageMapping("/market/AddItemToCart")
+    @SendToUser("/topic/AddItemToCartResult")
+    public Response<ItemDTO> AddItemToCart(SimpMessageHeaderAccessor headerAccessor, Map<String, Integer> map) {
+        Response<Item> item = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING))
+                .addItemToCart(map.get("store_id"), map.get("item_id"), map.get("amount"));
+        if (item.hadError())
+            return new Response<>(item.getErrorMessage());
+
+        return new Response<>(convertToItemDTO(item.getObject(), map.get("amount")));
+    }
 
     @MessageMapping("/market/getUsersStores")
     @SendToUser("/topic/getUsersStoresResult")
