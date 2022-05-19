@@ -23,6 +23,8 @@ import RemoveUserSubscription from "./pages/RemoveUserSubscriptionPage"
 import UserProfile from "./pages/UserProfilePage"
 import PersonalPurchaseHistory from "./pages/PersonalPurchaseHistory"
 import PersonalPurchaseHistoryButton from "./Components/PersonalPurchaseHistoryButton"
+import CloseStorePermanentlyButton from "./Components/CloseStorePermanentlyButton"
+import UnsubscribeUserButton from "./Components/UnsubscribeUserButton";
 
 import "./App.css";
 
@@ -70,11 +72,13 @@ function  render() {
                   Home
                 </NavLink>
                 <ManageStoresButton/>
+                <PersonalPurchaseHistoryButton/>
+                <UnsubscribeUserButton/>
+                <CloseStorePermanentlyButton/>
+                <ProfileButton/>
                 <LoginButton/>
                 <RegisterButton/>
                 <LogoutButton/>
-                <PersonalPurchaseHistoryButton/>
-                <ProfileButton/>
               </div>
 
             </React.Fragment>
