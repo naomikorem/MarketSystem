@@ -159,7 +159,7 @@ public class StoreController {
             throw new IllegalArgumentException("This user cannot assign a manager");
         }
         if (!s.canBecomeManager(manager)) {
-            throw new IllegalArgumentException(String.format("%s cannot be promoted to be a manager of the store with store id %s", manager, storeId));
+            throw new IllegalArgumentException(String.format("%s cannot be promoted to be a manager of the store with store id %s", manager.getName(), storeId));
         }
         s.addManager(owner.getName(), manager);
         LogUtility.info(String.format("%s assigned %s as a manager at store %s", owner.getName(), manager, storeId));
@@ -175,7 +175,7 @@ public class StoreController {
             throw new IllegalArgumentException("This user cannot assign another user to be an owner");
         }
         if (!s.canBecomeOwner(newOwner)) {
-            throw new IllegalArgumentException(String.format("%s cannot be promoted to be a an owner of the store with store id %s", newOwner, storeId));
+            throw new IllegalArgumentException(String.format("%s cannot be promoted to be a an owner of the store with store id %s", newOwner.getName(), storeId));
         }
         s.addOwner(owner.getName(), newOwner);
         LogUtility.info(String.format("%s assigned %s as an owner at store %s", owner.getName(), newOwner, storeId));
