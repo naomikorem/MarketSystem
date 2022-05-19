@@ -2,6 +2,8 @@ import {stompClient, connectedPromise, user} from "../App";
 import React, { Component } from "react";
 import {Link, NavLink, useNavigate} from "react-router-dom";
 import ObjectsGrid from "../Components/ObjectsGrid";
+import TextField from "@material-ui/core/TextField";
+
 
 class HomePage extends Component {
     constructor(props) {
@@ -9,7 +11,9 @@ class HomePage extends Component {
         this.state = {
             listitems: [],
             error: "",
+            searchValue : "",
         };
+        this.handleChange = this.handleChange.bind(this);
     }
 
 
@@ -35,12 +39,23 @@ class HomePage extends Component {
         stompClient.unsubscribe('/user/topic/getStoresResult');
     }
 
+    handleChange(event) {
+        this.setState({
+            [event.target.name]: event.target.value //set this.state.value to the input's value
+        });
+    }
+
     render() {
         return (
             <div>
             <h1>Hello {user ? user.userName : "Guest"}, Choose a store to view</h1>
-        <div className="store-grid-container">
-            <ObjectsGrid listitems={this.state.listitems} link={"store"}/>
+
+                <TextField id="outlined-basic" label="Search a store" variant="filled" className={"searchBar"} value={this.state.seachValue} onChange={this.handleChange} name="searchValue"/>
+
+                <div className="store-grid-container">
+            <ObjectsGrid listitems={this.state.listitems.filter(s => {
+                return s.name.includes(this.state.searchValue)
+            })} link={"store"}/>
         </div>
             </div>
 
