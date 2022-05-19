@@ -6,6 +6,7 @@ import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemImplementor;
+import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.HistoryManagement.ItemHistory;
 import DomainLayer.Users.ShoppingBasket;
@@ -117,6 +118,8 @@ public class Service {
     @MessageMapping("/market/getPersonalHistory")
     @SendToUser("/topic/getPersonalHistoryResult")
     public Response<HistoryDTO> getPersonalPurchaseHistory(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
+        ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
+
         Response<History> history = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getPurchaseHistory(map.get("username"));
         if(history.hadError())
             return new Response<>(history.getErrorMessage());

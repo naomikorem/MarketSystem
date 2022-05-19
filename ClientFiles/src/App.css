@@ -356,3 +356,10 @@
 .white-color{
     color: white;
 }
+
+.formCenterHistoryItem {
+    background-color: #aba1e1;
+    border: none;
+    outline: none;
+    border-radius: 60px;
+}
