@@ -12,6 +12,7 @@ import MainPage from "./pages/MainPage";
 import HomePage from "./pages/HomePage";
 import StorePage from "./pages/StorePage";
 import ManageStores from "./pages/ManageStores";
+import EditStorePage from "./pages/EditStorePage";
 import LogoutButton from "./Components/LogoutButton";
 import LoginButton from "./Components/LoginButton";
 import RegisterButton from "./Components/RegisterButton";
@@ -80,6 +81,7 @@ function  render() {
               <Route path="/modify-cart" element={<Cart/>} />
               <Route path="/manage-stores" element={<ManageStores/>} />
               <Route path="/popup" element={<Modal/>} />
+              <Route path="/edit-store/:storeid" element={<EditStorePage/>} />
               <Route path="/*" element={<ErrorPage/>} />
             </Routes>
 

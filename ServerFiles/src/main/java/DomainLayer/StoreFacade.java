@@ -60,11 +60,15 @@ public class StoreFacade {
     }
 
     public Response<Store> getStore(int id) {
-        Store s = storeController.getStore(id);
-        if (s == null) {
-            throw new IllegalArgumentException(String.format("Could not find store with id %s", id));
+        try {
+            Store s = storeController.getStore(id);
+            if (s == null) {
+                throw new IllegalArgumentException(String.format("Could not find store with id %s", id));
+            }
+            return new Response<>(s);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
         }
-        return new Response<>(s);
     }
 
     public Response<Set<Item>> getItemsWithNameContains(String name) {
