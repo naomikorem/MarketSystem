@@ -17,7 +17,10 @@ import CloseStorePermanentlyPage from "./pages/CloseStorePermanently"
 import LogoutButton from "./Components/LogoutButton";
 import LoginButton from "./Components/LoginButton";
 import RegisterButton from "./Components/RegisterButton";
+import ProfileButton from "./Components/ProfileButton"
 import ManageStoresButton from "./Components/ManageStoresButton";
+import RemoveUserSubscription from "./pages/RemoveUserSubscriptionPage"
+import UserProfile from "./pages/UserProfilePage"
 
 import "./App.css";
 
@@ -68,6 +71,7 @@ function  render() {
                 <LoginButton/>
                 <RegisterButton/>
                 <LogoutButton/>
+                <ProfileButton/>
               </div>
 
             </React.Fragment>
@@ -80,8 +84,10 @@ function  render() {
               <Route path="/open-new-store" element={<OpenNewStore/>} />
               <Route path="/store/:storeid" element={<StorePage/>} />
               <Route path="/modify-cart" element={<Cart/>} />
-              <Route path="/close-store-permanently" element={<CloseStorePermanentlyPage/>} />
+              <Route path="/close-store-permanently-admin" element={<CloseStorePermanentlyPage/>} />
               <Route path="/manage-stores" element={<ManageStores/>} />
+              <Route path="/remove-user-subscription-admin" element={<RemoveUserSubscription/>}/>
+              <Route path="/user-profile-subscriber" element={<UserProfile/>} />
               <Route path="/popup" element={<Modal/>} />
               <Route path="/edit-store/:storeid" element={<EditStorePage/>} />
               <Route path="/*" element={<ErrorPage/>} />

@@ -7,22 +7,11 @@ class StoreToClose extends Component {
 
     constructor() {
         super();
-        this.labelClass = "StoreToClose"
-
-        this.state = {
-            error: ""
-        };
         this.handleCloseStore = this.handleCloseStore.bind(this);
     }
 
-    async handleCloseStore(store_id) {
-        await connectedPromise;
-        stompClient.subscribe('/user/topic/closeStorePermanentlyStoreResult', (r) => {
-            let res = JSON.parse(r["body"]);
-            this.state.error = res.errorMessage;
-            this.setState({[this.state.error]: this.state.error});
-        });
-        stompClient.send("/app/market/closeStorePermanentlyStore", {}, JSON.stringify({"storeId" : store_id}));
+    handleCloseStore(store_id) {
+        stompClient.send("/app/market/closeStorePermanently", {}, JSON.stringify({"storeId" : store_id}));
     }
 
     render() {
@@ -35,7 +24,6 @@ class StoreToClose extends Component {
                         <h3>{store.name}</h3>
                     </div>
                 </button>
-                <ResultLabel text={this.state.error} hadError={this.state.error != ""}/>
             </div>
         );
     }
@@ -47,7 +35,9 @@ export default class CloseStorePermanentlyPage extends Component{
     constructor() {
         super();
         this.state = {
-            liststores: []
+            liststores: [],
+            message: "",
+            hadError: false
         };
     }
 
@@ -65,13 +55,33 @@ export default class CloseStorePermanentlyPage extends Component{
             }
         });
         stompClient.send("/app/market/getStores", {}, JSON.stringify({}));
+
+        await connectedPromise;
+        stompClient.subscribe('/user/topic/closeStorePermanentlyResult', (r) => {
+            let res = JSON.parse(r["body"]);
+            if(res.errorMessage || !res.object)
+            {
+                this.state.message = "Could not close the store permanently";
+                this.state.hadError = true;
+                this.setState({[this.state.hadError]: this.state.hadError});
+            }
+            else {
+                this.state.message = "Closed the store successfully";
+            }
+            this.setState({[this.state.message]: this.state.message});
+        });
+    }
+
+    componentWillUnmount() {
+        stompClient.unsubscribe('/user/topic/getStoresResult');
+        stompClient.unsubscribe('/user/topic/closeStorePermanentlyResult');
     }
 
     render() {
         return (
             <React.Fragment>
                 <div className="formCenter">
-                    <h1>Welcome to store {this.state.storeName}</h1>
+                    <h1>Choose store to close permanently</h1>
                 </div>
                 <div className="store-grid-container">
                     {this.state.liststores.map((store) => (
@@ -82,6 +92,7 @@ export default class CloseStorePermanentlyPage extends Component{
                         />
                     ))}
                 </div>
+                <ResultLabel text={this.state.message} hadError={this.state.hadError}/>
             </React.Fragment>
         );
     }
