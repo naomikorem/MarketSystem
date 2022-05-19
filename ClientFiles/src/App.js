@@ -92,9 +92,6 @@ function  render() {
               <Route path="/edit-store/:storeid" element={<EditStorePage/>} />
               <Route path="/*" element={<ErrorPage/>} />
             </Routes>
-
-
-
           </div>
 
         </div>

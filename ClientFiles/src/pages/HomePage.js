@@ -48,12 +48,12 @@ class HomePage extends Component {
     render() {
         return (
             <div>
-            <h1>Hello {user ? user.userName : "Guest"}, Choose a store to view</h1>
+            <h1 align="center">Hello {user ? user.userName : "Guest"}, Choose a store to view</h1>
 
                 <TextField id="outlined-basic" label="Search a store" variant="filled" className={"searchBar"} value={this.state.seachValue} onChange={this.handleChange} name="searchValue"/>
 
                 <div className="store-grid-container">
-            <ObjectsGrid listitems={this.state.listitems.filter(s => {
+                    <ObjectsGrid listitems={this.state.listitems.filter(s => {
                 return s.name.includes(this.state.searchValue)
             })} link={"store"}/>
         </div>
