@@ -9,7 +9,7 @@ class ObjectsGrid extends Component {
         <div className="store-grid-container">
             {this.props.listitems.map((listitem, index) => (
                 <div key={index} className={"store-grid-item"}>
-                    <Link to={`/${this.props.link}/${listitem.id}`} className="storeLink">
+                    <Link to={`/${this.props.link}/${listitem.id}`} state={{ storeName: listitem.name }} className="storeLink">
                         {listitem.name}
                     </Link>
                 </div>
