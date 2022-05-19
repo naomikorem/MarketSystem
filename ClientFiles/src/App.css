@@ -277,13 +277,17 @@
     width: 16%;
 }
 
+.editManagerButton {
+    width: 16%;
+    margin: 0% 5% 0% 44%;
+}
+
 .addOwnerButton {
     margin: 2% 0% 0% 5%;
     width: 16%;
 }
 
 .deleteManagerButton {
-    margin: 0% 0% 0% 65%;
     background-color: darkred;
     width: 16%;
 }
