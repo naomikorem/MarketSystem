@@ -62,8 +62,6 @@ class StorePage extends Component {
                 this.state.error = errorMsg;
                 this.state.is_error = true
                 this.setState({[this.state.is_error]: true});
-                console.log("is error")
-                console.log(this.state.is_error)
             }
             else {
                 this.state.is_error = false
