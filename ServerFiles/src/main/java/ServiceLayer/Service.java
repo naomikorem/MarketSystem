@@ -109,6 +109,8 @@ public class Service {
             Integer amount = item_amount.getValue();
             dto_store.items.put(item, amount);
         }
+        dto_store.managers = store.getManagers();
+        dto_store.owners = store.getOwners();
         return dto_store;
     }
 
@@ -203,6 +205,33 @@ public class Service {
         StoreDTO dtoStore = convertToStoreDTO(stores.getObject());
 
         return new Response<>(dtoStore);
+    }
+
+    @MessageMapping("/market/removeManager")
+    @SendToUser("/topic/removeManagerResult")
+    public Response<Boolean> removeManager (SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).removeManager((String) map.get("toRemove"), (int) map.get("storeId"));
+    }
+
+    @MessageMapping("/market/addManager")
+    @SendToUser("/topic/addManagerResult")
+    public Response<Boolean> addManager (SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addManager((String) map.get("manager"), (int) map.get("storeId"));
+        return res;
+    }
+
+
+    @MessageMapping("/market/removeOwner")
+    @SendToUser("/topic/removeOwnerResult")
+    public Response<Boolean> removeOwner (SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).removeOwner((String) map.get("toRemove"), (int) map.get("storeId"));
+    }
+
+    @MessageMapping("/market/addOwner")
+    @SendToUser("/topic/addOwnerResult")
+    public Response<Boolean> addOwner (SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addOwner((String) map.get("owner"), (int) map.get("storeId"));
+        return res;
     }
 
 //    @MessageMapping("/market/openNewStore")
