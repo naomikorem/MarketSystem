@@ -24,6 +24,7 @@ import * as SockJS from 'sockjs-client';
 import OpenNewStore from "./pages/OpenNewStore";
 import ErrorPage from "./pages/ErrorPage";
 import Cart from "./Components/cart";
+import Modal from "./Components/Modal";
 
 const socket = new SockJS("http://localhost:8080/market");
 export const stompClient = Stomp.over(socket);
@@ -44,6 +45,8 @@ export let [user, setUser] = [undefined, undefined]
 
 function  render() {
     [user, setUser] = useState(sessionStorage.getItem('user'))
+
+    //const [modalOpen, setModalOpen] = useState(false);
 
     return (
       <BrowserRouter >
@@ -76,6 +79,7 @@ function  render() {
               <Route path="/store/:storeid" element={<StorePage/>} />
               <Route path="/modify-cart" element={<Cart/>} />
               <Route path="/manage-stores" element={<ManageStores/>} />
+              <Route path="/popup" element={<Modal/>} />
               <Route path="/*" element={<ErrorPage/>} />
             </Routes>
 

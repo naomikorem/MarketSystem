@@ -1,24 +1,34 @@
-import React, {Component} from "react";
+import React, {Component, useState} from "react";
 import {useParams} from "react-router-dom";
 import {stompClient, connectedPromise} from "../App";
+import Popup from 'react-popup';
+import Modal from "../Components/Modal";
 
 class StoreItem extends Component {
     addToCart() {
+        Popup.alert("asdsdfdf");
         console.log("dsfdgfhg")
     }
 
     render() {
         const item = this.props.item;
+
+        //const [modalOpen, setModalOpen] = useState(false);
+
         return (
 
-            <button onClick={this.addToCart} key={item.id} className={"items-grid"}>
-                <div>
-                    <h1>{item.product_name}</h1>
-                    <p>Amount Left: {item.amount}<br/>
-                        Category: {item.category}</p>
-                    <h2>₪{item.price}</h2>
-                </div>
-            </button>
+            <div>
+                <button onClick={() => {setModalOpen(true);}} key={item.id} className={"items-grid"}>
+                    <div>
+                        <h1>{item.product_name}</h1>
+                        <p>Amount Left: {item.amount}<br/>
+                            Category: {item.category}</p>
+                        <h2>₪{item.price}</h2>
+                    </div>
+                </button>
+
+            {/*{modalOpen && <Modal setOpenModal={setModalOpen} />}*/}
+            </div>
         );
     }
 }
