@@ -1,6 +1,30 @@
-import React, {Component} from "react";
+import React, {Component, useState} from "react";
 import {stompClient, connectedPromise} from "../App";
 import ResultLabel from "../Components/ResultLabel";
+import AreYouSureModal from "../Components/AreYouSureModal";
+
+
+function RemoveAlert(props) {
+    let [modalOpen, setModalOpen] = useState(false);
+
+    const handleApply = (id) => {
+        stompClient.send("/app/market/removeSubscription", {}, JSON.stringify({"username" : props.username_to_unsubscribe}));
+    }
+
+    return (
+        <div>
+            <div className="formField">
+                <button onClick={() => {setModalOpen(true)}} className="formFieldButton">Remove</button>
+            </div>
+
+            {modalOpen && <AreYouSureModal
+                id = {1}
+                setOpenModal={setModalOpen}
+                onContinue={handleApply}/>}
+        </div>
+    );
+}
+
 
 class RemoveUserSubscription extends Component {
 
@@ -16,11 +40,6 @@ class RemoveUserSubscription extends Component {
         };
 
         this.handleChange = this.handleChange.bind(this);
-        this.handleApply = this.handleApply.bind(this);
-    }
-
-    handleApply() {
-        stompClient.send("/app/market/removeSubscription", {}, JSON.stringify({"username" : this.state.username_to_unsubscribe}));
     }
 
     handleChange(event) {
@@ -73,9 +92,11 @@ class RemoveUserSubscription extends Component {
                         onChange={this.handleChange}
                     />
                 </div>
-                <div className="formField">
-                    <button onClick={this.handleApply} className="formFieldButton">Remove</button>
-                </div>
+
+                <RemoveAlert/>
+                {/*<div className="formField">*/}
+                {/*    <button onClick={this.handleApply} className="formFieldButton">Remove</button>*/}
+                {/*</div>*/}
 
                 <ResultLabel text={this.state.message} hadError={this.state.hadError}/>
             </div>

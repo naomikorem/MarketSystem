@@ -32,7 +32,7 @@ function AreYouSureModal(props) {
                     </button>
                     <button onClick={() => {
                             props.setOpenModal(false);
-                            props.onContinue(props.id)}}>
+                            props.onContinue()}}>
                         I'm Sure
                     </button>
                 </div>
