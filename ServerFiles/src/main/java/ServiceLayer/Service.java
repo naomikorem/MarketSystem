@@ -88,6 +88,12 @@ public class Service {
         return new Response<>(dto_stores);
     }
 
+    @MessageMapping("/market/closeStorePermanentlyStore")
+    @SendToUser("/topic/closeStorePermanentlyStoreResult")
+    public Response<Boolean> closeStorePermanentlyStore(SimpMessageHeaderAccessor headerAccessor, Map<String, Integer> map) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).permanentlyCloseStore(map.get("storeId"));
+    }
+
 
 
     private StoreDTO convertToStoreDTO(Store store)
