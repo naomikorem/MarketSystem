@@ -12,7 +12,7 @@
 
 .modalContainer {
     color: black;
-    width: 70%;
+    width: 40%;
     height: 50%;
     border-radius: 12px;
     background-color: white;
@@ -25,7 +25,6 @@
 .modalContainer .title {
     display: inline-block;
     text-align: center;
-    margin-top: 10px;
 }
 
 .titleCloseBtn {
@@ -66,6 +65,17 @@
     border-radius: 8px;
     font-size: 20px;
     cursor: pointer;
+}
+
+.modalContainer .input-text {
+    width: 70%;
+    font-size: large;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.modalContainer .input-container{
+    text-align:center
 }
 
 #cancelBtn {

@@ -6,12 +6,10 @@ import Button from 'react-bootstrap/Button'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ManagersPopup from '../Components/ManagersPopup';
 import OwnersPopup from '../Components/OwnersPopup';
-
 //import { View } from 'react-native';
 //import { Text } from 'react-native-paper';
 
 import ResultLabel from "../Components/ResultLabel";
-
 
 
 class EditStorePage extends Component {
