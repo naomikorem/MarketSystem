@@ -317,7 +317,7 @@ public class StoreController {
         if (percentage < 0 || percentage > 1) {
             throw new IllegalArgumentException("Discount cannot be lower than 0 or higher than 1");
         }
-        if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
+        if (!owner.isSubscribed() || !s.canManageDiscounts(owner)) {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
         SimpleDiscountPolicy sdp = new SimpleDiscountPolicy(percentage, null);
@@ -326,7 +326,7 @@ public class StoreController {
     }
 
     private SimplePurchasePolicy createNewPolicy(User owner, Store s) {
-        if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
+        if (!owner.isSubscribed() || !s.canManagePurchasePolicy(owner)) {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
         SimplePurchasePolicy spp = new SimplePurchasePolicy(null);
@@ -357,7 +357,7 @@ public class StoreController {
 
     public void removeDiscount(User owner, int storeId, int discountId) {
         Store s = getStoreAndThrow(storeId);
-        if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
+        if (!owner.isSubscribed() || !s.canManageDiscounts(owner)) {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
         s.removeDiscount(discountId);
@@ -409,7 +409,7 @@ public class StoreController {
 
     public void addItemPredicateToDiscount(User owner, int storeId, int discountId, String type, int itemId) {
         Store s = getStoreAndThrow(storeId);
-        if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
+        if (!owner.isSubscribed() || !s.canManageDiscounts(owner)) {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
         SimplePredicate sp = new SimplePredicate(itemId);
@@ -418,7 +418,7 @@ public class StoreController {
 
     public void addItemPredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, int hour) {
         Store s = getStoreAndThrow(storeId);
-        if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
+        if (!owner.isSubscribed() || !s.canManagePurchasePolicy(owner)) {
             throw new IllegalArgumentException("This user cannot add items-predicate to policies");
         }
         SimplePredicate sp = new SimplePredicate(itemId,hour);
@@ -427,7 +427,7 @@ public class StoreController {
 
     public void addItemNotAllowedInDatePredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, Calendar date) {
         Store s = getStoreAndThrow(storeId);
-        if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
+        if (!owner.isSubscribed() || !s.canManagePurchasePolicy(owner)) {
             throw new IllegalArgumentException("This user cannot add items-predicate to policies");
         }
         SimplePredicate sp = new SimplePredicate(itemId,date);
@@ -436,7 +436,7 @@ public class StoreController {
 
     public void addCategoryPredicateToDiscount(User owner, int storeId, int discountId, String type, String categoryName) {
         Store s = getStoreAndThrow(storeId);
-        if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
+        if (!owner.isSubscribed() || !s.canManageDiscounts(owner)) {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
         SimplePredicate sp = new SimplePredicate(Category.valueOf(categoryName));
@@ -445,7 +445,7 @@ public class StoreController {
 
     public void addBasketRequirementPredicateToDiscount(User owner, int storeId, int discountId, String type, double minPrice) {
         Store s = getStoreAndThrow(storeId);
-        if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
+        if (!owner.isSubscribed() || !s.canManageDiscounts(owner)) {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
         SimplePredicate sp = new SimplePredicate((i) -> true, (b) -> b.calculatePrice() >= minPrice);
@@ -454,7 +454,7 @@ public class StoreController {
 
     public void addHourForItemBasketRequirementPredicateToPolicy(User owner, int storeId, int policyId, String type, int hour, int itemId) {
         Store s = getStoreAndThrow(storeId);
-        if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
+        if (!owner.isSubscribed() || !s.canManagePurchasePolicy(owner)) {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
         SimplePredicate sp = new SimplePredicate(itemId, hour);
@@ -463,7 +463,7 @@ public class StoreController {
 
     public void addBasketRequirementPredicateToPolicy(User owner, int storeId, int policyId, String type, double minPrice) {
         Store s = getStoreAndThrow(storeId);
-        if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
+        if (!owner.isSubscribed() || !s.canManagePurchasePolicy(owner)) {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
         SimplePredicate sp = new SimplePredicate((i) -> true, (b) -> b.calculatePrice() >= minPrice);

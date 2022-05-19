@@ -47,4 +47,8 @@ public class Permission {
     public void setGivenBy(String givenBy) {
         this.givenBy = givenBy;
     }
+
+    public byte getPermissionsMask() {
+        return permissionsMask;
+    }
 }

@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import TextField from "@material-ui/core/TextField";
 import ResultLabel from "../Components/ResultLabel";
+import ManagerPermissionPopup from "../Components/ManagerPermissionPopup";
 
 let [show, setShow] = [undefined, undefined];
 let handleClose = () => undefined;
@@ -84,6 +85,7 @@ class ManagersPopup extends Component {
                                 this.props.managers.map((manager, index) =>
                                     <div key={index}>
                                         <label className={"managerName"}> {manager}</label>
+                                        <ManagerPermissionPopup storeId={this.props.storeId} manager={manager}/>
                                         <Button className={"deleteManagerButton"} onClick={() =>
                                             deleteManager(manager, this.props.storeId)
                                         }>Delete</Button>

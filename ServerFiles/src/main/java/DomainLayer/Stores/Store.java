@@ -401,4 +401,12 @@ public class Store {
             return this.purchasePolicy.applyPolicy(sb);
         }
     }
+
+    public boolean canManageDiscounts(User user) {
+        return isOwner(user) || (isManager(user) && managers.get(user).canChangeDiscount());
+    }
+
+    public boolean canManagePurchasePolicy(User user) {
+        return isOwner(user) || (isManager(user) && managers.get(user).canChangePurchase());
+    }
 }

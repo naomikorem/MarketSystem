@@ -1,7 +1,7 @@
 import React from "react";
 import "./Modal.css";
 
-function Modal(props) {
+function AreYouSureModal(props) {
     return (
         <div className="modalBackground">
             <div className="modalContainer">
@@ -15,14 +15,11 @@ function Modal(props) {
                     </button>
                 </div>
                 <div className="title">
-                    <h1>{props.product_name}</h1>
+                    <h1>Are You Sure?</h1>
                 </div>
                 <div className="body">
-                    <p>Choose amount out of {props.amount}</p>
+                    <p>This action is not a reversible</p>
 
-                </div>
-                <div className="input-container">
-                    <input className="input-text" type="number" id="input-amount" name="amount" min="1" max={props.amount}/>
                 </div>
                 <div className="footer">
                     <button
@@ -35,8 +32,8 @@ function Modal(props) {
                     </button>
                     <button onClick={() => {
                             props.setOpenModal(false);
-                            props.onContinue(props.id, document.getElementById("input-amount").value);}}>
-                        Continue
+                            props.onContinue(props.id)}}>
+                        I'm Sure
                     </button>
                 </div>
             </div>
@@ -44,4 +41,4 @@ function Modal(props) {
     );
 }
 
-export default Modal;
+export default AreYouSureModal;

@@ -3,6 +3,7 @@ package ServiceLayer;
 import DomainLayer.Response;
 import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
+import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemImplementor;
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
@@ -207,6 +208,13 @@ public class Service {
         return item_dto;
     }
 
+    private PermissionDTO convertToPermissionDTO(Permission p) {
+        PermissionDTO dto = new PermissionDTO();
+        dto.permissionMask = p.getPermissionsMask();
+        dto.givenBy = p.getGivenBy();
+        return dto;
+    }
+
     @MessageMapping("/market/getStoreInfo")
     @SendToUser("/topic/getStoreInfoResult")
     public Response<StoreDTO> getStore (SimpMessageHeaderAccessor headerAccessor, Map<String, Integer> map) {
@@ -280,6 +288,22 @@ public class Service {
     public Response<Boolean> addOwner (SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
         Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addOwner((String) map.get("owner"), (int) map.get("storeId"));
         return res;
+    }
+
+    @MessageMapping("/market/getManagersPermission")
+    @SendToUser("/topic/getManagersPermissionResult")
+    public Response<PermissionDTO> getManagersPermission (SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<Permission> resp = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getManagersPermissions((int) map.get("storeId"), (String) map.get("manager"));
+        if (resp.hadError()) {
+            return new Response<>(resp.getErrorMessage());
+        }
+        return new Response<>(convertToPermissionDTO(resp.getObject()));
+    }
+
+    @MessageMapping("/market/setManagersPermission")
+    @SendToUser("/topic/setManagersPermissionResult")
+    public Response<Boolean> setManagersPermission (SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).setManagerPermission((String) map.get("manager"), (int) map.get("storeId"), ((Integer) map.get("permissionMask")).byteValue());
     }
 
 //    @MessageMapping("/market/openNewStore")

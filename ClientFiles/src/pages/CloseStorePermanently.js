@@ -2,31 +2,31 @@ import React, {Component, useState} from "react";
 import {useParams} from "react-router-dom";
 import {stompClient, connectedPromise} from "../App";
 import ResultLabel from "../Components/ResultLabel";
+import AreYouSureModal from "../Components/AreYouSureModal";
 
-class StoreToClose extends Component {
+function StoreToClose(props) {
+    let [modalOpen, setModalOpen] = useState(false);
 
-    constructor() {
-        super();
-        this.handleCloseStore = this.handleCloseStore.bind(this);
-    }
-
-    handleCloseStore(store_id) {
+    const handleCloseStore = (store_id) => {
         stompClient.send("/app/market/closeStorePermanently", {}, JSON.stringify({"storeId" : store_id}));
     }
 
-    render() {
-        const store = this.props.store;
+    const store = props.store;
 
-        return (
-            <div>
-                <button onClick={() => this.handleCloseStore(store.id)}>
-                    <div>
-                        <h3>{store.name}</h3>
-                    </div>
-                </button>
-            </div>
-        );
-    }
+    return (
+        <div>
+            <article onClick={() => {setModalOpen(true)}} key={store.id} className={"items-grid"}>
+                <div>
+                    <h1>{store.name}</h1>
+                </div>
+            </article>
+
+            {modalOpen && <AreYouSureModal
+                id={store.id}
+                setOpenModal={setModalOpen}
+                onContinue={handleCloseStore}/>}
+        </div>
+    );
 }
 
 
