@@ -1,5 +1,5 @@
 import React, {Component, useState} from "react";
-import {useParams} from "react-router-dom";
+import {useLocation, useParams} from "react-router-dom";
 import {stompClient, connectedPromise} from "../App";
 import Modal from "../Components/Modal";
 import ResultLabel from "../Components/ResultLabel";
@@ -42,6 +42,7 @@ class StorePage extends Component {
 
     constructor(props) {
         super(props);
+        console.log(this.props)
 
         this.state = {
             listitems: [],
@@ -67,11 +68,10 @@ class StorePage extends Component {
             else {
                 this.state.is_error = false
                 this.setState({[this.state.is_error]: false});
-                this.state.error = `Successfully added ${res_item.object.amount} to cart`;
+                this.state.error = `Successfully added ${res_item.object.amount} items to cart`;
 
 
                 const index = this.state.listitems.findIndex(item => item.item_id === res_item.object.item_id)
-                //item.amount = res_item.object.amount;
                 this.state.listitems[index].amount = previous_amount - res_item.object.amount
                 console.log(this.state.listitems[index])
                 this.setState({[this.state.listitems]: this.state.listitems});
@@ -92,7 +92,7 @@ class StorePage extends Component {
         return (
         <React.Fragment>
           <div className="formCenter">
-            <h1>Welcome to -- {this.props.storeName}</h1>
+            <h1 align="center">Welcome to {this.props.storeName}</h1>
           </div>
             <div className="store-grid-container">
                 {this.state.listitems.map((listitem) => (
@@ -113,10 +113,13 @@ class StorePage extends Component {
 }
 
 function wrapRender() {
-    let {storeid, name} = useParams();
+    let {storeid} = useParams();
+    const location = useLocation()
+    const { storeName } = location.state
+
     return <div>
         <StorePage storeid={storeid}
-                   storeName={name}/>
+                   storeName={storeName}/>
     </div>
 }
 

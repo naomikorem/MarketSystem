@@ -313,3 +313,7 @@
     outline-color: black;
     border-color: black;
 }
+
+.center-text{
+    text-align:center
+}
