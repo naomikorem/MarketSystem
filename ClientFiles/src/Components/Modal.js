@@ -22,7 +22,7 @@ function Modal(props) {
 
                 </div>
                 <div className="input-container">
-                    <input className="input-text" type="number" id="amount" name="amount" min="1" max={props.amount}/>
+                    <input className="input-text" type="number" id="input-amount" name="amount" min="1" max={props.amount}/>
                 </div>
                 <div className="footer">
                     <button
@@ -33,7 +33,10 @@ function Modal(props) {
                     >
                         Cancel
                     </button>
-                    <button>Continue</button>
+                    <button onClick={() => {
+                        props.setOpenModal(false);
+                        props.onContinue(props.id, document.getElementById("input-amount").value);}}>Continue
+                    </button>
                 </div>
             </div>
         </div>
