@@ -12,6 +12,8 @@ import MainPage from "./pages/MainPage";
 import HomePage from "./pages/HomePage";
 import StorePage from "./pages/StorePage";
 import ManageStores from "./pages/ManageStores";
+import EditStorePage from "./pages/EditStorePage";
+import CloseStorePermanentlyPage from "./pages/CloseStorePermanently"
 import LogoutButton from "./Components/LogoutButton";
 import LoginButton from "./Components/LoginButton";
 import RegisterButton from "./Components/RegisterButton";
@@ -39,8 +41,14 @@ export const connectedPromise = new Promise(resolve => {
 export let [user, setUser] = [undefined, undefined]
 
 
+
+
+
+
 function  render() {
     [user, setUser] = useState(sessionStorage.getItem('user'))
+
+    //const [modalOpen, setModalOpen] = useState(false);
 
     return (
       <BrowserRouter >
@@ -72,7 +80,10 @@ function  render() {
               <Route path="/open-new-store" element={<OpenNewStore/>} />
               <Route path="/store/:storeid" element={<StorePage/>} />
               <Route path="/modify-cart" element={<Cart/>} />
+              <Route path="/close-store-permanently" element={<CloseStorePermanentlyPage/>} />
               <Route path="/manage-stores" element={<ManageStores/>} />
+              <Route path="/popup" element={<Modal/>} />
+              <Route path="/edit-store/:storeid" element={<EditStorePage/>} />
               <Route path="/*" element={<ErrorPage/>} />
             </Routes>
           </div>

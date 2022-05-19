@@ -245,3 +245,9 @@
   border: 1px solid #999;
   font-size: 20px;
 }
+
+.searchBar{
+  padding-left: 10%;
+  background-color: #CBC3E3;
+  border-radius: 4px;
+}
