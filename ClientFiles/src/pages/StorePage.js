@@ -1,47 +1,40 @@
 import React, {Component, useState} from "react";
 import {useParams} from "react-router-dom";
 import {stompClient, connectedPromise} from "../App";
-import Popup from 'react-popup';
 import Modal from "../Components/Modal";
 
-class StoreItem extends Component {
-    addToCart() {
-        Popup.alert("asdsdfdf");
-        console.log("dsfdgfhg")
-    }
+function StoreItem(props) {
+    const item = props.item;
+    let [modalOpen, setModalOpen] = useState(false);
 
-    render() {
-        const item = this.props.item;
+    return (
 
-        //const [modalOpen, setModalOpen] = useState(false);
+        <div>
+            <article onClick={() => {setModalOpen(true)}} key={item.id} className={"items-grid"}>
+                <div>
+                    <h1>{item.product_name}</h1>
+                    <p>Amount Left: {item.amount}<br/>
+                        Category: {item.category}</p>
+                    <h2>₪{item.price}</h2>
+                </div>
+            </article>
 
-        return (
-
-            <div>
-                <button onClick={() => {setModalOpen(true);}} key={item.id} className={"items-grid"}>
-                    <div>
-                        <h1>{item.product_name}</h1>
-                        <p>Amount Left: {item.amount}<br/>
-                            Category: {item.category}</p>
-                        <h2>₪{item.price}</h2>
-                    </div>
-                </button>
-
-            {/*{modalOpen && <Modal setOpenModal={setModalOpen} />}*/}
-            </div>
-        );
-    }
+        {modalOpen && <Modal amount={item.amount}
+                             product_name = {item.product_name}
+                             setOpenModal={setModalOpen} />}
+        </div>
+    );
 }
 
 
 class StorePage extends Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+        console.log(props.storeid)
 
         this.state = {
-            listitems: [],
-            storeName: ""
+            listitems: []
         };
     }
 
@@ -53,8 +46,6 @@ class StorePage extends Component {
                 this.state.listitems = response.object
                 this.setState({[this.state.listitems]: this.state.listitems});
                 console.log(this.state.listitems);
-                //console.log(this.state.listitems[0].product_name)
-                //console.log(this.state.listitems.map((listitem) => (listitem.)));
 
             }
         });
@@ -65,7 +56,7 @@ class StorePage extends Component {
         return (
         <React.Fragment>
           <div className="formCenter">
-            <h1>Welcome to store {this.state.storeName}</h1>
+            <h1>Welcome to store: {this.props.storeName}</h1>
           </div>
             <div className="store-grid-container">
                 {this.state.listitems.map((listitem) => (
@@ -79,23 +70,13 @@ class StorePage extends Component {
         </React.Fragment>
     );
   }
-
-    // renderItem(listitem) {
-    //     return(
-    //         <div key={listitem.id} className={"store-grid-item"}>
-    //             {/*<Link to={`/store/${listitem.id}`} className="storeLink">*/}
-    //             {/*    {listitem.name}*/}
-    //             {/*</Link>*/}
-    //             <label>
-    //                 {listitem.product_name}
-    //             </label>
-    //         </div>);
 }
 
 function wrapRender() {
-    let {storeid } = useParams();
+    let {storeid, name} = useParams();
     return <div>
-        <StorePage storeid={storeid}/>
+        <StorePage storeid={storeid}
+                   storeName={name}/>
     </div>
 }
 

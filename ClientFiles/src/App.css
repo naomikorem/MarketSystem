@@ -195,7 +195,8 @@
 
 .items-grid {
 
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: #a381bc;
+  color: #12130f;
   border: 1px solid rgba(0, 0, 0, 0.8);
   /*padding: 20px;*/
   font-size: 13px;
