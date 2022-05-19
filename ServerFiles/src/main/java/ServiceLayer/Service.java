@@ -5,6 +5,8 @@ import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemImplementor;
+import DomainLayer.SystemManagement.HistoryManagement.History;
+import DomainLayer.SystemManagement.HistoryManagement.ItemHistory;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 import ServiceLayer.DTOs.*;
@@ -14,6 +16,7 @@ import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -98,6 +101,34 @@ public class Service {
     @SendToUser("/topic/removeSubscriptionResult")
     public Response<Boolean> removeUserSubscription(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
         return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).deleteUser(map.get("username"));
+    }
+
+    @MessageMapping("/market/getPersonalHistory")
+    @SendToUser("/topic/getPersonalHistoryResult")
+    public Response<HistoryDTO> getPersonalPurchaseHistory(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
+        Response<History> history = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getPurchaseHistory(map.get("username"));
+        if(history.hadError())
+            return new Response<>(history.getErrorMessage());
+
+        return new Response<>(convertToHistoryDTO(history.getObject()));
+    }
+
+    private HistoryDTO convertToHistoryDTO(History history)
+    {
+        HistoryDTO dto_history = new HistoryDTO();
+        dto_history.items = new HashSet<>();
+        for (ItemHistory item : history.getHistoryItems())
+        {
+            ItemHistoryDTO dto_item = new ItemHistoryDTO();
+            dto_item.product_name = item.product_name;
+            dto_item.amount = item.amount;
+            dto_item.username = item.username;
+            dto_item.price_per_unit = item.price_per_unit;
+            dto_item.store_id = item.store_id;
+            dto_item.date = item.date;
+            dto_history.items.add(dto_item);
+        }
+        return dto_history;
     }
 
     private StoreDTO convertToStoreDTO(Store store)

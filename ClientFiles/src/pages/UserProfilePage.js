@@ -6,19 +6,39 @@ class UserProfile extends Component {
     render() {
         return (
             user != null ?
-            <div className="formCenter">
-                <h1>Hello {user.userName} to your profile page!</h1>
-                <div className="formField">
-                    <label className="formFieldLabel">
-                        First Name: {user.firstName}
-                    </label>
-                    <label className="formFieldLabel">
-                        Last Name: {user.lastName}
-                    </label>
-                    <label className="formFieldLabel">
-                        Email: {user.email}
-                    </label>
-                </div>
+                <div className="formCenter">
+                    <div className="formField">
+                        <label className="ProfileTitle">
+                            Hello @{user.userName} to your profile page!
+                        </label>
+                    </div>
+                    <div className="formField">
+                        <label className="formFieldProfileLabel">
+                            First Name:
+                        </label>
+                        <label className="formFieldProfileInputLabel">
+                            {user.firstName}
+                        </label>
+                    </div>
+                    <div className="formField">
+                        <label className="formFieldProfileLabel">
+                            Last Name:
+                        </label>
+                        <label className="formFieldProfileInputLabel">
+                            {user.lastName}
+                        </label>
+                    </div>
+                    <div className="formField">
+                        <label className="formFieldProfileLabel">
+                            Email:
+                        </label>
+                        <label className="formFieldProfileInputLabel">
+                            {user.email}
+                        </label>
+                    </div>
+                    <div className="formField">
+                        <button className="formFieldShoppingCartButton">View Your Shopping Cart</button>
+                    </div>
             </div> : null
         );
     }
