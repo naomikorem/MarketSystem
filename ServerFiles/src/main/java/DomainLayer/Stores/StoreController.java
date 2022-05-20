@@ -283,6 +283,20 @@ public class StoreController {
         return i;
     }
 
+    public Item setItemAmount(User owner, int storeId, int itemId, int amount) {
+        Store s = getStoreAndThrow(storeId);
+        Item i = s.getItemById(itemId);
+        if (i == null) {
+            throw new IllegalArgumentException(String.format("There is no item with id %s in store %s", itemId, storeId));
+        }
+        if (!owner.isSubscribed() || !s.canManageItems(owner)) {
+            throw new IllegalArgumentException("Only store owners can perform this action.");
+        }
+        s.setItemAmount(i, amount);
+        return i;
+    }
+
+
     public Map<Item, Integer> getItems(int storeId) {
         Store s = getStoreAndThrow(storeId);
         return s.getItems();

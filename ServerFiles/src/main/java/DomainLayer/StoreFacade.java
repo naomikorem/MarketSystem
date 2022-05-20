@@ -261,6 +261,14 @@ public class StoreFacade {
         }
     }
 
+    public Response<Item> setItemAmount(User owner, int storeId, int itemId, int amount) {
+        try {
+            return new Response<>(storeController.setItemAmount(owner, storeId, itemId, amount));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
     public Response<Map<Item, Integer>> getItems(int storeId) {
         try {
             return new Response<>(storeController.getItems(storeId));

@@ -384,6 +384,10 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.modifyItem(user, storeId, itemId, productName, category, price, keywords);
     }
 
+    public Response<Item> setItemAmount(int storeId, int itemId, int amount) {
+        return storeFacade.setItemAmount(user, storeId, itemId, amount);
+    }
+
     @Override
     public Response<Map<Item, Integer>> getItems(int storeId) {
         if (user == null) {
