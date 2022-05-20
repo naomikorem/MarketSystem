@@ -222,6 +222,18 @@ public class StoreController {
         return stores.get(storeId);
     }
 
+    public Store reopenStore(User user, int storeId) {
+        if (!isExist(storeId)) {
+            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
+        }
+        if (!user.isSubscribed()) {
+            throw new IllegalArgumentException("Only logged in users can perform this action.");
+        }
+        stores.get(storeId).setIsOpen(user.getName(), true);
+        LogUtility.info(String.format("User %s just reopened store %s", user.getName(), storeId));
+        return stores.get(storeId);
+    }
+
     public Store permanentlyCloseStore(int storeId) {
         Store s = getStoreAndThrow(storeId);
         s.setPermanentlyClosed(true);

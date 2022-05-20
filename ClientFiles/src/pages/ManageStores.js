@@ -1,7 +1,39 @@
 import {stompClient, connectedPromise, user} from "../App";
-import React, { Component } from "react";
+import React, {Component, useState} from "react";
 import ObjectsGrid from "../Components/ObjectsGrid";
 import ResultLabel from "../Components/ResultLabel";
+import AreYouSureModal from "../Components/AreYouSureModal";
+
+let store_to_reopen = null;
+
+function ClosedStoreItem(props) {
+    let [modalOpen, setModalOpen] = useState(false);
+
+    const store = props.store;
+
+    const handleReopenStore = () => {
+        stompClient.send("/app/market/reopenStore", {}, JSON.stringify({"storeId" : store.id}));
+        store_to_reopen = store;
+    }
+
+    return (
+        <div>
+            <article onClick={() => {setModalOpen(true)}} key={store.id} className={"items-grid"}>
+                <div>
+                    <h1 className={"white-color"}>{store.name}</h1>
+                </div>
+            </article>
+
+            {modalOpen && <AreYouSureModal
+                title={store.name}
+                body="Do you want to reopen this store?"
+                doActionButton="Yes"
+                regretActionButton="No"
+                setOpenModal={setModalOpen}
+                onContinue={handleReopenStore}/>}
+        </div>
+    );
+}
 
 
 class ManageStores extends Component {
@@ -10,7 +42,8 @@ class ManageStores extends Component {
         this.state = {
             open_store_items: [],
             closed_store_items: [],
-            error: "",
+            message: "",
+            hadError: false
         };
     }
 
@@ -22,7 +55,8 @@ class ManageStores extends Component {
             {
                 console.log(res.object)
 
-                this.state.error = "";
+                this.state.message = "";
+                this.state.hadError = false;
 
                 this.state.open_store_items = res.object.filter(s => s.isOpen);
                 this.setState({[this.state.open_store_items]: this.state.open_store_items});
@@ -31,10 +65,38 @@ class ManageStores extends Component {
             }
             else
             {
-                this.state.error = res.errorMessage;
+                this.state.hadError = true;
+                this.state.message = res.errorMessage;
             }
-            this.setState({[this.state.error]: this.state.error});
+            this.setState({[this.state.message]: this.state.message});
         });
+
+        stompClient.subscribe('/user/topic/reopenStoreResult', (r) => {
+            let res = JSON.parse(r["body"]);
+            if(res.errorMessage)
+            {
+                this.state.message = res.errorMessage;
+                this.state.hadError = true;
+            }
+            else {
+                if (res.object) {
+                    this.state.hadError = false;
+                    this.state.message = "Store reopened successfully";
+
+                    this.state.closed_store_items = this.state.closed_store_items.filter(s => s.id !== store_to_reopen.id);
+                    this.state.open_store_items.push(store_to_reopen)
+                    this.setState({[this.state.open_store_items]: this.state.open_store_items});
+                    this.setState({[this.state.closed_store_items]: this.state.closed_store_items});
+                }
+                else {
+                    this.state.hadError = true;
+                    this.state.message = "Could not reopen the store successfully";
+                }
+            }
+            this.setState({[this.state.hadError]: this.state.hadError});
+            this.setState({[this.state.message]: this.state.message});
+        });
+
         stompClient.send("/app/market/getUsersStores", {}, {});
     }
 
@@ -55,11 +117,17 @@ class ManageStores extends Component {
                 <div>
                     <h4>Your Closed Stores</h4>
                     <div className="store-grid-container">
-                        <ObjectsGrid listitems={this.state.closed_store_items} link={"edit-store"}/>
+                        {this.state.closed_store_items.map((store) => (
+
+                            <ClosedStoreItem
+                                key={store.id}
+                                store = {store}
+                            />
+                        ))}
 
                     </div>
                 </div>
-                <ResultLabel text={this.state.error} hadError={true}/>
+                <ResultLabel text={this.state.message} hadError={this.state.hadError}/>
             </div>
 
         );

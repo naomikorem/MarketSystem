@@ -81,6 +81,7 @@ public interface SystemInterface {
     public Response<Item> addItemToCart(int storeId, int itemId, int amount);
 
     public Response<Boolean> closeStore(int storeId);
+    public Response<Boolean> reopenStore(int storeId);
 
     public Response<Boolean> permanentlyCloseStore(int storeId);
 

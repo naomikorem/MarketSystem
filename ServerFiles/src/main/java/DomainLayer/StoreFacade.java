@@ -194,6 +194,14 @@ public class StoreFacade {
         }
     }
 
+    public Response<Store> reopenStore(User founder, int storeId) {
+        try {
+            return new Response<>(storeController.reopenStore(founder, storeId));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
     public Response<Store> permanentlyCloseStore(int storeId) {
         try {
             return new Response<>(storeController.permanentlyCloseStore(storeId));
