@@ -231,6 +231,14 @@ public class Store {
         }
     }
 
+    public void setItemAmount(Item item, int amount) {
+        synchronized (items) {
+            if (this.items.containsKey(item)) {
+                this.items.put(item, amount);
+            }
+        }
+    }
+
     private User getManagerByName(String name) {
         return this.managers.entrySet().stream().filter(e -> e.getKey().getName().equals(name)).findFirst().map(Map.Entry::getKey).orElse(null);
     }

@@ -17,10 +17,7 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -185,6 +182,16 @@ public class Service {
         return new Response<>(convertToHistoryDTO(history.getObject()));
     }
 
+    @MessageMapping("/market/getStoreHistory")
+    @SendToUser("/topic/getStoreHistoryResult")
+    public Response<HistoryDTO> getStorePurchaseHistory(SimpMessageHeaderAccessor headerAccessor, Map<String, Integer> map) {
+        Response<History> history = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getStoreHistory(map.get("storeId"));
+        if(history.hadError())
+            return new Response<>(history.getErrorMessage());
+
+        return new Response<>(convertToHistoryDTO(history.getObject()));
+    }
+
     private HistoryDTO convertToHistoryDTO(History history)
     {
         HistoryDTO dto_history = new HistoryDTO();
@@ -264,6 +271,8 @@ public class Service {
         item_dto.product_name = item.getProductName();
         item_dto.category = item.getCategory().toString();
         item_dto.amount = amount;
+        item_dto.keyWords = item.getKeyWords();
+
         return item_dto;
     }
 
@@ -397,6 +406,17 @@ public class Service {
             return new Response<>(res.getErrorMessage());
         }
         return new Response<>(convertToItemDTO(res.getObject(), Integer.parseInt((String) map.get("amount"))));
+    }
+
+    @MessageMapping("/market/modifyItem")
+    @SendToUser("/topic/modifyItemResult")
+    public Response<ItemDTO> modifyItem (SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        List<String> keywords = Arrays.asList(((String) map.get("keywords")).split("[\\s,]+"));
+        Response<Item> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).modifyItem((int) map.get("storeId"), (Integer) map.get("itemId"),(String) map.get("name"), (String) map.get("category"), Double.parseDouble((String) map.get("price")), (Integer) map.get("amount"), keywords);
+        if (res.hadError()) {
+            return new Response<>(res.getErrorMessage());
+        }
+        return new Response<>(convertToItemDTO(res.getObject(), (Integer) map.get("amount")));
     }
 
 }

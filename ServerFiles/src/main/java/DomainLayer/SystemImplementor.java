@@ -380,8 +380,12 @@ public class SystemImplementor implements SystemInterface {
     }
 
     @Override
-    public Response<Item> modifyItem(int storeId, int itemId, String productName, String category, double price, List<String> keywords) {
-        return storeFacade.modifyItem(user, storeId, itemId, productName, category, price, keywords);
+    public Response<Item> modifyItem(int storeId, int itemId, String productName, String category, double price, int amount, List<String> keywords) {
+        return storeFacade.modifyItem(user, storeId, itemId, productName, category, price, amount, keywords);
+    }
+
+    public Response<Item> setItemAmount(int storeId, int itemId, int amount) {
+        return storeFacade.setItemAmount(user, storeId, itemId, amount);
     }
 
     @Override

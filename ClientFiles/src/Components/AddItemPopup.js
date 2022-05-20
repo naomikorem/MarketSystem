@@ -55,7 +55,6 @@ class AddItemPopup extends Component {
     }
 
     handleChange(event) {
-        console.log(event.target.name)
         if (event.target.name === "amount" && (!/^[0-9]+$/.test(event.target.value) || event.target.value.length > 8)) {
             return;
         }

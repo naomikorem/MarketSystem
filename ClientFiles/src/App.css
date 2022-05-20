@@ -427,6 +427,30 @@
 
 }
 
+.itemLabel {
+    width: 100%;
+    color: black;
+    background-color: whitesmoke;
+    border-radius: 5%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+.editItemBar {
+    margin-top: 5%;
+    margin-right: 5%;
+    width: 65%;
+    height: 80px;
+}
+
+.selectItemBar {
+    width: 65%;
+    margin-bottom: 5%;
+    height: 80px;
+}
+
 .formFieldUserHistoryLabel {
     display: block;
     font-size: 30px;

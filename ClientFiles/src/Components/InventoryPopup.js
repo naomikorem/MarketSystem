@@ -3,11 +3,13 @@ import {useParams} from "react-router-dom";
 import {stompClient, connectedPromise} from "../App";
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
+import FormLabel from 'react-bootstrap/FormLabel'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
 import ResultLabel from "../Components/ResultLabel";
 import AddItemPopup from "../Components/AddItemPopup";
+import EditItemPopup from "../Components/EditItemPopup";
 
 let [show, setShow] = [undefined, undefined];
 let handleClose = () => undefined;
@@ -78,9 +80,7 @@ class InventoryPopup extends Component {
                     <Modal.Body>
                         {this.state.items.map((listitem, index) => (
 
-                            <div key={index}>
-                                {listitem.product_name}
-                            </div>
+                            <EditItemPopup  key={index} storeId={this.props.storeId} itemDTO={listitem}/>
                         ))}
                         <AddItemPopup storeId={this.props.storeId}/>
                     </Modal.Body>

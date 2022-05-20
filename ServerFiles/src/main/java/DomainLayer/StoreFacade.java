@@ -253,9 +253,17 @@ public class StoreFacade {
         }
     }
 
-    public Response<Item> modifyItem(User owner, int storeId, int itemId, String productName, String category, double price, List<String> keywords) {
+    public Response<Item> modifyItem(User owner, int storeId, int itemId, String productName, String category, double price, int amount, List<String> keywords) {
         try {
-            return new Response<>(storeController.modifyItem(owner, storeId, itemId, productName, category, price, keywords));
+            return new Response<>(storeController.modifyItem(owner, storeId, itemId, productName, category, price, amount, keywords));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Item> setItemAmount(User owner, int storeId, int itemId, int amount) {
+        try {
+            return new Response<>(storeController.setItemAmount(owner, storeId, itemId, amount));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
