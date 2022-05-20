@@ -108,7 +108,7 @@ function render() {
 
 
             <Routes>
-              <Route exact path="/" element={<SignInForm/>} />
+              <Route exact path="/" element={<HomePage/>} />
               <Route path="/sign-in" element={<SignInForm/>} />
               <Route path="/sign-up" element={<SignUpForm/>} />
               <Route path="/home" element={<HomePage/>} />

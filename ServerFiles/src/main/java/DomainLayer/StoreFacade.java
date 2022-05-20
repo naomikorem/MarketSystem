@@ -127,6 +127,21 @@ public class StoreFacade {
         return new Response<>(storeController.filterProdacts(items,upLimit,lowLimit, rating));
     }
 
+    public Response<Double> getRatingOfProduct(int storeId, int itemId) {
+        try {
+            return new Response<>(storeController.getRatingOfItem(storeId, itemId));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Boolean> setRatingOfProduct(int storeId, int itemId, double rate) {
+        try {
+            return new Response<>(storeController.setRatingOfItem(storeId, itemId, rate));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
 
     public Response<Item> getItemFromStore(int storeId, int itemId) {
         try {

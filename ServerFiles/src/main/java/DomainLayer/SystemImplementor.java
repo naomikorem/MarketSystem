@@ -764,6 +764,20 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.searchProducts(productName, category, keywords);
     }
 
+    public Response<Double> getItemRating(int storeId, int itemId) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.getRatingOfProduct(storeId, itemId);
+    }
+
+    public Response<Boolean> setItemRating(int storeId, int itemId, double rate) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.setRatingOfProduct(storeId, itemId, rate);
+    }
+
     public Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating) {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");

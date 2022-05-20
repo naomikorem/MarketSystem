@@ -149,6 +149,29 @@ public class StoreController {
         return i;
     }
 
+    public Double getRatingOfItem(int storeId, int itemId) {
+        Store s = getStoreAndThrow(storeId);
+        Item i = s.getItemById(itemId);
+        if (i == null) {
+            throw new IllegalArgumentException(String.format("There is no item with item id %s in the store", itemId));
+        }
+        return i.getRate();
+    }
+
+    public Boolean setRatingOfItem(int storeId, int itemId, double rate) {
+        Store s = getStoreAndThrow(storeId);
+        Item i = s.getItemById(itemId);
+        if (i == null) {
+            throw new IllegalArgumentException(String.format("There is no item with item id %s in the store", itemId));
+        }
+        try {
+            i.updateRate(rate);
+        }catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
     public Item getItemFromStore(int storeId, int itemId) {
         Store s = getStoreAndThrow(storeId);
         Item i = s.getItemById(itemId);

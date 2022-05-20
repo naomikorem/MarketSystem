@@ -25,6 +25,9 @@ public interface SystemInterface {
 
     public Response<List<String>> getStoreOwners(int storeId);
 
+    public Response<Boolean> setItemRating(int storeId, int itemId, double rate) ;
+
+    public Response<Double> getItemRating(int storeId, int itemId);
 
     public Response<Boolean> addExternalPurchaseService(String name, String url);
 
