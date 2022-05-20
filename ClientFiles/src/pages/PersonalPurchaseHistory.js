@@ -1,5 +1,4 @@
-import React, {Component, useState} from "react";
-import {useParams} from "react-router-dom";
+import React, {Component} from "react";
 import {stompClient, connectedPromise, user} from "../App";
 import ResultLabel from "../Components/ResultLabel";
 
@@ -13,52 +12,22 @@ class PersonalPurchaseHistoryItem extends Component {
         const history_item = this.props.item;
 
         return (
-            <div className="formCenterHistoryItem">
-                <div className="formField">
+            <article className={"items-grid"}>
+                <div>
                     <h3>{history_item.product_name}</h3>
+                    <p>
+                        Bought amount: {history_item.amount}<br/>
+                        Price Per Unit: {history_item.price_per_unit} <br/>
+                        Store id: {history_item.store_id} <br/>
+                        Purchase Date: {new Date(history_item.date).toLocaleDateString("en-GB")}
+                    </p>
                 </div>
-                <div className="formField">
-                    <label className="formFieldProfileLabel">
-                        Bought amount:
-                    </label>
-                    <label className="formFieldProfileInputLabel">
-                        {history_item.amount}
-                    </label>
+                <div className="store-grid-container">
+                    <button className="history-button">Review Item</button>
+                    <button className="history-button">Rate</button>
+                    <button className="history-button">Complain</button>
                 </div>
-                <div className="formField">
-                    <label className="formFieldProfileLabel">
-                        Price Per Unit:
-                    </label>
-                    <label className="formFieldProfileInputLabel">
-                        {history_item.price_per_unit}
-                    </label>
-                </div>
-                <div className="formField">
-                    <label className="formFieldProfileLabel">
-                        Store id:
-                    </label>
-                    <label className="formFieldProfileInputLabel">
-                        {history_item.store_id}
-                    </label>
-                </div>
-                <div className="formField">
-                    <label className="formFieldProfileLabel">
-                        Purchase Date:
-                    </label>
-                    <label className="formFieldProfileInputLabel">
-                        {history_item.date}
-                    </label>
-                </div>
-                <div className="formField">
-                    <button className="formFieldButton">Review Item</button>
-                </div>
-                <div className="formField">
-                    <button className="formFieldButton">Rate Item And Store</button>
-                </div>
-                <div className="formField">
-                    <button className="formFieldButton">Complain</button>
-                </div>
-            </div>
+            </article>
         );
     }
 }
@@ -102,9 +71,9 @@ export default class PersonalPurchaseHistory extends Component{
             user != null ?
             <React.Fragment>
                 <div className="formCenter">
-                    <h1>Personal Purchase History</h1>
+                    <h1 className="center-text">Personal Purchase History</h1>
                 </div>
-                <div className="grid-container">
+                <div className="store-grid-container">
                     {this.state.history_items.map((item) => (
 
                         <PersonalPurchaseHistoryItem

@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ManagersPopup from '../Components/ManagersPopup';
 import OwnersPopup from '../Components/OwnersPopup';
+import InventoryPopup from '../Components/InventoryPopup';
 //import { View } from 'react-native';
 //import { Text } from 'react-native-paper';
 
@@ -49,6 +50,7 @@ class EditStorePage extends Component {
                 <div>
                     <ManagersPopup managers={this.state.store.managers} storeId={this.state.store.id} />
                     <OwnersPopup owners={this.state.store.owners} storeId={this.state.store.id} />
+                    <InventoryPopup storeId={this.state.store.id} />
 
                 </div>
 
