@@ -39,6 +39,7 @@ import OpenNewStore from "./pages/OpenNewStore";
 import ErrorPage from "./pages/ErrorPage";
 import Cart from "./Components/cart";
 import Modal from "./Components/Modal";
+import Navbar from "./Components/Navbar";
 
 
 const socket = new SockJS("http://localhost:8080/market");
@@ -54,34 +55,26 @@ export const connectedPromise = new Promise(resolve => {
 export let [user, setUser] = [undefined, undefined]
 
 
-
-
-
-
 function  render() {
     [user, setUser] = useState(sessionStorage.getItem('user'))
 
     return (
       <BrowserRouter >
         <div className="App">
+
           <div className="appAside" />
           <div className="appForm">
-
             <React.Fragment>
+              <Navbar/>
+
               <div className="pageSwitcher">
+
                 <NavLink
                     to="/home"
                     className={(navData) => navData.isActive ? "pageSwitcherItem-active" : "pageSwitcherItem"}
                 >
                   Home
                 </NavLink>
-                <ManageStoresButton/>
-                <StoreHistoryButton/>
-                <UserHistoryButton/>
-                <PersonalPurchaseHistoryButton/>
-                <UnsubscribeUserButton/>
-                <CloseStorePermanentlyButton/>
-                <ProfileButton/>
                 <LoginButton/>
                 <RegisterButton/>
                 <LogoutButton/>
@@ -89,8 +82,6 @@ function  render() {
 
             </React.Fragment>
 
-
-            {/*<HamburgerMenu></HamburgerMenu>*/}
 
             <Routes>
               <Route exact path="/" element={<SignInForm/>} />
@@ -108,6 +99,7 @@ function  render() {
               <Route path="/user-purchase-history" element={<UserPurchaseHistory/>} />
               <Route path="/store-purchase-history" element={<StorePurchaseHistory/>} />
               <Route path="/popup" element={<Modal/>} />
+              <Route path="/navbar" element={<Navbar/>} />
               <Route path="/edit-store/:storeid" element={<EditStorePage/>} />
               <Route path="/*" element={<ErrorPage/>} />
             </Routes>

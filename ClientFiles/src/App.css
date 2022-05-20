@@ -20,7 +20,7 @@
 .pageSwitcher {
     display: flex;
     justify-content: center;
-    margin-bottom: 10%;
+    margin-bottom: 8%;
 }
 
 .pageSwitcherItem {
@@ -173,7 +173,8 @@
 
 .store-grid-container {
     display: grid;
-    grid-template-columns: auto auto auto;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(3, 1fr);
     padding: 10px;
     border-radius: 15px;
 }
