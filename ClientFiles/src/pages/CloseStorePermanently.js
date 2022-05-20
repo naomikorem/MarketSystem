@@ -1,5 +1,4 @@
 import React, {Component, useState} from "react";
-import {useParams} from "react-router-dom";
 import {stompClient, connectedPromise} from "../App";
 import ResultLabel from "../Components/ResultLabel";
 import AreYouSureModal from "../Components/AreYouSureModal";
