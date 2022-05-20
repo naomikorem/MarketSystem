@@ -49,6 +49,19 @@ public class Service {
         return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getToken();
     }
 
+    @MessageMapping("/market/getRating")
+    @SendToUser("/topic/ratingResult")
+    public Response<Double> getRating(SimpMessageHeaderAccessor headerAccessor, Map<String, Integer> map) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getItemRating(map.get("storeId"), map.get("itemId"));
+    }
+
+
+    @MessageMapping("/market/setRating")
+    @SendToUser("/topic/setRatingResult")
+    public Response<Boolean> setRating(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).setItemRating((Integer) map.get("storeId"), (Integer)map.get("itemId"),(Double)map.get("rating"));
+    }
+
     @MessageMapping("/market/loginByToken")
     @SendToUser("/topic/loginByTokenResult")
     public Response<UserDTO> loginByToken(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
