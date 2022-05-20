@@ -24,6 +24,10 @@ function StoreToClose(props) {
             </article>
 
             {modalOpen && <AreYouSureModal
+                title="Are You Sure?"
+                body="This action is not a reversible"
+                doActionButton="I'm Sure"
+                regretActionButton="Cancel"
                 setOpenModal={setModalOpen}
                 onContinue={handleCloseStore}/>}
         </div>
@@ -65,7 +69,7 @@ export default class CloseStorePermanentlyPage extends Component{
             else {
                 if (res.object) {
                     this.state.hadError = false;
-                    this.state.message = "Closed the store successfully";
+                    this.state.message = "Store Closed successfully";
 
                     this.state.liststores = this.state.liststores.filter(s => s.id !== store_to_close_id);
                     this.setState({[this.state.liststores]: this.state.liststores});

@@ -18,6 +18,10 @@ function RemoveAlert(props) {
             </div>
 
             {modalOpen && <AreYouSureModal
+                title="Are You Sure?"
+                body="This action is not a reversible"
+                doActionButton="I'm Sure"
+                regretActionButton="Cancel"
                 setOpenModal={setModalOpen}
                 onContinue={handleApply}/>}
         </div>

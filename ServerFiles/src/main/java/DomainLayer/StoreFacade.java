@@ -194,6 +194,14 @@ public class StoreFacade {
         }
     }
 
+    public Response<Store> reopenStore(User founder, int storeId) {
+        try {
+            return new Response<>(storeController.reopenStore(founder, storeId));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
     public Response<Store> permanentlyCloseStore(int storeId) {
         try {
             return new Response<>(storeController.permanentlyCloseStore(storeId));
@@ -248,6 +256,14 @@ public class StoreFacade {
     public Response<Item> modifyItem(User owner, int storeId, int itemId, String productName, String category, double price, List<String> keywords) {
         try {
             return new Response<>(storeController.modifyItem(owner, storeId, itemId, productName, category, price, keywords));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Item> setItemAmount(User owner, int storeId, int itemId, int amount) {
+        try {
+            return new Response<>(storeController.setItemAmount(owner, storeId, itemId, amount));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }

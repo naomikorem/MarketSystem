@@ -151,6 +151,12 @@ public class Service {
         return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).permanentlyCloseStore(map.get("storeId"));
     }
 
+    @MessageMapping("/market/reopenStore")
+    @SendToUser("/topic/reopenStoreResult")
+    public Response<Boolean> reopenStoreStore(SimpMessageHeaderAccessor headerAccessor, Map<String, Integer> map) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).reopenStore(map.get("storeId"));
+    }
+
     @MessageMapping("/market/removeSubscription")
     @SendToUser("/topic/removeSubscriptionResult")
     public Response<Boolean> removeUserSubscription(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
@@ -213,6 +219,7 @@ public class Service {
         dto_store.name = store.getName();
         dto_store.id = store.getStoreId();
         dto_store.isOpen = store.isOpen();
+        dto_store.permanentlyClosed = store.isPermanentlyClosed();
         dto_store.founder = store.getFounder();
         for(Map.Entry<Item, Integer> item_amount: store.getItems().entrySet())
         {
@@ -267,6 +274,8 @@ public class Service {
         item_dto.product_name = item.getProductName();
         item_dto.category = item.getCategory().toString();
         item_dto.amount = amount;
+        item_dto.keyWords = item.getKeyWords();
+
         return item_dto;
     }
 

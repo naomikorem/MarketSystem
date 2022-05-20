@@ -9,45 +9,39 @@ import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
 import ResultLabel from "../Components/ResultLabel";
 import AddItemPopup from "../Components/AddItemPopup";
-import EditItemPopup from "../Components/EditItemPopup";
-
-let [show, setShow] = [undefined, undefined];
-let handleClose = () => undefined;
 
 
-class InventoryPopup extends Component {
 
-    constructor() {
-        super();
+class EditItemPopup extends Component {
 
+    constructor(props) {
+        super(props);
+        console.log("props")
+        console.log(props)
         this.state = {
             error: "",
-            items: []
+            item: props.itemDTO
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleShow = this.handleShow.bind(this);
         this.handleSave = this.handleSave.bind(this);
+        this.handleClose = this.handleClose.bind(this);
+    }
+
+    handleClose() {
+        this.props.setShow(false);
     }
 
 
     async componentDidMount() {
         await connectedPromise;
-        stompClient.subscribe('/user/topic/getStoreItemsResult', (r) => {
-            const res = JSON.parse(r["body"]);
-            this.state.error = res.errorMessage
-            this.setState({[this.state.error]: this.state.error});
-            if (!res.errorMessage) {
-                this.state.items = res.object;
-                this.setState({[this.state.items]: this.state.items});
-            }
-        });
+
 
         this.mounted = true;
     }
 
     componentWillUnmount() {
-        stompClient.unsubscribe('/user/topic/getStoreItemsResult')
         this.mounted = false;
     }
 
@@ -63,30 +57,37 @@ class InventoryPopup extends Component {
     }
 
     handleShow() {
-        stompClient.send("/app/market/getStoreItems", {}, JSON.stringify({"id" : this.props.storeId}));
-        setShow(true);
+
+        this.props.setShow(true);
     }
 
     render() {
         return (
             <>
-                <Button variant="primary" onClick={this.handleShow} className={"storeEditButton"}>
-                    Manage inventory
-                </Button>
-                <Modal show={show} onHide={handleClose}>
+
+                <div>
+                    <Button className={"itemLabel"} onClick={this.handleShow}>
+                        <div> Product: {this.props.itemDTO.product_name}</div>
+                        <div> Amount: {this.props.itemDTO.amount}</div>
+                        Edit product
+                    </Button>
+                </div>
+
+                <Modal show={this.props.show} onHide={this.handleClose}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Manage inventory</Modal.Title>
+                        <Modal.Title>Edit product</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        {this.state.items.map((listitem, index) => (
+                        <TextField id="outlined-basic" label="Product name" variant="standard" className={"editItemBar"}
+                                   value={this.state.item.product_name} onChange={this.handleChange} name="productName"/>
+                        <TextField id="outlined-basic" label="Product category" variant="standard" className={"editItemBar"}
+                                   value={this.state.item.category} onChange={this.handleChange} name="productCategory"/>
 
-                            <EditItemPopup  key={index} storeId={this.props.storeId} itemDTO={listitem}/>
-                        ))}
-                        <AddItemPopup storeId={this.props.storeId}/>
+
                     </Modal.Body>
                     <Modal.Footer>
                         <ResultLabel text={this.state.error} hadError={this.state.error != null}/>
-                        <Button variant="secondary" onClick={handleClose}>
+                        <Button variant="secondary" onClick={this.handleClose}>
                             Close
                         </Button>
                     </Modal.Footer>
@@ -98,11 +99,11 @@ class InventoryPopup extends Component {
 
 
 function wrapRender(props) {
-    [show, setShow] = useState(false);
-    handleClose = () => setShow(false);
+    let [show, setShow] = useState(false);
     let storeId = props.storeId
+    let itemDTO = props.itemDTO
     return <>
-        <InventoryPopup storeId={storeId}/>
+        <EditItemPopup storeId={storeId} itemDTO={itemDTO} show={show} setShow={setShow}/>
     </>
 }
 

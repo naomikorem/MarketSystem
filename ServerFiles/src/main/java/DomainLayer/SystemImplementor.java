@@ -268,6 +268,25 @@ public class SystemImplementor implements SystemInterface {
     }
 
     @Override
+    public Response<Boolean> reopenStore(int storeId) {
+        Response<Store> response = storeFacade.reopenStore(user, storeId);
+        if (response.hadError()) {
+            return new Response<>(response.getErrorMessage());
+        }
+        /*Store s = response.getObject();
+        Response<Boolean> notify_managers_response = marketManagementFacade.notifyUsers(s.getManagers(), String.format("The store %s that is managed by you was shut down", s.getStoreId()));
+        if (notify_managers_response.hadError() || !notify_managers_response.getObject()) {
+            return notify_managers_response;
+        }
+        Response<Boolean> notify_owners_response = marketManagementFacade.notifyUsers(s.getOwners(), String.format("The store %s that is owned by you was shut down", s.getStoreId()));
+        if (notify_owners_response.hadError() || !notify_owners_response.getObject()) {
+            return notify_owners_response;
+        }*/
+
+        return new Response<>(true);
+    }
+
+    @Override
     public Response<Boolean> permanentlyCloseStore(int storeId) {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
@@ -363,6 +382,10 @@ public class SystemImplementor implements SystemInterface {
     @Override
     public Response<Item> modifyItem(int storeId, int itemId, String productName, String category, double price, List<String> keywords) {
         return storeFacade.modifyItem(user, storeId, itemId, productName, category, price, keywords);
+    }
+
+    public Response<Item> setItemAmount(int storeId, int itemId, int amount) {
+        return storeFacade.setItemAmount(user, storeId, itemId, amount);
     }
 
     @Override
