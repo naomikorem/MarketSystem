@@ -194,18 +194,22 @@ public class Store {
             LogUtility.error("tried to get item from a closed store");
             throw new IllegalArgumentException("This store is closed");
         }
+        if(toDeduct == 0)
+        {
+            throw new LogException("You can't add 0 items to your shopping cart", "User tried to buy 0 items from item " + itemId);
+        }
         synchronized (items) {
-            Item i = items.keySet().stream().filter(item -> item.getId() == itemId).findFirst().orElse(null);
-            if (i != null) {
-                int amount = items.getOrDefault(i, 0);
-                if (amount >= toDeduct) {
-                    items.put(i, amount - toDeduct);
-                    return i;
-                } else {
-                    throw new LogException("There isn't enough item " + itemId + " in stock", "User tried to buy item " + itemId + " but there isn't enough in stock");
-                }
+        Item i = items.keySet().stream().filter(item -> item.getId() == itemId).findFirst().orElse(null);
+        if (i != null) {
+            int amount = items.getOrDefault(i, 0);
+            if (amount >= toDeduct) {
+                items.put(i, amount - toDeduct);
+                return i;
+            } else {
+                throw new LogException("There isn't enough item " + itemId + " in stock", "User tried to buy item " + itemId + " but there isn't enough in stock");
             }
-            throw new IllegalArgumentException("Could not find item id " + itemId);
+        }
+        throw new IllegalArgumentException("Could not find item id " + itemId);
         }
     }
 

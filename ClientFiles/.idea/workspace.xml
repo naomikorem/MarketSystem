@@ -2,15 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8bf28424-1e89-4ac1-9912-c83904c78a90" name="Changes" comment="update main page">
-      <change afterPath="$PROJECT_DIR$/src/Components/CloseStorePermanentlyButton.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Components/UnsubscribeUserButton.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/ClientFiles.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/shelf/Uncommitted_changes_before_Update_at_14_05_2022_20_41__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/shelf/Uncommitted_changes_before_Update_at_14_05_2022_20_41__Changes_.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/shelf/Uncommitted_changes_before_Update_at_16_05_2022_15_06__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/shelf/Uncommitted_changes_before_Update_at_16_05_2022_15_06__Changes_.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/shelf/Uncommitted_changes_before_Update_at_16_05_2022_15_06__Changes_1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/shelf/Uncommitted_changes_before_Update_at_16_05_2022_15_06__Changes_1.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/PersonalPurchaseHistory.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/PersonalPurchaseHistory.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,7 +70,7 @@
       <workItem from="1652729220809" duration="13633000" />
       <workItem from="1652947445682" duration="20743000" />
       <workItem from="1652975232187" duration="21842000" />
-      <workItem from="1653002255881" duration="825000" />
+      <workItem from="1653002255881" duration="3528000" />
     </task>
     <task id="LOCAL-00001" summary="update main page">
       <created>1652804872276</created>

@@ -90,7 +90,7 @@ export default class PersonalPurchaseHistory extends Component{
             }
         });
         console.log(user);
-        stompClient.send("/app/market/getPersonalHistory", {}, JSON.stringify({"username" : user.userName}));
+        stompClient.send("/app/market/getPersonalHistory", {}, {});
     }
 
     componentWillUnmount() {
