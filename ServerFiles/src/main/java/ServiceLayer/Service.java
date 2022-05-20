@@ -203,6 +203,7 @@ public class Service {
         dto_store.name = store.getName();
         dto_store.id = store.getStoreId();
         dto_store.isOpen = store.isOpen();
+        dto_store.permanentlyClosed = store.isPermanentlyClosed();
         dto_store.founder = store.getFounder();
         for(Map.Entry<Item, Integer> item_amount: store.getItems().entrySet())
         {

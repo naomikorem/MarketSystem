@@ -1,26 +1,18 @@
 import {stompClient, connectedPromise, user} from "../App";
 import React, { Component } from "react";
-import {Link, NavLink, useNavigate} from "react-router-dom";
 import ObjectsGrid from "../Components/ObjectsGrid";
+import ResultLabel from "../Components/ResultLabel";
 
-//import { useNavigate } from "react-router-dom";
-//import {useNavigate} from "react-router-dom";
-//
-// // v6 examples
-
-// Navigate to new URL
-//navigate("/keyhole")
 
 class ManageStores extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            listitems: [],
+            open_store_items: [],
+            closed_store_items: [],
             error: "",
         };
     }
-
-
 
     async componentDidMount() {
         await connectedPromise;
@@ -28,14 +20,20 @@ class ManageStores extends Component {
             const res = JSON.parse(r["body"]);
             if (res.errorMessage == null)
             {
-                this.state.listitems = res.object;
-                this.setState({[this.state.listitems]: this.state.listitems});
+                console.log(res.object)
+
+                this.state.error = "";
+
+                this.state.open_store_items = res.object.filter(s => s.isOpen);
+                this.setState({[this.state.open_store_items]: this.state.open_store_items});
+                this.state.closed_store_items = res.object.filter(s => !s.isOpen && !s.permanentlyClosed);
+                this.setState({[this.state.closed_store_items]: this.state.closed_store_items});
             }
             else
             {
                 this.state.error = res.errorMessage;
-                this.setState({[this.state.error]: this.state.error});
             }
+            this.setState({[this.state.error]: this.state.error});
         });
         stompClient.send("/app/market/getUsersStores", {}, {});
     }
@@ -47,10 +45,21 @@ class ManageStores extends Component {
     render() {
         return (
             <div>
-                <h1>Hello {user ? user.userName : "Guest"}, Choose a store to manage</h1>
-                <div className="store-grid-container">
-                    <ObjectsGrid listitems={this.state.listitems} link={"edit-store"}/>
+                <h1 className="center-text">Hello {user ? user.userName : "Guest"}, Choose a store to manage</h1>
+                <div>
+                    <h4>Your Open Stores</h4>
+                    <div className="store-grid-container">
+                        <ObjectsGrid listitems={this.state.open_store_items} link={"edit-store"}/>
+                    </div>
                 </div>
+                <div>
+                    <h4>Your Closed Stores</h4>
+                    <div className="store-grid-container">
+                        <ObjectsGrid listitems={this.state.closed_store_items} link={"edit-store"}/>
+
+                    </div>
+                </div>
+                <ResultLabel text={this.state.error} hadError={true}/>
             </div>
 
         );
