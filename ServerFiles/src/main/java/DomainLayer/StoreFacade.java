@@ -59,6 +59,14 @@ public class StoreFacade {
         return new Response<>(storeController.getAllStores());
     }
 
+    public Response<Collection<Store>> getAllOpenStores() {
+        return new Response<>(storeController.getAllOpenStores());
+    }
+
+    public Response<Collection<Store>> getStoresBesidesPermanentlyClosed() {
+        return new Response<>(storeController.getStoresBesidesPermanentlyClosed());
+    }
+
     public Response<Store> getStore(int id) {
         try {
             Store s = storeController.getStore(id);

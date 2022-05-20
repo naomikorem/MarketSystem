@@ -77,10 +77,53 @@ public class Service {
 
         if (stores.hadError())
             return new Response<>(stores.getErrorMessage());
-        List<StoreDTO> dto_stores = stores.getObject().stream().map(s-> convertToStoreDTO(s)).collect(Collectors.toList());
+        List<StoreDTO> dto_stores = stores.getObject().stream().map(this::convertToStoreDTO).collect(Collectors.toList());
 
         return new Response<>(dto_stores);
     }
+
+    @MessageMapping("/market/getOpenStores")
+    @SendToUser("/topic/getOpenStoresResult")
+    public Response<List<StoreDTO>> getOpenStores (SimpMessageHeaderAccessor headerAccessor) {
+
+        ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).register("store@gmail.com", "store", "store", "store", "store");
+        ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).login("store", "store");
+        Response<Store> rStore1 = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addNewStore("store");
+        Response<Store> rStore2 = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addNewStore("another store");
+
+        ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).closeStore(rStore2.getObject().getStoreId());
+
+        ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToStore(rStore1.getObject().getStoreId(), "banana", Category.Food, 55, 5);
+        Response<Item> rBanana = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToStore(rStore1.getObject().getStoreId(), "banana", Category.Food, 55, 5);
+        Response<Item> rOrange= ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToStore(rStore1.getObject().getStoreId(), "orange", Category.Food, 20, 9);
+        Response<Item> rApple = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToStore(rStore1.getObject().getStoreId(), "apple", Category.Food, 10, 2);
+        Response<Item> rShirt= ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToStore(rStore1.getObject().getStoreId(), "shirt", Category.Clothing, 20, 3);
+
+
+        //((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).logout();
+
+
+        Response<Collection<Store>> openStores = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getAllOpenStores();
+
+        if (openStores.hadError())
+            return new Response<>(openStores.getErrorMessage());
+        List<StoreDTO> dto_stores = openStores.getObject().stream().map(this::convertToStoreDTO).collect(Collectors.toList());
+
+        return new Response<>(dto_stores);
+    }
+
+    @MessageMapping("/market/getStoresBesidesPermanentlyClosed")
+    @SendToUser("/topic/getStoresBesidesPermanentlyClosedResult")
+    public Response<List<StoreDTO>> getStoresBesidesPermanentlyClosed (SimpMessageHeaderAccessor headerAccessor) {
+        Response<Collection<Store>> stores = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getStoresBesidesPermanentlyClosed();
+
+        if (stores.hadError())
+            return new Response<>(stores.getErrorMessage());
+        List<StoreDTO> dto_stores = stores.getObject().stream().map(this::convertToStoreDTO).collect(Collectors.toList());
+
+        return new Response<>(dto_stores);
+    }
+
 
     @MessageMapping("/market/AddItemToCart")
     @SendToUser("/topic/AddItemToCartResult")
