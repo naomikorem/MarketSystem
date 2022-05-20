@@ -353,6 +353,18 @@
   font-size: 25px;
 }
 
+.addItemField {
+    width: 100%;
+    padding: 5%;
+    margin: 5%;
+}
+
+.addItemSelectField {
+    width: 100%;
+    padding: 0%;
+    margin: 0%;
+}
+
 .white-color{
     color: white;
 }

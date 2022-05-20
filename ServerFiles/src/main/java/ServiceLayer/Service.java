@@ -329,4 +329,15 @@ public class Service {
 //        //return new Response<>(shoppingBaskets);
 //        return shoppingBaskets;
 //    }
+
+    @MessageMapping("/market/addNewItem")
+    @SendToUser("/topic/addNewItemResult")
+    public Response<ItemDTO> addNewItem (SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<Item> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToStore((int) map.get("storeId"), (String) map.get("name"), (String) map.get("category"), Double.parseDouble((String) map.get("price")), Integer.parseInt((String) map.get("amount")));
+        if (res.hadError()) {
+            return new Response<>(res.getErrorMessage());
+        }
+        return new Response<>(convertToItemDTO(res.getObject(), Integer.parseInt((String) map.get("amount"))));
+    }
+
 }

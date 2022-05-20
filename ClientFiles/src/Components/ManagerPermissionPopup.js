@@ -51,12 +51,16 @@ class ManagerPermissionPopup extends Component {
             const res = JSON.parse(r["body"]);
             this.state.hadError = res.errorMessage != null;
             this.state.resultMessage = this.state.hadError ? res.errorMessage : "Changed permissions successfully"
+            if (!this.state.hadError) {
+                handleClose();
+            }
         });
         this.mounted = true;
     }
 
     componentWillUnmount() {
         stompClient.unsubscribe('/user/topic/getManagersPermissionResult')
+        stompClient.unsubscribe('/user/topic/setManagersPermissionResult')
         this.mounted = false;
     }
 
@@ -77,7 +81,6 @@ class ManagerPermissionPopup extends Component {
             "storeId": this.props.storeId,
             "permissionMask": this.state.permission.permissionMask,
         }));
-        handleClose()
     }
 
     handleShow() {
@@ -96,7 +99,7 @@ class ManagerPermissionPopup extends Component {
                     </Button>
                     <Modal show={show} onHide={handleClose}>
                         <Modal.Header closeButton>
-                            <Modal.Title>Edit permission</Modal.Title>
+                            <Modal.Title>Edit permissions</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
                             {
@@ -105,13 +108,13 @@ class ManagerPermissionPopup extends Component {
                                         <label><Checkbox checked={(this.state.permission.permissionMask & 0x1) != 0} onChange={(event) => {this.handleCheckboxChanged(0x1)}}/>Allow to assign managers</label>
                                     </div>
                                     <div>
-                                        <label><Checkbox checked={(this.state.permission.permissionMask & 0x2) != 0} onChange={(event) => {this.handleCheckboxChanged(0x2)}}/>Allow to asign managers</label>
+                                        <label><Checkbox checked={(this.state.permission.permissionMask & 0x2) != 0} onChange={(event) => {this.handleCheckboxChanged(0x2)}}/>Allow to manage items</label>
                                     </div>
                                     <div>
-                                        <label><Checkbox checked={(this.state.permission.permissionMask & 0x4) != 0} onChange={(event) => {this.handleCheckboxChanged(0x4)}}/>Allow to asign managers</label>
+                                        <label><Checkbox checked={(this.state.permission.permissionMask & 0x4) != 0} onChange={(event) => {this.handleCheckboxChanged(0x4)}}/>Allow to manage discounts</label>
                                     </div>
                                     <div>
-                                        <label><Checkbox checked={(this.state.permission.permissionMask & 0x8) != 0} onChange={(event) => {this.handleCheckboxChanged(0x8)}}/> Allow to asign managers</label>
+                                        <label><Checkbox checked={(this.state.permission.permissionMask & 0x8) != 0} onChange={(event) => {this.handleCheckboxChanged(0x8)}}/> Allow to manage purchase policies</label>
                                     </div>
                                 </div>
                             }

@@ -106,7 +106,7 @@ public class StoreController {
 
     public Item addItemToStore(User manager, int storeId, String name, Category category, double price, int amount) {
         if (!manager.isSubscribed()) {
-            throw new IllegalArgumentException("Use has to be logged in to do this action.");
+            throw new IllegalArgumentException("User has to be logged in to do this action.");
         }
         Store s = getStoreAndThrow(storeId);
         if (!s.canManageItems(manager)) {

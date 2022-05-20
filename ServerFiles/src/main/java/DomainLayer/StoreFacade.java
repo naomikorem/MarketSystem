@@ -152,6 +152,15 @@ public class StoreFacade {
         }
     }
 
+    public Response<Item> addItemToStore(User manager, int storeId, String name, String category, double price, int amount) {
+        try {
+            Category c = Category.valueOf(category);
+            return new Response<>(storeController.addItemToStore(manager, storeId, name, c, price, amount));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
     public Response<Item> returnItemToStore(int storeId, Item item, int amount) {
         try {
             return new Response<>(storeController.returnItemToStore(storeId, item, amount));

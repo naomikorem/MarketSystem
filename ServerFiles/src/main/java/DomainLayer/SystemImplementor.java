@@ -164,6 +164,13 @@ public class SystemImplementor implements SystemInterface {
             }
             stores.add(r.getObject());
         }
+        for (int id : user.getManagedStores()) {
+            Response<Store> r = storeFacade.getStore(id);
+            if (r.hadError()) {
+                return new Response<>(r.getErrorMessage());
+            }
+            stores.add(r.getObject());
+        }
         return new Response<>(stores);
     }
 
@@ -325,6 +332,10 @@ public class SystemImplementor implements SystemInterface {
 
     @Override
     public Response<Item> addItemToStore(int storeId, String name, Category category, double price, int amount) {
+        return storeFacade.addItemToStore(user, storeId, name, category, price, amount);
+    }
+
+    public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount) {
         return storeFacade.addItemToStore(user, storeId, name, category, price, amount);
     }
 
