@@ -74,7 +74,6 @@ public class Service {
 
 
         Response<Collection<Store>> stores = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getAllStores();
-
         if (stores.hadError())
             return new Response<>(stores.getErrorMessage());
         List<StoreDTO> dto_stores = stores.getObject().stream().map(s-> convertToStoreDTO(s)).collect(Collectors.toList());
@@ -121,6 +120,16 @@ public class Service {
         ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
 
         Response<History> history = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getPurchaseHistory();
+        if(history.hadError())
+            return new Response<>(history.getErrorMessage());
+
+        return new Response<>(convertToHistoryDTO(history.getObject()));
+    }
+
+    @MessageMapping("/market/getUserHistory")
+    @SendToUser("/topic/getUserHistoryResult")
+    public Response<HistoryDTO> getUserPurchaseHistory(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
+        Response<History> history = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getPurchaseHistory(map.get("username"));
         if(history.hadError())
             return new Response<>(history.getErrorMessage());
 

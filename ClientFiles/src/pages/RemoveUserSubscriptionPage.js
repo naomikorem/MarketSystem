@@ -56,15 +56,23 @@ class RemoveUserSubscription extends Component {
         stompClient.subscribe('/user/topic/removeSubscriptionResult', (r) => {
             let response = JSON.parse(r["body"]);
             console.log(response)
-            if(response.errorMessage || !response.object)
+            if(response.errorMessage)
+            {
+                console.log(response.errorMessage);
+                this.state.message = response.errorMessage
+                this.state.hadError = true;
+                this.setState({[this.state.hadError]: this.state.hadError});
+            }
+            else if (response.object)
+            {
+                this.state.message = "Removed the user's subscription";
+            }
+            else
             {
                 console.log(response.errorMessage);
                 this.state.message = "Could not remove the user's subscription";
                 this.state.hadError = true;
                 this.setState({[this.state.hadError]: this.state.hadError});
-            }
-            else {
-                this.state.message = "Removed the user's subscription";
             }
             this.setState({[this.state.message]: this.state.message});
         });

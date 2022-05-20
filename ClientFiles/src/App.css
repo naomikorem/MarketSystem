@@ -426,3 +426,9 @@
     margin: 20px;
 
 }
+
+.formFieldUserHistoryLabel {
+    display: block;
+    font-size: 30px;
+    color: white;
+}
