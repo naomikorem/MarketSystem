@@ -18,7 +18,6 @@ function RemoveAlert(props) {
             </div>
 
             {modalOpen && <AreYouSureModal
-                id = {1}
                 setOpenModal={setModalOpen}
                 onContinue={handleApply}/>}
         </div>
