@@ -152,6 +152,22 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.getAllStores();
     }
 
+    @Override
+    public Response<Collection<Store>> getAllOpenStores() {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.getAllOpenStores();
+    }
+
+    @Override
+    public Response<Collection<Store>> getStoresBesidesPermanentlyClosed() {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.getStoresBesidesPermanentlyClosed();
+    }
+
     public Response<Collection<Store>> getUsersStores() {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Only Logged-in users can perform this action.");

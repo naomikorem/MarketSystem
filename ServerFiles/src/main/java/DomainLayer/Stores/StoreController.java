@@ -86,6 +86,14 @@ public class StoreController {
         return stores.values();
     }
 
+    public Collection<Store> getAllOpenStores() {
+        return stores.values().stream().filter(Store::isOpen).collect(Collectors.toList());
+    }
+
+    public Collection<Store> getStoresBesidesPermanentlyClosed() {
+        return stores.values().stream().filter(store -> !store.isPermanentlyClosed()).collect(Collectors.toList());
+    }
+
     public Set<Item> getItemsWithNameContains(String name) {
         return stores.values().stream().map(s -> s.getItemsWithNameContains(name)).flatMap(Set::stream).collect(Collectors.toSet());
     }

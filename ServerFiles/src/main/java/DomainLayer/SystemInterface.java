@@ -71,6 +71,8 @@ public interface SystemInterface {
     Response<Boolean> setManagerPermission(String manager, int storeId, byte permission);
 
     public Response<Collection<Store>> getAllStores();
+    public Response<Collection<Store>> getAllOpenStores();
+    public Response<Collection<Store>> getStoresBesidesPermanentlyClosed();
 
     public Response<Store> getStore(int id);
 

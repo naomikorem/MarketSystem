@@ -19,7 +19,7 @@ class HomePage extends Component {
 
     async componentDidMount() {
         await connectedPromise;
-        stompClient.subscribe('/user/topic/getStoresResult', (r) => {
+        stompClient.subscribe('/user/topic/getOpenStoresResult', (r) => {
             const res = JSON.parse(r["body"]);
             if (res.errorMessage == null)
             {
@@ -32,11 +32,11 @@ class HomePage extends Component {
                 this.setState({[this.state.error]: this.state.error});
             }
         });
-        stompClient.send("/app/market/getStores", {}, {});
+        stompClient.send("/app/market/getOpenStores", {}, {});
     }
 
     componentWillUnmount() {
-        stompClient.unsubscribe('/user/topic/getStoresResult');
+        stompClient.unsubscribe('/user/topic/getOpenStoresResult');
     }
 
     handleChange(event) {
