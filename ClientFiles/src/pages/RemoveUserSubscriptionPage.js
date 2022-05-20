@@ -55,6 +55,7 @@ class RemoveUserSubscription extends Component {
         await connectedPromise;
         stompClient.subscribe('/user/topic/removeSubscriptionResult', (r) => {
             let response = JSON.parse(r["body"]);
+            console.log(response)
             if(response.errorMessage || !response.object)
             {
                 console.log(response.errorMessage);
@@ -92,10 +93,7 @@ class RemoveUserSubscription extends Component {
                     />
                 </div>
 
-                <RemoveAlert/>
-                {/*<div className="formField">*/}
-                {/*    <button onClick={this.handleApply} className="formFieldButton">Remove</button>*/}
-                {/*</div>*/}
+                <RemoveAlert username_to_unsubscribe = {this.state.username_to_unsubscribe}/>
 
                 <ResultLabel text={this.state.message} hadError={this.state.hadError}/>
             </div>

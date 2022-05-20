@@ -90,7 +90,15 @@ public class UserController {
     }
 
     public User getUser(String name) {
-        return users.getOrDefault(name, null);
+        synchronized (lock)
+        {
+            if (isExist(name))
+            {
+                return users.get(name);
+            }
+        }
+        LogUtility.warn("tried to get a nonexistent user");
+        throw new IllegalArgumentException(String.format("Could not find user with name %s", name));
     }
 
     public boolean isExist(String name) {
