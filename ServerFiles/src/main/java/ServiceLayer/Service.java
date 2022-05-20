@@ -43,6 +43,21 @@ public class Service {
         return new Response<>(convertToUserDTO(user.getObject()));
     }
 
+    @MessageMapping("/market/getToken")
+    @SendToUser("/topic/tokenResult")
+    public Response<String> getToken(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getToken();
+    }
+
+    @MessageMapping("/market/loginByToken")
+    @SendToUser("/topic/loginByTokenResult")
+    public Response<UserDTO> loginByToken(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
+        Response<User> user = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).loginUserByToken(map.get("token"));
+        if (user.hadError())
+            return new Response<>(user.getErrorMessage());
+        return new Response<>(convertToUserDTO(user.getObject()));
+    }
+
     @MessageMapping("/market/register")
     @SendToUser("/topic/registerResult")
     public Response<UserDTO> register(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {

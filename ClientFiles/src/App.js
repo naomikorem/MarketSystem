@@ -52,14 +52,30 @@ export const connectedPromise = new Promise(resolve => {
 })
 
 export let [user, setUser] = [undefined, undefined]
+export let [token, setToken] = [undefined, undefined]
 
 
 
 
+async function loginByToken() {
+  await connectedPromise;
+  stompClient.subscribe('/user/topic/loginByTokenResult', (r) => {
+    let res = JSON.parse(r["body"]);
+    if (!res.errorMessage) {
+      sessionStorage.setItem('user', JSON.stringify(res.object))
+      setUser(res.object)
+    }
+  });
+  stompClient.send("/app/market/loginByToken", {}, JSON.stringify({"token" : token}));
+}
 
+function render() {
+    [user, setUser] = useState(sessionStorage.getItem('user'));
+    [token, setToken] = useState(sessionStorage.getItem('token'));
 
-function  render() {
-    [user, setUser] = useState(sessionStorage.getItem('user'))
+    if (token != null && token !== '') {
+        loginByToken();
+    }
 
     return (
       <BrowserRouter >
