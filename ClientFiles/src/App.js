@@ -107,8 +107,6 @@ function render() {
             </React.Fragment>
 
 
-            <HamburgerMenu></HamburgerMenu>
-
             <Routes>
               <Route exact path="/" element={<SignInForm/>} />
               <Route path="/sign-in" element={<SignInForm/>} />
