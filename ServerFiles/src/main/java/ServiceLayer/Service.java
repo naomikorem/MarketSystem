@@ -179,6 +179,16 @@ public class Service {
         return new Response<>(convertToHistoryDTO(history.getObject()));
     }
 
+    @MessageMapping("/market/getStoreHistory")
+    @SendToUser("/topic/getStoreHistoryResult")
+    public Response<HistoryDTO> getStorePurchaseHistory(SimpMessageHeaderAccessor headerAccessor, Map<String, Integer> map) {
+        Response<History> history = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getStoreHistory(map.get("storeId"));
+        if(history.hadError())
+            return new Response<>(history.getErrorMessage());
+
+        return new Response<>(convertToHistoryDTO(history.getObject()));
+    }
+
     private HistoryDTO convertToHistoryDTO(History history)
     {
         HistoryDTO dto_history = new HistoryDTO();

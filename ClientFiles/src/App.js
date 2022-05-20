@@ -23,8 +23,10 @@ import RemoveUserSubscription from "./pages/RemoveUserSubscriptionPage"
 import UserProfile from "./pages/UserProfilePage"
 import PersonalPurchaseHistory from "./pages/PersonalPurchaseHistory"
 import UserPurchaseHistory from "./pages/ViewUserPurchaseHistoryAdminPage"
+import StorePurchaseHistory from "./pages/ViewStorePurchaseHistoryAdminPage"
 import PersonalPurchaseHistoryButton from "./Components/PersonalPurchaseHistoryButton"
 import UserHistoryButton from "./Components/UserHistoryButton"
+import StoreHistoryButton from "./Components/StoreHistoryButton"
 import CloseStorePermanentlyButton from "./Components/CloseStorePermanentlyButton"
 import UnsubscribeUserButton from "./Components/UnsubscribeUserButton";
 import HamburgerMenu from "./Components/HamburgerSubscribedMenuButton"
@@ -74,6 +76,7 @@ function  render() {
                   Home
                 </NavLink>
                 <ManageStoresButton/>
+                <StoreHistoryButton/>
                 <UserHistoryButton/>
                 <PersonalPurchaseHistoryButton/>
                 <UnsubscribeUserButton/>
@@ -103,6 +106,7 @@ function  render() {
               <Route path="/user-profile-subscriber" element={<UserProfile/>} />
               <Route path="/personal-purchase-history" element={<PersonalPurchaseHistory/>}/>
               <Route path="/user-purchase-history" element={<UserPurchaseHistory/>} />
+              <Route path="/store-purchase-history" element={<StorePurchaseHistory/>} />
               <Route path="/popup" element={<Modal/>} />
               <Route path="/edit-store/:storeid" element={<EditStorePage/>} />
               <Route path="/*" element={<ErrorPage/>} />
