@@ -160,6 +160,13 @@ public class Service {
         return new Response<>(convertToItemDTO(item.getObject(), map.get("amount")));
     }
 
+    @MessageMapping("/market/RemoveItemFromCart")
+    @SendToUser("/topic/removeItemFromCartResult")
+    public Response<Boolean> RemoveItemFromCart(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING))
+                .removeItemFromCart((Integer)map.get("store_id"),(Item) map.get("item_id"), (Integer) map.get("amount"));
+    }
+
     @MessageMapping("/market/getUsersStores")
     @SendToUser("/topic/getUsersStoresResult")
     public Response<List<StoreDTO>> getUsersStores(SimpMessageHeaderAccessor headerAccessor) {
