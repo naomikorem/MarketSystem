@@ -1,14 +1,12 @@
 import React, {Component} from "react";
 import {stompClient, connectedPromise, user} from "../App";
 import ResultLabel from "../Components/ResultLabel";
-import {Link} from "react-router-dom";
+import {useLocation, useParams} from "react-router-dom";
 
 class StorePurchaseHistoryItem extends Component {
 
     constructor() {
         super();
-
-
     }
 
     render() {
@@ -19,9 +17,9 @@ class StorePurchaseHistoryItem extends Component {
                 <div>
                     <h3>{history_item.product_name}</h3>
                     <p>
+                        Username that purchased the item: {history_item.username}<br/>
                         Bought amount: {history_item.amount}<br/>
                         Price Per Unit: {history_item.price_per_unit} <br/>
-                        Store id: {history_item.store_id} <br/>
                         Purchase Date: {new Date(history_item.date).toLocaleDateString("en-GB")}
                     </p>
                 </div>
@@ -30,13 +28,13 @@ class StorePurchaseHistoryItem extends Component {
     }
 }
 
-export default class StorePurchaseHistory extends Component{
+export class StoreHistoryPage extends Component{
 
-    store = props.store;
-
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
+            store_id: props.storeid,
+            store_name: props.name,
             history_items: [],
             error: ""
         };
@@ -59,7 +57,7 @@ export default class StorePurchaseHistory extends Component{
                 this.setState({[this.state.error]: this.state.error});
             }
         });
-        stompClient.send("/app/market/getStoreHistory", {}, JSON.stringify({"storeId" : store.id}));
+        stompClient.send("/app/market/getStoreHistory", {}, JSON.stringify({"storeId" : this.state.store_id}));
     }
 
     componentWillUnmount() {
@@ -70,10 +68,7 @@ export default class StorePurchaseHistory extends Component{
         return (
             <React.Fragment>
                 <div className="formCenter">
-                    <h1 className="center-text">Store's Purchase History</h1>
-                </div>
-                <div className="formCenter">
-                    <h2 className="center-text">Please choose store to view it's purchase history</h2>
+                    <h1 className="center-text">This is the Purchase History of the store {this.state.store_name}</h1>
                 </div>
 
                 <div className="store-grid-container">
@@ -85,9 +80,22 @@ export default class StorePurchaseHistory extends Component{
                         />
                     ))}
                 </div>
-                <ResultLabel text={this.state.message} hadError={this.state.hadError}/>
+                <ResultLabel text={this.state.error} hadError={this.state.error != ""}/>
             </React.Fragment>
         );
     }
 }
+
+function wrapRender() {
+
+    let {storeid} = useParams();
+    const location = useLocation()
+    const { storeName } = location.state
+
+    return <div>
+        <StoreHistoryPage name={storeName} storeid={storeid}/>
+    </div>
+}
+
+export default wrapRender;
 

@@ -23,7 +23,7 @@ import RemoveUserSubscription from "./pages/RemoveUserSubscriptionPage"
 import UserProfile from "./pages/UserProfilePage"
 import PersonalPurchaseHistory from "./pages/PersonalPurchaseHistory"
 import UserPurchaseHistory from "./pages/ViewUserPurchaseHistoryAdminPage"
-import StorePurchaseHistory from "./pages/ViewStorePurchaseHistoryAdminPage"
+import StoreHistoryPage from "./pages/StoreHistoryPage"
 import PersonalPurchaseHistoryButton from "./Components/PersonalPurchaseHistoryButton"
 import UserHistoryButton from "./Components/UserHistoryButton"
 import StoreHistoryButton from "./Components/StoreHistoryButton"
@@ -39,6 +39,7 @@ import OpenNewStore from "./pages/OpenNewStore";
 import ErrorPage from "./pages/ErrorPage";
 import Cart from "./Components/cart";
 import Modal from "./Components/Modal";
+import StorePurchaseHistory from "./pages/ViewStorePurchaseHistoryAdminPage";
 
 
 const socket = new SockJS("http://localhost:8080/market");
@@ -90,7 +91,7 @@ function  render() {
             </React.Fragment>
 
 
-            {/*<HamburgerMenu></HamburgerMenu>*/}
+            <HamburgerMenu></HamburgerMenu>
 
             <Routes>
               <Route exact path="/" element={<SignInForm/>} />
@@ -106,7 +107,8 @@ function  render() {
               <Route path="/user-profile-subscriber" element={<UserProfile/>} />
               <Route path="/personal-purchase-history" element={<PersonalPurchaseHistory/>}/>
               <Route path="/user-purchase-history" element={<UserPurchaseHistory/>} />
-              <Route path="/store-purchase-history" element={<StorePurchaseHistory/>} />
+              <Route path="/select_store-history" element={<StorePurchaseHistory/>} />
+              <Route path="/store-purchase-history/:storeid" element={<StoreHistoryPage/>} />
               <Route path="/popup" element={<Modal/>} />
               <Route path="/edit-store/:storeid" element={<EditStorePage/>} />
               <Route path="/*" element={<ErrorPage/>} />
