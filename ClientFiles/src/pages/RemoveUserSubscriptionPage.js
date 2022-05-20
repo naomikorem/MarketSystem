@@ -7,7 +7,7 @@ import AreYouSureModal from "../Components/AreYouSureModal";
 function RemoveAlert(props) {
     let [modalOpen, setModalOpen] = useState(false);
 
-    const handleApply = (id) => {
+    const handleApply = () => {
         stompClient.send("/app/market/removeSubscription", {}, JSON.stringify({"username" : props.username_to_unsubscribe}));
     }
 
