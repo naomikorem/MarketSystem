@@ -9,15 +9,15 @@ import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
 import ResultLabel from "../Components/ResultLabel";
 import AddItemPopup from "../Components/AddItemPopup";
+import Select from "@material-ui/core/Select";
 
+const categories = ["Food", "Clothing", "Toys", "Grooming", "Fitness"]
 
 
 class EditItemPopup extends Component {
 
     constructor(props) {
         super(props);
-        console.log("props")
-        console.log(props)
         this.state = {
             error: "",
             item: props.itemDTO
@@ -37,6 +37,15 @@ class EditItemPopup extends Component {
     async componentDidMount() {
         await connectedPromise;
 
+        stompClient.subscribe('/user/topic/modifyItemResult', (r) => {
+            const res = JSON.parse(r["body"]);
+            this.state.error = res.errorMessage
+            this.setState({[this.state.error]: this.state.error});
+            if (!res.errorMessage) {
+                stompClient.send("/app/market/getStoreItems", {}, JSON.stringify({"id" : this.props.storeId}));
+                this.handleClose();
+            }
+        });
 
         this.mounted = true;
     }
@@ -46,14 +55,26 @@ class EditItemPopup extends Component {
     }
 
     handleChange(event) {
+        if (event.target.name === "amount" && (!/^[0-9]+$/.test(event.target.value) || event.target.value.length > 8)) {
+            return;
+        }
+        this.state.item[event.target.name] = event.target.value;
         this.setState({
-            [event.target.name]: event.target.value //set this.state.value to the input's value
+            ["item"]: this.state.item //set this.state.value to the input's value
         });
     }
 
 
     handleSave() {
-        handleClose()
+        stompClient.send("/app/market/modifyItem", {}, JSON.stringify({
+            "storeId": this.props.storeId,
+            "itemId": this.state.item.item_id,
+            "name": this.state.item.product_name,
+            "category": this.state.item.category,
+            "price": (this.state.item.price).toString(),
+            "amount": parseInt(this.state.item.amount),
+            "keywords": this.state.item.keyWords.toString()
+        }));
     }
 
     handleShow() {
@@ -79,14 +100,28 @@ class EditItemPopup extends Component {
                     </Modal.Header>
                     <Modal.Body>
                         <TextField id="outlined-basic" label="Product name" variant="standard" className={"editItemBar"}
-                                   value={this.state.item.product_name} onChange={this.handleChange} name="productName"/>
-                        <TextField id="outlined-basic" label="Product category" variant="standard" className={"editItemBar"}
-                                   value={this.state.item.category} onChange={this.handleChange} name="productCategory"/>
+                                   value={this.state.item.product_name} onChange={this.handleChange} name="product_name"/>
+
+                        <Select style={{background: "#FFFFFF"}} name="category" defaultValue={"Food"} value={this.state.item.category} labelId="categoryLabel" id="category" label="Category" variant="filled" className={"selectItemBar"} onChange={this.handleChange}>
+                            { categories.map((s, i) => <option key={i} value={s}>{s}</option>)}
+                        </Select>
+
+                        <TextField type="number" id="outlined-basic" label="Product price" variant="standard" className={"editItemBar"}
+                                   value={this.state.item.price} onChange={this.handleChange} name="price"/>
+
+                        <TextField type="number" id="outlined-basic" label="Product amount" variant="standard" className={"editItemBar"}
+                                   value={this.state.item.amount} onChange={this.handleChange} name="amount"/>
+
+                        <TextField id="outlined-basic" label="Keywords" variant="standard" className={"editItemBar"}
+                                   value={this.state.item.keyWords} onChange={this.handleChange} name="keyWords"/>
 
 
                     </Modal.Body>
                     <Modal.Footer>
                         <ResultLabel text={this.state.error} hadError={this.state.error != null}/>
+                        <Button variant="primary" onClick={this.handleSave}>
+                            Save
+                        </Button>
                         <Button variant="secondary" onClick={this.handleClose}>
                             Close
                         </Button>

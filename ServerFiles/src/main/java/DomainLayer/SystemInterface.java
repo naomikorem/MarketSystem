@@ -18,7 +18,7 @@ import java.util.*;
 public interface SystemInterface {
     public Response<Item> removeItemFromStore(int storeId, int itemId, int amount);
 
-    public Response<Item> modifyItem(int storeId, int itemId, String productName, String category, double price, List<String> keywords);
+    public Response<Item> modifyItem(int storeId, int itemId, String productName, String category, double price, int amount, List<String> keywords);
 
     public Response<Map<Item, Integer>> getItems(int storeId);
 

@@ -270,7 +270,7 @@ public class StoreController {
         }
     }
 
-    public Item modifyItem(User owner, int storeId, int itemId, String productName, String category, double price, List<String> keywords) {
+    public Item modifyItem(User owner, int storeId, int itemId, String productName, String category, double price, int amount, List<String> keywords) {
         Store s = getStoreAndThrow(storeId);
         Item i = s.getItemById(itemId);
         if (i == null) {
@@ -280,6 +280,7 @@ public class StoreController {
             throw new IllegalArgumentException("Only store owners can perform this action.");
         }
         i.updateItem(productName, Category.valueOf(category), price, keywords);
+        s.setItemAmount(i, amount);
         return i;
     }
 

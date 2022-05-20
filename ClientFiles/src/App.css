@@ -445,6 +445,12 @@
     height: 80px;
 }
 
+.selectItemBar {
+    width: 65%;
+    margin-bottom: 5%;
+    height: 80px;
+}
+
 .formFieldUserHistoryLabel {
     display: block;
     font-size: 30px;
