@@ -25,6 +25,7 @@ import PersonalPurchaseHistory from "./pages/PersonalPurchaseHistory"
 import PersonalPurchaseHistoryButton from "./Components/PersonalPurchaseHistoryButton"
 import CloseStorePermanentlyButton from "./Components/CloseStorePermanentlyButton"
 import UnsubscribeUserButton from "./Components/UnsubscribeUserButton";
+import HamburgerMenu from "./Components/HamburgerSubscribedMenuButton"
 
 import "./App.css";
 
@@ -81,6 +82,9 @@ function  render() {
               </div>
 
             </React.Fragment>
+
+
+            {/*<HamburgerMenu></HamburgerMenu>*/}
 
             <Routes>
               <Route exact path="/" element={<SignInForm/>} />
