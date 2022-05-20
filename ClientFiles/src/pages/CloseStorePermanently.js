@@ -7,22 +7,22 @@ import AreYouSureModal from "../Components/AreYouSureModal";
 function StoreToClose(props) {
     let [modalOpen, setModalOpen] = useState(false);
 
-    const handleCloseStore = (store_id) => {
-        stompClient.send("/app/market/closeStorePermanently", {}, JSON.stringify({"storeId" : store_id}));
-    }
-
     const store = props.store;
+
+
+    const handleCloseStore = () => {
+        stompClient.send("/app/market/closeStorePermanently", {}, JSON.stringify({"storeId" : store.id}));
+    }
 
     return (
         <div>
             <article onClick={() => {setModalOpen(true)}} key={store.id} className={"items-grid"}>
                 <div>
-                    <h1>{store.name}</h1>
+                    <h1 className={"white-color"}>{store.name}</h1>
                 </div>
             </article>
 
             {modalOpen && <AreYouSureModal
-                id={store.id}
                 setOpenModal={setModalOpen}
                 onContinue={handleCloseStore}/>}
         </div>
