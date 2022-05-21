@@ -472,8 +472,29 @@
     align-items: center;
 }
 
+.reopenStoreButton {
+    background-color: greenyellow;
+    height: 10%;
+    margin: 2%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .editStoreButtons {
     justify-content: center;
     align-items: center;
+    width: 150%;
+}
 
+.editStorePageStyle {
+    display: flex;
+    flex-direction: row;
+    margin-left: 20%;
+    width: 100%;
+}
+
+.editStoreInfoField {
+    margin-bottom: 5%;
+    color: #ffffff;
 }
