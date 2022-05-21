@@ -1,6 +1,6 @@
 import React, {Component, useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {stompClient, connectedPromise, UserContext, setUser, setToken} from "../App";
+import {stompClient, connectedPromise, UserContext, setUser, setToken, notifications} from "../App";
 import MainPage from "./MainPage";
 
 
@@ -32,6 +32,7 @@ class SignInForm extends Component {
           setUser(res.object)
           stompClient.send('/app/market/getToken', {}, JSON.stringify({}));
           stompClient.send("/app/market/isAdmin", {}, JSON.stringify({}));
+          stompClient.send("/app/market/getNotifications", {}, JSON.stringify({}));
         }
       }
     });
@@ -45,6 +46,20 @@ class SignInForm extends Component {
         }
       }
     });
+
+    stompClient.subscribe('/user/topic/getNotificationsResult', (r) => {
+      if (this.mounted) {
+        let res = JSON.parse(r["body"]);
+        if (!this.state.error) {
+          console.log("before");
+          console.log(notifications);
+          notifications.push(...res.object.map(n => n.message))
+          console.log(notifications);
+          console.log("after");
+        }
+      }
+    });
+
     this.mounted = true;
   }
 

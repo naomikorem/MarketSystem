@@ -179,6 +179,13 @@
     border-radius: 15px;
 }
 
+.notification-grid-container {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(1, 1fr);
+    border-radius: 15px;
+}
+
 .storeLink {
     color: blue;
     text-decoration: none;
@@ -193,6 +200,17 @@
     font-size: 30px;
     text-align: center;
     margin: 5%;
+    border-radius: 15px;
+}
+
+.notification-item {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    font-size: 30px;
+    text-align: center;
+    color: black;
+    margin: 2%;
     border-radius: 15px;
 }
 

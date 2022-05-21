@@ -9,6 +9,7 @@ import DomainLayer.SystemImplementor;
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.HistoryManagement.ItemHistory;
+import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 import ServiceLayer.DTOs.*;
@@ -470,4 +471,9 @@ public class Service {
         return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).isLoggedInAdminCheck();
     }
 
+    @MessageMapping("/market/getNotifications")
+    @SendToUser("/topic/getNotificationsResult")
+    public Response<List<INotification>> getNotifications(SimpMessageHeaderAccessor headerAccessor) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getUserNotifications();
+    }
 }

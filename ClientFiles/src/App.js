@@ -184,9 +184,7 @@ export const connectedPromise = new Promise(resolve => {
 export let [user, setUser] = [undefined, undefined]
 export let [token, setToken] = [undefined, undefined]
 export let [isAdmin, setIsAdmin] = [undefined, undefined]
-
-
-
+export let [notifications, setNotifications] = [undefined, undefined]
 
 
 async function loginByToken() {
@@ -206,6 +204,7 @@ function render() {
   [user, setUser] = useState(sessionStorage.getItem('user'));
   [token, setToken] = useState(sessionStorage.getItem('token'));
   [isAdmin, setIsAdmin] = useState(false);
+  [notifications, setNotifications] = useState([]);
 
   if (token != null && token !== '') {
     loginByToken();
