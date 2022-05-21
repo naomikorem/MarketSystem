@@ -29,7 +29,6 @@ import UserHistoryButton from "./Components/UserHistoryButton"
 import StoreHistoryButton from "./Components/StoreHistoryButton"
 import CloseStorePermanentlyButton from "./Components/CloseStorePermanentlyButton"
 import UnsubscribeUserButton from "./Components/UnsubscribeUserButton";
-import HamburgerMenu from "./Components/HamburgerSubscribedMenuButton"
 
 import "./App.css";
 
