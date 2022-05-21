@@ -59,15 +59,31 @@ export default class PersonalPurchaseHistory extends Component{
         stompClient.subscribe('/user/topic/getPersonalHistoryResult', (r) => {
             let response = JSON.parse(r["body"]);
             if (!response.errorMessage) {
-                this.state.history_items = response.object.items
-                this.setState({[this.state.history_items]: this.state.history_items});
-                console.log(this.state.history_items);
+                if(response.object) {
+
+                    this.state.error = "Updated the item's rate successfully";
+                    this.setState({[this.state.error]: this.state.error});
+                    this.state.is_error = false
+                    this.setState({[this.state.is_error]: false});
+                    this.state.history_items = response.object.items
+                    this.setState({[this.state.history_items]: this.state.history_items});
+                    console.log(this.state.history_items);
+                }
+                else
+                {
+                    this.state.error = "Could not Get Personal history";
+                    this.setState({[this.state.error]: this.state.error});
+                    this.state.is_error = true
+                    this.setState({[this.state.is_error]: true});
+                }
 
             }
             else
             {
                 this.state.error = response.errorMessage;
                 this.setState({[this.state.error]: this.state.error});
+                this.state.is_error = true
+                this.setState({[this.state.is_error]: true});
             }
         });
         console.log(user);
