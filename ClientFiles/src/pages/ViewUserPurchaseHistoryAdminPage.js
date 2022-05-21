@@ -117,10 +117,8 @@ export default class UserPurchaseHistory extends Component{
 
                         <div className="formField">
                             <button onClick={this.handleClick} className="formFieldButton">OK</button>{" "}
-                            <label className="errorLabel">
-                                {this.state.error}
-                            </label>
                         </div>
+                        <ResultLabel text={this.state.error} hadError={this.state.error != ""}/>
                     </form>
 
 
@@ -133,7 +131,6 @@ export default class UserPurchaseHistory extends Component{
                             />
                         ))}
                     </div>
-                    <ResultLabel text={this.state.message} hadError={this.state.hadError}/>
                 </React.Fragment>
         );
     }

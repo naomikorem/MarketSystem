@@ -238,6 +238,16 @@ public class Service {
         return new Response<>(convertToHistoryDTO(history.getObject()));
     }
 
+    @MessageMapping("/market/getSubscriberInfo")
+    @SendToUser("/topic/getSubscriberInfoResult")
+    public Response<UserDTO> getSubscriberInfo(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
+        Response<User> user = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getUser(map.get("username"));
+        if(user.hadError())
+            return new Response<>(user.getErrorMessage());
+
+        return new Response<>(convertToUserDTO(user.getObject()));
+    }
+
     private HistoryDTO convertToHistoryDTO(History history)
     {
         HistoryDTO dto_history = new HistoryDTO();

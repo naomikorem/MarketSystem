@@ -8,6 +8,9 @@
       <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_14_05_2022_20_41__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_14_05_2022_20_41__Changes_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_16_05_2022_15_06__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_16_05_2022_15_06__Changes_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_16_05_2022_15_06__Changes_1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_16_05_2022_15_06__Changes_1.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientFiles/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ClientFiles/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerFiles/MarketSystem.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ServerFiles/MarketSystem.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerFiles/src/main/java/ServiceLayer/Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/ServerFiles/src/main/java/ServiceLayer/Service.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -243,18 +246,11 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="started web socket" />
     <MESSAGE value="added handling for login request" />
     <option name="LAST_COMMIT_MESSAGE" value="added handling for login request" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="463" y="119" key="FileChooserDialogImpl" timestamp="1653063112367">
-      <screen x="0" y="0" width="1366" height="728" />
-    </state>
-    <state x="463" y="119" key="FileChooserDialogImpl/0.0.1366.728/1366.0.1920.1040@0.0.1366.728" timestamp="1653063112367" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

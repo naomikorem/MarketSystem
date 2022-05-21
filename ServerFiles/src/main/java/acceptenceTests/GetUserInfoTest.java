@@ -37,6 +37,20 @@ public class GetUserInfoTest extends AbstractTest {
     }
 
     @Test
+    public void infoTest() {
+
+        Response<User> user = bridge.register("user111@gmail.com", "user", "","last","password");
+        assertTrue(user.hadError());
+        user = bridge.register("user111@gmail.com", "user", "","","password");
+        assertTrue(user.hadError());
+        user = bridge.register("user111@gmail.com", "user", "",null,"password");
+        assertTrue(user.hadError());
+        user = bridge.register("user111@gmail.com", "user", "f","last","password");
+        assertFalse(user.hadError());
+
+    }
+
+    @Test
     public void userTestSuccess2() {
         Bridge bridge1 = new Real();
         Thread t1 = new Thread(() -> {
