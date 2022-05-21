@@ -7,9 +7,15 @@
     align-items: center;
 }
 
+.transparent{
+    background-color: transparent;
+    border-color: transparent;
+}
+
 .menu-bars {
     font-size: 2rem;
     background: none;
+    border-color: transparent;
 }
 
 .nav-menu {

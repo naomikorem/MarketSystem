@@ -149,8 +149,8 @@ class StorePage extends Component {
 
 function wrapRender() {
     let {storeid} = useParams();
-    const location = useLocation()
-    const { storeName } = location.state
+    const location = useLocation();
+    const { storeName } = location.state;
 
     return <div>
         <StorePage storeid={storeid}

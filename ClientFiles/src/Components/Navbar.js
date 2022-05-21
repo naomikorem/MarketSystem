@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { SidebarData } from './SidebarData';
 import './Navbar.css';
 import { IconContext } from 'react-icons';
+import Button from "react-bootstrap/Button";
 
 function Navbar() {
     const [sidebar, setSidebar] = useState(false);
@@ -15,16 +16,16 @@ function Navbar() {
         <>
             <IconContext.Provider value={{ color: '#fff' }}>
                 <div className='navbar'>
-                    <Link to='#' className='menu-bars'>
-                        <FaIcons.FaBars onClick={showSidebar} />
-                    </Link>
+                    <Button className="transparent" onClick={showSidebar}>
+                        <FaIcons.FaBars />
+                    </Button>
                 </div>
                 <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
                     <ul className='nav-menu-items' onClick={showSidebar}>
                         <li className='navbar-toggle'>
-                            <Link to='#' className='menu-bars'>
+                            <Button  className='menu-bars'>
                                 <AiIcons.AiOutlineClose />
-                            </Link>
+                            </Button>
                         </li>
                         {SidebarData.map((item, index) => {
                             return (
