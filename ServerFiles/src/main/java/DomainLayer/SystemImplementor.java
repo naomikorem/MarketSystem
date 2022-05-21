@@ -11,9 +11,12 @@ import DomainLayer.SystemManagement.NotificationManager.NotificationController;
 import DomainLayer.Users.GuestState;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
+import ServiceLayer.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
@@ -35,6 +38,11 @@ public class SystemImplementor implements SystemInterface {
         this.storeFacade = new StoreFacade();
         this.marketManagementFacade = MarketManagementFacade.getInstance();
         this.notificationController = NotificationController.getInstance();
+    }
+
+    public void setSession(String sessionId, SimpMessagingTemplate template) {
+        this.user.setSessionId(sessionId);
+        this.user.setTemplate(template);
     }
 
     public Response<Boolean> enter() {
@@ -84,9 +92,34 @@ public class SystemImplementor implements SystemInterface {
 
         if (!r.hadError()) {
             this.user.setState(r.getObject().getState());
-            this.marketManagementFacade.attachObserver(r.getObject());
+            this.marketManagementFacade.attachObserver(this.user);
+        } else {
+            return r;
         }
-        return r;
+        return new Response<>(this.user);
+    }
+
+    public Response<String> getToken() {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
+        }
+        return userFacade.getToken(user.getName());
+    }
+
+    public Response<User> loginUserByToken(String token) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        if (user.isSubscribed()) {
+            return new Response<>("You have to log out before attempting to log in to a user.");
+        }
+        Response<User> r = userFacade.loginUserByToken(token);
+
+        if (!r.hadError()) {
+            this.user.setState(r.getObject().getState());
+            this.marketManagementFacade.attachObserver(this.user);
+        }
+        return new Response<>(this.user);
     }
 
     @Override
@@ -97,7 +130,9 @@ public class SystemImplementor implements SystemInterface {
         User current = this.user;
         Response<Boolean> res = userFacade.logout(user.getName());
         if (res.getObject()) {
+            User oldUser = this.user;
             this.user = new User(new GuestState());
+            setSession(oldUser.getSessionId(), oldUser.getTemplate());
             this.marketManagementFacade.detachObserver(current);
         }
         return res;
@@ -150,6 +185,22 @@ public class SystemImplementor implements SystemInterface {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
         return storeFacade.getAllStores();
+    }
+
+    @Override
+    public Response<Collection<Store>> getAllOpenStores() {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.getAllOpenStores();
+    }
+
+    @Override
+    public Response<Collection<Store>> getStoresBesidesPermanentlyClosed() {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.getStoresBesidesPermanentlyClosed();
     }
 
     public Response<Collection<Store>> getUsersStores() {
@@ -252,6 +303,25 @@ public class SystemImplementor implements SystemInterface {
     }
 
     @Override
+    public Response<Boolean> reopenStore(int storeId) {
+        Response<Store> response = storeFacade.reopenStore(user, storeId);
+        if (response.hadError()) {
+            return new Response<>(response.getErrorMessage());
+        }
+        /*Store s = response.getObject();
+        Response<Boolean> notify_managers_response = marketManagementFacade.notifyUsers(s.getManagers(), String.format("The store %s that is managed by you was shut down", s.getStoreId()));
+        if (notify_managers_response.hadError() || !notify_managers_response.getObject()) {
+            return notify_managers_response;
+        }
+        Response<Boolean> notify_owners_response = marketManagementFacade.notifyUsers(s.getOwners(), String.format("The store %s that is owned by you was shut down", s.getStoreId()));
+        if (notify_owners_response.hadError() || !notify_owners_response.getObject()) {
+            return notify_owners_response;
+        }*/
+
+        return new Response<>(true);
+    }
+
+    @Override
     public Response<Boolean> permanentlyCloseStore(int storeId) {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
@@ -345,8 +415,12 @@ public class SystemImplementor implements SystemInterface {
     }
 
     @Override
-    public Response<Item> modifyItem(int storeId, int itemId, String productName, String category, double price, List<String> keywords) {
-        return storeFacade.modifyItem(user, storeId, itemId, productName, category, price, keywords);
+    public Response<Item> modifyItem(int storeId, int itemId, String productName, String category, double price, int amount, List<String> keywords) {
+        return storeFacade.modifyItem(user, storeId, itemId, productName, category, price, amount, keywords);
+    }
+
+    public Response<Item> setItemAmount(int storeId, int itemId, int amount) {
+        return storeFacade.setItemAmount(user, storeId, itemId, amount);
     }
 
     @Override
@@ -639,7 +713,7 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.isOwner(store_id, username);
     }
 
-    private Response<Boolean> isLoggedInAdminCheck() {
+    public Response<Boolean> isLoggedInAdminCheck() {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
@@ -700,6 +774,20 @@ public class SystemImplementor implements SystemInterface {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
         return storeFacade.searchProducts(productName, category, keywords);
+    }
+
+    public Response<Double> getItemRating(int storeId, int itemId) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.getRatingOfProduct(storeId, itemId);
+    }
+
+    public Response<Boolean> setItemRating(int storeId, int itemId, double rate) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.setRatingOfProduct(storeId, itemId, rate);
     }
 
     public Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating) {

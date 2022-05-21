@@ -86,6 +86,14 @@ public class StoreController {
         return stores.values();
     }
 
+    public Collection<Store> getAllOpenStores() {
+        return stores.values().stream().filter(Store::isOpen).collect(Collectors.toList());
+    }
+
+    public Collection<Store> getStoresBesidesPermanentlyClosed() {
+        return stores.values().stream().filter(store -> !store.isPermanentlyClosed()).collect(Collectors.toList());
+    }
+
     public Set<Item> getItemsWithNameContains(String name) {
         return stores.values().stream().map(s -> s.getItemsWithNameContains(name)).flatMap(Set::stream).collect(Collectors.toSet());
     }
@@ -139,6 +147,29 @@ public class StoreController {
         }
         LogUtility.info(String.format("%s %s were taken out of store %s by %s", amount, i.getProductName(), storeId, owner.getName()));
         return i;
+    }
+
+    public Double getRatingOfItem(int storeId, int itemId) {
+        Store s = getStoreAndThrow(storeId);
+        Item i = s.getItemById(itemId);
+        if (i == null) {
+            throw new IllegalArgumentException(String.format("There is no item with item id %s in the store", itemId));
+        }
+        return i.getRate();
+    }
+
+    public Boolean setRatingOfItem(int storeId, int itemId, double rate) {
+        Store s = getStoreAndThrow(storeId);
+        Item i = s.getItemById(itemId);
+        if (i == null) {
+            throw new IllegalArgumentException(String.format("There is no item with item id %s in the store", itemId));
+        }
+        try {
+            i.updateRate(rate);
+        }catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     public Item getItemFromStore(int storeId, int itemId) {
@@ -214,6 +245,18 @@ public class StoreController {
         return stores.get(storeId);
     }
 
+    public Store reopenStore(User user, int storeId) {
+        if (!isExist(storeId)) {
+            throw new IllegalArgumentException(String.format("There is no store with id %s", storeId));
+        }
+        if (!user.isSubscribed()) {
+            throw new IllegalArgumentException("Only logged in users can perform this action.");
+        }
+        stores.get(storeId).setIsOpen(user.getName(), true);
+        LogUtility.info(String.format("User %s just reopened store %s", user.getName(), storeId));
+        return stores.get(storeId);
+    }
+
     public Store permanentlyCloseStore(int storeId) {
         Store s = getStoreAndThrow(storeId);
         s.setPermanentlyClosed(true);
@@ -250,7 +293,7 @@ public class StoreController {
         }
     }
 
-    public Item modifyItem(User owner, int storeId, int itemId, String productName, String category, double price, List<String> keywords) {
+    public Item modifyItem(User owner, int storeId, int itemId, String productName, String category, double price, int amount, List<String> keywords) {
         Store s = getStoreAndThrow(storeId);
         Item i = s.getItemById(itemId);
         if (i == null) {
@@ -260,8 +303,23 @@ public class StoreController {
             throw new IllegalArgumentException("Only store owners can perform this action.");
         }
         i.updateItem(productName, Category.valueOf(category), price, keywords);
+        s.setItemAmount(i, amount);
         return i;
     }
+
+    public Item setItemAmount(User owner, int storeId, int itemId, int amount) {
+        Store s = getStoreAndThrow(storeId);
+        Item i = s.getItemById(itemId);
+        if (i == null) {
+            throw new IllegalArgumentException(String.format("There is no item with id %s in store %s", itemId, storeId));
+        }
+        if (!owner.isSubscribed() || !s.canManageItems(owner)) {
+            throw new IllegalArgumentException("Only store owners can perform this action.");
+        }
+        s.setItemAmount(i, amount);
+        return i;
+    }
+
 
     public Map<Item, Integer> getItems(int storeId) {
         Store s = getStoreAndThrow(storeId);

@@ -1,5 +1,7 @@
 package ServiceLayer.DTOs;
 
+import java.util.List;
+
 public class ItemDTO
 {
     public int item_id;
@@ -9,4 +11,5 @@ public class ItemDTO
     public int numberOfRatings;
     public double price;
     public int amount;
+    public List<String> keyWords;
 }

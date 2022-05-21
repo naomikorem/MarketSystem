@@ -59,6 +59,14 @@ public class StoreFacade {
         return new Response<>(storeController.getAllStores());
     }
 
+    public Response<Collection<Store>> getAllOpenStores() {
+        return new Response<>(storeController.getAllOpenStores());
+    }
+
+    public Response<Collection<Store>> getStoresBesidesPermanentlyClosed() {
+        return new Response<>(storeController.getStoresBesidesPermanentlyClosed());
+    }
+
     public Response<Store> getStore(int id) {
         try {
             Store s = storeController.getStore(id);
@@ -119,6 +127,21 @@ public class StoreFacade {
         return new Response<>(storeController.filterProdacts(items,upLimit,lowLimit, rating));
     }
 
+    public Response<Double> getRatingOfProduct(int storeId, int itemId) {
+        try {
+            return new Response<>(storeController.getRatingOfItem(storeId, itemId));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Boolean> setRatingOfProduct(int storeId, int itemId, double rate) {
+        try {
+            return new Response<>(storeController.setRatingOfItem(storeId, itemId, rate));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
 
     public Response<Item> getItemFromStore(int storeId, int itemId) {
         try {
@@ -186,6 +209,14 @@ public class StoreFacade {
         }
     }
 
+    public Response<Store> reopenStore(User founder, int storeId) {
+        try {
+            return new Response<>(storeController.reopenStore(founder, storeId));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
     public Response<Store> permanentlyCloseStore(int storeId) {
         try {
             return new Response<>(storeController.permanentlyCloseStore(storeId));
@@ -237,9 +268,17 @@ public class StoreFacade {
         }
     }
 
-    public Response<Item> modifyItem(User owner, int storeId, int itemId, String productName, String category, double price, List<String> keywords) {
+    public Response<Item> modifyItem(User owner, int storeId, int itemId, String productName, String category, double price, int amount, List<String> keywords) {
         try {
-            return new Response<>(storeController.modifyItem(owner, storeId, itemId, productName, category, price, keywords));
+            return new Response<>(storeController.modifyItem(owner, storeId, itemId, productName, category, price, amount, keywords));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Item> setItemAmount(User owner, int storeId, int itemId, int amount) {
+        try {
+            return new Response<>(storeController.setItemAmount(owner, storeId, itemId, amount));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }

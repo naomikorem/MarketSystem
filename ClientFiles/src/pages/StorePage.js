@@ -3,6 +3,9 @@ import {useLocation, useParams} from "react-router-dom";
 import {stompClient, connectedPromise} from "../App";
 import Modal from "../Components/Modal";
 import ResultLabel from "../Components/ResultLabel";
+import TextField from "@material-ui/core/TextField";
+import Select from "@material-ui/core/Select";
+import {categories} from "../Shared/Shared";
 
 let previous_amount = 0;
 
@@ -18,6 +21,7 @@ function StoreItem(props) {
     return (
 
         <div>
+
             <article onClick={() => {setModalOpen(true)}} key={item.id} className={"items-grid"}>
                 <div>
                     <h1>{item.product_name}</h1>
@@ -47,8 +51,31 @@ class StorePage extends Component {
         this.state = {
             listitems: [],
             error: "",
-            is_error: true
+            is_error: true,
+
+            itemName: "",
+            itemCategory: "",
+            keyWords: [],
         };
+        this.handleChange = this.handleChange.bind(this);
+        this.handleChangeKeywords = this.handleChangeKeywords.bind(this);
+    }
+
+    handleChange(event) {
+        this.setState({
+            [event.target.name]: event.target.value //set this.state.value to the input's value
+        });
+    }
+
+    handleChangeKeywords(event) {
+        if (event.target.value === "") {
+            this.state.keyWords = []
+        } else {
+            this.state.keyWords = event.target.value.split(/[, ]+/);
+        }
+        this.setState({
+            [event.target.name]: this.state.keyWords //set this.state.value to the input's value
+        });
     }
 
     async componentDidMount() {
@@ -71,7 +98,6 @@ class StorePage extends Component {
 
                 const index = this.state.listitems.findIndex(item => item.item_id === res_item.object.item_id)
                 this.state.listitems[index].amount = previous_amount - res_item.object.amount
-                console.log(this.state.listitems[index])
                 this.setState({[this.state.listitems]: this.state.listitems});
             }
         });
@@ -92,8 +118,19 @@ class StorePage extends Component {
           <div className="formCenter">
             <h1 align="center">Welcome to {this.props.storeName}</h1>
           </div>
+
+            <div className={"searchBarMargin"}><TextField id="outlined-basic" label="Item name" variant="filled" className={"searchBar"} value={this.state.itemName} onChange={this.handleChange} name="itemName"/></div>
+            <div className={"searchBarMargin"}><Select className={"searchBar"} style={{background: "#FFFFFF"}} name="itemCategory" defaultValue={"Food"} value={this.state.itemCategory} labelId="categoryLabel" id="category" label="Category" variant="filled" onChange={this.handleChange}>
+                <option value={""}>All items</option>
+                { categories.map((s, i) => <option key={i} value={s}>{s}</option>)}
+            </Select></div>
+            <div className={"searchBarMargin"}><TextField id="outlined-basic" label="Item keywords" variant="filled" className={"searchBar"} value={this.state.keyWords} onChange={this.handleChangeKeywords} name="keyWords"/></div>
             <div className="store-grid-container">
-                {this.state.listitems.map((listitem) => (
+
+                {this.state.listitems.filter(s => {
+                    return s.product_name.includes(this.state.itemName) && s.category.includes(this.state.itemCategory) &&
+                        (this.state.keyWords.length === 0 || this.state.keyWords.some(k => s.keyWords.some(itemKey => itemKey.includes(k))))
+                }).map((listitem) => (
 
                     <StoreItem
                         key={listitem.id}
@@ -112,8 +149,8 @@ class StorePage extends Component {
 
 function wrapRender() {
     let {storeid} = useParams();
-    const location = useLocation()
-    const { storeName } = location.state
+    const location = useLocation();
+    const { storeName } = location.state;
 
     return <div>
         <StorePage storeid={storeid}

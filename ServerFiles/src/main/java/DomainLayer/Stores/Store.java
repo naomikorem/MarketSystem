@@ -89,6 +89,10 @@ public class Store {
         return open && !permanentlyClosed;
     }
 
+    public boolean isPermanentlyClosed() {
+        return permanentlyClosed;
+    }
+
     public void setIsOpen(String username, boolean is_open) {
         if (!this.founder.equals(username)) {
             LogUtility.error(String.format("someone who isn't the store founder tried to close the store store id %s", getStoreId()));
@@ -224,6 +228,14 @@ public class Store {
         }*/
         synchronized (items) {
             this.items.put(item, items.getOrDefault(item, 0) + amount);
+        }
+    }
+
+    public void setItemAmount(Item item, int amount) {
+        synchronized (items) {
+            if (this.items.containsKey(item)) {
+                this.items.put(item, amount);
+            }
         }
     }
 

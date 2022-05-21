@@ -15,10 +15,10 @@ function AreYouSureModal(props) {
                     </button>
                 </div>
                 <div className="title">
-                    <h1>Are You Sure?</h1>
+                    <h1>{props.title}</h1>
                 </div>
                 <div className="body">
-                    <p>This action is not a reversible</p>
+                    <p>{props.body}</p>
 
                 </div>
                 <div className="footer">
@@ -28,12 +28,12 @@ function AreYouSureModal(props) {
                         }}
                         id="cancelBtn"
                     >
-                        Cancel
+                        {props.regretActionButton}
                     </button>
                     <button onClick={() => {
                             props.setOpenModal(false);
                             props.onContinue()}}>
-                        I'm Sure
+                        {props.doActionButton}
                     </button>
                 </div>
             </div>

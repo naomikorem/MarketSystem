@@ -109,6 +109,10 @@ public abstract class Bridge {
 
     public abstract Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date);
 
+    public abstract Response<Boolean> setItemRating(int storeId, int itemId, double rate) ;
+
+    public abstract Response<Double> getItemRating(int storeId, int itemId);
+
 /*
     public abstract Response<Boolean> addCategoryPredicateToDiscount(int storeId, int discountId, String type, String categoryName);
 

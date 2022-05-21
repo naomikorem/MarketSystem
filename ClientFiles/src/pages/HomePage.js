@@ -1,6 +1,5 @@
 import {stompClient, connectedPromise, user} from "../App";
 import React, { Component } from "react";
-import {Link, NavLink, useNavigate} from "react-router-dom";
 import ObjectsGrid from "../Components/ObjectsGrid";
 import TextField from "@material-ui/core/TextField";
 
@@ -19,7 +18,7 @@ class HomePage extends Component {
 
     async componentDidMount() {
         await connectedPromise;
-        stompClient.subscribe('/user/topic/getStoresResult', (r) => {
+        stompClient.subscribe('/user/topic/getOpenStoresResult', (r) => {
             const res = JSON.parse(r["body"]);
             if (res.errorMessage == null)
             {
@@ -32,11 +31,11 @@ class HomePage extends Component {
                 this.setState({[this.state.error]: this.state.error});
             }
         });
-        stompClient.send("/app/market/getStores", {}, {});
+        stompClient.send("/app/market/getOpenStores", {}, {});
     }
 
     componentWillUnmount() {
-        stompClient.unsubscribe('/user/topic/getStoresResult');
+        stompClient.unsubscribe('/user/topic/getOpenStoresResult');
     }
 
     handleChange(event) {
@@ -54,7 +53,7 @@ class HomePage extends Component {
 
                 <div className="store-grid-container">
                     <ObjectsGrid listitems={this.state.listitems.filter(s => {
-                return s.name.includes(this.state.searchValue)
+                return s.name.includes(this.state.searchValue) && s.isOpen && !s.permanentlyClosed;
             })} link={"store"}/>
         </div>
             </div>

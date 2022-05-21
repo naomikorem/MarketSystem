@@ -18,13 +18,16 @@ import java.util.*;
 public interface SystemInterface {
     public Response<Item> removeItemFromStore(int storeId, int itemId, int amount);
 
-    public Response<Item> modifyItem(int storeId, int itemId, String productName, String category, double price, List<String> keywords);
+    public Response<Item> modifyItem(int storeId, int itemId, String productName, String category, double price, int amount, List<String> keywords);
 
     public Response<Map<Item, Integer>> getItems(int storeId);
 
 
     public Response<List<String>> getStoreOwners(int storeId);
 
+    public Response<Boolean> setItemRating(int storeId, int itemId, double rate) ;
+
+    public Response<Double> getItemRating(int storeId, int itemId);
 
     public Response<Boolean> addExternalPurchaseService(String name, String url);
 
@@ -71,6 +74,8 @@ public interface SystemInterface {
     Response<Boolean> setManagerPermission(String manager, int storeId, byte permission);
 
     public Response<Collection<Store>> getAllStores();
+    public Response<Collection<Store>> getAllOpenStores();
+    public Response<Collection<Store>> getStoresBesidesPermanentlyClosed();
 
     public Response<Store> getStore(int id);
 
@@ -79,6 +84,7 @@ public interface SystemInterface {
     public Response<Item> addItemToCart(int storeId, int itemId, int amount);
 
     public Response<Boolean> closeStore(int storeId);
+    public Response<Boolean> reopenStore(int storeId);
 
     public Response<Boolean> permanentlyCloseStore(int storeId);
 
