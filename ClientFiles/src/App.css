@@ -498,3 +498,13 @@
     margin-bottom: 5%;
     color: #ffffff;
 }
+
+.notification-icon {
+    margin-left: 10%;
+    margin-top: 2%;
+}
+
+.transparent-button {
+    background-color: transparent;
+    border-color: transparent;
+}
