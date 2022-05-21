@@ -13,6 +13,7 @@ public class StoreDTO
 {
     public String name;
     public boolean isOpen;
+    public boolean permanentlyClosed;
     public int id;
     public String founder;
     public List<String> owners;

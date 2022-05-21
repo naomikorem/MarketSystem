@@ -20,7 +20,7 @@
 .pageSwitcher {
     display: flex;
     justify-content: center;
-    margin-bottom: 10%;
+    margin-bottom: 8%;
 }
 
 .pageSwitcherItem {
@@ -173,8 +173,16 @@
 
 .store-grid-container {
     display: grid;
-    grid-template-columns: auto auto auto;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(3, 1fr);
     padding: 10px;
+    border-radius: 15px;
+}
+
+.notification-grid-container {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(1, 1fr);
     border-radius: 15px;
 }
 
@@ -192,6 +200,17 @@
     font-size: 30px;
     text-align: center;
     margin: 5%;
+    border-radius: 15px;
+}
+
+.notification-item {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    font-size: 30px;
+    text-align: center;
+    color: black;
+    margin: 2%;
     border-radius: 15px;
 }
 
@@ -257,9 +276,14 @@
 }
 
 .searchBar {
-    padding-left: 10%;
     background-color: #CBC3E3;
-    border-radius: 4px;
+    border-radius: 10px;
+    width: 100%;
+    height: 50px;
+}
+.searchBarMargin {
+    margin-bottom: 2%;
+    margin-top: 2%;
 }
 
 .managerNameBar {
@@ -421,95 +445,84 @@
     box-shadow: #3c4fe0 0 3px 7px inset;
     transform: translateY(2px);
 }
-.store-name{
-    padding-left : 5%;
-    padding-top : 10px;
-}
-.basket-grid-item {
-    padding: 5px;
-    font-size: 80%;
-    text-align: left;
-    margin: 5px;
-    width: 80%;
-    height: fit-content;
-    border-bottom: 2px solid rgba(98, 77, 105, 0.8);
-    padding-inline: 10px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-evenly;
-}
-
-.basket-grid-item > * :first-child{
-    display: block;
-    margin-left: 5px;
-}
-
-.basket-grid{
-    background-color: #f3e7e7;
-    border: 1px solid rgb(104, 80, 155);
-    padding: 5px;
-    font-size: 20px;
-    text-align: left;
-    margin: 10px;
-    border-radius: 15px;
-    width: 700px;
-    height: fit-content;
-    align-items: center;
-
-}
 
 .history-buttons{
     margin: 20px;
 
 }
 
-
-     /* CSS */
-.button-6-delete {
-    background-color: #c04a4a;
-}
-.button-6 {
-    background-color: #FFFFFF;
-}
-.button-6-delete,
- .button-6 {
-     align-items: center;
-     border: 1px solid rgba(0, 0, 0, 0.1);
-     border-radius: .25rem;
-     box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
-     box-sizing: border-box;
-     color: rgba(0, 0, 0, 0.85);
-     cursor: pointer;
-     display: inline-flex;
-     font-family: system-ui,-apple-system,system-ui,"Helvetica Neue",Helvetica,Arial,sans-serif;
-     font-size: 16px;
-     font-weight: 600;
-     justify-content: center;
-     line-height: 1.25;
-     height: 38px;
-     padding: calc(.875rem - 1px) calc(1.5rem - 1px);
-     position: relative;
-     text-decoration: none;
-     transition: all 250ms;
-     user-select: none;
-     -webkit-user-select: none;
-     touch-action: manipulation;
-     vertical-align: baseline;
-     width: auto;
- }
-.button-6-delete:hover,
-.button-6-delete:focus,
-.button-6:hover,
-.button-6:focus {
-    border-color: rgba(0, 0, 0, 0.15);
-    box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
-    color: rgba(0, 0, 0, 0.65);
-}
-.button-6-delete:hover,
-.button-6:hover {
-    transform: translateY(-1px);
+.itemLabel {
+    width: 100%;
+    color: black;
+    background-color: whitesmoke;
+    border-radius: 5%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    margin-top: 2%;
+    margin-bottom: 2%;
 }
 
+.editItemBar {
+    margin-top: 5%;
+    margin-right: 5%;
+    width: 65%;
+    height: 80px;
+}
 
+.selectItemBar {
+    width: 65%;
+    margin-bottom: 5%;
+    height: 80px;
+}
 
+.formFieldUserHistoryLabel {
+    display: block;
+    font-size: 30px;
+    color: white;
+}
+
+.closeStoreButton {
+    background-color: red;
+    height: 10%;
+    margin: 2%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.reopenStoreButton {
+    background-color: greenyellow;
+    height: 10%;
+    margin: 2%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.editStoreButtons {
+    justify-content: center;
+    align-items: center;
+    width: 150%;
+}
+
+.editStorePageStyle {
+    display: flex;
+    flex-direction: row;
+    margin-left: 20%;
+    width: 100%;
+}
+
+.editStoreInfoField {
+    margin-bottom: 5%;
+    color: #ffffff;
+}
+
+.notification-icon {
+    margin-left: 10%;
+    margin-top: 2%;
+}
+
+.transparent-button {
+    background-color: transparent;
+    border-color: transparent;
+}

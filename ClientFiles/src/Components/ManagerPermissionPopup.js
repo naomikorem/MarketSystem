@@ -11,11 +11,6 @@ import ResultLabel from "../Components/ResultLabel";
 let [show, setShow] = [undefined, undefined];
 let handleClose = () => undefined;
 
-
-function submitPermission(permissionMask) {
-    console.log(permissionMask)
-}
-
 class ManagerPermissionPopup extends Component {
 
     constructor() {

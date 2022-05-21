@@ -1,7 +1,9 @@
 package ServiceLayer;
 
 import DomainLayer.SystemImplementor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
@@ -11,6 +13,9 @@ import java.util.Map;
 
 @Component
 public class WebSocketEventListener {
+
+    @Autowired
+    private SimpMessagingTemplate template;
 
     @EventListener
     public void handleSessionSubscribeEvent(SessionConnectedEvent s) {
@@ -22,6 +27,7 @@ public class WebSocketEventListener {
         Map<String, Object> map = (Map<String, Object>) m.getHeaders().get("simpSessionAttributes");
         SystemImplementor systemImplementor = new SystemImplementor();
         systemImplementor.enter();
+        systemImplementor.setSession((String) m.getHeaders().get("simpSessionId"), template);
         map.put(Service.SYSTEM_IMPLEMENTOR_STRING, systemImplementor);
     }
 

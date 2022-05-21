@@ -29,6 +29,22 @@ public class UserFacade {
         }
     }
 
+    public Response<String> getToken(String name) {
+        try {
+            return new Response<>(userController.getToken(name), "");
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<User> loginUserByToken(String token) {
+        try {
+            return new Response<>(userController.loginUserByToken(token));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
     public Response<Boolean> logout(String user) {
         try {
             return new Response<>(userController.logout(user));

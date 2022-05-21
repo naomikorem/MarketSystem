@@ -497,4 +497,18 @@ public class Proxy extends Bridge {
         }
         return real.deleteAdmin(name);
     }
+
+    public Response<Boolean> setItemRating(int storeId, int itemId, double rate) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.setItemRating(storeId, itemId, rate);
+    }
+
+    public Response<Double> getItemRating(int storeId, int itemId){
+        if (this.real == null) {
+            return null;
+        }
+        return real.getItemRating(storeId, itemId);
+    }
 }
