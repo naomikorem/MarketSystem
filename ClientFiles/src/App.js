@@ -199,21 +199,10 @@ async function loginByToken() {
   stompClient.send("/app/market/loginByToken", {}, JSON.stringify({"token" : token}));
 }
 
-async function listenIsAdmin() {
-  await connectedPromise;
-  stompClient.subscribe('/user/topic/isAdminResult', (r) => {
-    let res = JSON.parse(r["body"]);
-    if (!res.errorMessage) {
-      setIsAdmin(res.object);
-    }
-  });
-}
-
 function render() {
   [user, setUser] = useState(sessionStorage.getItem('user'));
   [token, setToken] = useState(sessionStorage.getItem('token'));
   [isAdmin, setIsAdmin] = useState(false);
-  listenIsAdmin();
 
   if (token != null && token !== '') {
     loginByToken();

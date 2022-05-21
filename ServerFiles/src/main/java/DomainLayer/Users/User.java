@@ -1,20 +1,56 @@
 package DomainLayer.Users;
 
 import DomainLayer.Observer;
+import DomainLayer.Response;
 import DomainLayer.Stores.Item;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessageType;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class User implements Observer {
     private UserState state;
     private ShoppingCart shoppingCart;
+    private String sessionId;
+    private SimpMessagingTemplate template;
+
 
     public User(UserState state) {
         this.state = state;
         this.shoppingCart = new ShoppingCart();
+    }
+
+    private MessageHeaders createHeaders() {
+        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor
+                .create(SimpMessageType.MESSAGE);
+        headerAccessor.setSessionId(getSessionId());
+        headerAccessor.setLeaveMutable(true);
+        return headerAccessor.getMessageHeaders();
+
+    }
+
+    public void sendNotification(INotification notification) {
+        String session = getSessionId();
+        getTemplate().convertAndSendToUser(session, "/topic/notificationResult", new Response<>(notification), createHeaders());
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public void setTemplate(SimpMessagingTemplate template) {
+        this.template = template;
+    }
+
+    public SimpMessagingTemplate getTemplate() {
+        return this.template;
+    }
+
+    public String getSessionId() {
+        return this.sessionId;
     }
 
     public String getName() {
