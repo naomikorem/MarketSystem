@@ -23,7 +23,7 @@ import RemoveUserSubscription from "./pages/RemoveUserSubscriptionPage"
 import UserProfile from "./pages/UserProfilePage"
 import PersonalPurchaseHistory from "./pages/PersonalPurchaseHistory"
 import UserPurchaseHistory from "./pages/ViewUserPurchaseHistoryAdminPage"
-import StorePurchaseHistory from "./pages/ViewStorePurchaseHistoryAdminPage"
+import StoreHistoryPage from "./pages/StoreHistoryPage"
 import PersonalPurchaseHistoryButton from "./Components/PersonalPurchaseHistoryButton"
 import UserHistoryButton from "./Components/UserHistoryButton"
 import StoreHistoryButton from "./Components/StoreHistoryButton"
@@ -39,6 +39,7 @@ import OpenNewStore from "./pages/OpenNewStore";
 import ErrorPage from "./pages/ErrorPage";
 import Cart from "./Components/cart";
 import Modal from "./Components/Modal";
+import StorePurchaseHistory from "./pages/ViewStorePurchaseHistoryAdminPage";
 import Navbar from "./Components/Navbar";
 
 
@@ -53,22 +54,43 @@ export const connectedPromise = new Promise(resolve => {
 })
 
 export let [user, setUser] = [undefined, undefined]
+export let [token, setToken] = [undefined, undefined]
 
 
 function  render() {
     [user, setUser] = useState(sessionStorage.getItem('user'))
 
+
+async function loginByToken() {
+  await connectedPromise;
+  stompClient.subscribe('/user/topic/loginByTokenResult', (r) => {
+    let res = JSON.parse(r["body"]);
+    if (!res.errorMessage) {
+      sessionStorage.setItem('user', JSON.stringify(res.object))
+      setUser(res.object)
+    }
+  });
+  stompClient.send("/app/market/loginByToken", {}, JSON.stringify({"token" : token}));
+}
+
+function render() {
+    [user, setUser] = useState(sessionStorage.getItem('user'));
+    [token, setToken] = useState(sessionStorage.getItem('token'));
+
+    if (token != null && token !== '') {
+        loginByToken();
+    }
+
     return (
       <BrowserRouter >
         <div className="App">
-
           <div className="appAside" />
           <div className="appForm">
+
             <React.Fragment>
               <Navbar/>
 
               <div className="pageSwitcher">
-
                 <NavLink
                     to="/home"
                     className={(navData) => navData.isActive ? "pageSwitcherItem-active" : "pageSwitcherItem"}
@@ -84,7 +106,7 @@ function  render() {
 
 
             <Routes>
-              <Route exact path="/" element={<SignInForm/>} />
+              <Route exact path="/" element={<HomePage/>} />
               <Route path="/sign-in" element={<SignInForm/>} />
               <Route path="/sign-up" element={<SignUpForm/>} />
               <Route path="/home" element={<HomePage/>} />
@@ -97,7 +119,8 @@ function  render() {
               <Route path="/user-profile-subscriber" element={<UserProfile/>} />
               <Route path="/personal-purchase-history" element={<PersonalPurchaseHistory/>}/>
               <Route path="/user-purchase-history" element={<UserPurchaseHistory/>} />
-              <Route path="/store-purchase-history" element={<StorePurchaseHistory/>} />
+              <Route path="/select_store-history" element={<StorePurchaseHistory/>} />
+              <Route path="/store-purchase-history/:storeid" element={<StoreHistoryPage/>} />
               <Route path="/popup" element={<Modal/>} />
               <Route path="/navbar" element={<Navbar/>} />
               <Route path="/edit-store/:storeid" element={<EditStorePage/>} />

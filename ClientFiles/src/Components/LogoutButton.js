@@ -1,10 +1,11 @@
 import React, { Component, useContext, useState} from "react";
-import {stompClient, connectedPromise, UserContext, user, setUser} from "../App";
+import {stompClient, connectedPromise, UserContext, user, setUser, setToken} from "../App";
 
 
 function onLogoutButton() {
-    stompClient.send("/app/market/logout", {}, {});
     setUser(null);
+    setToken(null);
+    stompClient.send("/app/market/logout", {}, {});
 }
 
 function render() {

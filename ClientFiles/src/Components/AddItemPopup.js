@@ -9,11 +9,10 @@ import Checkbox from "@material-ui/core/Checkbox";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import ResultLabel from "../Components/ResultLabel";
+import {categories} from "../Shared/Shared";
 
 let [show, setShow] = [undefined, undefined];
 let handleClose = () => undefined;
-
-const categories = ["Food", "Clothing", "Toys", "Grooming", "Fitness"]
 
 class AddItemPopup extends Component {
 

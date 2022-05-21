@@ -89,6 +89,29 @@ public class SystemImplementor implements SystemInterface {
         return r;
     }
 
+    public Response<String> getToken() {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
+        }
+        return userFacade.getToken(user.getName());
+    }
+
+    public Response<User> loginUserByToken(String token) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        if (user.isSubscribed()) {
+            return new Response<>("You have to log out before attempting to log in to a user.");
+        }
+        Response<User> r = userFacade.loginUserByToken(token);
+
+        if (!r.hadError()) {
+            this.user.setState(r.getObject().getState());
+            this.marketManagementFacade.attachObserver(r.getObject());
+        }
+        return r;
+    }
+
     @Override
     public Response<Boolean> logout() {
         if (this.user == null || !this.user.isSubscribed()) {
@@ -739,6 +762,20 @@ public class SystemImplementor implements SystemInterface {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
         return storeFacade.searchProducts(productName, category, keywords);
+    }
+
+    public Response<Double> getItemRating(int storeId, int itemId) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.getRatingOfProduct(storeId, itemId);
+    }
+
+    public Response<Boolean> setItemRating(int storeId, int itemId, double rate) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.setRatingOfProduct(storeId, itemId, rate);
     }
 
     public Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating) {

@@ -1,6 +1,6 @@
 import React, {Component, useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {stompClient, connectedPromise, UserContext, setUser} from "../App";
+import {stompClient, connectedPromise, UserContext, setUser, setToken} from "../App";
 import MainPage from "./MainPage";
 
 
@@ -30,6 +30,16 @@ class SignInForm extends Component {
         if (!this.state.error) {
           sessionStorage.setItem('user', JSON.stringify(res.object))
           setUser(res.object)
+          stompClient.send('/app/market/getToken', {}, JSON.stringify({}));
+        }
+      }
+    });
+    stompClient.subscribe('/user/topic/tokenResult', (r) => {
+      if (this.mounted) {
+        let res = JSON.parse(r["body"]);
+        if (!this.state.error) {
+          sessionStorage.setItem('token', JSON.stringify(res.object))
+          setToken(res.object)
           this.props.navigate('/home')
         }
       }

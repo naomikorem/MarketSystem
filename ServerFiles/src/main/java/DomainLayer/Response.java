@@ -19,6 +19,11 @@ public class Response<T> {
         this.errorMessage = errorMessage == null ? "Action Failed" : errorMessage;
     }
 
+    public Response(T object, String errorMessage) {
+        this.object = object;
+        this.errorMessage = errorMessage == null ? "Action Failed" : errorMessage;
+    }
+
     public T getObject() {
         return object;
     }

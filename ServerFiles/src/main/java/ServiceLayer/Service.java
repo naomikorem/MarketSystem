@@ -43,6 +43,34 @@ public class Service {
         return new Response<>(convertToUserDTO(user.getObject()));
     }
 
+    @MessageMapping("/market/getToken")
+    @SendToUser("/topic/tokenResult")
+    public Response<String> getToken(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getToken();
+    }
+
+    @MessageMapping("/market/getRating")
+    @SendToUser("/topic/ratingResult")
+    public Response<Double> getRating(SimpMessageHeaderAccessor headerAccessor, Map<String, Integer> map) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getItemRating(map.get("storeId"), map.get("itemId"));
+    }
+
+
+    @MessageMapping("/market/setRating")
+    @SendToUser("/topic/setRatingResult")
+    public Response<Boolean> setRating(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).setItemRating((Integer) map.get("storeId"), (Integer)map.get("itemId"),(Double)map.get("rating"));
+    }
+
+    @MessageMapping("/market/loginByToken")
+    @SendToUser("/topic/loginByTokenResult")
+    public Response<UserDTO> loginByToken(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
+        Response<User> user = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).loginUserByToken(map.get("token"));
+        if (user.hadError())
+            return new Response<>(user.getErrorMessage());
+        return new Response<>(convertToUserDTO(user.getObject()));
+    }
+
     @MessageMapping("/market/register")
     @SendToUser("/topic/registerResult")
     public Response<UserDTO> register(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
@@ -130,6 +158,13 @@ public class Service {
             return new Response<>(item.getErrorMessage());
 
         return new Response<>(convertToItemDTO(item.getObject(), map.get("amount")));
+    }
+
+    @MessageMapping("/market/RemoveItemFromCart")
+    @SendToUser("/topic/removeItemFromCartResult")
+    public Response<Boolean> RemoveItemFromCart(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING))
+                .removeItemFromCart((Integer)map.get("store_id"),(Item) map.get("item_id"), (Integer) map.get("amount"));
     }
 
     @MessageMapping("/market/getUsersStores")
