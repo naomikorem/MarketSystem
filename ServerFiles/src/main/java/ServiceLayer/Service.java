@@ -325,6 +325,7 @@ public class Service {
         item_dto.price = item.getPrice();
         item_dto.product_name = item.getProductName();
         item_dto.category = item.getCategory().toString();
+        item_dto.amount = amount;
         item_dto.keyWords = item.getKeyWords();
 
         return item_dto;
