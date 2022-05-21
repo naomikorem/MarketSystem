@@ -12,8 +12,10 @@ import DomainLayer.SystemManagement.HistoryManagement.ItemHistory;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 import ServiceLayer.DTOs.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,6 +26,8 @@ import java.util.stream.Collectors;
 public class Service {
 
     public static final String SYSTEM_IMPLEMENTOR_STRING = "SystemImplementor";
+    @Autowired
+    private SimpMessagingTemplate template;
 
     public Service() {
         super();

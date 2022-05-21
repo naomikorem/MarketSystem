@@ -12,6 +12,7 @@ import InventoryPopup from '../Components/InventoryPopup';
 
 import ResultLabel from "../Components/ResultLabel";
 import AreYouSureModal from "../Components/AreYouSureModal";
+import {Link} from "react-router-dom";
 
 function StoreToClose(props) {
     let [modalOpen, setModalOpen] = useState(false);
@@ -131,6 +132,13 @@ class EditStorePage extends Component {
                                 <ManagersPopup managers={this.state.store.managers} storeId={this.state.store.id}/>
                                 <OwnersPopup owners={this.state.store.owners} storeId={this.state.store.id}/>
                                 <InventoryPopup storeId={this.state.store.id}/>
+                                <Link state={{ storeName: this.state.store.name }} to={`/store-purchase-history/${this.state.store.id}`}>
+                                    <div>
+                                    <Button variant="primary" className="storeEditButton">
+                                        View store history
+                                    </Button>
+                                    </div>
+                                </Link>
                                 { this.state.store.isOpen && !this.state.store.permanentlyClosed ?
                                     <StoreToClose store={this.state.store}/> : <StoreToOpen store={this.state.store}/>
                                 }

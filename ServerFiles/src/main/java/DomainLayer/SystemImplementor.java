@@ -11,9 +11,12 @@ import DomainLayer.SystemManagement.NotificationManager.NotificationController;
 import DomainLayer.Users.GuestState;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
+import ServiceLayer.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
@@ -35,6 +38,11 @@ public class SystemImplementor implements SystemInterface {
         this.storeFacade = new StoreFacade();
         this.marketManagementFacade = MarketManagementFacade.getInstance();
         this.notificationController = NotificationController.getInstance();
+    }
+
+    public void setSession(String sessionId, SimpMessagingTemplate template) {
+        this.user.setSessionId(sessionId);
+        this.user.setTemplate(template);
     }
 
     public Response<Boolean> enter() {
@@ -84,9 +92,9 @@ public class SystemImplementor implements SystemInterface {
 
         if (!r.hadError()) {
             this.user.setState(r.getObject().getState());
-            this.marketManagementFacade.attachObserver(r.getObject());
+            this.marketManagementFacade.attachObserver(this.user);
         }
-        return r;
+        return new Response<>(this.user);
     }
 
     public Response<String> getToken() {
@@ -107,9 +115,9 @@ public class SystemImplementor implements SystemInterface {
 
         if (!r.hadError()) {
             this.user.setState(r.getObject().getState());
-            this.marketManagementFacade.attachObserver(r.getObject());
+            this.marketManagementFacade.attachObserver(this.user);
         }
-        return r;
+        return new Response<>(this.user);
     }
 
     @Override
@@ -120,7 +128,9 @@ public class SystemImplementor implements SystemInterface {
         User current = this.user;
         Response<Boolean> res = userFacade.logout(user.getName());
         if (res.getObject()) {
+            User oldUser = this.user;
             this.user = new User(new GuestState());
+            setSession(oldUser.getSessionId(), oldUser.getTemplate());
             this.marketManagementFacade.detachObserver(current);
         }
         return res;

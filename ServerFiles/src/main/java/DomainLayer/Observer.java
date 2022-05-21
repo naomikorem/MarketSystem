@@ -8,4 +8,5 @@ public interface Observer
 {
     public String getName();
     public List<INotification> updateNotifications();
+    public void sendNotification(INotification notification);
 }
