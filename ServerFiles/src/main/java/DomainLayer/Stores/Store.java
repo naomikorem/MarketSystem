@@ -198,10 +198,10 @@ public class Store {
             LogUtility.error("tried to get item from a closed store");
             throw new IllegalArgumentException("This store is closed");
         }
-        if(toDeduct == 0)
-        {
-            throw new LogException("You can't add 0 items to your shopping cart", "User tried to buy 0 items from item " + itemId);
-        }
+//        if(toDeduct == 0)
+//        {
+//            throw new LogException("You can't add 0 items to your shopping cart", "User tried to buy 0 items from item " + itemId);
+//        }
         synchronized (items) {
         Item i = items.keySet().stream().filter(item -> item.getId() == itemId).findFirst().orElse(null);
         if (i != null) {

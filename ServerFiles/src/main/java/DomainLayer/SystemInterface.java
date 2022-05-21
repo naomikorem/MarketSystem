@@ -16,6 +16,7 @@ import DomainLayer.Users.User;
 import java.util.*;
 
 public interface SystemInterface {
+    public Response<Boolean> removeItemIDFromCart(int storeId, int itemid, int amount);
     public Response<Item> removeItemFromStore(int storeId, int itemId, int amount);
 
     public Response<Item> modifyItem(int storeId, int itemId, String productName, String category, double price, int amount, List<String> keywords);
