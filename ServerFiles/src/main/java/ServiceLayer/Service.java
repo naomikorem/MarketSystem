@@ -86,7 +86,7 @@ public class Service {
     public Response<List<StoreDTO>> getStores (SimpMessageHeaderAccessor headerAccessor) {
 
         ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).register("store@gmail.com", "store", "store", "store", "store");
-        ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).login("store", "store");
+        //((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).login("store", "store");
         Response<Store> rStore1 = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addNewStore("store");
         Response<Store> rStore2 = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addNewStore("another store");
 
@@ -111,7 +111,7 @@ public class Service {
     public Response<List<StoreDTO>> getOpenStores (SimpMessageHeaderAccessor headerAccessor) {
 
         ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).register("store@gmail.com", "store", "store", "store", "store");
-        ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).login("store", "store");
+        //((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).login("store", "store");
         Response<Store> rStore1 = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addNewStore("store");
         Response<Store> rStore2 = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addNewStore("another store");
 
