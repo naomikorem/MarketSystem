@@ -247,6 +247,17 @@ public class Service {
         return new Response<>(convertToUserDTO(user.getObject()));
     }
 
+    @MessageMapping("/market/SetItemRate")
+    @SendToUser("/topic/SetItemRateResult")
+    public Response<Boolean> SetItemRate(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Integer store_id = (Integer) map.get("store_id");
+        Integer item_id = (Integer) map.get("item_id");
+        Double rate = (Double) map.get("rate");
+
+        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).setItemRating(store_id, item_id, rate);
+        return res;
+    }
+
     private HistoryDTO convertToHistoryDTO(History history)
     {
         HistoryDTO dto_history = new HistoryDTO();
@@ -259,6 +270,7 @@ public class Service {
             dto_item.username = item.username;
             dto_item.price_per_unit = item.price_per_unit;
             dto_item.store_id = item.store_id;
+            dto_item.item_id = item.id;
             dto_item.date = item.date;
             dto_history.items.add(dto_item);
         }
