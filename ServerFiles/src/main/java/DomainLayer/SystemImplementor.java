@@ -701,7 +701,7 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.isOwner(store_id, username);
     }
 
-    private Response<Boolean> isLoggedInAdminCheck() {
+    public Response<Boolean> isLoggedInAdminCheck() {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }

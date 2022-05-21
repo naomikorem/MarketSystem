@@ -35,24 +35,28 @@ export const SidebarData = [
         title: 'User History',
         path: '/user-purchase-history',
         icon: <VscHistory />,
-        cName: 'nav-text'
+        cName: 'nav-text',
+        adminOnly: true,
     },
     {
         title: 'Store History',
         path: '/store-purchase-history',
         icon: <BsCardList/>,
-        cName: 'nav-text'
+        cName: 'nav-text',
+        adminOnly: true,
     },
     {
         title: 'Unsubscribe User',
         path: '/remove-user-subscription-admin',
         icon: <FaUserAltSlash />,
-        cName: 'nav-text'
+        cName: 'nav-text',
+        adminOnly: true,
     },
     {
         title: 'Close Store Permanently',
         path: '/close-store-permanently-admin',
         icon: <FaStoreSlash />,
-        cName: 'nav-text'
+        cName: 'nav-text',
+        adminOnly: true,
     }
 ];

@@ -460,4 +460,10 @@ public class Service {
         return new Response<>(convertToItemDTO(res.getObject(), (Integer) map.get("amount")));
     }
 
+    @MessageMapping("/market/isAdmin")
+    @SendToUser("/topic/isAdminResult")
+    public Response<Boolean> isAdmin(SimpMessageHeaderAccessor headerAccessor) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).isLoggedInAdminCheck();
+    }
+
 }

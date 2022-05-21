@@ -6,6 +6,7 @@ import { SidebarData } from './SidebarData';
 import './Navbar.css';
 import { IconContext } from 'react-icons';
 import Button from "react-bootstrap/Button";
+import {isAdmin} from "../App";
 
 function Navbar() {
     const [sidebar, setSidebar] = useState(false);
@@ -27,16 +28,18 @@ function Navbar() {
                                 <AiIcons.AiOutlineClose />
                             </Button>
                         </li>
+
                         {SidebarData.map((item, index) => {
-                            return (
+                            return (!item.adminOnly || isAdmin) ? (
                                 <li key={index} className={item.cName}>
                                     <Link to={item.path}>
                                         {item.icon}
                                         <span>{item.title}</span>
                                     </Link>
                                 </li>
-                            );
+                            ) : null;
                         })}
+
                     </ul>
                 </nav>
             </IconContext.Provider>

@@ -180,6 +180,8 @@ export const connectedPromise = new Promise(resolve => {
 
 export let [user, setUser] = [undefined, undefined]
 export let [token, setToken] = [undefined, undefined]
+export let [isAdmin, setIsAdmin] = [undefined, undefined]
+
 
 
 
@@ -191,14 +193,27 @@ async function loginByToken() {
     if (!res.errorMessage) {
       sessionStorage.setItem('user', JSON.stringify(res.object))
       setUser(res.object)
+      stompClient.send("/app/market/isAdmin", {}, JSON.stringify());
     }
   });
   stompClient.send("/app/market/loginByToken", {}, JSON.stringify({"token" : token}));
 }
 
+async function listenIsAdmin() {
+  await connectedPromise;
+  stompClient.subscribe('/user/topic/isAdminResult', (r) => {
+    let res = JSON.parse(r["body"]);
+    if (!res.errorMessage) {
+      setIsAdmin(res.object);
+    }
+  });
+}
+
 function render() {
   [user, setUser] = useState(sessionStorage.getItem('user'));
   [token, setToken] = useState(sessionStorage.getItem('token'));
+  [isAdmin, setIsAdmin] = useState(false);
+  listenIsAdmin();
 
   if (token != null && token !== '') {
     loginByToken();
@@ -210,7 +225,9 @@ function render() {
           {/*<Route render={({location}) => location.pathname !== "/sign-in" && */}
           {/*    location.pathname !== "/sign-up" ? <Navbar/> : null}/>*/}
           {/*{window.location.pathname !== "/sign-in" && <Navbar />}*/}
-          <Navbar/>
+          { user != null ?
+            <Navbar/> : null
+          }
           <div className="appAside" />
           <div className="appForm">
 

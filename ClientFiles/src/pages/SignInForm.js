@@ -31,6 +31,7 @@ class SignInForm extends Component {
           sessionStorage.setItem('user', JSON.stringify(res.object))
           setUser(res.object)
           stompClient.send('/app/market/getToken', {}, JSON.stringify({}));
+          stompClient.send("/app/market/isAdmin", {}, JSON.stringify({}));
         }
       }
     });
