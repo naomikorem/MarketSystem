@@ -10,5 +10,6 @@ public class ItemDTO
     public double rate;
     public int numberOfRatings;
     public double price;
+    public int amount;
     public List<String> keyWords;
 }
