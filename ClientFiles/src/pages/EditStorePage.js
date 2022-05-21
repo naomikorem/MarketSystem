@@ -11,6 +11,33 @@ import InventoryPopup from '../Components/InventoryPopup';
 //import { Text } from 'react-native-paper';
 
 import ResultLabel from "../Components/ResultLabel";
+import AreYouSureModal from "../Components/AreYouSureModal";
+
+function StoreToClose(props) {
+    let [modalOpen, setModalOpen] = useState(false);
+
+    const store = props.store;
+
+    const handleCloseStore = () => {
+        stompClient.send("/app/market/closeStore", {}, JSON.stringify({"storeId" : store.id}));
+    }
+
+    return (
+        <div>
+            <Button onClick={() => {setModalOpen(true)}} key={store.id} className="closeStoreButton">
+                    Close store
+            </Button>
+
+            {modalOpen && <AreYouSureModal
+                title="Are You Sure?"
+                body="This action is not a reversible"
+                doActionButton="I'm Sure"
+                regretActionButton="Cancel"
+                setOpenModal={setModalOpen}
+                onContinue={handleCloseStore}/>}
+        </div>
+    );
+}
 
 
 class EditStorePage extends Component {
@@ -36,6 +63,13 @@ class EditStorePage extends Component {
                 this.setState({[this.state.error]: this.state.error});
             }
         });
+        stompClient.subscribe('/user/topic/closeStoreResult', (r) => {
+            let response = JSON.parse(r["body"]);
+            if (response.errorMessage) {
+                this.state.error = response.errorMessage
+                this.setState({[this.state.error]: this.state.error});
+            }
+        });
         stompClient.send("/app/market/getStoreInfo", {}, JSON.stringify({"id": this.props.storeid}));
     }
 
@@ -47,10 +81,11 @@ class EditStorePage extends Component {
                 </div>
 
                 {this.state.store != null ?
-                <div>
+                <div className="editStoreButtons">
                     <ManagersPopup managers={this.state.store.managers} storeId={this.state.store.id} />
                     <OwnersPopup owners={this.state.store.owners} storeId={this.state.store.id} />
                     <InventoryPopup storeId={this.state.store.id} />
+                    <StoreToClose store={this.state.store} />
 
                 </div>
 

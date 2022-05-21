@@ -53,7 +53,7 @@ class HomePage extends Component {
 
                 <div className="store-grid-container">
                     <ObjectsGrid listitems={this.state.listitems.filter(s => {
-                return s.name.includes(this.state.searchValue)
+                return s.name.includes(this.state.searchValue) && s.isOpen && !s.permanentlyClosed;
             })} link={"store"}/>
         </div>
             </div>
