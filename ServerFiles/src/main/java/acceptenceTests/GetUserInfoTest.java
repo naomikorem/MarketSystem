@@ -38,8 +38,9 @@ public class GetUserInfoTest extends AbstractTest {
 
     @Test
     public void infoTest() {
-
         Response<User> user = bridge.register("user111@gmail.com", "user", "","last","password");
+        assertTrue(user.hadError());
+        user = bridge.register("user111@gmail.com", "user", null,null,"password");
         assertTrue(user.hadError());
         user = bridge.register("user111@gmail.com", "user", "","","password");
         assertTrue(user.hadError());
@@ -47,7 +48,6 @@ public class GetUserInfoTest extends AbstractTest {
         assertTrue(user.hadError());
         user = bridge.register("user111@gmail.com", "user", "f","last","password");
         assertFalse(user.hadError());
-
     }
 
     @Test
