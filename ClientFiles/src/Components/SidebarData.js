@@ -48,7 +48,7 @@ export const SidebarData = [
     },
     {
         title: 'Store History',
-        path: '/store-purchase-history',
+        path: '/select-store-history',
         icon: <BsCardList/>,
         cName: 'nav-text',
         adminOnly: true,
