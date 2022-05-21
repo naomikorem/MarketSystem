@@ -34,11 +34,6 @@ public class Service {
         super();
     }
 
-//    @MessageMapping("/market/echo/{var1}")
-//    public void test(SimpMessageHeaderAccessor headerAccessor, @DestinationVariable String var1) {
-//        System.out.println(headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING));
-//    }
-
     @MessageMapping("/market/login")
     @SendToUser("/topic/loginResult")
     public Response<UserDTO> login(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
@@ -89,20 +84,6 @@ public class Service {
     @MessageMapping("/market/getStores")
     @SendToUser("/topic/getStoresResult")
     public Response<List<StoreDTO>> getStores (SimpMessageHeaderAccessor headerAccessor) {
-
-        ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).register("store@gmail.com", "store", "store", "store", "store");
-        //((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).login("store", "store");
-        Response<Store> rStore1 = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addNewStore("store");
-        Response<Store> rStore2 = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addNewStore("another store");
-
-        ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToStore(rStore1.getObject().getStoreId(), "banana", Category.Food, 55, 5);
-        Response<Item> rBanana = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToStore(rStore1.getObject().getStoreId(), "banana", Category.Food, 55, 5);
-        Response<Item> rOrange= ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToStore(rStore1.getObject().getStoreId(), "orange", Category.Food, 20, 9);
-        Response<Item> rApple = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToStore(rStore1.getObject().getStoreId(), "apple", Category.Food, 10, 2);
-        Response<Item> rShirt= ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToStore(rStore1.getObject().getStoreId(), "shirt", Category.Clothing, 20, 3);
-
-
-
         Response<Collection<Store>> stores = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getAllStores();
         if (stores.hadError())
             return new Response<>(stores.getErrorMessage());
@@ -114,24 +95,6 @@ public class Service {
     @MessageMapping("/market/getOpenStores")
     @SendToUser("/topic/getOpenStoresResult")
     public Response<List<StoreDTO>> getOpenStores (SimpMessageHeaderAccessor headerAccessor) {
-
-        ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).register("store@gmail.com", "store", "store", "store", "store");
-        //((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).login("store", "store");
-        Response<Store> rStore1 = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addNewStore("store");
-        Response<Store> rStore2 = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addNewStore("another store");
-
-        ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).closeStore(rStore2.getObject().getStoreId());
-
-        ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToStore(rStore1.getObject().getStoreId(), "banana", Category.Food, 55, 5);
-        Response<Item> rBanana = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToStore(rStore1.getObject().getStoreId(), "banana", Category.Food, 55, 5);
-        Response<Item> rOrange= ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToStore(rStore1.getObject().getStoreId(), "orange", Category.Food, 20, 9);
-        Response<Item> rApple = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToStore(rStore1.getObject().getStoreId(), "apple", Category.Food, 10, 2);
-        Response<Item> rShirt= ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemToStore(rStore1.getObject().getStoreId(), "shirt", Category.Clothing, 20, 3);
-
-
-        //((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).logout();
-
-
         Response<Collection<Store>> openStores = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getAllOpenStores();
 
         if (openStores.hadError())
@@ -377,7 +340,6 @@ public class Service {
     @MessageMapping("/market/openNewStore")
     @SendToUser("/topic/openNewStoreResult")
     public Response<StoreDTO> openNewStore (SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
-        //((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).login("admin", "admin");
         Response<Store> stores = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addNewStore(map.get("name"));
 
         if (stores.hadError())
