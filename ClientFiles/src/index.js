@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
+
 import App, {connectedPromise, notifications, setIsAdmin, setNotifications, stompClient} from "./App";
 
 async function init() {
@@ -28,3 +29,4 @@ async function init() {
 
 init()
 ReactDOM.render(<App />, document.getElementById("root"));
+
