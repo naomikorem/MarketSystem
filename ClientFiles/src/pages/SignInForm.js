@@ -1,6 +1,6 @@
 import React, {Component, useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {stompClient, connectedPromise, UserContext, setUser, setToken, notifications} from "../App";
+import {stompClient, connectedPromise, UserContext, setUser, setToken, notifications, user} from "../App";
 import MainPage from "./MainPage";
 
 
@@ -22,45 +22,32 @@ class SignInForm extends Component {
 
   async componentDidMount() {
     await connectedPromise;
+    console.log("signin");
+    console.log(user);
+    console.log(notifications);
     stompClient.subscribe('/user/topic/loginResult', (r) => {
-      if (this.mounted) {
         let res = JSON.parse(r["body"]);
         this.state.error = res.errorMessage;
         this.setState({[this.state.error]: this.state.error});
-        if (!this.state.error) {
+        if (!res.errorMessage) {
           sessionStorage.setItem('user', JSON.stringify(res.object))
           setUser(res.object)
           stompClient.send('/app/market/getToken', {}, JSON.stringify({}));
           stompClient.send("/app/market/isAdmin", {}, JSON.stringify({}));
           stompClient.send("/app/market/getNotifications", {}, JSON.stringify({}));
-        }
       }
     });
+
+    stompClient.unsubscribe('/user/topic/tokenResult');
     stompClient.subscribe('/user/topic/tokenResult', (r) => {
-      if (this.mounted) {
         let res = JSON.parse(r["body"]);
-        if (!this.state.error) {
+        if (!res.errorMessage) {
           sessionStorage.setItem('token', JSON.stringify(res.object))
           setToken(res.object)
           this.props.navigate('/home')
-        }
       }
+      this.mounted = true;
     });
-
-    stompClient.subscribe('/user/topic/getNotificationsResult', (r) => {
-      if (this.mounted) {
-        let res = JSON.parse(r["body"]);
-        if (!this.state.error) {
-          console.log("before");
-          console.log(notifications);
-          notifications.push(...res.object.map(n => n.message))
-          console.log(notifications);
-          console.log("after");
-        }
-      }
-    });
-
-    this.mounted = true;
   }
 
   componentWillUnmount() {

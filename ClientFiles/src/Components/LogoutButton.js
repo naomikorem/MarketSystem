@@ -12,9 +12,11 @@ import {
 
 
 function onLogoutButton() {
+    console.log("logout");
     setUser(null);
     setToken(null);
     stompClient.send("/app/market/logout", {}, {});
+    //notifications = [];
     setNotifications([]);
 }
 
