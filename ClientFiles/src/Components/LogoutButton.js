@@ -9,22 +9,25 @@ import {
     notifications,
     setNotifications
 } from "../App";
+import {useNavigate} from "react-router-dom";
 
 
-function onLogoutButton() {
-    console.log("logout");
+function onLogoutButton(navigate) {
     setUser(null);
     setToken(null);
     stompClient.send("/app/market/logout", {}, {});
-    //notifications = [];
     setNotifications([]);
+    navigate('/home');
 }
 
 function render() {
+    let navigate = useNavigate();
     if (user != null) {
-        return (<button className={"pageSwitcherItem"} onClick={onLogoutButton}>
-            Logout
-        </button>);
+        return (
+                <button className={"pageSwitcherItem"} onClick={() => onLogoutButton(navigate)}>
+                    Logout
+                </button>
+             );
     } else {
         return null
     }

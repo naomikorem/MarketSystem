@@ -26,7 +26,8 @@ function StoreItem(props) {
                 <div>
                     <h1>{item.product_name}</h1>
                     <p>Amount Left: {item.amount}<br/>
-                        Category: {item.category}</p>
+                        Category: {item.category}<br/>
+                        Rating: {item.rate}</p>
                     <h2>₪{item.price}</h2>
                 </div>
             </article>

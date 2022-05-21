@@ -41,22 +41,30 @@ public class SubscribedState implements UserState {
     }
 
     private void checkParameters(String email, String userName, String firstName, String lastName, String password) {
+
         if (!isValidUsername(userName) ) {
             throw new IllegalArgumentException("A user name/ last name must be at least 4 letters long.");
         }
-        if (!isValidUsername(firstName) ) {
+
+        if (!isValidName(firstName) ) {
             throw new IllegalArgumentException("A user name/ last name must be at least 4 letters long.");
         }
 
-        if (!isValidUsername(lastName) ) {
+        if (!isValidName(lastName) ) {
             throw new IllegalArgumentException("A user name/ last name must be at least 4 letters long.");
         }
+
         if (password == null || password.length() < MIN_PASSWORD_LENGTH || password.length() > MAX_PASSWORD_LENGTH) {
             throw new IllegalArgumentException("A password must be at least 4 letters long.");
         }
+
         if (email == null || !Utility.isValidEmailAddress(email)) {
             throw new IllegalArgumentException("The email is invalid.");
         }
+    }
+
+    public static boolean isValidName(String name) {
+        return name != null && Pattern.matches("^[a-zA-Z0-9]+$", name) && !name.equals("");
     }
 
     @Override
