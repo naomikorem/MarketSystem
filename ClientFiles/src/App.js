@@ -130,7 +130,7 @@ import React, { Component, createContext, useState} from "react";
 import {
   BrowserRouter,
   Routes,
-  Route,  NavLink
+  Route, NavLink, Link
 } from "react-router-dom";
 
 import SignUpForm from "./pages/SignUpForm";
@@ -166,6 +166,9 @@ import Cart from "./Components/cart";
 import Modal from "./Components/Modal";
 import StorePurchaseHistory from "./pages/ViewStorePurchaseHistoryAdminPage";
 import Navbar from "./Components/Navbar";
+import {IoNotificationsSharp} from "react-icons/all";
+import Button from "react-bootstrap/Button";
+import NotificationPage from "./pages/NotificationPage";
 
 
 const socket = new SockJS("http://localhost:8080/market");
@@ -222,15 +225,12 @@ function render() {
   return (
       <BrowserRouter >
         <div className="App">
-          {/*<Route render={({location}) => location.pathname !== "/sign-in" && */}
-          {/*    location.pathname !== "/sign-up" ? <Navbar/> : null}/>*/}
-          {/*{window.location.pathname !== "/sign-in" && <Navbar />}*/}
           { user != null ?
             <Navbar/> : null
           }
+
           <div className="appAside" />
           <div className="appForm">
-
             <React.Fragment>
               <div className="pageSwitcher">
                 <NavLink
@@ -262,13 +262,24 @@ function render() {
               <Route path="/user-purchase-history" element={<UserPurchaseHistory/>} />
               <Route path="/select_store-history" element={<StorePurchaseHistory/>} />
               <Route path="/store-purchase-history/:storeid" element={<StoreHistoryPage/>} />
+              <Route path="/my-notifications" element={<NotificationPage/>} />
               <Route path="/popup" element={<Modal/>} />
               <Route path="/edit-store/:storeid" element={<EditStorePage/>} />
               <Route path="/*" element={<ErrorPage/>} />
             </Routes>
           </div>
 
+          <div className="notification-icon">
+              <Link to="my-notifications">
+                <Button className="transparent-button">
+                    <IoNotificationsSharp/>
+                </Button>
+              </Link>
+          </div>
+
+
         </div>
+
       </BrowserRouter>
   );
 }
