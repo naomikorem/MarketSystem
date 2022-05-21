@@ -183,6 +183,12 @@ public class Service {
         return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).permanentlyCloseStore(map.get("storeId"));
     }
 
+    @MessageMapping("/market/closeStore")
+    @SendToUser("/topic/closeStoreResult")
+    public Response<Boolean> closeStore(SimpMessageHeaderAccessor headerAccessor, Map<String, Integer> map) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).closeStore(map.get("storeId"));
+    }
+
     @MessageMapping("/market/reopenStore")
     @SendToUser("/topic/reopenStoreResult")
     public Response<Boolean> reopenStoreStore(SimpMessageHeaderAccessor headerAccessor, Map<String, Integer> map) {

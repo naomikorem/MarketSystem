@@ -462,3 +462,18 @@
     font-size: 30px;
     color: white;
 }
+
+.closeStoreButton {
+    background-color: red;
+    height: 10%;
+    margin: 2%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.editStoreButtons {
+    justify-content: center;
+    align-items: center;
+
+}
