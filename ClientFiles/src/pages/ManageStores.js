@@ -83,7 +83,7 @@ class ManageStores extends Component {
                     this.state.hadError = false;
                     this.state.message = "Store reopened successfully";
 
-                    this.state.closed_store_items = this.state.closed_store_items.filter(s => s.id !== store_to_reopen.id);
+                    this.state.closed_store_items = this.state.closed_store_items.filter(s => store_to_reopen == null || s.id !== store_to_reopen.id);
                     this.state.open_store_items.push(store_to_reopen)
                     this.setState({[this.state.open_store_items]: this.state.open_store_items});
                     this.setState({[this.state.closed_store_items]: this.state.closed_store_items});

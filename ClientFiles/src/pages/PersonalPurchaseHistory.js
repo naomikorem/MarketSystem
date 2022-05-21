@@ -1,35 +1,46 @@
-import React, {Component} from "react";
+import React, {Component, useState} from "react";
 import {stompClient, connectedPromise, user} from "../App";
 import ResultLabel from "../Components/ResultLabel";
+import Modal from "../Components/Modal";
+import RateItemPopup from "../Components/RateItemPopup";
 
-class PersonalPurchaseHistoryItem extends Component {
+function PersonalPurchaseHistoryItem(props) {
 
-    constructor() {
-        super();
-    }
+    let [popupOpen, setOpenPopup] = useState(false);
+    const history_item = props.item;
 
-    render() {
-        const history_item = this.props.item;
+    let onContinue = (item_id, rate) => {
+        stompClient.send("/app/market/SetItemRate", {}, JSON.stringify({"store_id": history_item.store_id,"item_id": item_id, "rate" : rate}));
+    };
 
-        return (
-            <article className={"items-grid"}>
-                <div>
-                    <h3>{history_item.product_name}</h3>
-                    <p>
-                        Bought amount: {history_item.amount}<br/>
-                        Price Per Unit: {history_item.price_per_unit} <br/>
-                        Store id: {history_item.store_id} <br/>
-                        Purchase Date: {new Date(history_item.date).toLocaleDateString("en-GB")}
-                    </p>
-                </div>
-                <div className="store-grid-container">
-                    <button className="history-button">Review Item</button>
-                    <button className="history-button">Rate</button>
-                    <button className="history-button">Complain</button>
-                </div>
-            </article>
-        );
-    }
+    return (
+        <div>
+        <article className={"items-grid"}>
+            <div>
+                <h3>{history_item.product_name}</h3>
+                <p>
+                    Bought amount: {history_item.amount}<br/>
+                    Price Per Unit: {history_item.price_per_unit} <br/>
+                    Store id: {history_item.store_id} <br/>
+                    Purchase Date: {new Date(history_item.date).toLocaleDateString("en-GB")}
+                </p>
+            </div>
+            <div className="store-grid-container">
+                <button className="history-button">Review Item</button>
+                <button className="history-button" onClick={() => {setOpenPopup(true)}}>Rate</button>
+                <button className="history-button">Complain</button>
+            </div>
+
+            {popupOpen && <RateItemPopup
+                id={history_item.item_id}
+                product_name = {history_item.product_name}
+                setOpenPopup={setOpenPopup}
+                onContinue={onContinue}/>}
+
+        </article>
+
+    </div>
+    );
 }
 
 export default class PersonalPurchaseHistory extends Component{
@@ -38,7 +49,8 @@ export default class PersonalPurchaseHistory extends Component{
         super();
         this.state = {
             history_items: [],
-            error: ""
+            error: "",
+            is_error: false
         };
     }
 
@@ -60,6 +72,29 @@ export default class PersonalPurchaseHistory extends Component{
         });
         console.log(user);
         stompClient.send("/app/market/getPersonalHistory", {}, {});
+
+        stompClient.subscribe('/user/topic/SetItemRateResult', (r) => {
+            const res_item = JSON.parse(r["body"]);
+            const errorMsg = res_item.errorMessage;
+
+            if (errorMsg) {
+                this.state.error = errorMsg;
+                this.state.is_error = true
+                this.setState({[this.state.is_error]: true});
+            }
+            else if(res_item.object)
+            {
+                this.state.is_error = false
+                this.setState({[this.state.is_error]: false});
+                this.state.error = "Successfully added rate to item";
+            }
+            else
+            {
+                this.state.error = "Could not rate this item";
+                this.state.is_error = true
+                this.setState({[this.state.is_error]: true});
+            }
+        });
     }
 
     componentWillUnmount() {
@@ -82,7 +117,7 @@ export default class PersonalPurchaseHistory extends Component{
                         />
                     ))}
                 </div>
-                <ResultLabel text={this.state.message} hadError={this.state.hadError}/>
+                <ResultLabel text={this.state.error} hadError={this.state.is_error}/>
             </React.Fragment> : null
         );
     }

@@ -1,81 +1,116 @@
 import React, {Component} from "react";
 import Basket from './basket'
-import {connectedPromise, stompClient} from "../App";
+import {connectedPromise, setUser, stompClient} from "../App";
+import "../App.css" ;
+import basket from "./basket";
 
 class Cart extends Component{
     state = {
-        baskets: [{storeName: 'rrr', items: [{id: 'tag1', amount: 0},{id: 'tag2', amount: 0},{id: 'tag3', amount: 0}]}
-                    , {storeName: 'Yarden\'s fanBace', items: [{id: 'otograth', amount: 0},{id: 'pick', amount: 0},{id: 'pice of code', amount: 0}]}]
+        error: "",
+        baskets: []
     };
 
     async componentDidMount() {
         await connectedPromise;
-        stompClient.subscribe('/user/topic/getStoreInfoResult', (r) => {
-            const res = JSON.parse(r["body"]);
-            console.log(res);
-            // if (res.errorMessage == null)
-            // {
-            //     this.state.listitems = res.object;
-            //     this.setState({[this.state.listitems]: this.state.listitems});
-            // }
-            // else
-            // {
-            //     this.state.error = res.errorMessage;
-            //     this.setState({[this.state.error]: this.state.error});
-            // }
+        stompClient.send("/app/market/cart/getCart", {}, JSON.stringify({}));
+        stompClient.subscribe('/user/topic/AddItemToCartResult', (r) => {
+            if (this.mounted) {
+                let res = JSON.parse(r["body"]);
+                this.state.error = res.errorMessage;
+                this.setState({error: this.state.error});
+                if (!this.state.error) {
+                    stompClient.send("/app/market/cart/getCart", {}, JSON.stringify({}));
+                }
+            }
         });
-        stompClient.send("/app/market/getStores", {}, {});
+        stompClient.subscribe('/user/topic/removeItemToCartResult', (r) => {
+            if (this.mounted) {
+                let res = JSON.parse(r["body"]);
+                this.state.error = res.errorMessage;
+                this.setState({error: this.state.error});
+                if (!this.state.error) {
+                    stompClient.send("/app/market/cart/getCart", {}, JSON.stringify({}));
+                }
+            }
+        });
+
+        stompClient.subscribe('/user/topic/cart/getCartResult', (r) => {
+            if (this.mounted) {
+                let res = JSON.parse(r["body"]);
+                this.state.error = res.errorMessage;
+                this.setState({error: this.state.error});
+                if (!this.state.error) {
+                    this.setState({baskets: []});
+                    this.setState({baskets: res.object.baskets});
+                }
+            }
+        });
+        this.mounted = true;
     }
 
-    componentWillUnmount() {
-        stompClient.unsubscribe('/user/topic/getStoreInfoResult');
-    }
+    handleDelete = (store, item) => {
+        stompClient.send("/app/market/removeItemToCart", {}, JSON.stringify({"store_id" : store, "item_id" : item.item_id, "amount": item.amount}));
 
-    handleDelete = (basket, item) => {
-        const baskets = [...this.state.baskets];
-        const bIndex = baskets.indexOf(basket);
-        const items = [...basket.items].filter(i => i.id !== item.id);
-        baskets[bIndex] = {...basket};
-        baskets[bIndex].items =items;
-        this.setState({baskets});
     };
 
-    handleIncrement = (basket, item) => {
-        const baskets = [...this.state.baskets];
-        const bIndex = baskets.indexOf(basket);
-        const items = [...basket.items];
-        const index = items.indexOf(item);
-        items[index]= {...item};
-        items[index].amount++;
-        baskets[bIndex] = {...basket};
-        baskets[bIndex].items =items;
-        this.setState({baskets});
+    handleIncrement = (store, item) => {
+        stompClient.send("/app/market/AddItemToCart", {}, JSON.stringify({"store_id" : store, "item_id" : item.item_id, "amount": 1}));
+    };
+
+    handleDecrement = (store, item) => {
+        stompClient.send("/app/market/removeItemToCart", {}, JSON.stringify({"store_id" : store, "item_id" : item.item_id, "amount": 1}));
     };
 
 
     renderBaskets = () => {
         if(this.state.baskets.length === 0) return <p>Your cart is empty</p>;
         return (
-            <ul>
+            <ul style ={{listStyle:'none'}} >
                 {this.state.baskets.map(basket =>
-                    <li key={"li+"+basket.storeName}>
-                        <Basket
-                            key={basket.storeName}
-                            basket = {basket}
-                            onDelete = {this.handleDelete}
-                            onIncrement = {this.handleIncrement}
-                        />
-                    </li>)}
+                 (basket.items.length !== 0) ?
+                        <li key={"li+"+basket.storeName} className={"basket-grid"}   >
+                            <Basket
+                                key = {basket.Store_id}
+                                store = {basket.Store_id}
+                                items = {basket.items}
+                                onDelete = {this.handleDelete}
+                                onIncrement = {this.handleIncrement}
+                                onDecrement = {this.handleDecrement}
+                            />
+                        </li> : null
+                    )}
             </ul>)
     };
     render() {
         return (
-            <React.Fragment>
-                <h1>YOUR CART</h1>
-                {this.renderBaskets()}
+            <React.Fragment >
+                <div style={{paddingLeft: "30px"}}>
+                    <h1>YOUR CART</h1>
+                    {this.renderBaskets()}
+
+                        <p>{"total: "+ this.getSum()+"   items:"+ this.getAmount()}</p>
+
+                    <button className={"button-6-delete"} onClick={() => this.handlePurchase()}>
+                        Purchase
+                    </button>
+                </div>
             </React.Fragment>
         );
     }
+
+    handlePurchase = () => {
+
+    };
+
+    getSum = () => {
+        return this.state.baskets.map(b => b.items.
+            map(i => i.price * i.amount).reduce((x,y)=> x+y,0)).reduce((x,y)=> x+y,0);
+    };
+    getAmount = () => {
+        return this.state.baskets.map(b => b.items.
+        map(i => i.amount).reduce((x,y)=> x+y,0)).reduce((x,y)=> x+y,0);
+    };
+
 }
 
 export default Cart;

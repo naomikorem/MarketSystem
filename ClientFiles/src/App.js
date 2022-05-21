@@ -150,6 +150,7 @@ import UserProfile from "./pages/UserProfilePage"
 import PersonalPurchaseHistory from "./pages/PersonalPurchaseHistory"
 import UserPurchaseHistory from "./pages/ViewUserPurchaseHistoryAdminPage"
 import StoreHistoryPage from "./pages/StoreHistoryPage"
+import GetSubscriberInfoPage from "./pages/GetSubscriberInfoAdminPage"
 import PersonalPurchaseHistoryButton from "./Components/PersonalPurchaseHistoryButton"
 import UserHistoryButton from "./Components/UserHistoryButton"
 import StoreHistoryButton from "./Components/StoreHistoryButton"
@@ -184,9 +185,7 @@ export const connectedPromise = new Promise(resolve => {
 export let [user, setUser] = [undefined, undefined]
 export let [token, setToken] = [undefined, undefined]
 export let [isAdmin, setIsAdmin] = [undefined, undefined]
-
-
-
+export let [notifications, setNotifications] = [undefined, undefined]
 
 
 async function loginByToken() {
@@ -206,6 +205,7 @@ function render() {
   [user, setUser] = useState(sessionStorage.getItem('user'));
   [token, setToken] = useState(sessionStorage.getItem('token'));
   [isAdmin, setIsAdmin] = useState(false);
+  [notifications, setNotifications] = useState([]);
 
   if (token != null && token !== '') {
     loginByToken();
@@ -247,6 +247,7 @@ function render() {
               <Route path="/manage-stores" element={<ManageStores/>} />
               <Route path="/remove-user-subscription-admin" element={<RemoveUserSubscription/>}/>
               <Route path="/user-profile-subscriber" element={<UserProfile/>} />
+              <Route path="/view-subscriber-info-admin" element={<GetSubscriberInfoPage/>} />
               <Route path="/personal-purchase-history" element={<PersonalPurchaseHistory/>}/>
               <Route path="/user-purchase-history" element={<UserPurchaseHistory/>} />
               <Route path="/select_store-history" element={<StorePurchaseHistory/>} />

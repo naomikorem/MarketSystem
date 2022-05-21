@@ -1,9 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import App, {connectedPromise, setIsAdmin, stompClient} from "./App";
 
-async function listenIsAdmin() {
+import App, {connectedPromise, notifications, setIsAdmin, setNotifications, stompClient} from "./App";
+
+async function init() {
     await connectedPromise;
     stompClient.unsubscribe('/user/topic/isAdminResult')
     stompClient.subscribe('/user/topic/isAdminResult', (r) => {
@@ -13,11 +14,19 @@ async function listenIsAdmin() {
         }
     });
 
-    stompClient.unsubscribe('/user/topic/notificationResult')
     stompClient.subscribe('/user/topic/notificationResult', (r) => {
         let res = JSON.parse(r["body"]);
-        //console.log(r);
+        notifications.push(res.object.message);
+    });
+
+    stompClient.subscribe('/user/topic/getNotificationsResult', (r) => {
+        let res = JSON.parse(r["body"]);
+        if (!res.errorMessage) {
+            setNotifications(res.object.map(n => n.message));
+        }
     });
 }
-listenIsAdmin()
+
+init()
 ReactDOM.render(<App />, document.getElementById("root"));
+
