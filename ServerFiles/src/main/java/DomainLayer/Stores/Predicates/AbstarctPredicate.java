@@ -8,4 +8,5 @@ public abstract class AbstarctPredicate {
     public boolean canApply(ShoppingBasket shoppingBasket) {
         return this.canApply(null, shoppingBasket);
     }
+    public abstract String display();
 }

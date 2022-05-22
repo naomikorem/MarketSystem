@@ -18,7 +18,7 @@ public class SimplePredicate extends AbstarctPredicate {
         public boolean checkBasket(ShoppingBasket i);
     }
 
-
+    private String displayString;
     private ItemPredicateCallback ipc;
     private BasketPredicateCallback bpc;
 
@@ -30,11 +30,13 @@ public class SimplePredicate extends AbstarctPredicate {
     public SimplePredicate(int itemId) {
         this.ipc = (i) -> i.getId() == itemId;
         this.bpc = (b) -> true;
+        displayString = String.format("Only for item with id: %s", itemId);
     }
 
     public SimplePredicate(Category category) {
         this.ipc = (i) -> i.getCategory().equals(category);
         this.bpc = (b) -> true;
+        displayString = String.format("Only for items of category: %s", category);
     }
 
     public SimplePredicate(BasketPredicateCallback bpc) {
@@ -76,5 +78,13 @@ public class SimplePredicate extends AbstarctPredicate {
     @Override
     public boolean canApply(Item item, ShoppingBasket shoppingBasket) {
         return ipc.checkItem(item) && bpc.checkBasket(shoppingBasket);
+    }
+
+    public void setDisplayString(String s) {
+        this.displayString = s;
+    }
+
+    public String display() {
+        return displayString;
     }
 }

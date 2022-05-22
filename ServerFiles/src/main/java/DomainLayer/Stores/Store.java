@@ -1,9 +1,6 @@
 package DomainLayer.Stores;
 
-import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
-import DomainLayer.Stores.DiscountPolicy.AddDiscountPolicy;
-import DomainLayer.Stores.DiscountPolicy.CompositeDiscountPolicy;
-import DomainLayer.Stores.DiscountPolicy.MaxDiscountPolicy;
+import DomainLayer.Stores.DiscountPolicy.*;
 import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
 import DomainLayer.Stores.PurchasePolicy.AddPurchasePolicy;
 import DomainLayer.Stores.PurchasePolicy.CompositePurchasePolicy;
@@ -424,5 +421,12 @@ public class Store {
 
     public boolean canManagePurchasePolicy(User user) {
         return isOwner(user) || (isManager(user) && managers.get(user).canChangePurchase());
+    }
+
+    public List<SimpleDiscountPolicy> getAllDiscountPolicies() {
+        if (this.discountPolicy == null) {
+            return new ArrayList<>();
+        }
+        return this.discountPolicy.getAllDiscountPolicies();
     }
 }

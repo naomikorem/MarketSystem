@@ -13,6 +13,8 @@ import InventoryPopup from '../Components/InventoryPopup';
 import ResultLabel from "../Components/ResultLabel";
 import AreYouSureModal from "../Components/AreYouSureModal";
 import {Link} from "react-router-dom";
+import AddDiscountPopup from "../Components/AddDiscountPopup";
+import ManageDiscountsPopup from "../Components/ManageDiscountsPopup";
 
 function StoreToClose(props) {
     let [modalOpen, setModalOpen] = useState(false);
@@ -139,6 +141,8 @@ class EditStorePage extends Component {
                                     </Button>
                                     </div>
                                 </Link>
+
+                                <ManageDiscountsPopup storeId={this.state.store.id}/>
                                 { this.state.store.isOpen && !this.state.store.permanentlyClosed ?
                                     <StoreToClose store={this.state.store}/> : <StoreToOpen store={this.state.store}/>
                                 }
@@ -149,7 +153,7 @@ class EditStorePage extends Component {
                 : null}
 
 
-                <ResultLabel text={this.state.error} hadError={this.state.error != ""}/>
+                <ResultLabel text={this.state.error} hadError={this.state.error !== ""}/>
             </React.Fragment>
         );
     }

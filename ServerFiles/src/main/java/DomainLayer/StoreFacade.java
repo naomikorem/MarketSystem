@@ -2,6 +2,7 @@ package DomainLayer;
 
 import DomainLayer.Stores.*;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
+import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.Predicates.CompositePredicate;
 import DomainLayer.Stores.Predicates.SimplePredicate;
 import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
@@ -309,7 +310,7 @@ public class StoreFacade {
         }
     }
 
-    public Response<AbstractDiscountPolicy> addDiscount(User u, int storeId, double percentage) {
+    public Response<SimpleDiscountPolicy> addDiscount(User u, int storeId, double percentage) {
         try {
             return new Response<>(storeController.addDiscount(u, storeId, percentage));
         } catch (Exception e) {
@@ -343,7 +344,7 @@ public class StoreFacade {
         }
     }
 
-    public Response<AbstractDiscountPolicy> addExclusiveDiscount(User u, int storeId, double percentage) {
+    public Response<SimpleDiscountPolicy> addExclusiveDiscount(User u, int storeId, double percentage) {
         try {
             return new Response<>(storeController.addExclusiveDiscount(u, storeId, percentage));
         } catch (Exception e) {
@@ -360,6 +361,13 @@ public class StoreFacade {
         }
     }
 
+    public Response<List<SimpleDiscountPolicy>> getAllDiscountPolicies(User owner, int storeId) {
+        try {
+            return new Response<>(storeController.getAllDiscountPolicies(owner, storeId));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
     public Response<Boolean> addItemPredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, int hour) {
         try {
             storeController.addItemPredicateToPolicy(owner, storeId, policyId, type, itemId,hour);

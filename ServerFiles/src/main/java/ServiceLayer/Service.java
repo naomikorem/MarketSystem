@@ -2,6 +2,7 @@ package ServiceLayer;
 
 import DomainLayer.Response;
 import DomainLayer.Stores.Category;
+import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Store;
@@ -335,10 +336,17 @@ public class Service {
         return dto;
     }
 
+    private DiscountDTO convertToDiscountDTO(SimpleDiscountPolicy sdp) {
+        DiscountDTO dto = new DiscountDTO();
+        dto.id = sdp.getId();
+        dto.percentage = sdp.getPercentage();
+        dto.displayString = sdp.display();
+        return dto;
+    }
 
     @MessageMapping("/market/getStoreInfo")
     @SendToUser("/topic/getStoreInfoResult")
-    public Response<StoreDTO> getStore(SimpMessageHeaderAccessor headerAccessor, Map<String, Integer> map) {
+    public Response<StoreDTO> getStore (SimpMessageHeaderAccessor headerAccessor, Map<String, Integer> map) {
         Response<Store> stores = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getStore(map.get("id"));
 
         if (stores.hadError())
@@ -505,6 +513,29 @@ public class Service {
         }
         return new Response<>(new ShoppingCartDTO(res.getObject()));
     }
+    @MessageMapping("/market/addDiscount")
+    @SendToUser("/topic/addDiscountResult")
+    public Response<DiscountDTO> addDiscount(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<SimpleDiscountPolicy> sdp = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addDiscount((Integer) map.get("storeId"), Double.parseDouble((String) map.get("percentage")));
+        if (sdp.hadError()) {
+            return new Response<>(sdp.getErrorMessage());
+        }
+        return new Response<>(convertToDiscountDTO(sdp.getObject()));
+    }
 
+    @MessageMapping("/market/getAllDiscounts")
+    @SendToUser("/topic/getAllDiscountsResult")
+    public Response<List<DiscountDTO>> getAllDiscounts(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<List<SimpleDiscountPolicy>> sdp = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getAllDiscountPolicies((Integer) map.get("storeId"));
+        if (sdp.hadError()) {
+            return new Response<>(sdp.getErrorMessage());
+        }
+        return new Response<>(sdp.getObject().stream().map(this::convertToDiscountDTO).collect(Collectors.toList()));
+    }
 
+    @MessageMapping("/market/removeDiscount")
+    @SendToUser("/topic/removeDiscountResult")
+    public Response<Boolean> removeDiscount(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).removeDiscount((Integer) map.get("storeId"), (Integer) map.get("discountId"));
+    }
 }

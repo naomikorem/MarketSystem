@@ -1,7 +1,9 @@
 package DomainLayer.Stores.DiscountPolicy;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class CompositeDiscountPolicy extends AbstractDiscountPolicy {
     protected List<AbstractDiscountPolicy> discountPolicies;
@@ -19,5 +21,10 @@ public abstract class CompositeDiscountPolicy extends AbstractDiscountPolicy {
     @Override
     public List<AbstractDiscountPolicy> getDiscountPolicies() {
         return this.discountPolicies;
+    }
+
+    @Override
+    public List<SimpleDiscountPolicy> getAllDiscountPolicies() {
+        return getDiscountPolicies().stream().map(AbstractDiscountPolicy::getAllDiscountPolicies).collect(Collectors.toList()).stream().flatMap(Collection::stream).collect(Collectors.toList());
     }
 }
