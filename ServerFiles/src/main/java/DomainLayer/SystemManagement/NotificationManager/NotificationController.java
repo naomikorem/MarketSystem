@@ -51,14 +51,9 @@ public class NotificationController implements Observable
         return true;
     }
 
-    private boolean addRealTimeNotification(String username, String msg)
-    {
+    private boolean addRealTimeNotification(Observer user, String msg) {
         synchronized (this.real_time_users_messages) {
-            if (!this.real_time_users_messages.containsKey(username)) {
-                this.real_time_users_messages.put(username, new ArrayList<>());
-            }
-            this.real_time_users_messages.get(username).add(new Notification(msg));
-            LogUtility.info("Added real time notification to user " + username);
+            user.sendNotification(new Notification(msg));
         }
         return true;
     }
@@ -161,9 +156,10 @@ public class NotificationController implements Observable
         {
             synchronized (this.observers)
             {
+                Observer observer = this.observers.stream().filter(o -> o.getName().equals(username)).findFirst().orElse(null);
                 // If the user is observer - logged in - than send real time notification
-                if (this.observers.stream().map(Observer::getName).collect(Collectors.toList()).contains(username)) {
-                    flag = addRealTimeNotification(username, message);
+                if (observer != null) {
+                    flag = addRealTimeNotification(observer, message);
                 } else {
                     // If the user is not observer - not logged in, save the message for later
                     flag = addNotification(username, message);

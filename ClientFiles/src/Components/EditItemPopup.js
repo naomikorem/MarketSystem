@@ -10,8 +10,8 @@ import Checkbox from "@material-ui/core/Checkbox";
 import ResultLabel from "../Components/ResultLabel";
 import AddItemPopup from "../Components/AddItemPopup";
 import Select from "@material-ui/core/Select";
+import {categories} from "../Shared/Shared";
 
-const categories = ["Food", "Clothing", "Toys", "Grooming", "Fitness"]
 
 
 class EditItemPopup extends Component {

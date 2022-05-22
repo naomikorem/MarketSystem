@@ -1,6 +1,6 @@
 import React, {Component, useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {stompClient, connectedPromise, UserContext, setUser} from "../App";
+import {stompClient, connectedPromise, UserContext, setUser, setToken, notifications, user} from "../App";
 import MainPage from "./MainPage";
 
 
@@ -22,19 +22,32 @@ class SignInForm extends Component {
 
   async componentDidMount() {
     await connectedPromise;
+    console.log("signin");
+    console.log(user);
+    console.log(notifications);
     stompClient.subscribe('/user/topic/loginResult', (r) => {
-      if (this.mounted) {
         let res = JSON.parse(r["body"]);
         this.state.error = res.errorMessage;
         this.setState({[this.state.error]: this.state.error});
-        if (!this.state.error) {
+        if (!res.errorMessage) {
           sessionStorage.setItem('user', JSON.stringify(res.object))
           setUser(res.object)
-          this.props.navigate('/home')
-        }
+          stompClient.send('/app/market/getToken', {}, JSON.stringify({}));
+          stompClient.send("/app/market/isAdmin", {}, JSON.stringify({}));
+          stompClient.send("/app/market/getNotifications", {}, JSON.stringify({}));
       }
     });
-    this.mounted = true;
+
+    stompClient.unsubscribe('/user/topic/tokenResult');
+    stompClient.subscribe('/user/topic/tokenResult', (r) => {
+        let res = JSON.parse(r["body"]);
+        if (!res.errorMessage) {
+          sessionStorage.setItem('token', JSON.stringify(res.object))
+          setToken(res.object)
+          this.props.navigate('/home')
+      }
+      this.mounted = true;
+    });
   }
 
   componentWillUnmount() {

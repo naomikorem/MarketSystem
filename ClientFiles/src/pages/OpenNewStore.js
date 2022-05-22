@@ -36,7 +36,6 @@ class StorePage extends Component {
         stompClient.subscribe('/user/topic/openNewStoreResult', (r) => {
             let response = JSON.parse(r["body"]);
             if (response.errorMessage){
-                console.log(response.errorMessage);
 
                 this.state.message = JSON.parse(r["body"]).errorMessage;
                 this.label = "errorLabel";

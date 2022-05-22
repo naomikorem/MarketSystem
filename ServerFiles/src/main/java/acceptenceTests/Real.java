@@ -331,4 +331,8 @@ public class Real extends Bridge {
     public Response<Boolean> deleteAdmin(String name) {
         return adaptee.deleteAdmin(name);
     }
+
+    public Response<Boolean> setItemRating(int storeId, int itemId, double rate) {return adaptee.setItemRating(storeId, itemId, rate); }
+
+    public Response<Double> getItemRating(int storeId, int itemId) {return adaptee.getItemRating(storeId, itemId); }
 }

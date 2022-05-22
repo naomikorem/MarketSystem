@@ -1,6 +1,5 @@
 import {stompClient, connectedPromise, user} from "../App";
 import React, { Component } from "react";
-import {Link, NavLink, useNavigate} from "react-router-dom";
 import ObjectsGrid from "../Components/ObjectsGrid";
 import TextField from "@material-ui/core/TextField";
 
@@ -54,7 +53,7 @@ class HomePage extends Component {
 
                 <div className="store-grid-container">
                     <ObjectsGrid listitems={this.state.listitems.filter(s => {
-                return s.name.includes(this.state.searchValue)
+                return s.name.includes(this.state.searchValue) && s.isOpen && !s.permanentlyClosed;
             })} link={"store"}/>
         </div>
             </div>

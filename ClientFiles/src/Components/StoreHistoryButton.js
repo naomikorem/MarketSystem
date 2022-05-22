@@ -6,7 +6,7 @@ import {NavLink} from "react-router-dom";
 function render() {
     if (user != null) {
         return (<NavLink
-            to="/store-purchase-history"
+            to="/select_store-history"
             className={(navData) => navData.isActive ? "pageSwitcherItem-active" : "pageSwitcherItem"}
         >
             View Store's History
@@ -15,6 +15,5 @@ function render() {
         return null
     }
 }
-
 
 export default render;
