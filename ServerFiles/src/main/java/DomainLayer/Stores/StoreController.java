@@ -556,4 +556,7 @@ public class StoreController {
         Store s = getStoreAndThrow(sb.getStoreId());
         return s.applyPolicy(sb);
     }
+    public String getStoreNameByID(int id){
+        return getStoreAndThrow(id).getName();
+    }
 }

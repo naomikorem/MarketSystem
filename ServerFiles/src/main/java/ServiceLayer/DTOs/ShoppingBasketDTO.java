@@ -10,6 +10,7 @@ import java.util.Map;
 
 public class ShoppingBasketDTO {
     public int Store_id;
+    public String Store_name;
     public List<ItemDTO> items;
 
     public ShoppingBasketDTO(ShoppingBasket basket) {

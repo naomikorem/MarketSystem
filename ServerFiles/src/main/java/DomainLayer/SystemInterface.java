@@ -146,4 +146,5 @@ public interface SystemInterface {
     public Response<Boolean> removePolicy(int storeId, int policyId);
 
     public Response<Collection<Store>> getUsersStores();
+    public Response<String> getStoreNameByID(int id) ;
 }

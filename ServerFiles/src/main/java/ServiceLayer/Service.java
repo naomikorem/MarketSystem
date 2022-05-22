@@ -511,7 +511,15 @@ public class Service {
         if (res.hadError()) {
             return new Response<>(res.getErrorMessage());
         }
-        return new Response<>(new ShoppingCartDTO(res.getObject()));
+        ShoppingCartDTO shoppingCartDTO = new ShoppingCartDTO(res.getObject());
+        for(ShoppingBasketDTO basketDTO: shoppingCartDTO.baskets){
+            Response<String> result = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getStoreNameByID(basketDTO.Store_id);
+            if (result.hadError()) {
+                return new Response<>(result.getErrorMessage());
+            }
+            basketDTO.Store_name = result.getObject();
+        }
+        return new Response<>(shoppingCartDTO);
     }
     @MessageMapping("/market/addDiscount")
     @SendToUser("/topic/addDiscountResult")
