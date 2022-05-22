@@ -216,7 +216,7 @@ public class Service {
     public Response<Boolean> SetItemRate(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
         Integer store_id = (Integer) map.get("store_id");
         Integer item_id = (Integer) map.get("item_id");
-        Double rate = (Double) map.get("rate");
+        Double rate = Double.parseDouble((String) map.get("rate"));
 
         Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).setItemRating(store_id, item_id, rate);
         return res;
