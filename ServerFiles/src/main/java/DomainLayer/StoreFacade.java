@@ -421,7 +421,7 @@ public class StoreFacade {
         }
     }
 
-    public Response<String> getStoreNameByID(int id) {
+    public Response<String[]> getStoreNameByID(int id) {
         try {
             return new Response<>(storeController.getStoreNameByID(id));
         } catch (Exception e) {

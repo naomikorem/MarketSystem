@@ -513,11 +513,11 @@ public class Service {
         }
         ShoppingCartDTO shoppingCartDTO = new ShoppingCartDTO(res.getObject());
         for(ShoppingBasketDTO basketDTO: shoppingCartDTO.baskets){
-            Response<String> result = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getStoreNameByID(basketDTO.Store_id);
+            Response<String[]> result = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getStoreNameByID(basketDTO.Store_id);
             if (result.hadError()) {
                 return new Response<>(result.getErrorMessage());
             }
-            basketDTO.Store_name = result.getObject();
+            basketDTO.Store_name = result.getObject()[0];
         }
         return new Response<>(shoppingCartDTO);
     }

@@ -969,7 +969,7 @@ public class SystemImplementor implements SystemInterface {
         }
         return storeFacade.removePolicy(user, storeId, policyId);
     }
-    public Response<String> getStoreNameByID(int id) {
+    public Response<String[]> getStoreNameByID(int id) {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
