@@ -1,0 +1,6 @@
+.formFieldProfileLabel {
+    display: block;
+    text-transform: uppercase;
+    font-size: 10%;
+    text-underline-color: mediumpurple;
+}

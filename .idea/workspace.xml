@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="49a0a7bf-ec93-4d04-af03-6de8ff202d8f" name="Changes" comment="remove external services simultaneously test">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_14_05_2022_20_41__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_14_05_2022_20_41__Changes_.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_16_05_2022_15_06__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_16_05_2022_15_06__Changes_.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_16_05_2022_15_06__Changes_1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_16_05_2022_15_06__Changes_1.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientFiles/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ClientFiles/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerFiles/MarketSystem.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ServerFiles/MarketSystem.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerFiles/src/main/java/ServiceLayer/Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/ServerFiles/src/main/java/ServiceLayer/Service.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="milestone2" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="useMavenConfig" value="true" />
+        <option name="usePluginRegistry" value="true" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="284GNthVGuJMPn7m42AqmcjUWI8" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/ServerFiles" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\sadna\marketsystem\src\main\java\DomainLayer" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="acceptenceTests" />
+      <recent name="DomainLayer.Stores.DiscountPolicy" />
+      <recent name="Networking" />
+      <recent name="" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.acceptenceTests in MarketSystem">
+    <configuration name="LoginTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="MarketSystem" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="acceptenceTests.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="acceptenceTests" />
+      <option name="MAIN_CLASS_NAME" value="acceptenceTests.LoginTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StoreDiscountTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="MarketSystem" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="acceptenceTests.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="acceptenceTests" />
+      <option name="MAIN_CLASS_NAME" value="acceptenceTests.StoreDiscountTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StoreDiscountTest.addPredicateSynchronizedTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="MarketSystem" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="acceptenceTests.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="acceptenceTests" />
+      <option name="MAIN_CLASS_NAME" value="acceptenceTests.StoreDiscountTest" />
+      <option name="METHOD_NAME" value="addPredicateSynchronizedTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="acceptenceTests in MarketSystem" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="MarketSystem" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="acceptenceTests.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="acceptenceTests" />
+      <option name="TEST_OBJECT" value="package" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Server" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="MarketSystem" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="DomainLayer.Server" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value=".*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.StoreDiscountTest.addPredicateSynchronizedTest" />
+        <item itemvalue="JUnit.StoreDiscountTest" />
+        <item itemvalue="JUnit.LoginTest" />
+        <item itemvalue="JUnit.acceptenceTests in MarketSystem" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="49a0a7bf-ec93-4d04-af03-6de8ff202d8f" name="Changes" comment="remove external services simultaneously test" />
+      <created>1650468409532</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1650468409532</updated>
+      <workItem from="1650468416021" duration="12297000" />
+      <workItem from="1650726142573" duration="10454000" />
+      <workItem from="1650874047059" duration="9000" />
+      <workItem from="1650893512085" duration="10977000" />
+      <workItem from="1650955012621" duration="18000" />
+      <workItem from="1650957542819" duration="15735000" />
+      <workItem from="1651004807553" duration="2698000" />
+      <workItem from="1651074261189" duration="18207000" />
+      <workItem from="1651151054384" duration="13504000" />
+      <workItem from="1651225851011" duration="9045000" />
+      <workItem from="1651235773027" duration="11445000" />
+      <workItem from="1651306130315" duration="20939000" />
+      <workItem from="1651332867237" duration="7341000" />
+      <workItem from="1651411955600" duration="11000" />
+      <workItem from="1651837087936" duration="10916000" />
+      <workItem from="1651919052079" duration="629000" />
+      <workItem from="1651929511467" duration="1079000" />
+      <workItem from="1651998073779" duration="7914000" />
+      <workItem from="1652087843229" duration="8257000" />
+      <workItem from="1652113256070" duration="2346000" />
+      <workItem from="1652190777628" duration="6284000" />
+      <workItem from="1652266435483" duration="11317000" />
+      <workItem from="1652362567807" duration="1229000" />
+      <workItem from="1652433891179" duration="692000" />
+      <workItem from="1652435135203" duration="4621000" />
+      <workItem from="1652446379735" duration="1075000" />
+      <workItem from="1652447697857" duration="1469000" />
+      <workItem from="1652449203009" duration="4267000" />
+      <workItem from="1652480737582" duration="540000" />
+      <workItem from="1652481300317" duration="5105000" />
+      <workItem from="1652520211501" duration="3559000" />
+      <workItem from="1652541332639" duration="9909000" />
+      <workItem from="1652730495999" duration="86000" />
+      <workItem from="1653005540979" duration="762000" />
+    </task>
+    <task id="LOCAL-00001" summary="started web socket">
+      <created>1652543228714</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1652543228714</updated>
+    </task>
+    <task id="LOCAL-00002" summary="added handling for login request">
+      <created>1652549251456</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1652549251456</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+        <option value="Space.CommitStatus" />
+      </list>
+    </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="started web socket" />
+    <MESSAGE value="added handling for login request" />
+    <option name="LAST_COMMIT_MESSAGE" value="added handling for login request" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.NoClassDefFoundError" package="java.lang" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo />
+      </pinned-members>
+    </pin-to-top-manager>
+    <watches-manager>
+      <configuration name="JUnit">
+        <watch expression="((Store)this).permanentlyClosed" custom="DomainLayer.Stores.Store" />
+        <watch expression="u.state" />
+        <watch expression="this" />
+      </configuration>
+      <configuration name="SpringBootApplicationConfigurationType">
+        <watch expression="user" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/MarketSystem$GetUserInfoTest.ic" NAME="GetUserInfoTest Coverage Results" MODIFIED="1651875963831" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>acceptenceTests.*</FILTER>
+    </SUITE>
+  </component>
+</project>
