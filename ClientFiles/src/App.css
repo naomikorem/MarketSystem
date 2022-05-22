@@ -470,7 +470,7 @@
 }
 
 .basket-grid{
-    background-color: #f3e7e7;
+    background-color: rgba(155, 122, 164, 0.8);
     border: 1px solid rgb(104, 80, 155);
     padding: 5px;
     font-size: 20px;

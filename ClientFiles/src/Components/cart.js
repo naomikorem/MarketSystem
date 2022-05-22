@@ -3,6 +3,8 @@ import Basket from './basket'
 import {connectedPromise, setUser, stompClient} from "../App";
 import "../App.css" ;
 import basket from "./basket";
+import wrapRender from "./ModalPurchase";
+import ModalPurchase from "./ModalPurchase";
 
 class Cart extends Component{
     state = {
@@ -89,17 +91,16 @@ class Cart extends Component{
                     {this.renderBaskets()}
 
                         <p>{"total: "+ this.getSum()+"   items:"+ this.getAmount()}</p>
-
-                    <button className={"button-6-delete"} onClick={() => this.handlePurchase()}>
+                    <ModalPurchase onPurchase = {this.handlePurchase}>
                         Purchase
-                    </button>
+                    </ModalPurchase>
                 </div>
             </React.Fragment>
         );
     }
 
     handlePurchase = () => {
-
+        stompClient.send("/app/market/cart/getCart", {}, JSON.stringify({}));
     };
 
     getSum = () => {

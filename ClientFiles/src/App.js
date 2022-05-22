@@ -167,7 +167,7 @@ import Cart from "./Components/cart";
 import Modal from "./Components/Modal";
 import StorePurchaseHistory from "./pages/ViewStorePurchaseHistoryAdminPage";
 import Navbar from "./Components/Navbar";
-import {IoNotificationsSharp} from "react-icons/all";
+import {IoNotificationsSharp, AiOutlineShoppingCart} from "react-icons/all";
 import Button from "react-bootstrap/Button";
 import NotificationPage from "./pages/NotificationPage";
 import BackButton from "./Components/BackButton";
@@ -257,6 +257,7 @@ function render() {
               <Route path="/my-notifications" element={<NotificationPage/>} />
               <Route path="/popup" element={<Modal/>} />
               <Route path="/edit-store/:storeid" element={<EditStorePage/>} />
+              <Route path="/your-cart" element={<Cart/>} />
               <Route path="/*" element={<ErrorPage/>} />
             </Routes>
           </div>
@@ -266,9 +267,15 @@ function render() {
                 <Link to="my-notifications">
                   <Button className="transparent-button">
                     <IoNotificationsSharp/>
-                  </Button>
-                </Link>
-              </div> : null
+                </Button>
+              </Link>
+
+            <Link to="your-cart">
+              <Button className="transparent-button">
+                <AiOutlineShoppingCart />
+              </Button>
+            </Link>
+          </div> : null
           }
         </div>
 
