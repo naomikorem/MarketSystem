@@ -2,6 +2,7 @@ package DomainLayer;
 
 import DomainLayer.Stores.*;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
+import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.MarketManagementFacade;
@@ -118,6 +119,8 @@ public class SystemImplementor implements SystemInterface {
         if (!r.hadError()) {
             this.user.setState(r.getObject().getState());
             this.marketManagementFacade.attachObserver(this.user);
+        } else {
+            return r;
         }
         return new Response<>(this.user);
     }
@@ -850,13 +853,19 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.applyChangeName(user, oldName, newUserName);
     }
 
-    public Response<AbstractDiscountPolicy> addDiscount(int storeId, double percentage) {
+    public Response<SimpleDiscountPolicy> addDiscount(int storeId, double percentage) {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Only logged in users can perform this action.");
         }
         return storeFacade.addDiscount(user, storeId, percentage);
     }
 
+    public Response<List<SimpleDiscountPolicy>> getAllDiscountPolicies(int storeId) {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
+        }
+        return storeFacade.getAllDiscountPolicies(user, storeId);
+    }
 
     public Response<AbstractPurchasePolicy> addPolicy(int storeId) {
         if (user == null || !user.isSubscribed()) {
@@ -865,7 +874,7 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.addPolicy(user, storeId);
     }
 
-    public Response<AbstractDiscountPolicy> addExclusiveDiscount(int storeId, double percentage) {
+    public Response<SimpleDiscountPolicy> addExclusiveDiscount(int storeId, double percentage) {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Only logged in users can perform this action.");
         }

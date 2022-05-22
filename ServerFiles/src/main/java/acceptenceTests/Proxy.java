@@ -3,6 +3,7 @@ package acceptenceTests;
 import DomainLayer.Response;
 import DomainLayer.Stores.Category;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
+import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
@@ -364,7 +365,7 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<AbstractDiscountPolicy> addDiscount(int storeId, double percentage) {
+    public Response<SimpleDiscountPolicy> addDiscount(int storeId, double percentage) {
         if (this.real == null) {
             return null;
         }
@@ -443,7 +444,7 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<AbstractDiscountPolicy> addExclusiveDiscount(int storeId, double percentage) {
+    public Response<SimpleDiscountPolicy> addExclusiveDiscount(int storeId, double percentage) {
         if (this.real == null) {
             return null;
         }

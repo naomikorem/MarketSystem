@@ -3,6 +3,7 @@ package acceptenceTests;
 import DomainLayer.Response;
 import DomainLayer.Stores.Category;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
+import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
@@ -83,7 +84,7 @@ public abstract class Bridge {
     public abstract Response<Boolean> addAdmin(String name);
     public abstract Response<Boolean> deleteAdmin(String name);
 
-    public abstract Response<AbstractDiscountPolicy> addDiscount(int storeId, double percentage);
+    public abstract Response<SimpleDiscountPolicy> addDiscount(int storeId, double percentage);
 
     public abstract Response<Boolean> addItemPredicateToDiscount(int storeId, int discountId, String type, int itemId);
 
@@ -95,7 +96,7 @@ public abstract class Bridge {
 
     public abstract Response<Boolean> addBasketRequirementPredicateToDiscount(int storeId, int discountId, String type, double minPrice);
 
-    public abstract Response<AbstractDiscountPolicy> addExclusiveDiscount(int storeId, double percentage);
+    public abstract Response<SimpleDiscountPolicy> addExclusiveDiscount(int storeId, double percentage);
 
     public abstract Response<Boolean> removeDiscount(int storeId, int discountId);
 
