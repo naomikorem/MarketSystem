@@ -269,18 +269,13 @@ function render() {
                     <IoNotificationsSharp/>
                 </Button>
               </Link>
+
             <Link to="your-cart">
               <Button className="transparent-button">
                 <AiOutlineShoppingCart />
               </Button>
             </Link>
-          </div>
-
-
-
-                  </Button>
-                </Link>
-              </div> : null
+          </div> : null
           }
         </div>
 
