@@ -24,7 +24,7 @@ class Basket extends Component{
     render() {
         return (
             <React.Fragment>
-                <h3 className={"store-name"}>{this.props.store}</h3>
+                <h3 className={"store-name"}>{this.props.storeName}</h3>
                 {this.renderItems()}
             </React.Fragment>
         );

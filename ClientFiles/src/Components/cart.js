@@ -74,6 +74,7 @@ class Cart extends Component{
                             <Basket
                                 key = {basket.Store_id}
                                 store = {basket.Store_id}
+                                storeName = {basket.Store_name}
                                 items = {basket.items}
                                 onDelete = {this.handleDelete}
                                 onIncrement = {this.handleIncrement}
