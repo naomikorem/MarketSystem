@@ -420,4 +420,14 @@ public class StoreFacade {
             return new Response<>(e.getMessage());
         }
     }
+
+    public Response<String[]> getStoreNameByID(int id) {
+        try {
+            return new Response<>(storeController.getStoreNameByID(id));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+
 }
