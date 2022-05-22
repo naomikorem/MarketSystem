@@ -151,6 +151,7 @@ import PersonalPurchaseHistory from "./pages/PersonalPurchaseHistory"
 import UserPurchaseHistory from "./pages/ViewUserPurchaseHistoryAdminPage"
 import StoreHistoryPage from "./pages/StoreHistoryPage"
 import GetSubscriberInfoPage from "./pages/GetSubscriberInfoAdminPage"
+
 import PersonalPurchaseHistoryButton from "./Components/PersonalPurchaseHistoryButton"
 import UserHistoryButton from "./Components/UserHistoryButton"
 import StoreHistoryButton from "./Components/StoreHistoryButton"
@@ -167,10 +168,11 @@ import Cart from "./Components/cart";
 import Modal from "./Components/Modal";
 import StorePurchaseHistory from "./pages/ViewStorePurchaseHistoryAdminPage";
 import Navbar from "./Components/Navbar";
-import {IoNotificationsSharp} from "react-icons/all";
+import {IoNotificationsSharp, AiOutlineShoppingCart} from "react-icons/all";
 import Button from "react-bootstrap/Button";
 import NotificationPage from "./pages/NotificationPage";
 import BackButton from "./Components/BackButton";
+
 
 
 const socket = new SockJS("http://localhost:8080/market");
@@ -257,6 +259,7 @@ function render() {
               <Route path="/my-notifications" element={<NotificationPage/>} />
               <Route path="/popup" element={<Modal/>} />
               <Route path="/edit-store/:storeid" element={<EditStorePage/>} />
+              <Route path="/your-cart" element={<Cart/>} />
               <Route path="/*" element={<ErrorPage/>} />
             </Routes>
           </div>
@@ -267,7 +270,13 @@ function render() {
                     <IoNotificationsSharp/>
                 </Button>
               </Link>
+            <Link to="your-cart">
+              <Button className="transparent-button">
+                <AiOutlineShoppingCart />
+              </Button>
+            </Link>
           </div>
+
 
 
         </div>

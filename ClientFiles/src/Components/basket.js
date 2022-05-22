@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import BasketItem from './basketItem'
-import "../App.css";
+import "../App.css" ;
 
 class Basket extends Component{
     renderItems = () => {
@@ -8,7 +8,7 @@ class Basket extends Component{
         return (
             <ul style ={{listStyle:'none'}} >
                 {this.props.items.map(item =>
-                {console.log("hi: "+ item);
+                {
                     return (
                     <li key={"li+"+item.item_id} >
                         <BasketItem
