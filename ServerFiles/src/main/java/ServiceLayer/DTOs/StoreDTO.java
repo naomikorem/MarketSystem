@@ -37,6 +37,8 @@ public class StoreDTO {
     }
 
     public StoreDTO() {
-
+        this.owners = new ArrayList<>();
+        this.managers = new ArrayList<>();
+        this.items = new HashMap<>();
     }
 }
