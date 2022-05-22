@@ -130,7 +130,7 @@ import React, { Component, createContext, useState} from "react";
 import {
   BrowserRouter,
   Routes,
-  Route, NavLink, Link
+  Route, NavLink, Link, useNavigate
 } from "react-router-dom";
 
 import SignUpForm from "./pages/SignUpForm";
@@ -170,6 +170,7 @@ import Navbar from "./Components/Navbar";
 import {IoNotificationsSharp} from "react-icons/all";
 import Button from "react-bootstrap/Button";
 import NotificationPage from "./pages/NotificationPage";
+import BackButton from "./Components/BackButton";
 
 
 const socket = new SockJS("http://localhost:8080/market");
@@ -221,6 +222,7 @@ function render() {
           <div className="appAside" />
           <div className="appForm">
             <React.Fragment>
+              <BackButton/>
               <div className="pageSwitcher">
                 <NavLink
                     to="/home"
@@ -250,7 +252,7 @@ function render() {
               <Route path="/view-subscriber-info-admin" element={<GetSubscriberInfoPage/>} />
               <Route path="/personal-purchase-history" element={<PersonalPurchaseHistory/>}/>
               <Route path="/user-purchase-history" element={<UserPurchaseHistory/>} />
-              <Route path="/select_store-history" element={<StorePurchaseHistory/>} />
+              <Route path="/select-store-history" element={<StorePurchaseHistory/>} />
               <Route path="/store-purchase-history/:storeid" element={<StoreHistoryPage/>} />
               <Route path="/my-notifications" element={<NotificationPage/>} />
               <Route path="/popup" element={<Modal/>} />
