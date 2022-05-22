@@ -538,4 +538,15 @@ public class Service {
     public Response<Boolean> removeDiscount(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
         return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).removeDiscount((Integer) map.get("storeId"), (Integer) map.get("discountId"));
     }
+
+    @MessageMapping("/market/purchase")
+    @SendToUser("/topic/purchaseResult")
+    public Response<Boolean> getPurchase(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
+
+        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).purchaseShoppingCart(map.get("address"), map.get("p_service"), map.get("s_service"));
+        if (res.hadError()) {
+            return new Response<>(res.getErrorMessage());
+        }
+        return res;
+    }
 }
