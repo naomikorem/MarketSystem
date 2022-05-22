@@ -261,15 +261,15 @@ function render() {
             </Routes>
           </div>
 
-          <div className="notification-icon">
-              <Link to="my-notifications">
-                <Button className="transparent-button">
+          { user != null ?
+              <div className="notification-icon">
+                <Link to="my-notifications">
+                  <Button className="transparent-button">
                     <IoNotificationsSharp/>
-                </Button>
-              </Link>
-          </div>
-
-
+                  </Button>
+                </Link>
+              </div> : null
+          }
         </div>
 
       </BrowserRouter>
