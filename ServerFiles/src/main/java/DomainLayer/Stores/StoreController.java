@@ -392,7 +392,7 @@ public class StoreController {
         return spp;
     }
 
-    public AbstractDiscountPolicy addDiscount(User owner, int storeId, double percentage) {
+    public SimpleDiscountPolicy addDiscount(User owner, int storeId, double percentage) {
         Store s = getStoreAndThrow(storeId);
         SimpleDiscountPolicy sdp = createNewDiscount(owner, s, percentage);
         s.addDiscount(sdp);
@@ -406,7 +406,7 @@ public class StoreController {
         return spp;
     }
 
-    public AbstractDiscountPolicy addExclusiveDiscount(User owner, int storeId, double percentage) {
+    public SimpleDiscountPolicy addExclusiveDiscount(User owner, int storeId, double percentage) {
         Store s = getStoreAndThrow(storeId);
         SimpleDiscountPolicy sdp = createNewDiscount(owner, s, percentage);
         s.addExclusiveDiscount(sdp);
@@ -445,6 +445,14 @@ public class StoreController {
                 adp.addXorPredicate(sp);
                 break;
         }
+    }
+
+    public List<SimpleDiscountPolicy> getAllDiscountPolicies(User owner, int storeId) {
+        Store s = getStoreAndThrow(storeId);
+        if (!owner.isSubscribed() || !s.canManageDiscounts(owner)) {
+            throw new IllegalArgumentException("This user cannot see the managers");
+        }
+        return s.getAllDiscountPolicies();
     }
 
     public void addPredicateToPolicy(User owner, Store s, int policyId, PredicateEnum type, SimplePredicate sp) {
@@ -507,6 +515,7 @@ public class StoreController {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
         SimplePredicate sp = new SimplePredicate((i) -> true, (b) -> b.calculatePrice() >= minPrice);
+        sp.setDisplayString(String.format("Basket has to cost at least %s", minPrice));
         addPredicateToDiscount(owner, s, discountId, PredicateEnum.valueOf(type), sp);
     }
 

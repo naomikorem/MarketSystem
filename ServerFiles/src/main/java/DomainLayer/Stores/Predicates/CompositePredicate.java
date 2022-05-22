@@ -15,7 +15,7 @@ public abstract class CompositePredicate extends AbstarctPredicate {
         COND
     }
 
-    private List<AbstarctPredicate> preds;
+    protected List<AbstarctPredicate> preds;
 
     public CompositePredicate() {
         this.preds = new ArrayList<>();

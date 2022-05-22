@@ -1,9 +1,6 @@
 package DomainLayer.Stores;
 
-import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
-import DomainLayer.Stores.DiscountPolicy.AddDiscountPolicy;
-import DomainLayer.Stores.DiscountPolicy.CompositeDiscountPolicy;
-import DomainLayer.Stores.DiscountPolicy.MaxDiscountPolicy;
+import DomainLayer.Stores.DiscountPolicy.*;
 import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
 import DomainLayer.Stores.PurchasePolicy.AddPurchasePolicy;
 import DomainLayer.Stores.PurchasePolicy.CompositePurchasePolicy;
@@ -198,10 +195,10 @@ public class Store {
             LogUtility.error("tried to get item from a closed store");
             throw new IllegalArgumentException("This store is closed");
         }
-        if(toDeduct == 0)
-        {
-            throw new LogException("You can't add 0 items to your shopping cart", "User tried to buy 0 items from item " + itemId);
-        }
+//        if(toDeduct == 0)
+//        {
+//            throw new LogException("You can't add 0 items to your shopping cart", "User tried to buy 0 items from item " + itemId);
+//        }
         synchronized (items) {
         Item i = items.keySet().stream().filter(item -> item.getId() == itemId).findFirst().orElse(null);
         if (i != null) {
@@ -424,5 +421,12 @@ public class Store {
 
     public boolean canManagePurchasePolicy(User user) {
         return isOwner(user) || (isManager(user) && managers.get(user).canChangePurchase());
+    }
+
+    public List<SimpleDiscountPolicy> getAllDiscountPolicies() {
+        if (this.discountPolicy == null) {
+            return new ArrayList<>();
+        }
+        return this.discountPolicy.getAllDiscountPolicies();
     }
 }

@@ -151,7 +151,6 @@ import PersonalPurchaseHistory from "./pages/PersonalPurchaseHistory"
 import UserPurchaseHistory from "./pages/ViewUserPurchaseHistoryAdminPage"
 import StoreHistoryPage from "./pages/StoreHistoryPage"
 import GetSubscriberInfoPage from "./pages/GetSubscriberInfoAdminPage"
-
 import PersonalPurchaseHistoryButton from "./Components/PersonalPurchaseHistoryButton"
 import UserHistoryButton from "./Components/UserHistoryButton"
 import StoreHistoryButton from "./Components/StoreHistoryButton"
@@ -172,7 +171,6 @@ import {IoNotificationsSharp, AiOutlineShoppingCart} from "react-icons/all";
 import Button from "react-bootstrap/Button";
 import NotificationPage from "./pages/NotificationPage";
 import BackButton from "./Components/BackButton";
-
 
 
 const socket = new SockJS("http://localhost:8080/market");
@@ -264,9 +262,10 @@ function render() {
             </Routes>
           </div>
 
-          <div className="notification-icon">
-              <Link to="my-notifications">
-                <Button className="transparent-button">
+          { user != null ?
+              <div className="notification-icon">
+                <Link to="my-notifications">
+                  <Button className="transparent-button">
                     <IoNotificationsSharp/>
                 </Button>
               </Link>
@@ -279,6 +278,10 @@ function render() {
 
 
 
+                  </Button>
+                </Link>
+              </div> : null
+          }
         </div>
 
       </BrowserRouter>

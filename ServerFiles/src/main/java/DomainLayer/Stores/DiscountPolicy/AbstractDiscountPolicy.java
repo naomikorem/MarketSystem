@@ -32,6 +32,8 @@ public abstract class AbstractDiscountPolicy {
         return null;
     }
 
+    public abstract List<SimpleDiscountPolicy> getAllDiscountPolicies();
+
     public AbstractDiscountPolicy getDiscount(int discountId) {
         if (getId() == discountId) {
             return this;

@@ -27,7 +27,7 @@ function StoreItem(props) {
                     <h1>{item.product_name}</h1>
                     <p>Amount Left: {item.amount}<br/>
                         Category: {item.category}<br/>
-                        Rating: {item.rate}</p>
+                        Rating: {parseFloat(item.rate).toFixed(2)}</p>
                     <h2>₪{item.price}</h2>
                 </div>
             </article>

@@ -2,6 +2,7 @@ package DomainLayer;
 
 import DomainLayer.Stores.Category;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
+import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.Predicates.CompositePredicate;
@@ -16,6 +17,7 @@ import DomainLayer.Users.User;
 import java.util.*;
 
 public interface SystemInterface {
+    public Response<Boolean> removeItemIDFromCart(int storeId, int itemid, int amount);
     public Response<Item> removeItemFromStore(int storeId, int itemId, int amount);
 
     public Response<Item> modifyItem(int storeId, int itemId, String productName, String category, double price, int amount, List<String> keywords);
@@ -119,7 +121,7 @@ public interface SystemInterface {
 
     public Response<List<INotification>> getUserRealTimeNotifications();
 
-    public Response<AbstractDiscountPolicy> addDiscount(int storeId, double percentage);
+    public Response<SimpleDiscountPolicy> addDiscount(int storeId, double percentage);
 
     public Response<AbstractPurchasePolicy> addPolicy(int storeId);
 
@@ -137,7 +139,7 @@ public interface SystemInterface {
 
     public Response<Boolean> addBasketRequirementPredicateToDiscount(int storeId, int discountId, String type, double minPrice);
 
-    public Response<AbstractDiscountPolicy> addExclusiveDiscount(int storeId, double percentage);
+    public Response<SimpleDiscountPolicy> addExclusiveDiscount(int storeId, double percentage);
 
     public Response<Boolean> removeDiscount(int storeId, int discountId);
 
