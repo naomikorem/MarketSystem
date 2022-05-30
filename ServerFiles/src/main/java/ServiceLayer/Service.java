@@ -557,4 +557,9 @@ public class Service {
         }
         return res;
     }
+    @MessageMapping("/market/cart/getPrice")
+    @SendToUser("/topic/cart/getPriceResult")
+    public Response<Double> getCaertPrice(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getCartPrice();
+    }
 }

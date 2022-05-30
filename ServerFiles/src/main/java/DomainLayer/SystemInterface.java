@@ -147,4 +147,5 @@ public interface SystemInterface {
 
     public Response<Collection<Store>> getUsersStores();
     public Response<String[]> getStoreNameByID(int id) ;
+    public Response<Double> calculateShoppingCartPriceResult(List<ShoppingBasket> baskets);
 }
