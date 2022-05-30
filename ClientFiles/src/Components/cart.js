@@ -9,7 +9,8 @@ import ModalPurchase from "./ModalPurchase";
 class Cart extends Component{
     state = {
         error: "",
-        baskets: []
+        baskets: [],
+        price: 0
     };
     mounted = false;
 
@@ -49,6 +50,20 @@ class Cart extends Component{
                     this.setState({baskets: []});
                     console.log('res.object.baskets');
                     this.setState({baskets: res.object.baskets});
+                    stompClient.send("/app/market/cart/getPrice", {}, JSON.stringify({}));
+                }
+            }
+        });
+        stompClient.subscribe('/user/topic/cart/getPriceResult', (r) => {
+            console.log('!!!!!!!!!!');
+            if (this.mounted) {
+                console.log('?????????');
+                let res = JSON.parse(r["body"]);
+                this.state.error = res.errorMessage;
+                this.setState({error: this.state.error});
+                if (!this.state.error) {
+                    this.setState({price: 0});
+                    this.setState({price: res.object});
                 }
             }
         });
@@ -101,8 +116,9 @@ class Cart extends Component{
                 <div style={{paddingLeft: "30px"}}>
                     <h1>YOUR CART - {user ? user.userName : "Guest"}</h1>
                     {this.renderBaskets()}
-
-                        <p>{"total: "+ this.getSum()+"   items:"+ this.getAmount()}</p>
+                    <p>{"Subtotal ( "+this.getAmount() + (this.getAmount() ===1 ? " item" : " items")+"): "+ this.getSum() +"₪" }</p>
+                    <p>{"Discount: "+ (this.getSum() - this.state.price)+"₪"}</p>
+                    <p>{"Final price ( "+this.getAmount() + (this.getAmount() ===1 ? " item" : " items")+"): "+ this.state.price +"₪" }</p>
                     <ModalPurchase onPurchase = {this.handlePurchase}>
                         Purchase
                     </ModalPurchase>
