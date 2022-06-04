@@ -547,6 +547,12 @@ public class Service {
         return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).removeDiscount((Integer) map.get("storeId"), (Integer) map.get("discountId"));
     }
 
+    @MessageMapping("/market/removePolicy")
+    @SendToUser("/topic/removePolicyResult")
+    public Response<Boolean> removePolicy(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).removePolicy((Integer) map.get("storeId"), (Integer) map.get("discountId"));
+    }
+
     @MessageMapping("/market/purchase")
     @SendToUser("/topic/purchaseResult")
     public Response<Boolean> getPurchase(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
