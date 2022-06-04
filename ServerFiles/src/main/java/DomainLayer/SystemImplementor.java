@@ -881,7 +881,7 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.addExclusiveDiscount(user, storeId, percentage);
     }
 
-    public Response<Boolean> addItemPredicateToDiscount(int storeId, int discountId, String type, int itemId) {
+    public Response<AbstractDiscountPolicy> addItemPredicateToDiscount(int storeId, int discountId, String type, int itemId) {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Only logged in users can perform this action.");
         }
@@ -910,18 +910,25 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.addItemNotAllowedInDatePredicateToPolicy(user, storeId, policyId, type, itemId, date);
     }
 
-    public Response<Boolean> addCategoryPredicateToDiscount(int storeId, int discountId, String type, String categoryName) {
+    public Response<AbstractDiscountPolicy> addCategoryPredicateToDiscount(int storeId, int discountId, String type, String categoryName) {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Only logged in users can perform this action.");
         }
         return storeFacade.addCategoryPredicateToDiscount(user, storeId, discountId, type, categoryName);
     }
 
-    public Response<Boolean> addBasketRequirementPredicateToDiscount(int storeId, int discountId, String type, double minPrice) {
+    public Response<AbstractDiscountPolicy> addBasketRequirementPredicateToDiscount(int storeId, int discountId, String type, double minPrice) {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Only logged in users can perform this action.");
         }
         return storeFacade.addBasketRequirementPredicateToDiscount(user, storeId, discountId, type, minPrice);
+    }
+
+    public Response<Boolean> changeDiscountPercentage(int storeId, int discountId, double newPercentage) {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
+        }
+        return storeFacade.changeDiscountPercentage(user, storeId, discountId, newPercentage);
     }
 
     public Response<Double> getCartPrice() {

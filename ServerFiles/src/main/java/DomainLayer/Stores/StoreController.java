@@ -372,9 +372,6 @@ public class StoreController {
     }
 
     private SimpleDiscountPolicy createNewDiscount(User owner, Store s, double percentage) {
-        if (percentage < 0 || percentage > 1) {
-            throw new IllegalArgumentException("Discount cannot be lower than 0 or higher than 1");
-        }
         if (!owner.isSubscribed() || !s.canManageDiscounts(owner)) {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
@@ -429,7 +426,7 @@ public class StoreController {
         s.removePolicy(policyId);
     }
   
-    public void addPredicateToDiscount(User owner, Store s, int discountId, PredicateEnum type, SimplePredicate sp) {
+    public AbstractDiscountPolicy addPredicateToDiscount(User owner, Store s, int discountId, PredicateEnum type, SimplePredicate sp) {
         AbstractDiscountPolicy adp = s.getDiscount(discountId);
         if (adp == null) {
             throw new LogException(String.format("There is no discount with id %s", discountId), String.format("user %s tried to add a predicate to non existing discount with id %s", owner.getName(), discountId));
@@ -445,6 +442,7 @@ public class StoreController {
                 adp.addXorPredicate(sp);
                 break;
         }
+        return adp;
     }
 
     public List<SimpleDiscountPolicy> getAllDiscountPolicies(User owner, int storeId) {
@@ -473,13 +471,22 @@ public class StoreController {
         }
     }
 
-    public void addItemPredicateToDiscount(User owner, int storeId, int discountId, String type, int itemId) {
+    public AbstractDiscountPolicy addItemPredicateToDiscount(User owner, int storeId, int discountId, String type, int itemId) {
         Store s = getStoreAndThrow(storeId);
         if (!owner.isSubscribed() || !s.canManageDiscounts(owner)) {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
         SimplePredicate sp = new SimplePredicate(itemId);
-        addPredicateToDiscount(owner, s, discountId, PredicateEnum.valueOf(type), sp);
+        return addPredicateToDiscount(owner, s, discountId, PredicateEnum.valueOf(type), sp);
+    }
+
+    public void changeDiscountPercentage(User owner, int storeId, int discountId, double newPercentage) {
+        Store s = getStoreAndThrow(storeId);
+        if (!owner.isSubscribed() || !s.canManageDiscounts(owner)) {
+            throw new IllegalArgumentException("This user cannot see the managers");
+        }
+        AbstractDiscountPolicy adp = s.getDiscount(discountId);
+        adp.setPercentage(newPercentage);
     }
 
     public void addItemPredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, int hour) {
@@ -500,23 +507,23 @@ public class StoreController {
         addPredicateToPolicy(owner, s, policyId, PredicateEnum.valueOf(type), sp);
     }
 
-    public void addCategoryPredicateToDiscount(User owner, int storeId, int discountId, String type, String categoryName) {
+    public AbstractDiscountPolicy addCategoryPredicateToDiscount(User owner, int storeId, int discountId, String type, String categoryName) {
         Store s = getStoreAndThrow(storeId);
         if (!owner.isSubscribed() || !s.canManageDiscounts(owner)) {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
         SimplePredicate sp = new SimplePredicate(Category.valueOf(categoryName));
-        addPredicateToDiscount(owner, s, discountId, PredicateEnum.valueOf(type), sp);
+        return addPredicateToDiscount(owner, s, discountId, PredicateEnum.valueOf(type), sp);
     }
 
-    public void addBasketRequirementPredicateToDiscount(User owner, int storeId, int discountId, String type, double minPrice) {
+    public AbstractDiscountPolicy addBasketRequirementPredicateToDiscount(User owner, int storeId, int discountId, String type, double minPrice) {
         Store s = getStoreAndThrow(storeId);
         if (!owner.isSubscribed() || !s.canManageDiscounts(owner)) {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
         SimplePredicate sp = new SimplePredicate((i) -> true, (b) -> b.calculatePrice() >= minPrice);
         sp.setDisplayString(String.format("Basket has to cost at least %s", minPrice));
-        addPredicateToDiscount(owner, s, discountId, PredicateEnum.valueOf(type), sp);
+        return addPredicateToDiscount(owner, s, discountId, PredicateEnum.valueOf(type), sp);
     }
 
     public void addHourForItemBasketRequirementPredicateToPolicy(User owner, int storeId, int policyId, String type, int hour, int itemId) {
