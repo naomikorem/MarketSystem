@@ -318,9 +318,9 @@ public class StoreFacade {
         }
     }
 
-    public Response<AbstractPurchasePolicy> addPolicy(User u, int storeId) {
+    public Response<SimplePurchasePolicy> addPolicy(User u, int storeId, int hour) {
         try {
-            return new Response<>(storeController.addPolicy(u, storeId));
+            return new Response<>(storeController.addPolicy(u, storeId, hour));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
@@ -367,6 +367,24 @@ public class StoreFacade {
             return new Response<>(e.getMessage());
         }
     }
+
+    public Response<List<SimplePurchasePolicy>> getAllPurchasePolicies(User owner, int storeId) {
+        try {
+            return new Response<>(storeController.getAllPurchasePolicies(owner, storeId));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Boolean> changePolicyHour(User owner, int storeId, int policyId, int newHour, Calendar newDate) {
+        try {
+            storeController.changePolicyHour(owner, storeId, policyId, newHour, newDate);
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
     public Response<Boolean> addItemPredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, int hour) {
         try {
             storeController.addItemPredicateToPolicy(owner, storeId, policyId, type, itemId,hour);

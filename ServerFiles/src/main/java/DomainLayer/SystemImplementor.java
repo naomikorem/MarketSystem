@@ -4,6 +4,7 @@ import DomainLayer.Stores.*;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
+import DomainLayer.Stores.PurchasePolicy.SimplePurchasePolicy;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.MarketManagementFacade;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
@@ -884,11 +885,18 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.getAllDiscountPolicies(user, storeId);
     }
 
-    public Response<AbstractPurchasePolicy> addPolicy(int storeId) {
+    public Response<List<SimplePurchasePolicy>> getAllPurchasePolicies(int storeId) {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Only logged in users can perform this action.");
         }
-        return storeFacade.addPolicy(user, storeId);
+        return storeFacade.getAllPurchasePolicies(user, storeId);
+    }
+
+    public Response<SimplePurchasePolicy> addPolicy(int storeId, int hour) {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
+        }
+        return storeFacade.addPolicy(user, storeId, hour);
     }
 
     public Response<SimpleDiscountPolicy> addExclusiveDiscount(int storeId, double percentage) {
@@ -920,13 +928,6 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.addItemNotAllowedInDatePredicateToPolicy(user, storeId, policyId, type, itemId, date);
     }
 
-    public Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, Calendar date) {
-        if (user == null || !user.isSubscribed()) {
-            return new Response<>("Only logged in users can perform this action.");
-        }
-        return storeFacade.addItemNotAllowedInDatePredicateToPolicy(user, storeId, policyId, type, itemId, date);
-    }
-
     public Response<AbstractDiscountPolicy> addCategoryPredicateToDiscount(int storeId, int discountId, String type, String categoryName) {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Only logged in users can perform this action.");
@@ -946,6 +947,13 @@ public class SystemImplementor implements SystemInterface {
             return new Response<>("Only logged in users can perform this action.");
         }
         return storeFacade.changeDiscountPercentage(user, storeId, discountId, newPercentage);
+    }
+
+    public Response<Boolean> changePolicyHour(int storeId, int policyId, int newHour, Calendar newDate) {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
+        }
+        return storeFacade.changePolicyHour(user, storeId, policyId, newHour, newDate);
     }
 
     public Response<Double> getCartPrice() {
