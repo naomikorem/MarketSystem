@@ -297,10 +297,12 @@ public class Service {
     private UserDTO convertToUserDTO(User user)
     {
         UserDTO dto_user = new UserDTO();
-        dto_user.userName = user.getName();
-        dto_user.email = user.getEmail();
-        dto_user.firstName = user.getFirstName();
-        dto_user.lastName = user.getLastName();
+        if (user.isSubscribed()) {
+            dto_user.userName = user.getName();
+            dto_user.email = user.getEmail();
+            dto_user.firstName = user.getFirstName();
+            dto_user.lastName = user.getLastName();
+        }
         dto_user.shoppingCart = convertToShoppingCartDTO(user.getCartBaskets());
         return dto_user;
     }
@@ -610,6 +612,7 @@ public class Service {
             return new Response<>(res.getErrorMessage());
         }
         return res;
+    }
 
     @MessageMapping("/market/cart/getPrice")
     @SendToUser("/topic/cart/getPriceResult")

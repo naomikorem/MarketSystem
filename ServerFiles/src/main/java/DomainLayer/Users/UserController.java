@@ -14,8 +14,8 @@ public class UserController {
     private Map<String, User> users;
     private Set<String> loggedUsers;
 
-    private Map<String, String> tokensToUsers;
-    private Map<String, String> usersToToken;
+    private Map<String, User> tokensToUsers;
+    private Map<User, String> usersToToken;
 
     public static String DEFAULT_ADMIN_USER = "admin";
     public static String DEFAULT_ADMIN_USER_FIRST_NAME = "admin";
@@ -24,7 +24,7 @@ public class UserController {
     public static String DEFAULT_ADMIN_EMAIL = "admin@mycompany.com";
     public static int SALT_HASH_ROUND_COUNT = 10;
 
-    public static Lock lock = new ReentrantLock();
+    public static final Lock lock = new ReentrantLock();
 
     public UserController() {
         this.users = new HashMap<>();
@@ -40,7 +40,7 @@ public class UserController {
     }
 
     private String getToken() {
-        SecureRandom secureRandom = new SecureRandom(); //threadsafe
+        SecureRandom secureRandom = new SecureRandom();
         Base64.Encoder base64Encoder = Base64.getUrlEncoder();
         byte[] randomBytes = new byte[24];
         secureRandom.nextBytes(randomBytes);
@@ -128,9 +128,9 @@ public class UserController {
         this.loggedUsers.remove(name);
     }
 
-    public String getToken(String name) {
+    public String getToken(User name) {
         if (!this.usersToToken.containsKey(name)) {
-            throw new IllegalArgumentException("There is no token for the user");
+            return createToken(name);
         }
         return usersToToken.get(name);
     }
@@ -140,15 +140,23 @@ public class UserController {
         if (!this.tokensToUsers.containsKey(token)) {
             throw new IllegalArgumentException("There is no user matching to the token");
         }
-        String name = tokensToUsers.get(token);
-        User u = getUser(name);
-        synchronized (u) {
-            if (isLoggedIn(name)) {
-                throw new LogException("The user is already logged in.", String.format("There was an attempt to log in into user %s while the user was already logged in", name));
+        User u = tokensToUsers.get(token);
+        if (u.isSubscribed()) {
+            synchronized (u) {
+                if (isLoggedIn(u.getName())) {
+                    throw new LogException("The user is already logged in.", String.format("There was an attempt to log in into user %s while the user was already logged in", u.getName()));
+                }
+                addLoggedUser(u.getName());
             }
-            addLoggedUser(name);
-            return u;
         }
+        return u;
+    }
+
+    public String createToken(User u) {
+        String token = getToken();
+        this.tokensToUsers.put(token, u);
+        this.usersToToken.put(u, token);
+        return token;
     }
 
     public User login(String name, String password) {
@@ -164,20 +172,23 @@ public class UserController {
                 throw new LogException("One of the credentials is incorrect.", String.format("There was an attempt to log in into user %s with the wrong credentials", name));
             }
             addLoggedUser(name);
-            String token = getToken();
-            this.tokensToUsers.put(token, name);
-            this.usersToToken.put(name, token);
             LogUtility.info(String.format("User %s has logged in", name));
             return u;
         }
     }
 
-    public boolean logout(String name) {
+    public boolean logout(String name, boolean removeToken) {
         if (!isLoggedIn(name)) {
             throw new LogException("Only logged in users can log out.", "User %s has tried to log out even though they are not logged in.");
         }
         removedLoggedUser(name);
         LogUtility.info(String.format("User %s has logged out", name));
+        if (removeToken) {
+            User u = getUser(name);
+            String token = getToken(u);
+            usersToToken.remove(u);
+            tokensToUsers.remove(token);
+        }
         return true;
     }
 
