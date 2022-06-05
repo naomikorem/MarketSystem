@@ -352,10 +352,9 @@ public class StoreFacade {
         }
     }
 
-    public Response<Boolean> addItemPredicateToDiscount(User owner, int storeId, int discountId, String type, int itemId) {
+    public Response<AbstractDiscountPolicy> addItemPredicateToDiscount(User owner, int storeId, int discountId, String type, int itemId) {
         try {
-            storeController.addItemPredicateToDiscount(owner, storeId, discountId, type, itemId);
-            return new Response<>(true);
+            return new Response<>(storeController.addItemPredicateToDiscount(owner, storeId, discountId, type, itemId));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
@@ -387,18 +386,25 @@ public class StoreFacade {
     }
 
 
-    public Response<Boolean> addCategoryPredicateToDiscount(User owner, int storeId, int discountId, String type, String categoryName) {
+    public Response<AbstractDiscountPolicy> addCategoryPredicateToDiscount(User owner, int storeId, int discountId, String type, String categoryName) {
         try {
-            storeController.addCategoryPredicateToDiscount(owner, storeId, discountId, type, categoryName);
-            return new Response<>(true);
+            return new Response<>(storeController.addCategoryPredicateToDiscount(owner, storeId, discountId, type, categoryName));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
     }
 
-    public Response<Boolean> addBasketRequirementPredicateToDiscount(User owner, int storeId, int discountId, String type, double minPrice) {
+    public Response<AbstractDiscountPolicy> addBasketRequirementPredicateToDiscount(User owner, int storeId, int discountId, String type, double minPrice) {
         try {
-            storeController.addBasketRequirementPredicateToDiscount(owner, storeId, discountId, type, minPrice);
+            return new Response<>(storeController.addBasketRequirementPredicateToDiscount(owner, storeId, discountId, type, minPrice));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Boolean> changeDiscountPercentage(User owner, int storeId, int discountId, double newPercentage) {
+        try {
+            storeController.changeDiscountPercentage(owner, storeId, discountId, newPercentage);
             return new Response<>(true);
         } catch (Exception e) {
             return new Response<>(e.getMessage());
@@ -420,6 +426,7 @@ public class StoreFacade {
             return new Response<>(e.getMessage());
         }
     }
+
 
     public Response<String[]> getStoreNameByID(int id) {
         try {

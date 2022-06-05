@@ -11,9 +11,7 @@ import ResultLabel from "../Components/ResultLabel";
 import AddItemPopup from "../Components/AddItemPopup";
 import EditItemPopup from "../Components/EditItemPopup";
 import AddDiscountPopup from "./AddDiscountPopup";
-
-let [show, setShow] = [undefined, undefined];
-let handleClose = () => undefined;
+import EditDiscountPopup from "./EditDiscountPopup";
 
 function removeDiscount(storeId, discountId) {
     stompClient.send("/app/market/removeDiscount", {}, JSON.stringify({
@@ -34,6 +32,7 @@ class ManageDiscountsPopup extends Component {
 
         this.handleChange = this.handleChange.bind(this);
         this.handleShow = this.handleShow.bind(this);
+        this.handleClose = this.handleClose.bind(this);
     }
 
 
@@ -61,6 +60,8 @@ class ManageDiscountsPopup extends Component {
     }
 
     componentWillUnmount() {
+        stompClient.unsubscribe('/user/topic/getAllDiscountsResult');
+        stompClient.unsubscribe('/user/topic/removeDiscountResult');
         this.mounted = false;
     }
 
@@ -73,7 +74,11 @@ class ManageDiscountsPopup extends Component {
 
     handleShow() {
         stompClient.send("/app/market/getAllDiscounts", {}, JSON.stringify({"storeId": this.props.storeId}));
-        setShow(true);
+        this.props.setShow(true);
+    }
+
+    handleClose() {
+        this.props.setShow(false);
     }
 
 
@@ -83,7 +88,7 @@ class ManageDiscountsPopup extends Component {
                 <Button variant="primary" onClick={this.handleShow} className={"storeEditButton"}>
                     Manage discounts
                 </Button>
-                <Modal show={show} onHide={handleClose}>
+                <Modal show={this.props.show} onHide={this.handleClose}>
                     <Modal.Header closeButton>
                         <Modal.Title>Manage discounts</Modal.Title>
                     </Modal.Header>
@@ -91,11 +96,12 @@ class ManageDiscountsPopup extends Component {
 
                         {this.state.discounts.map((listitem, index) => (
 
-                            <div key={index} style={{width: 550}}>
-                                id: {listitem.id} percentage: {listitem.percentage} conditions: {listitem.displayString}
-                                <Button className={"deleteManagerButton"} onClick={() =>
+                            <div key={index} className={"discountDescription"}>
+                                <label> Discount id: {listitem.id} Discount percentage: {listitem.percentage}</label>
+                                <div><Button className={"deleteDiscountButton"} onClick={() =>
                                     removeDiscount(this.props.storeId, listitem.id)
-                                }>Remove</Button>
+                                }>Remove</Button></div>
+                                <EditDiscountPopup key={listitem.id} storeId={this.props.storeId} discount={{id: listitem.id, percentage: listitem.percentage, displayString: listitem.displayString}}/>
                             </div>
                         ))}
 
@@ -104,7 +110,7 @@ class ManageDiscountsPopup extends Component {
                     </Modal.Body>
                     <Modal.Footer>
                         <ResultLabel text={this.state.error} hadError={this.state.error != null}/>
-                        <Button variant="secondary" onClick={handleClose}>
+                        <Button variant="secondary" onClick={this.handleClose}>
                             Close
                         </Button>
                     </Modal.Footer>
@@ -116,11 +122,10 @@ class ManageDiscountsPopup extends Component {
 
 
 function wrapRender(props) {
-    [show, setShow] = useState(false);
-    handleClose = () => setShow(false);
+    let [show, setShow] = useState(false);
     let storeId = props.storeId
     return <>
-        <ManageDiscountsPopup storeId={storeId}/>
+        <ManageDiscountsPopup storeId={storeId} show={show} setShow={setShow}/>
     </>
 }
 

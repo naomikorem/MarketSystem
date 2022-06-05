@@ -25,6 +25,6 @@ public class AndCompositePredicate extends CompositePredicate {
         if (this.preds.size() == 1) {
             return this.preds.get(0).display();
         }
-        return this.preds.stream().map(AbstarctPredicate::display).collect(Collectors.joining("and "));
+        return this.preds.stream().map(AbstarctPredicate::display).collect(Collectors.joining(" and "));
     }
 }
