@@ -29,7 +29,7 @@ public class UserFacade {
         }
     }
 
-    public Response<String> getToken(User name) {
+    public Response<String> getToken(String name) {
         try {
             return new Response<>(userController.getToken(name), "");
         } catch (Exception e) {
@@ -45,9 +45,9 @@ public class UserFacade {
         }
     }
 
-    public Response<Boolean> logout(String user, boolean removeToken) {
+    public Response<Boolean> logout(String user) {
         try {
-            return new Response<>(userController.logout(user, removeToken));
+            return new Response<>(userController.logout(user));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
