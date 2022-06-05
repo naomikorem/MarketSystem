@@ -2,6 +2,7 @@ package ServiceLayer;
 
 import DomainLayer.Response;
 import DomainLayer.Stores.Category;
+import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
@@ -553,6 +554,12 @@ public class Service {
         return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).removeDiscount((Integer) map.get("storeId"), (Integer) map.get("discountId"));
     }
 
+    @MessageMapping("/market/removePolicy")
+    @SendToUser("/topic/removePolicyResult")
+    public Response<Boolean> removePolicy(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).removePolicy((Integer) map.get("storeId"), (Integer) map.get("discountId"));
+    }
+
     @MessageMapping("/market/purchase")
     @SendToUser("/topic/purchaseResult")
     public Response<Boolean> getPurchase(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
@@ -563,9 +570,51 @@ public class Service {
         }
         return res;
     }
+
+
+    @MessageMapping("/market/addItemPredicateToDiscount")
+    @SendToUser("/topic/addItemPredicateToDiscountResult")
+    public Response<DiscountDTO> addItemPredicateToDiscount(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<AbstractDiscountPolicy> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemPredicateToDiscount((Integer) map.get("storeId"), (Integer) map.get("discountId"), (String) map.get("discountType"), Integer.parseInt((String) map.get("itemId")));
+        if (res.hadError()) {
+            return new Response<>(res.getErrorMessage());
+        }
+        return new Response<>(convertToDiscountDTO((SimpleDiscountPolicy) res.getObject()));
+    }
+
+    @MessageMapping("/market/addCategoryPredicateToDiscount")
+    @SendToUser("/topic/addCategoryPredicateToDiscountResult")
+    public Response<DiscountDTO> addCategoryPredicateToDiscount(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<AbstractDiscountPolicy> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addCategoryPredicateToDiscount((Integer) map.get("storeId"), (Integer) map.get("discountId"), (String) map.get("discountType"), (String) map.get("category"));
+        if (res.hadError()) {
+            return new Response<>(res.getErrorMessage());
+        }
+        return new Response<>(convertToDiscountDTO((SimpleDiscountPolicy) res.getObject()));
+    }
+
+    @MessageMapping("/market/addBasketRequirementPredicateToDiscount")
+    @SendToUser("/topic/addBasketRequirementPredicateToDiscountResult")
+    public Response<DiscountDTO> addBasketRequirementPredicateToDiscount(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<AbstractDiscountPolicy> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addBasketRequirementPredicateToDiscount((Integer) map.get("storeId"), (Integer) map.get("discountId"), (String) map.get("discountType"), Double.parseDouble((String) map.get("minPrice")));
+        if (res.hadError()) {
+            return new Response<>(res.getErrorMessage());
+        }
+        return new Response<>(convertToDiscountDTO((SimpleDiscountPolicy) res.getObject()));
+    }
+
+    @MessageMapping("/market/changeDiscountPercentage")
+    @SendToUser("/topic/changeDiscountPercentageResult")
+    public Response<Boolean> changeDiscountPercentage(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).changeDiscountPercentage((Integer) map.get("storeId"), (Integer) map.get("discountId"), Double.parseDouble((String) map.get("newPercentage")));
+        if (res.hadError()) {
+            return new Response<>(res.getErrorMessage());
+        }
+        return res;
+
     @MessageMapping("/market/cart/getPrice")
     @SendToUser("/topic/cart/getPriceResult")
     public Response<Double> getCaertPrice(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
         return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getCartPrice();
+
     }
 }

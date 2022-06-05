@@ -125,19 +125,19 @@ public interface SystemInterface {
 
     public Response<AbstractPurchasePolicy> addPolicy(int storeId);
 
-    public Response<Boolean> addItemPredicateToDiscount(int storeId, int discountId, String type, int itemId);
+    public Response<AbstractDiscountPolicy> addItemPredicateToDiscount(int storeId, int discountId, String type, int itemId);
 
     public Response<Boolean> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour) ;
 
     public Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date) ;
 
-    public Response<Boolean> addCategoryPredicateToDiscount(int storeId, int discountId, String type, String categoryName);
+    public Response<AbstractDiscountPolicy> addCategoryPredicateToDiscount(int storeId, int discountId, String type, String categoryName);
 
     public Response<Double> getCartPrice();
 
     public Response<Boolean> getIsLegalToPurchase(int storeId);
 
-    public Response<Boolean> addBasketRequirementPredicateToDiscount(int storeId, int discountId, String type, double minPrice);
+    public Response<AbstractDiscountPolicy> addBasketRequirementPredicateToDiscount(int storeId, int discountId, String type, double minPrice);
 
     public Response<SimpleDiscountPolicy> addExclusiveDiscount(int storeId, double percentage);
 

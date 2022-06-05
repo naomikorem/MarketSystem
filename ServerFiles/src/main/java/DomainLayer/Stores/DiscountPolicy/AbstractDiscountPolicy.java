@@ -88,4 +88,8 @@ public abstract class AbstractDiscountPolicy {
     public synchronized void addXorPredicate(AbstarctPredicate predicate) {
         throw new IllegalArgumentException("This discount policy does not have a predicate");
     }
+
+    public void setPercentage(double percentage) {
+        throw new IllegalArgumentException("This discount policy does not have a percentage field.");
+    }
 }

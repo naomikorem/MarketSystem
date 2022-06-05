@@ -25,6 +25,6 @@ public class OrCompositePredicate extends CompositePredicate {
         if (this.preds.size() == 1) {
             return this.preds.get(0).display();
         }
-        return this.preds.stream().map(AbstarctPredicate::display).collect(Collectors.joining("or "));
+        return this.preds.stream().map(p -> String.format("(%s)", p.display())).collect(Collectors.joining(" or "));
     }
 }
