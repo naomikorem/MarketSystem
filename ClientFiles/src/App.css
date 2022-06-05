@@ -307,6 +307,7 @@
 
 .deleteManagerButton {
     background-color: darkred;
+    margin: 0% 5% 0% 44%;
     width: 16%;
 }
 
@@ -330,7 +331,7 @@
 
 .storeEditButton {
     margin: 2%;
-    width: 30%;
+    width: 50%;
     background: #984ce8;
     outline-color: black;
     border-color: black;
@@ -623,6 +624,33 @@
 }
 
 .editDiscountButton {
+    width: 40%;
+    margin-left: 18%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+.policyDescription{
+    width: 100%;
+    color: black;
+    background-color: whitesmoke;
+    border-radius: 5%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    padding-left: 20%;
+}
+
+.deletePolicyButton {
+    background-color: darkred;
+    width: 40%;
+    margin-left: 18%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+.editPolicyButton {
     width: 40%;
     margin-left: 18%;
     margin-top: 2%;

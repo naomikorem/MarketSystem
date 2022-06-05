@@ -380,12 +380,14 @@ public class StoreController {
         return sdp;
     }
 
-    private SimplePurchasePolicy createNewPolicy(User owner, Store s) {
+    private SimplePurchasePolicy createNewPolicy(User owner, Store s, int hour) {
         if (!owner.isSubscribed() || !s.canManagePurchasePolicy(owner)) {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
         SimplePurchasePolicy spp = new SimplePurchasePolicy(null);
         spp.setId(getNewPolicyId());
+        if (hour!=24)
+            spp.setHour(hour);
         return spp;
     }
 
@@ -396,9 +398,9 @@ public class StoreController {
         return sdp;
     }
 
-    public AbstractPurchasePolicy addPolicy(User owner, int storeId) {
+    public SimplePurchasePolicy addPolicy(User owner, int storeId, int hour) {
         Store s = getStoreAndThrow(storeId);
-        SimplePurchasePolicy spp = createNewPolicy(owner, s);
+        SimplePurchasePolicy spp = createNewPolicy(owner, s, hour);
         s.addPolicy(spp);
         return spp;
     }
@@ -453,6 +455,14 @@ public class StoreController {
         return s.getAllDiscountPolicies();
     }
 
+    public List<SimplePurchasePolicy> getAllPurchasePolicies(User owner, int storeId) {
+        Store s = getStoreAndThrow(storeId);
+        if (!owner.isSubscribed() || !s.canManagePurchasePolicy(owner)) {
+            throw new IllegalArgumentException("This user cannot see the policies");
+        }
+        return s.getAllPurchasePolicies();
+    }
+
     public void addPredicateToPolicy(User owner, Store s, int policyId, PredicateEnum type, SimplePredicate sp) {
         AbstractPurchasePolicy app = s.getPolicy(policyId);
         if (app == null) {
@@ -487,6 +497,17 @@ public class StoreController {
         }
         AbstractDiscountPolicy adp = s.getDiscount(discountId);
         adp.setPercentage(newPercentage);
+    }
+
+    public void changePolicyHour(User owner, int storeId, int policyId, int newHour, Calendar newDate) {
+        Store s = getStoreAndThrow(storeId);
+        if (!owner.isSubscribed() || !s.canManagePurchasePolicy(owner)) {
+            throw new IllegalArgumentException("This user cannot see the managers");
+        }
+        AbstractPurchasePolicy adp = s.getPolicy(policyId);
+        adp.setHour(newHour);
+        adp.setDate(newDate);
+
     }
 
     public void addItemPredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, int hour) {

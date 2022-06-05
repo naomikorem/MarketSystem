@@ -5,9 +5,7 @@ import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
-import DomainLayer.Stores.Predicates.CompositePredicate;
-import DomainLayer.Stores.Predicates.SimplePredicate;
-import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
+import DomainLayer.Stores.PurchasePolicy.SimplePurchasePolicy;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
@@ -123,7 +121,7 @@ public interface SystemInterface {
 
     public Response<SimpleDiscountPolicy> addDiscount(int storeId, double percentage);
 
-    public Response<AbstractPurchasePolicy> addPolicy(int storeId);
+    public Response<SimplePurchasePolicy> addPolicy(int storeId, int hour);
 
     public Response<AbstractDiscountPolicy> addItemPredicateToDiscount(int storeId, int discountId, String type, int itemId);
 

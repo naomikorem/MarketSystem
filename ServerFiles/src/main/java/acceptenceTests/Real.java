@@ -7,6 +7,7 @@ import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
+import DomainLayer.Stores.PurchasePolicy.SimplePurchasePolicy;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemImplementor;
 import DomainLayer.SystemInterface;
@@ -256,8 +257,8 @@ public class Real extends Bridge {
     }
 
     @Override
-    public Response<AbstractPurchasePolicy> addPolicy(int storeId) {
-        return this.adaptee.addPolicy(storeId);
+    public Response<SimplePurchasePolicy> addPolicy(int storeId, int hour) {
+        return this.adaptee.addPolicy(storeId, hour);
     }
 
     @Override
