@@ -62,7 +62,7 @@ public class SystemImplementor implements SystemInterface {
     public Response<Boolean> exit() {
         try {
             if (this.user != null && this.user.isSubscribed()) {
-                logout(false, false);
+                logout();
             } else {
                 clearShoppingCart();
             }
@@ -101,10 +101,10 @@ public class SystemImplementor implements SystemInterface {
     }
 
     public Response<String> getToken() {
-        if (user == null) {
-            return new Response<>("Please enter the system properly.");
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
         }
-        return userFacade.getToken(user);
+        return userFacade.getToken(user.getName());
     }
 
     public Response<User> loginUserByToken(String token) {
@@ -117,10 +117,8 @@ public class SystemImplementor implements SystemInterface {
         Response<User> r = userFacade.loginUserByToken(token);
 
         if (!r.hadError()) {
-            this.user = r.getObject();
-            if (this.user.isSubscribed()) {
-                this.marketManagementFacade.attachObserver(this.user);
-            }
+            this.user.setState(r.getObject().getState());
+            this.marketManagementFacade.attachObserver(this.user);
         } else {
             return r;
         }
@@ -129,20 +127,14 @@ public class SystemImplementor implements SystemInterface {
 
     @Override
     public Response<Boolean> logout() {
-        return logout(false, true);
-    }
-
-    public Response<Boolean> logout(boolean removeToken, boolean logoutReference) {
         if (this.user == null || !this.user.isSubscribed()) {
             return new Response<>("You have to be logged in to perform this action.");
         }
         User current = this.user;
-        Response<Boolean> res = userFacade.logout(user.getName(), removeToken);
+        Response<Boolean> res = userFacade.logout(user.getName());
         if (res.getObject()) {
             User oldUser = this.user;
-            if (logoutReference) {
-                this.user.setState(new GuestState());
-            }
+            this.user = new User(new GuestState());
             setSession(oldUser.getSessionId(), oldUser.getTemplate());
             this.marketManagementFacade.detachObserver(current);
         }

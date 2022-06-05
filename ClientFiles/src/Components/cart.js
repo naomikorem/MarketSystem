@@ -17,6 +17,7 @@ class Cart extends Component{
     async componentDidMount() {
         await connectedPromise;
         this.mounted = true;
+        stompClient.send("/app/market/cart/getCart", {}, JSON.stringify({}));
         stompClient.subscribe('/user/topic/AddItemToCartResult', (r) => {
             if (this.mounted) {
                 let res = JSON.parse(r["body"]);
@@ -66,7 +67,6 @@ class Cart extends Component{
                 }
             }
         });
-        stompClient.send("/app/market/cart/getCart", {}, JSON.stringify({}));
         this.mounted = true;
     }
     componentWillUnmount() {
