@@ -93,7 +93,7 @@ public class SystemImplementor implements SystemInterface {
         Response<User> r = userFacade.login(name, password);
 
         if (!r.hadError()) {
-            this.user.setState(r.getObject().getState());
+            this.user = r.getObject();
             this.marketManagementFacade.attachObserver(this.user);
         } else {
             return r;
@@ -118,7 +118,7 @@ public class SystemImplementor implements SystemInterface {
         Response<User> r = userFacade.loginUserByToken(token);
 
         if (!r.hadError()) {
-            this.user.setState(r.getObject().getState());
+            this.user = r.getObject();
             this.marketManagementFacade.attachObserver(this.user);
         } else {
             return r;

@@ -650,6 +650,7 @@ public class Service {
             return new Response<>(res.getErrorMessage());
         }
         return res;
+    }
 
     @MessageMapping("/market/cart/getPrice")
     @SendToUser("/topic/cart/getPriceResult")

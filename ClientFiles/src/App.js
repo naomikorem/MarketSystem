@@ -191,12 +191,16 @@ export let [notifications, setNotifications] = [undefined, undefined]
 
 async function loginByToken() {
   await connectedPromise;
+  stompClient.unsubscribe('/user/topic/loginByTokenResult')
   stompClient.subscribe('/user/topic/loginByTokenResult', (r) => {
     let res = JSON.parse(r["body"]);
     if (!res.errorMessage) {
       sessionStorage.setItem('user', JSON.stringify(res.object))
       setUser(res.object)
       stompClient.send("/app/market/isAdmin", {}, JSON.stringify());
+    }
+    if (user === "null") {
+      setUser(null)
     }
   });
   stompClient.send("/app/market/loginByToken", {}, JSON.stringify({"token" : token}));
