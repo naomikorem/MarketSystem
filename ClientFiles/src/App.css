@@ -446,42 +446,38 @@
     transform: translateY(2px);
 }
 .store-name{
-    padding-left : 5%;
-    padding-top : 10px;
+    padding-left : 8px;
+    padding-top : 8px;
 }
 .basket-grid-item {
-    padding: 5px;
-    font-size: 80%;
+    font-size: 18px;
     text-align: left;
-    margin: 5px;
-    width: 80%;
     height: fit-content;
     border-bottom: 2px solid rgba(98, 77, 105, 0.8);
-    padding-inline: 10px;
-    display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
+    width: 90%;
 }
 
-.basket-grid-item > * :first-child{
-    display: block;
-    margin-left: 5px;
+.basket-grid-item:last-child
+{
+    border-bottom: none;
 }
-
+.td_item{
+    padding: 4px 8px;
+}
 .basket-grid{
     background-color: rgba(155, 122, 164, 0.8);
-    border: 1px solid rgb(104, 80, 155);
-    padding: 5px;
     font-size: 20px;
     text-align: left;
-    margin: 10px;
     border-radius: 15px;
-    width: 700px;
+    width: 100%;
     height: fit-content;
     align-items: center;
-
+    padding: 8px;
+    border-collapse: collapse;
 }
+
 
 .history-buttons{
     margin: 20px;
@@ -569,9 +565,12 @@
      /* CSS */
 .button-6-delete {
     background-color: #c04a4a;
+    color: rgba(0, 0, 0, 0.85);
+
 }
 .button-6 {
     background-color: #FFFFFF;
+    color: rgba(86, 85, 85, 0.85);
 }
 .button-6-delete,
  .button-6 {
@@ -580,16 +579,13 @@
      border-radius: .25rem;
      box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
      box-sizing: border-box;
-     color: rgba(0, 0, 0, 0.85);
      cursor: pointer;
      display: inline-flex;
      font-family: system-ui,-apple-system,system-ui,"Helvetica Neue",Helvetica,Arial,sans-serif;
      font-size: 16px;
      font-weight: 600;
      justify-content: center;
-     line-height: 1.25;
-     height: 38px;
-     padding: calc(.875rem - 1px) calc(1.5rem - 1px);
+     height: 34px;
      position: relative;
      text-decoration: none;
      transition: all 250ms;

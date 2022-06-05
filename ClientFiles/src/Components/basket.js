@@ -6,11 +6,15 @@ class Basket extends Component{
     renderItems = () => {
         if(this.props.items == null || this.props.items.length === 0) return <p>Your basket is empty</p>;
         return (
-            <ul style ={{listStyle:'none'}} >
+            <table className={"basket-grid"} >
+                <tbody>
+                <tr className={"basket-grid-item"}>
+                    <th className={"td_item"}>Product</th>
+                    <th className={"td_item"}>Price</th>
+                    <th className={"td_item"}>Quantity</th>
+                    <th className={"td_item"}>Total</th>
+                </tr>
                 {this.props.items.map(item =>
-                {
-                    return (
-                    <li key={"li+"+item.item_id} >
                         <BasketItem
                             key={item.item_id}
                             item={item}
@@ -18,8 +22,9 @@ class Basket extends Component{
                             onDecrement={(item) => this.props.onDecrement(this.props.store, item)}
                             onIncrement={(item) => this.props.onIncrement(this.props.store, item)}
                         />
-                    </li>);})}
-            </ul>)
+                   )}
+                </tbody>
+                </table>)
     };
     render() {
         return (
