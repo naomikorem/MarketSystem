@@ -511,14 +511,20 @@ public class Service {
         if (res.hadError()) {
             return new Response<>(res.getErrorMessage());
         }
-        ShoppingCartDTO shoppingCartDTO = new ShoppingCartDTO(res.getObject());
-        for(ShoppingBasketDTO basketDTO: shoppingCartDTO.baskets){
-            Response<String[]> result = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getStoreNameByID(basketDTO.Store_id);
-            if (result.hadError()) {
-                return new Response<>(result.getErrorMessage());
+        ShoppingCartDTO shoppingCartDTO = new ShoppingCartDTO();
+        List<ShoppingBasketDTO> basketDTOS = new LinkedList<>();
+        for(ShoppingBasket basket: res.getObject()){
+            Response<Map<Item, Double>> discounts_result = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getShoppingBasketDiscounts(basket);
+            if (discounts_result.hadError()) {
+                return new Response<>(discounts_result.getErrorMessage());
             }
-            basketDTO.Store_name = result.getObject()[0];
+            Response<String[]> store_name_result = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getStoreNameByID(basket.getStoreId());
+            if (store_name_result.hadError()) {
+                return new Response<>(store_name_result.getErrorMessage());
+            }
+            basketDTOS.add(new ShoppingBasketDTO(basket,discounts_result.getObject() , store_name_result.getObject()[0]));
         }
+        shoppingCartDTO.baskets = basketDTOS;
         return new Response<>(shoppingCartDTO);
     }
     @MessageMapping("/market/addDiscount")

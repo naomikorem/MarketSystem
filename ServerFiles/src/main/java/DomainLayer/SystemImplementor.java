@@ -947,6 +947,12 @@ public class SystemImplementor implements SystemInterface {
         }
         return new Response<>(total);
     }
+    public Response<Map<Item, Double>> getShoppingBasketDiscounts(ShoppingBasket sb) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.getShoppingBasketDiscounts(sb);
+    }
 
     public Response<Boolean> getIsLegalToPurchase(int storeId) {
         if (user == null) {

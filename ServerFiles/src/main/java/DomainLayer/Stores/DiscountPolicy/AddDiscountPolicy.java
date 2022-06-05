@@ -15,4 +15,13 @@ public class AddDiscountPolicy extends CompositeDiscountPolicy {
         }
         return price;
     }
+
+    @Override
+    public Map<Item, Double> getDiscounts(ShoppingBasket sb, Map<Item, Double> discounts) {
+        for (AbstractDiscountPolicy dp : discountPolicies) {
+            dp.getDiscounts(sb, discounts);
+        }
+        return discounts;
+    }
+
 }

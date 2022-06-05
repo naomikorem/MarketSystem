@@ -551,6 +551,10 @@ public class StoreController {
         Store s = getStoreAndThrow(sb.getStoreId());
         return s.applyDiscount(sb);
     }
+    public Map<Item, Double> getShoppingBasketDiscounts(ShoppingBasket sb) {
+        Store s = getStoreAndThrow(sb.getStoreId());
+        return s.getDiscounts(sb);
+    }
 
     public boolean getShoppingBasketPolicy(ShoppingBasket sb) {
         Store s = getStoreAndThrow(sb.getStoreId());
