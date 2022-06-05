@@ -405,6 +405,14 @@ public class Store {
             return this.discountPolicy.applyDiscount(sb);
         }
     }
+    public Map<Item, Double> getDiscounts(ShoppingBasket sb) {
+        synchronized (discountLock) {
+            if (this.discountPolicy == null) {
+                return new HashMap<>();
+            }
+            return this.discountPolicy.getDiscounts(sb);
+        }
+    }
 
     public boolean applyPolicy(ShoppingBasket sb) {
         synchronized (purchaseLock) {

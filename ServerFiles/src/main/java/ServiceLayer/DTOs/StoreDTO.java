@@ -28,8 +28,8 @@ public class StoreDTO {
         this.permanentlyClosed = store.isPermanentlyClosed();
         this.founder = store.getFounder();
         for (Map.Entry<Item, Integer> item_amount : store.getItems().entrySet()) {
-            ItemDTO item = new ItemDTO(item_amount.getKey(), item_amount.getValue());
             Integer amount = item_amount.getValue();
+            ItemDTO item = new ItemDTO(item_amount.getKey(), amount);
             this.items.put(item, amount);
         }
         this.managers = store.getManagers();
