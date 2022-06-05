@@ -512,6 +512,15 @@ public class SystemImplementor implements SystemInterface {
         return this.marketManagementFacade.purchaseShoppingCart(user, address, purchase_service_name, supply_service_name);
 
     }
+    public Response<Double> calculateShoppingCartPriceResult(List<ShoppingBasket> baskets) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        Response<List<ShoppingBasket>> res = getCartBaskets();
+        if(res.hadError())
+            return new Response<>(res.getErrorMessage());
+        return this.marketManagementFacade.calculateShoppingCartPriceResult(res.getObject());
+    }
 
     public Response<Boolean> hasPurchaseService() {
         if (user == null) {
@@ -944,6 +953,12 @@ public class SystemImplementor implements SystemInterface {
             total += response.getObject();
         }
         return new Response<>(total);
+    }
+    public Response<Map<Item, Double>> getShoppingBasketDiscounts(ShoppingBasket sb) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.getShoppingBasketDiscounts(sb);
     }
 
     public Response<Boolean> getIsLegalToPurchase(int storeId) {

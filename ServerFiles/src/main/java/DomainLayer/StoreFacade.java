@@ -418,6 +418,13 @@ public class StoreFacade {
             return new Response<>(e.getMessage());
         }
     }
+    public Response<Map<Item, Double>> getShoppingBasketDiscounts(ShoppingBasket sb) {
+        try {
+            return new Response<>(storeController.getShoppingBasketDiscounts(sb));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
 
     public Response<Boolean> getShoppingBasketPurchesPolicy(ShoppingBasket sb) {
         try {

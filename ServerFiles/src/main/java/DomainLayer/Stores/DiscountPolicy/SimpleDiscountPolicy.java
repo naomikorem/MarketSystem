@@ -39,6 +39,12 @@ public class SimpleDiscountPolicy extends AbstractDiscountPolicy {
     }
 
     @Override
+    public Map<Item, Double> getDiscounts(ShoppingBasket sb, Map<Item, Double> discounts) {
+        sb.getItems().stream().filter(i -> abstarctPredicate == null || abstarctPredicate.canApply(i, sb)).forEach(i -> discounts.put(i, Math.min(discounts.getOrDefault(i, 0.0) + percentage, 1)));
+        return discounts;
+    }
+
+    @Override
     public List<SimpleDiscountPolicy> getAllDiscountPolicies() {
         return List.of(this);
     }
