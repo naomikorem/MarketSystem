@@ -6,6 +6,7 @@ import {MdOutlineAddBusiness} from "react-icons/md";
 import {RiFileUserLine} from "react-icons/ri";
 import {VscHistory} from "react-icons/vsc";
 import {FaUserTie, FaUserAltSlash, FaStoreSlash} from "react-icons/fa";
+import {AiOutlineApi} from "react-icons/ai";
 
 export const SidebarData = [
     {
@@ -35,7 +36,7 @@ export const SidebarData = [
     {
         title: 'Add External Service',
         path: '/add-external-service',
-        icon: <RiFileUserLine />,
+        icon: <AiOutlineApi />,
         cName: 'nav-text',
         adminOnly: true,
     },
