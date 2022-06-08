@@ -278,13 +278,13 @@ public class Real extends Bridge {
     @Override
     public Response<Boolean> addItemPredicateToDiscount(int storeId, int discountId, String type, int itemId) {
         Response<AbstractDiscountPolicy> r = this.adaptee.addItemPredicateToDiscount(storeId, discountId, type, itemId);
-        return r.hadError() ? new Response<>(true) : new Response<>(r.getErrorMessage());
+        return !r.hadError() ? new Response<>(true) : new Response<>(r.getErrorMessage());
     }
 
     @Override
     public Response<Boolean> addCategoryPredicateToDiscount(int storeId, int discountId, String type, String categoryName) {
         Response<AbstractDiscountPolicy> r = this.adaptee.addCategoryPredicateToDiscount(storeId, discountId, type, categoryName);
-        return r.hadError() ? new Response<>(true) : new Response<>(r.getErrorMessage());
+        return !r.hadError() ? new Response<>(true) : new Response<>(r.getErrorMessage());
     }
 
     @Override
@@ -299,7 +299,7 @@ public class Real extends Bridge {
     @Override
     public Response<Boolean> addBasketRequirementPredicateToDiscount(int storeId, int discountId, String type, double minPrice) {
         Response<AbstractDiscountPolicy> r = this.adaptee.addBasketRequirementPredicateToDiscount(storeId, discountId, type, minPrice);
-        return r.hadError() ? new Response<>(true) : new Response<>(r.getErrorMessage());
+        return !r.hadError() ? new Response<>(true) : new Response<>(r.getErrorMessage());
     }
 
     @Override
