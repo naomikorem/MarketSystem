@@ -39,6 +39,7 @@ import BackButton from "./Components/BackButton";
 
 import NotificationBadge from "react-notification-badge";
 import {Effect} from 'react-notification-badge';
+import AddAdmin from "./pages/AddAdmin";
 
 
 const socket = new SockJS("http://localhost:8080/market");
@@ -130,13 +131,13 @@ function render() {
               <Route path="/popup" element={<Modal/>} />
               <Route path="/edit-store/:storeid" element={<EditStorePage/>} />
               <Route path="/your-cart" element={<Cart/>} />
+              <Route path="/add-admin" element={<AddAdmin/>} />
               <Route path="/*" element={<ErrorPage/>} />
             </Routes>
           </div>
 
               <div className="notification-icon">
                 { user != null ?
-
                     <div>
                       <Link to="my-notifications">
                         <NotificationBadge count={notifications.length} effect={Effect.SCALE}/>

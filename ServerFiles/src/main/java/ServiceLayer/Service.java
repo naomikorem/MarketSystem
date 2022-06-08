@@ -231,6 +231,12 @@ public class Service {
         return res;
     }
 
+    @MessageMapping("/market/addAdmin")
+    @SendToUser("/topic/addAdminResult")
+    public Response<Boolean> addAdmin(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        return  ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addAdmin((String) map.get("name"));
+    }
+
     private HistoryDTO convertToHistoryDTO1(History history) {
         return new HistoryDTO(history);
     }
