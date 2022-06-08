@@ -33,6 +33,13 @@ export const SidebarData = [
         cName: 'nav-text'
     },
     {
+        title: 'Add External Service',
+        path: '/add-external-service',
+        icon: <RiFileUserLine />,
+        cName: 'nav-text',
+        adminOnly: true,
+    },
+    {
         title: 'Get User Information',
         path: '/view-subscriber-info-admin',
         icon: <RiFileUserLine />,

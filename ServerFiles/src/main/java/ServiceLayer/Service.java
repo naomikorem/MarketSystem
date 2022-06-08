@@ -231,6 +231,20 @@ public class Service {
         return res;
     }
 
+    @MessageMapping("/market/addExternalPurchaseService")
+    @SendToUser("/topic/addExternalServiceResult")
+    public Response<Boolean> addExternalPurchaseService(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
+        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addExternalPurchaseService(map.get("name"), map.get("address"));
+        return res;
+    }
+
+    @MessageMapping("/market/addExternalSupplyService")
+    @SendToUser("/topic/addExternalServiceResult")
+    public Response<Boolean> addExternalSupplyService(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
+        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addExternalSupplyService(map.get("name"), map.get("address"));
+        return res;
+    }
+
     private HistoryDTO convertToHistoryDTO1(History history) {
         return new HistoryDTO(history);
     }

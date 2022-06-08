@@ -151,6 +151,7 @@ import PersonalPurchaseHistory from "./pages/PersonalPurchaseHistory"
 import UserPurchaseHistory from "./pages/ViewUserPurchaseHistoryAdminPage"
 import StoreHistoryPage from "./pages/StoreHistoryPage"
 import GetSubscriberInfoPage from "./pages/GetSubscriberInfoAdminPage"
+import AddService from "./pages/AddExternalService"
 import PersonalPurchaseHistoryButton from "./Components/PersonalPurchaseHistoryButton"
 import UserHistoryButton from "./Components/UserHistoryButton"
 import StoreHistoryButton from "./Components/StoreHistoryButton"
@@ -171,6 +172,7 @@ import {IoNotificationsSharp, AiOutlineShoppingCart} from "react-icons/all";
 import Button from "react-bootstrap/Button";
 import NotificationPage from "./pages/NotificationPage";
 import BackButton from "./Components/BackButton";
+import AddExternalService from "./pages/AddExternalService";
 
 
 const socket = new SockJS("http://localhost:8080/market");
@@ -257,6 +259,7 @@ function render() {
               <Route path="/personal-purchase-history" element={<PersonalPurchaseHistory/>}/>
               <Route path="/user-purchase-history" element={<UserPurchaseHistory/>} />
               <Route path="/select-store-history" element={<StorePurchaseHistory/>} />
+              <Route path="/add-external-service" element={<AddService/>} />
               <Route path="/store-purchase-history/:storeid" element={<StoreHistoryPage/>} />
               <Route path="/my-notifications" element={<NotificationPage/>} />
               <Route path="/popup" element={<Modal/>} />
