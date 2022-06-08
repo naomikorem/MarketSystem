@@ -7,6 +7,7 @@ import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
+import DomainLayer.Stores.PurchasePolicy.SimplePurchasePolicy;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemImplementor;
 import DomainLayer.SystemInterface;
@@ -256,8 +257,8 @@ public class Real extends Bridge {
     }
 
     @Override
-    public Response<AbstractPurchasePolicy> addPolicy(int storeId) {
-        return this.adaptee.addPolicy(storeId);
+    public Response<SimplePurchasePolicy> addPolicy(int storeId, int hour) {
+        return this.adaptee.addPolicy(storeId, hour);
     }
 
     @Override
@@ -276,12 +277,14 @@ public class Real extends Bridge {
 
     @Override
     public Response<Boolean> addItemPredicateToDiscount(int storeId, int discountId, String type, int itemId) {
-        return this.adaptee.addItemPredicateToDiscount(storeId, discountId, type, itemId);
+        Response<AbstractDiscountPolicy> r = this.adaptee.addItemPredicateToDiscount(storeId, discountId, type, itemId);
+        return r.hadError() ? new Response<>(true) : new Response<>(r.getErrorMessage());
     }
 
     @Override
     public Response<Boolean> addCategoryPredicateToDiscount(int storeId, int discountId, String type, String categoryName) {
-        return this.adaptee.addCategoryPredicateToDiscount(storeId, discountId, type, categoryName);
+        Response<AbstractDiscountPolicy> r = this.adaptee.addCategoryPredicateToDiscount(storeId, discountId, type, categoryName);
+        return r.hadError() ? new Response<>(true) : new Response<>(r.getErrorMessage());
     }
 
     @Override
@@ -295,7 +298,8 @@ public class Real extends Bridge {
 
     @Override
     public Response<Boolean> addBasketRequirementPredicateToDiscount(int storeId, int discountId, String type, double minPrice) {
-        return this.adaptee.addBasketRequirementPredicateToDiscount(storeId, discountId, type, minPrice);
+        Response<AbstractDiscountPolicy> r = this.adaptee.addBasketRequirementPredicateToDiscount(storeId, discountId, type, minPrice);
+        return r.hadError() ? new Response<>(true) : new Response<>(r.getErrorMessage());
     }
 
     @Override

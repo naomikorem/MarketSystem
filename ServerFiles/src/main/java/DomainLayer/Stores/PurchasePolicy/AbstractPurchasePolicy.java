@@ -1,13 +1,11 @@
 package DomainLayer.Stores.PurchasePolicy;
 
 import DomainLayer.Stores.DiscountPolicy.CompositeDiscountPolicy;
+import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.Predicates.AbstarctPredicate;
 import DomainLayer.Users.ShoppingBasket;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class AbstractPurchasePolicy {
     private int id;
@@ -28,6 +26,8 @@ public abstract class AbstractPurchasePolicy {
     public List<AbstractPurchasePolicy> getPurchasesPolicies() {
         return null;
     }
+
+    public abstract List<SimplePurchasePolicy> getAllPurchasePolicies();
 
     public AbstractPurchasePolicy getPolicies(int policyId) {
         if (getId() == policyId) {
@@ -78,5 +78,13 @@ public abstract class AbstractPurchasePolicy {
     //conditioning
     public synchronized void addCondPredicate(AbstarctPredicate predicate) {
         throw new IllegalArgumentException("This purchase policy does not have a predicate");
+    }
+
+    public void setHour(int hour) {
+        throw new IllegalArgumentException("This discount policy does not have a percentage field.");
+    }
+
+    public void setDate(Calendar date) {
+        throw new IllegalArgumentException("This discount policy does not have a percentage field.");
     }
 }

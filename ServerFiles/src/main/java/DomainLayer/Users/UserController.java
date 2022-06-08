@@ -14,8 +14,8 @@ public class UserController {
     private Map<String, User> users;
     private Set<String> loggedUsers;
 
-    private Map<String, String> tokensToUsers;
-    private Map<String, String> usersToToken;
+    private Map<String, User> tokensToUsers;
+    private Map<User, String> usersToToken;
 
     public static String DEFAULT_ADMIN_USER = "admin";
     public static String DEFAULT_ADMIN_USER_FIRST_NAME = "admin";
@@ -129,10 +129,11 @@ public class UserController {
     }
 
     public String getToken(String name) {
-        if (!this.usersToToken.containsKey(name)) {
+        User u = getUser(name);
+        if (!this.usersToToken.containsKey(u)) {
             throw new IllegalArgumentException("There is no token for the user");
         }
-        return usersToToken.get(name);
+        return usersToToken.get(u);
     }
 
     public User loginUserByToken(String token) {
@@ -140,8 +141,8 @@ public class UserController {
         if (!this.tokensToUsers.containsKey(token)) {
             throw new IllegalArgumentException("There is no user matching to the token");
         }
-        String name = tokensToUsers.get(token);
-        User u = getUser(name);
+        User u = tokensToUsers.get(token);
+        String name = u.getName();
         synchronized (u) {
             if (isLoggedIn(name)) {
                 throw new LogException("The user is already logged in.", String.format("There was an attempt to log in into user %s while the user was already logged in", name));
@@ -165,8 +166,8 @@ public class UserController {
             }
             addLoggedUser(name);
             String token = getToken();
-            this.tokensToUsers.put(token, name);
-            this.usersToToken.put(name, token);
+            this.tokensToUsers.put(token, u);
+            this.usersToToken.put(u, token);
             LogUtility.info(String.format("User %s has logged in", name));
             return u;
         }

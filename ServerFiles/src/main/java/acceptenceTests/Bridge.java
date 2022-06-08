@@ -7,6 +7,7 @@ import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
+import DomainLayer.Stores.PurchasePolicy.SimplePurchasePolicy;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 
@@ -100,7 +101,7 @@ public abstract class Bridge {
 
     public abstract Response<Boolean> removeDiscount(int storeId, int discountId);
 
-    public abstract Response<AbstractPurchasePolicy> addPolicy(int storeId);
+    public abstract Response<SimplePurchasePolicy> addPolicy(int storeId, int hour);
 
    public abstract Response<Boolean> removePolicy(int storeId, int policyId);
 

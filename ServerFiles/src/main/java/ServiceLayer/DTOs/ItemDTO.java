@@ -20,8 +20,8 @@ public class ItemDTO {
         this.price = item.getPrice();
         this.product_name = item.getProductName();
         this.category = item.getCategory().toString();
-        this.amount = amount;
         this.keyWords = item.getKeyWords();
+        this.amount = amount;
     }
 
     public ItemDTO() {

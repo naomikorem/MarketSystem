@@ -27,6 +27,6 @@ public class XorCompositePredicate extends CompositePredicate {
         if (this.preds.size() == 1) {
             return this.preds.get(0).display();
         }
-        return "An uneven amount of the following should be true " + this.preds.stream().map(AbstarctPredicate::display).collect(Collectors.joining(", "));
+        return "An uneven amount of the following should be true {" + this.preds.stream().map(AbstarctPredicate::display).collect(Collectors.joining(", ")) + "} ";
     }
 }

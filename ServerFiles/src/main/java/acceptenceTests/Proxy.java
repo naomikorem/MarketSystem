@@ -7,6 +7,7 @@ import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
+import DomainLayer.Stores.PurchasePolicy.SimplePurchasePolicy;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
@@ -373,11 +374,11 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<AbstractPurchasePolicy> addPolicy (int storeId) {
+    public Response<SimplePurchasePolicy> addPolicy (int storeId, int hour) {
         if (this.real == null) {
             return null;
         }
-        return real.addPolicy(storeId);
+        return real.addPolicy(storeId, hour);
     }
 
     @Override

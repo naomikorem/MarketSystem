@@ -4,6 +4,7 @@ import DomainLayer.Stores.DiscountPolicy.*;
 import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
 import DomainLayer.Stores.PurchasePolicy.AddPurchasePolicy;
 import DomainLayer.Stores.PurchasePolicy.CompositePurchasePolicy;
+import DomainLayer.Stores.PurchasePolicy.SimplePurchasePolicy;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 import Exceptions.LogException;
@@ -405,6 +406,14 @@ public class Store {
             return this.discountPolicy.applyDiscount(sb);
         }
     }
+    public Map<Item, Double> getDiscounts(ShoppingBasket sb) {
+        synchronized (discountLock) {
+            if (this.discountPolicy == null) {
+                return new HashMap<>();
+            }
+            return this.discountPolicy.getDiscounts(sb);
+        }
+    }
 
     public boolean applyPolicy(ShoppingBasket sb) {
         synchronized (purchaseLock) {
@@ -428,5 +437,12 @@ public class Store {
             return new ArrayList<>();
         }
         return this.discountPolicy.getAllDiscountPolicies();
+    }
+
+    public List<SimplePurchasePolicy> getAllPurchasePolicies() {
+        if (this.purchasePolicy == null) {
+            return new ArrayList<>();
+        }
+        return this.purchasePolicy.getAllPurchasePolicies();
     }
 }

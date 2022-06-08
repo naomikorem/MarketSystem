@@ -21,8 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class MarketManagementFacade
-{
+public class MarketManagementFacade {
     public static final String GUEST_DEFAULT_NAME = "guest";
     private final ExternalServicesHandler services;
     private final HistoryController historyController;
@@ -30,12 +29,11 @@ public class MarketManagementFacade
     private final StoreController storeController;
 
 
-    private static class MarketManagementFacadeHolder
-    {
+    private static class MarketManagementFacadeHolder {
         static final MarketManagementFacade INSTANCE = new MarketManagementFacade();
     }
-    private MarketManagementFacade()
-    {
+
+    private MarketManagementFacade() {
         this.services = ExternalServicesHandler.getInstance();
         this.historyController = HistoryController.getInstance();
         this.notificationController = NotificationController.getInstance();
@@ -52,8 +50,7 @@ public class MarketManagementFacade
      * Clear all the data structures
      * @return Response with true
      */
-    public Response<Boolean> clearAll()
-    {
+    public Response<Boolean> clearAll() {
         this.notificationController.clearNotifications();
         this.historyController.clearHistory();
         this.services.clearServices();
@@ -66,8 +63,7 @@ public class MarketManagementFacade
      * After this function, the system will have at least one supply service and one purchase service
      * @return Response - if the initialization succeeded or if there was an error
      */
-    public synchronized void initializeMarket()
-    {
+    public synchronized void initializeMarket() {
         try {
             // check if there is supply service - if not, add the first one
             if (!services.hasPurchaseService()) {
@@ -77,9 +73,7 @@ public class MarketManagementFacade
             if (!services.hasSupplyService()) {
                 services.addExternalSupplyService(AbstractProxy.GOOD_STUB_NAME, "url");
             }
-        }
-        catch (ConnectException ignored)
-        {
+        } catch (ConnectException ignored) {
             // can't reach here
         }
     }
@@ -92,21 +86,18 @@ public class MarketManagementFacade
      * @param supply_service_name Which of the external supply services is selected for this deal.
      * @return Response - if the purchase process succeeded or if there was an error
      */
-    public Response<Boolean> purchaseShoppingCart(User user, String address, String purchase_service_name, String supply_service_name)
-    {
+    public Response<Boolean> purchaseShoppingCart(User user, String address, String purchase_service_name, String supply_service_name) {
         /* TODO:
          * 1. choose payment and shipping service
          * 2. check that every item matches the purchase and discount policy
          * 3. send the price and user details and store details to the purchase service
          * 4. should send money to the store owner here or is it the purchase services problem?
          * */
-        try
-        {
+        try {
             String username = checkUsername(user);
             List<ShoppingBasket> baskets = user.getCartBaskets();
 
-            if (baskets.isEmpty())
-            {
+            if (baskets.isEmpty()) {
                 LogUtility.error("User " + username + " tried to purchase empty shopping cart");
                 return new Response<>("Purchase shopping cart cannot be empty");
             }
@@ -114,15 +105,13 @@ public class MarketManagementFacade
             double price = calculateShoppingCartPrice(baskets);
             List<Map.Entry<Item, Integer>> items_and_amounts = PurchaseProcess.getItemsAndAmounts(baskets);
 
-            if(!this.services.supply(address, items_and_amounts, supply_service_name))
-            {
+            if (!this.services.supply(address, items_and_amounts, supply_service_name)) {
                 LogUtility.error("The user " + username + " couldn't get confirmation from the supply services.");
                 return new Response<>("The purchase process canceled - couldn't contact the supply service.");
             }
 
             // do not move payment up: so we won't charge user before other checks
-            if(!this.services.pay(price, purchase_service_name))
-            {
+            if (!this.services.pay(price, purchase_service_name)) {
                 LogUtility.error("The user " + username + " couldn't pay to the purchase services.");
                 return new Response<>("The purchase process canceled - couldn't contact the purchase service.");
             }
@@ -136,9 +125,8 @@ public class MarketManagementFacade
 
             LogUtility.info("Purchase process of shopping cart that the user " + username + " owned ended successfully");
             return new Response<>(true);
-        }
-        catch (Exception e) {
-           //throw new IllegalArgumentException(e.getMessage());
+        } catch (Exception e) {
+            //throw new IllegalArgumentException(e.getMessage());
             return new Response<>(e.getMessage());
         }
     }
@@ -148,10 +136,19 @@ public class MarketManagementFacade
      * @param baskets The baskets that the user bought
      * @return double represents the price
      */
-    public double calculateShoppingCartPrice(List<ShoppingBasket> baskets)
-    {
+    public double calculateShoppingCartPrice(List<ShoppingBasket> baskets) {
         List<Double> basket_prices = baskets.stream().map(b -> storeController.getShoppingBasketPrice(b)).collect(Collectors.toList());
         return basket_prices.stream().reduce(0.0, (subtotal, element) -> subtotal + element);
+    }
+
+    public Response<Double> calculateShoppingCartPriceResult(List<ShoppingBasket> baskets) {
+        try {
+            List<Double> basket_prices = baskets.stream().map(b -> storeController.getShoppingBasketPrice(b)).collect(Collectors.toList());
+            double price = basket_prices.stream().reduce(0.0, (subtotal, element) -> subtotal + element);
+            return new Response<>(price);
+        } catch (Exception e) {
+        return new Response<>(e.getMessage());
+        }
     }
 
     /***
@@ -159,8 +156,7 @@ public class MarketManagementFacade
      * @param name The name of the new service
      * @return Response - if the addition succeeded or if there was an error
      */
-    public Response<Boolean> addExternalPurchaseService(String name, String url)
-    {
+    public Response<Boolean> addExternalPurchaseService(String name, String url) {
         try {
             this.services.addExternalPurchaseService(name, url);
             return new Response<>(true);
@@ -174,8 +170,7 @@ public class MarketManagementFacade
      * @param name The name of the service to remove
      * @return Response - if the removal succeeded or if there was an error
      */
-    public Response<Boolean> removeExternalPurchaseService(String name)
-    {
+    public Response<Boolean> removeExternalPurchaseService(String name) {
         try {
             this.services.removeExternalPurchaseService(name);
             return new Response<>(true);
@@ -189,8 +184,7 @@ public class MarketManagementFacade
      * @param name The name of the new service
      * @return Response - if the addition succeeded or if there was an error
      */
-    public Response<Boolean> addExternalSupplyService(String name, String url)
-    {
+    public Response<Boolean> addExternalSupplyService(String name, String url) {
         try {
             this.services.addExternalSupplyService(name, url);
             return new Response<>(true);
@@ -204,8 +198,7 @@ public class MarketManagementFacade
      * @param name The name of the service to remove
      * @return Response - if the removal succeeded or if there was an error
      */
-    public Response<Boolean> removeExternalSupplyService(String name)
-    {
+    public Response<Boolean> removeExternalSupplyService(String name) {
         try {
             this.services.removeExternalSupplyService(name);
             return new Response<>(true);
@@ -218,8 +211,7 @@ public class MarketManagementFacade
      * Check if the system contains purchase services - for the tests
      * @return Response - true if there is at least one purchase service, false otherwise
      */
-    public Response<Boolean> hasPurchaseService()
-    {
+    public Response<Boolean> hasPurchaseService() {
         try {
             return new Response<>(this.services.hasPurchaseService());
         } catch (Exception e) {
@@ -231,8 +223,7 @@ public class MarketManagementFacade
      * Check if the system contains supply services - for the tests
      * @return Response - true if there is at least one supply service, false otherwise
      */
-    public Response<Boolean> hasSupplyService()
-    {
+    public Response<Boolean> hasSupplyService() {
         try {
             return new Response<>(this.services.hasSupplyService());
         } catch (Exception e) {
@@ -244,8 +235,7 @@ public class MarketManagementFacade
      * Check if the system contains purchase services with the given name - for the tests
      * @return Response - true if the service was found, false otherwise
      */
-    public Response<Boolean> hasPurchaseService(String purchase_service_name)
-    {
+    public Response<Boolean> hasPurchaseService(String purchase_service_name) {
         try {
             return new Response<>(this.services.hasPurchaseService(purchase_service_name));
         } catch (Exception e) {
@@ -257,8 +247,7 @@ public class MarketManagementFacade
      * Check if the system contains supply services with the given name - for the tests
      * @return Response - true if the service was found, false otherwise
      */
-    public Response<Boolean> hasSupplyService(String supply_service_name)
-    {
+    public Response<Boolean> hasSupplyService(String supply_service_name) {
         try {
             return new Response<>(this.services.hasSupplyService(supply_service_name));
         } catch (Exception e) {
@@ -271,8 +260,7 @@ public class MarketManagementFacade
      * @param username The name of the requested user
      * @return Response of the History of the given user - if found in users_history
      */
-    public Response<History> getPurchaseHistory(String username)
-    {
+    public Response<History> getPurchaseHistory(String username) {
         try {
             return new Response<>(this.historyController.getPurchaseHistory(username));
         } catch (Exception e) {
@@ -285,8 +273,7 @@ public class MarketManagementFacade
      * @param store_id The requested store
      * @return Response of the History of the relevant store, if exists in store_history
      */
-    public Response<History> getStoreHistory(int store_id)
-    {
+    public Response<History> getStoreHistory(int store_id) {
         try {
             return new Response<>(this.historyController.getStoreHistory(store_id));
         } catch (Exception e) {
@@ -294,10 +281,8 @@ public class MarketManagementFacade
         }
     }
 
-    public Response<Boolean> attachObserver(Observer observer)
-    {
-        try
-        {
+    public Response<Boolean> attachObserver(Observer observer) {
+        try {
             this.notificationController.attachObserver(observer);
             return new Response<>(true);
         } catch (Exception e) {
@@ -305,10 +290,8 @@ public class MarketManagementFacade
         }
     }
 
-    public Response<Boolean> detachObserver(Observer observer)
-    {
-        try
-        {
+    public Response<Boolean> detachObserver(Observer observer) {
+        try {
             this.notificationController.detachObserver(observer);
             return new Response<>(true);
         } catch (Exception e) {
@@ -316,10 +299,8 @@ public class MarketManagementFacade
         }
     }
 
-    public Response<Boolean> notifyUsers(List<String> users_to_notify, String message)
-    {
-        try
-        {
+    public Response<Boolean> notifyUsers(List<String> users_to_notify, String message) {
+        try {
             this.notificationController.notifyUsers(users_to_notify, message);
             return new Response<>(true);
         } catch (Exception e) {
@@ -363,20 +344,16 @@ public class MarketManagementFacade
      * @param username The given user
      * @return List of notifications
      */
-    public Response<List<INotification>> getUserNotifications(String username)
-    {
-        try
-        {
+    public Response<List<INotification>> getUserNotifications(String username) {
+        try {
             return new Response<>(this.notificationController.getUserNotifications(username));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
     }
 
-    public Response<List<INotification>> getUserRealTimeNotifications(String username)
-    {
-        try
-        {
+    public Response<List<INotification>> getUserRealTimeNotifications(String username) {
+        try {
             return new Response<>(this.notificationController.getUserRealTimeNotifications(username));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
@@ -388,14 +365,10 @@ public class MarketManagementFacade
      * @param user The given user to check
      * @return If the user is guest - default guest name, if the user is subscribed - his username
      */
-    private String checkUsername(User user)
-    {
-        if (user.isSubscribed())
-        {
+    private String checkUsername(User user) {
+        if (user.isSubscribed()) {
             return user.getName();
-        }
-        else
-        {
+        } else {
             return GUEST_DEFAULT_NAME;
         }
     }
