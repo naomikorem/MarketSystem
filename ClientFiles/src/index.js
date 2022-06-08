@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 
-import App, {connectedPromise, notifications, setIsAdmin, setNotifications, stompClient, notificationCounter, setNotificationCounter} from "./App";
+import App, {connectedPromise, notifications, setIsAdmin, setNotifications, stompClient, newNotificationsCounter, setNewNotificationsCounter} from "./App";
 
 async function init() {
     await connectedPromise;
@@ -17,16 +17,16 @@ async function init() {
     // real time
     stompClient.subscribe('/user/topic/notificationResult', (r) => {
         let res = JSON.parse(r["body"]);
-        notifications.push(res.object.message);
+        notifications.unshift(res.object.message);
         setNotifications(notifications);
-        setNotificationCounter(notifications.length)
+        setNewNotificationsCounter(newNotificationsCounter + 1)
     });
 
     stompClient.subscribe('/user/topic/getNotificationsResult', (r) => {
         let res = JSON.parse(r["body"]);
         if (!res.errorMessage) {
             setNotifications(res.object.map(n => n.message));
-            setNotificationCounter(notifications.length)
+            setNewNotificationsCounter(notifications.length)
         }
     });
 }

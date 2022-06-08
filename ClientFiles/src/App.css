@@ -657,5 +657,7 @@
     margin-bottom: 2%;
 }
 
-
-
+sup{
+    vertical-align: top;
+    float: right;
+}
