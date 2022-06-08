@@ -10,88 +10,117 @@ import Checkbox from "@material-ui/core/Checkbox";
 import ResultLabel from "../Components/ResultLabel";
 import AddItemPopup from "../Components/AddItemPopup";
 import EditItemPopup from "../Components/EditItemPopup";
-
-let [show, setShow] = [undefined, undefined];
-let handleClose = () => undefined;
+import DiscountPredicatePopup from "./DiscountPredicatePopup";
 
 
-class AddDiscountPopup extends Component {
+class EditDiscountPopup extends Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
-            error: "",
-            percentage: "0",
+            changed: false,
+            discount: props.discount,
+            storeId: props.storeId,
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleShow = this.handleShow.bind(this);
-        this.handleAdd = this.handleAdd.bind(this);
+        this.handleClose = this.handleClose.bind(this);
+        this.handleSave = this.handleSave.bind(this);
+        this.handlePredicateResult = this.handlePredicateResult.bind(this);
+    }
+
+    handleClose() {
+        this.props.setShow(false);
+    }
+
+    handleShow() {
+        this.props.setShow(true);
+    }
+
+    handlePredicateResult(r) {
+        let response = JSON.parse(r["body"]);
+        if (!response.errorMessage) {
+            if (response.object.id === this.state.discount.id) {
+                this.state.discount = response.object;
+                this.setState({[this.state.discount]: this.state.discount});
+            }
+        }
     }
 
 
     async componentDidMount() {
-        stompClient.subscribe('/user/topic/addDiscountResult', (r) => {
+        stompClient.subscribe('/user/topic/changeDiscountPercentageResult', (r) => {
             const res = JSON.parse(r["body"]);
             this.state.error = res.errorMessage
             this.setState({[this.state.error]: this.state.error});
             if (!res.errorMessage) {
-                stompClient.send("/app/market/getAllDiscounts", {}, JSON.stringify({"storeId": this.props.storeId}));
-                handleClose()
+                stompClient.send("/app/market/getAllDiscounts", {}, JSON.stringify({"storeId": this.state.storeId}));
             }
         });
 
+        stompClient.subscribe("/user/topic/addItemPredicateToDiscountResult", this.handlePredicateResult);
+        stompClient.subscribe("/user/topic/addCategoryPredicateToDiscountResult", this.handlePredicateResult);
+        stompClient.subscribe("/user/topic/addBasketRequirementPredicateToDiscountResult", this.handlePredicateResult);
         this.mounted = true;
     }
 
     componentWillUnmount() {
+        stompClient.unsubscribe('/user/topic/changeDiscountPercentageResult');
+        stompClient.unsubscribe("/user/topic/addItemPredicateToDiscountResult");
+        stompClient.unsubscribe("/user/topic/addCategoryPredicateToDiscountResult");
+        stompClient.unsubscribe("/user/topic/addBasketRequirementPredicateToDiscountResult");
         this.mounted = false;
     }
 
     handleChange(event) {
+        this.state.changed = true;
+        this.state.discount[event.target.name] = event.target.value;
         this.setState({
-            [event.target.name]: event.target.value //set this.state.value to the input's value
+            [this.state.discount] : this.state.discount
         });
     }
 
 
-    handleAdd() {
-        stompClient.send("/app/market/addDiscount", {}, JSON.stringify({
-            "storeId": this.props.storeId,
-            "percentage": this.state.percentage
-        }));
+    handleSave() {
+        if (this.state.changed) {
+            stompClient.send("/app/market/changeDiscountPercentage", {}, JSON.stringify({
+                "storeId": this.state.storeId,
+                "discountId": this.state.discount.id,
+                "newPercentage": this.state.discount.percentage,
+            }));
+            console.log("here!")
+            console.log(this.state.discount);
+        }
     }
-
-    handleShow() {
-        setShow(true);
-    }
-
 
     render() {
         return (
             <>
-                <Button variant="primary" onClick={this.handleShow} className={"storeEditButton"}>
-                    Add discount
+                <Button variant="primary" onClick={this.handleShow} className={"editDiscountButton"}>
+                    Edit discount
                 </Button>
-                <Modal show={show} onHide={handleClose}>
+                <Modal show={this.props.show}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Add discount</Modal.Title>
+                        <Modal.Title>Edit discount</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-
+                        {this.state.discount.id}
+                        <div>conditions: {this.state.discount.displayString}</div>
                         <TextField type="number" id="outlined-basic" label="Discount percentage" variant="standard"
                                    className={"editItemBar"}
-                                   value={this.state.percentage} onChange={this.handleChange} name="percentage"/>
+                                   value={this.state.discount.percentage} onChange={this.handleChange} name="percentage"/>
 
 
                     </Modal.Body>
                     <Modal.Footer>
                         <ResultLabel text={this.state.error} hadError={this.state.error != null}/>
-                        <Button variant="secondary" onClick={this.handleAdd}>
-                            Add
+                        <DiscountPredicatePopup storeId={this.state.storeId} discount={this.state.discount}/>
+                        <Button variant="primary" onClick={this.handleSave}>
+                            Apply
                         </Button>
-                        <Button variant="secondary" onClick={handleClose}>
+                        <Button variant="secondary" onClick={this.handleClose}>
                             Close
                         </Button>
                     </Modal.Footer>
@@ -103,11 +132,11 @@ class AddDiscountPopup extends Component {
 
 
 function wrapRender(props) {
-    [show, setShow] = useState(false);
-    handleClose = () => setShow(false);
+    let [show, setShow] = useState(false);
     let storeId = props.storeId
+    let discount = props.discount
     return <>
-        <AddDiscountPopup storeId={storeId}/>
+        <EditDiscountPopup storeId={storeId} discount={discount} show={show} setShow={setShow}/>
     </>
 }
 

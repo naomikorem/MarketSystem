@@ -91,7 +91,7 @@ public class NotificationController implements Observable
                 throw new IllegalArgumentException("The user doesn't have notifications.");
             }
             LogUtility.info("Received notifications of " + username);
-            return this.users_messages.get(username);
+            return this.users_messages.remove(username);
         }
     }
 

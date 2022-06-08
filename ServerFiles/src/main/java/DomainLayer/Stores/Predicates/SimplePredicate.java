@@ -36,7 +36,7 @@ public class SimplePredicate extends AbstarctPredicate {
     public SimplePredicate(Category category) {
         this.ipc = (i) -> i.getCategory().equals(category);
         this.bpc = (b) -> true;
-        displayString = String.format("Only for items of category: %s", category);
+        displayString = String.format("Only for items of category %s", category);
     }
 
     public SimplePredicate(BasketPredicateCallback bpc) {

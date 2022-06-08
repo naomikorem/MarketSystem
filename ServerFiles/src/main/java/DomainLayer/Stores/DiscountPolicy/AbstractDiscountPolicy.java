@@ -17,8 +17,13 @@ public abstract class AbstractDiscountPolicy {
     public double applyDiscount(ShoppingBasket sb) {
         return this.applyDiscount(sb, new HashMap<>());
     }
-
     public abstract double applyDiscount(ShoppingBasket sb, Map<Item, Double> discounts);
+
+    public Map<Item, Double> getDiscounts(ShoppingBasket sb){
+        return this.getDiscounts(sb,   new HashMap<>());
+    }
+
+    public abstract  Map<Item, Double> getDiscounts(ShoppingBasket sb, Map<Item, Double> discounts);
 
     public void setId(int id) {
         this.id = id;
@@ -82,5 +87,9 @@ public abstract class AbstractDiscountPolicy {
 
     public synchronized void addXorPredicate(AbstarctPredicate predicate) {
         throw new IllegalArgumentException("This discount policy does not have a predicate");
+    }
+
+    public void setPercentage(double percentage) {
+        throw new IllegalArgumentException("This discount policy does not have a percentage field.");
     }
 }

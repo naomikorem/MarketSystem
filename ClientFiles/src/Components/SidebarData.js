@@ -5,7 +5,8 @@ import {BsShopWindow, BsCardList} from "react-icons/bs";
 import {MdOutlineAddBusiness} from "react-icons/md";
 import {RiFileUserLine} from "react-icons/ri";
 import {VscHistory} from "react-icons/vsc";
-import {FaUserAltSlash, FaStoreSlash} from "react-icons/fa";
+import {FaUserTie, FaUserAltSlash, FaStoreSlash} from "react-icons/fa";
+import {AiOutlineApi} from "react-icons/ai";
 
 export const SidebarData = [
     {
@@ -31,6 +32,13 @@ export const SidebarData = [
         path: '/open-new-store',
         icon: <MdOutlineAddBusiness />,
         cName: 'nav-text'
+    },
+    {
+        title: 'Add External Service',
+        path: '/add-external-service',
+        icon: <AiOutlineApi />,
+        cName: 'nav-text',
+        adminOnly: true,
     },
     {
         title: 'Get User Information',
@@ -64,6 +72,13 @@ export const SidebarData = [
         title: 'Close Store Permanently',
         path: '/close-store-permanently-admin',
         icon: <FaStoreSlash />,
+        cName: 'nav-text',
+        adminOnly: true,
+    },
+    {
+        title: 'Add Admin',
+        path: '/add-admin',
+        icon: <FaUserTie />,
         cName: 'nav-text',
         adminOnly: true,
     }
