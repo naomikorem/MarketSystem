@@ -63,6 +63,7 @@ export let [user, setUser] = [undefined, undefined]
 export let [token, setToken] = [undefined, undefined]
 export let [isAdmin, setIsAdmin] = [undefined, undefined]
 export let [notifications, setNotifications] = [undefined, undefined]
+export let [notificationCounter, setNotificationCounter]  = [undefined, undefined]
 
 
 async function loginByToken() {
@@ -87,6 +88,7 @@ function render() {
   [token, setToken] = useState(sessionStorage.getItem('token'));
   [isAdmin, setIsAdmin] = useState(false);
   [notifications, setNotifications] = useState([]);
+  [notificationCounter, setNotificationCounter] = useState(0);
 
   if (token != null && token !== '') {
     loginByToken();
@@ -148,7 +150,7 @@ function render() {
                 { user != null ?
                     <div>
                       <Link to="my-notifications">
-                        <NotificationBadge count={notifications.length} effect={Effect.SCALE}/>
+                        <NotificationBadge count={notificationCounter} effect={Effect.SCALE}/>
                         <Button className="transparent-button">
                           <IoNotificationsSharp/>
                         </Button>
