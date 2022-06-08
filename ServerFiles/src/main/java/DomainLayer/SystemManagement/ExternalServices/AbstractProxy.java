@@ -22,6 +22,8 @@ public abstract class AbstractProxy
     {
         this.url = url;
 
+        // TODO: add connection to real service
+
         if (this.name.equals(GOOD_STUB_NAME) || this.name.equals(GOOD_STUB_NAME_2))
         {
             return true;

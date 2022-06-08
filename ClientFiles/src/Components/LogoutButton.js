@@ -13,6 +13,8 @@ import {useNavigate} from "react-router-dom";
 
 
 function onLogoutButton(navigate) {
+    sessionStorage.setItem('user', null)
+    sessionStorage.setItem('token', null)
     setUser(null);
     setToken(null);
     stompClient.send("/app/market/logout", {}, {});

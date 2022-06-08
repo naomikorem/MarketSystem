@@ -9,14 +9,15 @@ import ModalPurchase from "./ModalPurchase";
 class Cart extends Component{
     state = {
         error: "",
-        baskets: []
+        baskets: [],
+        price: 0
     };
     mounted = false;
 
     async componentDidMount() {
         await connectedPromise;
         this.mounted = true;
-        stompClient.send("/app/market/cart/getCart", {}, JSON.stringify({}));
+
         stompClient.subscribe('/user/topic/AddItemToCartResult', (r) => {
             if (this.mounted) {
                 let res = JSON.parse(r["body"]);
@@ -49,9 +50,24 @@ class Cart extends Component{
                     this.setState({baskets: []});
                     console.log('res.object.baskets');
                     this.setState({baskets: res.object.baskets});
+                    stompClient.send("/app/market/cart/getPrice", {}, JSON.stringify({}));
                 }
             }
         });
+        stompClient.subscribe('/user/topic/cart/getPriceResult', (r) => {
+            console.log('!!!!!!!!!!');
+            if (this.mounted) {
+                console.log('?????????');
+                let res = JSON.parse(r["body"]);
+                this.state.error = res.errorMessage;
+                this.setState({error: this.state.error});
+                if (!this.state.error) {
+                    this.setState({price: 0});
+                    this.setState({price: res.object});
+                }
+            }
+        });
+        stompClient.send("/app/market/cart/getCart", {}, JSON.stringify({}));
         this.mounted = true;
     }
     componentWillUnmount() {
@@ -78,10 +94,10 @@ class Cart extends Component{
     renderBaskets = () => {
         if(this.state.baskets.length === 0) return <p>Your cart is empty</p>;
         return (
-            <ul style ={{listStyle:'none'}} >
+            <div style ={{listStyle:'none'}} >
                 {this.state.baskets.map(basket =>
                  (basket.items.length !== 0) ?
-                        <li key={"li+"+basket.storeName} className={"basket-grid"}   >
+                        <div key={"li+"+basket.storeName}    >
                             <Basket
                                 key = {basket.Store_id}
                                 store = {basket.Store_id}
@@ -91,18 +107,20 @@ class Cart extends Component{
                                 onIncrement = {this.handleIncrement}
                                 onDecrement = {this.handleDecrement}
                             />
-                        </li> : null
+                        </div> : null
                     )}
-            </ul>)
+            </div>)
     };
     render() {
         return (
             <React.Fragment >
-                <div style={{paddingLeft: "30px"}}>
+                <div>
                     <h1>YOUR CART - {user ? user.userName : "Guest"}</h1>
                     {this.renderBaskets()}
-
-                        <p>{"total: "+ this.getSum()+"   items:"+ this.getAmount()}</p>
+                    <p> {"Subtotal ( "+this.getAmount() + (this.getAmount() ===1 ? " item" : " items")+"): "+ this.getSum() +"₪"} <br />
+                    {"Discount: "+ (this.getSum() - this.state.price)+"₪"} <br />
+                    {"Final price ( "+this.getAmount() + (this.getAmount() ===1 ? " item" : " items")+"): "+ this.state.price +"₪" }
+                    </p>
                     <ModalPurchase onPurchase = {this.handlePurchase}>
                         Purchase
                     </ModalPurchase>

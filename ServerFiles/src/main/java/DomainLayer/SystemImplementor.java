@@ -4,6 +4,7 @@ import DomainLayer.Stores.*;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
+import DomainLayer.Stores.PurchasePolicy.SimplePurchasePolicy;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.MarketManagementFacade;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
@@ -92,7 +93,9 @@ public class SystemImplementor implements SystemInterface {
         Response<User> r = userFacade.login(name, password);
 
         if (!r.hadError()) {
-            this.user.setState(r.getObject().getState());
+            User old = this.user;
+            this.user = r.getObject();
+            setSession(old.getSessionId(), old.getTemplate());
             this.marketManagementFacade.attachObserver(this.user);
         } else {
             return r;
@@ -117,7 +120,7 @@ public class SystemImplementor implements SystemInterface {
         Response<User> r = userFacade.loginUserByToken(token);
 
         if (!r.hadError()) {
-            this.user.setState(r.getObject().getState());
+            this.user = r.getObject();
             this.marketManagementFacade.attachObserver(this.user);
         } else {
             return r;
@@ -512,6 +515,15 @@ public class SystemImplementor implements SystemInterface {
         return this.marketManagementFacade.purchaseShoppingCart(user, address, purchase_service_name, supply_service_name);
 
     }
+    public Response<Double> calculateShoppingCartPriceResult(List<ShoppingBasket> baskets) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        Response<List<ShoppingBasket>> res = getCartBaskets();
+        if(res.hadError())
+            return new Response<>(res.getErrorMessage());
+        return this.marketManagementFacade.calculateShoppingCartPriceResult(res.getObject());
+    }
 
     public Response<Boolean> hasPurchaseService() {
         if (user == null) {
@@ -867,11 +879,18 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.getAllDiscountPolicies(user, storeId);
     }
 
-    public Response<AbstractPurchasePolicy> addPolicy(int storeId) {
+    public Response<List<SimplePurchasePolicy>> getAllPurchasePolicies(int storeId) {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Only logged in users can perform this action.");
         }
-        return storeFacade.addPolicy(user, storeId);
+        return storeFacade.getAllPurchasePolicies(user, storeId);
+    }
+
+    public Response<SimplePurchasePolicy> addPolicy(int storeId, int hour) {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
+        }
+        return storeFacade.addPolicy(user, storeId, hour);
     }
 
     public Response<SimpleDiscountPolicy> addExclusiveDiscount(int storeId, double percentage) {
@@ -881,7 +900,7 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.addExclusiveDiscount(user, storeId, percentage);
     }
 
-    public Response<Boolean> addItemPredicateToDiscount(int storeId, int discountId, String type, int itemId) {
+    public Response<AbstractDiscountPolicy> addItemPredicateToDiscount(int storeId, int discountId, String type, int itemId) {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Only logged in users can perform this action.");
         }
@@ -903,25 +922,32 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.addItemNotAllowedInDatePredicateToPolicy(user, storeId, policyId, type, itemId, date);
     }
 
-    public Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, Calendar date) {
-        if (user == null || !user.isSubscribed()) {
-            return new Response<>("Only logged in users can perform this action.");
-        }
-        return storeFacade.addItemNotAllowedInDatePredicateToPolicy(user, storeId, policyId, type, itemId, date);
-    }
-
-    public Response<Boolean> addCategoryPredicateToDiscount(int storeId, int discountId, String type, String categoryName) {
+    public Response<AbstractDiscountPolicy> addCategoryPredicateToDiscount(int storeId, int discountId, String type, String categoryName) {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Only logged in users can perform this action.");
         }
         return storeFacade.addCategoryPredicateToDiscount(user, storeId, discountId, type, categoryName);
     }
 
-    public Response<Boolean> addBasketRequirementPredicateToDiscount(int storeId, int discountId, String type, double minPrice) {
+    public Response<AbstractDiscountPolicy> addBasketRequirementPredicateToDiscount(int storeId, int discountId, String type, double minPrice) {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Only logged in users can perform this action.");
         }
         return storeFacade.addBasketRequirementPredicateToDiscount(user, storeId, discountId, type, minPrice);
+    }
+
+    public Response<Boolean> changeDiscountPercentage(int storeId, int discountId, double newPercentage) {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
+        }
+        return storeFacade.changeDiscountPercentage(user, storeId, discountId, newPercentage);
+    }
+
+    public Response<Boolean> changePolicyHour(int storeId, int policyId, int newHour, Calendar newDate) {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
+        }
+        return storeFacade.changePolicyHour(user, storeId, policyId, newHour, newDate);
     }
 
     public Response<Double> getCartPrice() {
@@ -937,6 +963,12 @@ public class SystemImplementor implements SystemInterface {
             total += response.getObject();
         }
         return new Response<>(total);
+    }
+    public Response<Map<Item, Double>> getShoppingBasketDiscounts(ShoppingBasket sb) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.getShoppingBasketDiscounts(sb);
     }
 
     public Response<Boolean> getIsLegalToPurchase(int storeId) {

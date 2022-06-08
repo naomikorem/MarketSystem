@@ -119,7 +119,7 @@
     outline: none;
     border-radius: 25px;
     padding: 15px 40px;
-    font-size: 0.8em;
+    font-size: 0.9em;
     font-weight: 500;
 }
 
@@ -189,7 +189,7 @@
 .storeLink {
     color: blue;
     text-decoration: none;
-    font-size: 70%;
+    font-size: 90%;
 }
 
 .store-grid-item {
@@ -219,19 +219,13 @@
     background-color: rgba(255, 255, 255, 0.8);
     border: 1px solid rgba(0, 0, 0, 0.8);
     /*padding: 20px;*/
-    font-size: 13px;
+    font-size: 16px;
     text-align: center;
     margin: 5%;
     border-radius: 15px;
 
   background-color: #a381bc;
   color: #12130f;
-  border: 1px solid rgba(0, 0, 0, 0.8);
-  /*padding: 20px;*/
-  font-size: 13px;
-  text-align: center;
-  margin: 5%;
-  border-radius: 15px;
 }
 
 
@@ -313,6 +307,7 @@
 
 .deleteManagerButton {
     background-color: darkred;
+    margin: 0% 5% 0% 44%;
     width: 16%;
 }
 
@@ -336,7 +331,7 @@
 
 .storeEditButton {
     margin: 2%;
-    width: 30%;
+    width: 50%;
     background: #984ce8;
     outline-color: black;
     border-color: black;
@@ -429,7 +424,7 @@
    touch-action: manipulation;
    white-space: nowrap;
    will-change: box-shadow,transform;
-   font-size: 11px;
+   font-size: 16px;
 }
 
 .button-29:focus {
@@ -446,42 +441,38 @@
     transform: translateY(2px);
 }
 .store-name{
-    padding-left : 5%;
-    padding-top : 10px;
+    padding-left : 8px;
+    padding-top : 8px;
 }
 .basket-grid-item {
-    padding: 5px;
-    font-size: 80%;
+    font-size: 18px;
     text-align: left;
-    margin: 5px;
-    width: 80%;
     height: fit-content;
     border-bottom: 2px solid rgba(98, 77, 105, 0.8);
-    padding-inline: 10px;
-    display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
+    width: 90%;
 }
 
-.basket-grid-item > * :first-child{
-    display: block;
-    margin-left: 5px;
+.basket-grid-item:last-child
+{
+    border-bottom: none;
 }
-
+.td_item{
+    padding: 4px 8px;
+}
 .basket-grid{
     background-color: rgba(155, 122, 164, 0.8);
-    border: 1px solid rgb(104, 80, 155);
-    padding: 5px;
     font-size: 20px;
     text-align: left;
-    margin: 10px;
     border-radius: 15px;
-    width: 700px;
+    width: 100%;
     height: fit-content;
     align-items: center;
-
+    padding: 8px;
+    border-collapse: collapse;
 }
+
 
 .history-buttons{
     margin: 20px;
@@ -569,9 +560,12 @@
      /* CSS */
 .button-6-delete {
     background-color: #c04a4a;
+    color: rgba(0, 0, 0, 0.85);
+
 }
 .button-6 {
     background-color: #FFFFFF;
+    color: rgba(86, 85, 85, 0.85);
 }
 .button-6-delete,
  .button-6 {
@@ -580,16 +574,13 @@
      border-radius: .25rem;
      box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
      box-sizing: border-box;
-     color: rgba(0, 0, 0, 0.85);
      cursor: pointer;
      display: inline-flex;
      font-family: system-ui,-apple-system,system-ui,"Helvetica Neue",Helvetica,Arial,sans-serif;
      font-size: 16px;
      font-weight: 600;
      justify-content: center;
-     line-height: 1.25;
-     height: 38px;
-     padding: calc(.875rem - 1px) calc(1.5rem - 1px);
+     height: 34px;
      position: relative;
      text-decoration: none;
      transition: all 250ms;
@@ -612,6 +603,59 @@
     transform: translateY(-1px);
 }
 
+.discountDescription{
+    width: 100%;
+    color: black;
+    background-color: whitesmoke;
+    border-radius: 5%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    padding-left: 20%;
+}
+
+.deleteDiscountButton {
+    background-color: darkred;
+    width: 40%;
+    margin-left: 18%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+.editDiscountButton {
+    width: 40%;
+    margin-left: 18%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+.policyDescription{
+    width: 100%;
+    color: black;
+    background-color: whitesmoke;
+    border-radius: 5%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    padding-left: 20%;
+}
+
+.deletePolicyButton {
+    background-color: darkred;
+    width: 40%;
+    margin-left: 18%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+.editPolicyButton {
+    width: 40%;
+    margin-left: 18%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
 
 
 

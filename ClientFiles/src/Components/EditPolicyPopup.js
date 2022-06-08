@@ -10,17 +10,17 @@ import Checkbox from "@material-ui/core/Checkbox";
 import ResultLabel from "../Components/ResultLabel";
 import AddItemPopup from "../Components/AddItemPopup";
 import EditItemPopup from "../Components/EditItemPopup";
-import DiscountPredicatePopup from "./DiscountPredicatePopup";
+import PolicyPredicatePopup from "./PolicyPredicatePopup";
 
 
-class EditDiscountPopup extends Component {
+class EditPolicyPopup extends Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
             changed: false,
-            discount: props.discount,
+            policy: props.policy,
             storeId: props.storeId,
         };
 
@@ -42,81 +42,82 @@ class EditDiscountPopup extends Component {
     handlePredicateResult(r) {
         let response = JSON.parse(r["body"]);
         if (!response.errorMessage) {
-            if (response.object.id === this.state.discount.id) {
-                this.state.discount = response.object;
-                this.setState({[this.state.discount]: this.state.discount});
+            if (response.object.id === this.state.policy.id) {
+                this.state.policy = response.object;
+                this.setState({[this.state.policy]: this.state.policy});
             }
         }
     }
 
 
     async componentDidMount() {
-        stompClient.subscribe('/user/topic/changeDiscountPercentageResult', (r) => {
+        stompClient.subscribe('/user/topic/changePolicyResult', (r) => {
             const res = JSON.parse(r["body"]);
             this.state.error = res.errorMessage
             this.setState({[this.state.error]: this.state.error});
             if (!res.errorMessage) {
-                stompClient.send("/app/market/getAllDiscounts", {}, JSON.stringify({"storeId": this.state.storeId}));
+                stompClient.send("/app/market/getAllPurchasePolicies", {}, JSON.stringify({"storeId": this.state.storeId}));
             }
         });
 
-        stompClient.subscribe("/user/topic/addItemPredicateToDiscountResult", this.handlePredicateResult);
-        stompClient.subscribe("/user/topic/addCategoryPredicateToDiscountResult", this.handlePredicateResult);
-        stompClient.subscribe("/user/topic/addBasketRequirementPredicateToDiscountResult", this.handlePredicateResult);
+        stompClient.subscribe("/user/topic/addItemPredicateToPolicyResult", this.handlePredicateResult);
+        stompClient.subscribe("/user/topic/addItemNotAllowedInDatePredicateToPolicyResult", this.handlePredicateResult);
+
         this.mounted = true;
     }
 
     componentWillUnmount() {
-        stompClient.unsubscribe('/user/topic/changeDiscountPercentageResult');
-        stompClient.unsubscribe("/user/topic/addItemPredicateToDiscountResult");
-        stompClient.unsubscribe("/user/topic/addCategoryPredicateToDiscountResult");
-        stompClient.unsubscribe("/user/topic/addBasketRequirementPredicateToDiscountResult");
+        stompClient.unsubscribe('/user/topic/changePolicyResult');
+        stompClient.unsubscribe("/user/topic/addItemPredicateToPolicyResult");
+        stompClient.unsubscribe("/user/topic/addItemNotAllowedInDatePredicateToPolicyResult");
         this.mounted = false;
     }
 
     handleChange(event) {
         this.state.changed = true;
-        this.state.discount[event.target.name] = event.target.value;
+        console.log("handle change notice");
+        console.log(event.target.name);
+        this.state.policy[event.target.name] = event.target.value;
         this.setState({
-            [this.state.discount] : this.state.discount
+            [this.state.policy] : this.state.policy
         });
     }
 
 
     handleSave() {
         if (this.state.changed) {
-            stompClient.send("/app/market/changeDiscountPercentage", {}, JSON.stringify({
+            stompClient.send("/app/market/changePolicy", {}, JSON.stringify({
                 "storeId": this.state.storeId,
-                "discountId": this.state.discount.id,
-                "newPercentage": this.state.discount.percentage,
+                "policyId": this.state.policy.id,
+                "newHour": this.state.policy.hour,
+                "newDate": this.state.policy.date,
             }));
-            console.log("here!")
-            console.log(this.state.discount);
+            console.log("policy check");
+            console.log(this.state.policy);
         }
     }
 
     render() {
         return (
             <>
-                <Button variant="primary" onClick={this.handleShow} className={"editDiscountButton"}>
-                    Edit discount
+                <Button variant="primary" onClick={this.handleShow} className={"editPolicyButton"}>
+                    Edit policy
                 </Button>
                 <Modal show={this.props.show}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Edit discount</Modal.Title>
+                        <Modal.Title>Edit policy</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        {this.state.discount.id}
-                        <div>conditions: {this.state.discount.displayString}</div>
-                        <TextField type="number" id="outlined-basic" label="Discount percentage" variant="standard"
-                                   className={"editItemBar"}
-                                   value={this.state.discount.percentage} onChange={this.handleChange} name="percentage"/>
+                        {this.state.policy.id}
+                        <div>conditions: {this.state.policy.displayString}</div>
+                        <div>Date: {this.state.policy.date}</div>
+                        <div>Hour: {this.state.policy.hour}</div>
 
 
                     </Modal.Body>
                     <Modal.Footer>
                         <ResultLabel text={this.state.error} hadError={this.state.error != null}/>
-                        <DiscountPredicatePopup storeId={this.state.storeId} discount={this.state.discount}/>
+                        <PolicyPredicatePopup storeId={this.state.storeId} policy={this.state.policy}/>
                         <Button variant="primary" onClick={this.handleSave}>
                             Apply
                         </Button>
@@ -134,9 +135,9 @@ class EditDiscountPopup extends Component {
 function wrapRender(props) {
     let [show, setShow] = useState(false);
     let storeId = props.storeId
-    let discount = props.discount
+    let policy = props.policy
     return <>
-        <EditDiscountPopup storeId={storeId} discount={discount} show={show} setShow={setShow}/>
+        <EditPolicyPopup storeId={storeId} policy={policy} show={show} setShow={setShow}/>
     </>
 }
 

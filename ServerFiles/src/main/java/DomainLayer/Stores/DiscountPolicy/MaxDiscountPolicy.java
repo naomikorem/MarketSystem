@@ -11,6 +11,14 @@ import java.util.stream.Collectors;
 public class MaxDiscountPolicy extends CompositeDiscountPolicy {
     @Override
     public double applyDiscount(ShoppingBasket sb, Map<Item, Double> discounts) {
+        return getMax(sb, discounts).applyDiscount(sb, discounts);
+    }
+
+    @Override
+    public Map<Item, Double> getDiscounts(ShoppingBasket sb, Map<Item, Double> discounts) {
+        return getMax(sb, discounts).getDiscounts(sb, discounts);
+    }
+    private  AbstractDiscountPolicy getMax(ShoppingBasket sb, Map<Item, Double> discounts){
         double price = this.discountPolicies.get(0).applyDiscount(sb, new HashMap<>(discounts));
         AbstractDiscountPolicy max = this.discountPolicies.get(0);
         for (int i = 1; i < this.discountPolicies.size(); i++) {
@@ -20,6 +28,6 @@ public class MaxDiscountPolicy extends CompositeDiscountPolicy {
                 max = discountPolicies.get(i);
             }
         }
-        return max.applyDiscount(sb, discounts);
+        return max;
     }
 }

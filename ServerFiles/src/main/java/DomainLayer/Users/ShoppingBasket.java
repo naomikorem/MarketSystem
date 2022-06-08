@@ -53,10 +53,14 @@ public class ShoppingBasket {
     public double calculatePrice(Map<Item, Double> discounts) {
         // 3.1 The system checks that the basket follows the purchase rules of the store's purchase policy.
         double price = 0;
-        for (Map.Entry<Item, Integer> entry : this.items.entrySet()) {
-            price += entry.getKey().getPrice() * entry.getValue() * (1 - discounts.getOrDefault(entry.getKey(), 0.0));
+        for (Item item : this.items.keySet()) {
+            price += calculatePrice(discounts, item);
         }
         return price;
+    }
+
+    public double calculatePrice(Map<Item, Double> discounts, Item item) {
+        return item.getPrice() * amountFromItem(item) * (1 - discounts.getOrDefault(item, 0.0));
     }
 
     public double calculatePrice() {

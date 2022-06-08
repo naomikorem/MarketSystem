@@ -10,24 +10,24 @@ import Checkbox from "@material-ui/core/Checkbox";
 import ResultLabel from "../Components/ResultLabel";
 import AddItemPopup from "../Components/AddItemPopup";
 import EditItemPopup from "../Components/EditItemPopup";
-import AddDiscountPopup from "./AddDiscountPopup";
-import EditDiscountPopup from "./EditDiscountPopup";
+import AddPolicyPopup from "./AddPolicyPopup";
+import EditPolicyPopup from "./EditPolicyPopup";
 
-function removeDiscount(storeId, discountId) {
-    stompClient.send("/app/market/removeDiscount", {}, JSON.stringify({
+function removePolicy(storeId, policyId) {
+    stompClient.send("/app/market/removePolicy", {}, JSON.stringify({
         "storeId": storeId,
-        "discountId": discountId,
+        "policyId": policyId,
     }));
 }
 
-class ManageDiscountsPopup extends Component {
+class ManagePoliciesPopup extends Component {
 
     constructor() {
         super();
 
         this.state = {
             error: "",
-            discounts: [],
+            policies: [],
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -37,22 +37,23 @@ class ManageDiscountsPopup extends Component {
 
 
     async componentDidMount() {
-        stompClient.subscribe('/user/topic/getAllDiscountsResult', (r) => {
+
+        stompClient.subscribe('/user/topic/getAllPurchasePoliciesResult', (r) => {
             const res = JSON.parse(r["body"]);
             this.state.error = res.errorMessage
             this.setState({[this.state.error]: this.state.error});
             if (!res.errorMessage) {
-                this.state.discounts = res.object;
-                this.setState({[this.state.discounts]: this.state.discounts});
+                this.state.policies = res.object;
+                this.setState({[this.state.policies]: this.state.policies});
             }
         });
 
-        stompClient.subscribe('/user/topic/removeDiscountResult', (r) => {
+        stompClient.subscribe('/user/topic/removePolicyResult', (r) => {
             const res = JSON.parse(r["body"]);
             this.state.error = res.errorMessage
             this.setState({[this.state.error]: this.state.error});
             if (!res.errorMessage) {
-                stompClient.send("/app/market/getAllDiscounts", {}, JSON.stringify({"storeId": this.props.storeId}));
+                stompClient.send("/app/market/getAllPurchasePolicies", {}, JSON.stringify({"storeId": this.props.storeId}));
             }
         });
 
@@ -60,8 +61,8 @@ class ManageDiscountsPopup extends Component {
     }
 
     componentWillUnmount() {
-        stompClient.unsubscribe('/user/topic/getAllDiscountsResult');
-        stompClient.unsubscribe('/user/topic/removeDiscountResult');
+        stompClient.unsubscribe('/user/topic/getAllPurchasePoliciesResult');
+        stompClient.unsubscribe('/user/topic/removePolicyResult');
         this.mounted = false;
     }
 
@@ -73,7 +74,7 @@ class ManageDiscountsPopup extends Component {
 
 
     handleShow() {
-        stompClient.send("/app/market/getAllDiscounts", {}, JSON.stringify({"storeId": this.props.storeId}));
+        stompClient.send("/app/market/getAllPurchasePolicies", {}, JSON.stringify({"storeId": this.props.storeId}));
         this.props.setShow(true);
     }
 
@@ -86,26 +87,26 @@ class ManageDiscountsPopup extends Component {
         return (
             <>
                 <Button variant="primary" onClick={this.handleShow} className={"storeEditButton"}>
-                    Manage discounts
+                    Manage policies
                 </Button>
                 <Modal show={this.props.show} onHide={this.handleClose}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Manage discounts</Modal.Title>
+                        <Modal.Title>Manage policies</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
 
-                        {this.state.discounts.map((listitem, index) => (
+                        {this.state.policies.map((listitem, index) => (
 
-                            <div key={index} className={"discountDescription"}>
-                                <label> Discount id: {listitem.id} Discount percentage: {listitem.percentage}</label>
-                                <div><Button className={"deleteDiscountButton"} onClick={() =>
-                                    removeDiscount(this.props.storeId, listitem.id)
+                            <div key={index} className={"policyDescription"}>
+                                <label> Policy id: {listitem.id}</label>
+                                <div><Button className={"deletePolicyButton"} onClick={() =>
+                                    removePolicy(this.props.storeId, listitem.id)
                                 }>Remove</Button></div>
-                                <EditDiscountPopup key={listitem.id} storeId={this.props.storeId} discount={{id: listitem.id, percentage: listitem.percentage, displayString: listitem.displayString}}/>
+                                <EditPolicyPopup key={listitem.id} storeId={this.props.storeId} policy={{id: listitem.id, hour: listitem.hour, date: listitem.date, displayString: listitem.displayString}}/>
                             </div>
                         ))}
 
-                        <AddDiscountPopup storeId={this.props.storeId}/>
+                        <AddPolicyPopup storeId={this.props.storeId}/>
 
                     </Modal.Body>
                     <Modal.Footer>
@@ -125,7 +126,7 @@ function wrapRender(props) {
     let [show, setShow] = useState(false);
     let storeId = props.storeId
     return <>
-        <ManageDiscountsPopup storeId={storeId} show={show} setShow={setShow}/>
+        <ManagePoliciesPopup storeId={storeId} show={show} setShow={setShow}/>
     </>
 }
 
