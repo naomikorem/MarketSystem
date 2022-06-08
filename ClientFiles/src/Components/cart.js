@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import Basket from './basket'
-import {connectedPromise, setUser, stompClient} from "../App";
+import {connectedPromise, setUser, stompClient, user} from "../App";
 import "../App.css" ;
 import basket from "./basket";
 import wrapRender from "./ModalPurchase";
@@ -11,9 +11,11 @@ class Cart extends Component{
         error: "",
         baskets: []
     };
+    mounted = false;
 
     async componentDidMount() {
         await connectedPromise;
+        this.mounted = true;
         stompClient.send("/app/market/cart/getCart", {}, JSON.stringify({}));
         stompClient.subscribe('/user/topic/AddItemToCartResult', (r) => {
             if (this.mounted) {
@@ -37,17 +39,26 @@ class Cart extends Component{
         });
 
         stompClient.subscribe('/user/topic/cart/getCartResult', (r) => {
+            console.log('!!!!!!!!!!');
             if (this.mounted) {
+                console.log('?????????');
                 let res = JSON.parse(r["body"]);
                 this.state.error = res.errorMessage;
                 this.setState({error: this.state.error});
                 if (!this.state.error) {
                     this.setState({baskets: []});
+                    console.log('res.object.baskets');
                     this.setState({baskets: res.object.baskets});
                 }
             }
         });
         this.mounted = true;
+    }
+    componentWillUnmount() {
+        this.mounted = false;
+        stompClient.unsubscribe('/user/topic/cart/getCartResult');
+        stompClient.unsubscribe('/user/topic/removeItemToCartResult');
+        stompClient.unsubscribe('/user/topic/AddItemToCartResult');
     }
 
     handleDelete = (store, item) => {
@@ -88,7 +99,7 @@ class Cart extends Component{
         return (
             <React.Fragment >
                 <div style={{paddingLeft: "30px"}}>
-                    <h1>YOUR CART</h1>
+                    <h1>YOUR CART - {user ? user.userName : "Guest"}</h1>
                     {this.renderBaskets()}
 
                         <p>{"total: "+ this.getSum()+"   items:"+ this.getAmount()}</p>
@@ -112,6 +123,7 @@ class Cart extends Component{
         return this.state.baskets.map(b => b.items.
         map(i => i.amount).reduce((x,y)=> x+y,0)).reduce((x,y)=> x+y,0);
     };
+
 
 }
 
