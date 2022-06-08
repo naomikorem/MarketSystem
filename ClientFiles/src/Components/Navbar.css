@@ -25,7 +25,16 @@
     top: 0;
     left: -100%;
     transition: 850ms;
+    overflow-y: scroll;
 }
+
+::-webkit-scrollbar{
+    width:auto;
+    height: auto;
+}
+
+::-webkit-scrollbar-thumb{background-color: #7b44ec; border-radius: 100px}
+::-webkit-scrollbar-track{background-color: #060b26}
 
 .nav-menu.active {
     z-index: 1;

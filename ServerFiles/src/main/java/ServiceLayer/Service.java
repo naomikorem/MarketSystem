@@ -231,6 +231,12 @@ public class Service {
         return res;
     }
 
+    @MessageMapping("/market/addAdmin")
+    @SendToUser("/topic/addAdminResult")
+    public Response<Boolean> addAdmin(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        return  ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addAdmin((String) map.get("name"));
+    }
+
     @MessageMapping("/market/addExternalPurchaseService")
     @SendToUser("/topic/addExternalServiceResult")
     public Response<Boolean> addExternalPurchaseService(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
