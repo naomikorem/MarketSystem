@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {user} from "../App";
+import {Link} from "react-router-dom";
 
 class UserProfile extends Component {
 
@@ -37,7 +38,9 @@ class UserProfile extends Component {
                         </label>
                     </div>
                     <div className="formField">
-                        <button className="formFieldShoppingCartButton">View Your Shopping Cart</button>
+                        <Link to="/your-cart">
+                            <button className="formFieldShoppingCartButton">View Your Shopping Cart</button>
+                        </Link>
                     </div>
             </div> : null
         );

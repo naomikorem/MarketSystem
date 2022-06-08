@@ -93,7 +93,9 @@ public class SystemImplementor implements SystemInterface {
         Response<User> r = userFacade.login(name, password);
 
         if (!r.hadError()) {
+            User old = this.user;
             this.user = r.getObject();
+            setSession(old.getSessionId(), old.getTemplate());
             this.marketManagementFacade.attachObserver(this.user);
         } else {
             return r;
