@@ -45,3 +45,6 @@ yarn-error.log*
 
 /ClientFiles/node_modules
 /ServerFiles/.idea/libraries
+
+workspace.xml
+Uncommitted_changes_before*
