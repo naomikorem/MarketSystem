@@ -1,0 +1,8 @@
+diff a/ServerFiles/src/main/java/ServiceLayer/DTOs/ItemDTO.java b/ServerFiles/src/main/java/ServiceLayer/DTOs/ItemDTO.java	(rejected hunks)
+@@ -10,6 +10,5 @@
+     public double rate;
+     public int numberOfRatings;
+     public double price;
+-    public int amount;
+     public List<String> keyWords;
+ }
