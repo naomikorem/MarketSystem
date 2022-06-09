@@ -14,7 +14,6 @@ public class NotificationController implements Observable
 {
     public static final String NOTIFICATION_FILE_NAME = "real_time_notifications.txt";
     private Map<String, List<INotification>> users_messages;
-    private Map<String, List<INotification>> real_time_users_messages; // just for check
     private List<Observer> observers;
     private UserController userController;
 
@@ -23,7 +22,6 @@ public class NotificationController implements Observable
     }
     private NotificationController()
     {
-        this.real_time_users_messages = new HashMap<>();
         this.users_messages = new HashMap<>();
         this.userController = UserController.getInstance();
         this.observers = new LinkedList<>();
@@ -52,9 +50,9 @@ public class NotificationController implements Observable
     }
 
     private boolean addRealTimeNotification(Observer user, String msg) {
-        synchronized (this.real_time_users_messages) {
-            user.sendNotification(new Notification(msg));
-        }
+        addNotification(user.getName(), msg);
+        user.sendNotification(new Notification(msg));
+
         return true;
     }
 
@@ -66,15 +64,11 @@ public class NotificationController implements Observable
     {
         synchronized (this.users_messages)
         {
-            synchronized (this.real_time_users_messages)
-            {
-                if(!this.users_messages.containsKey(username) && !this.real_time_users_messages.containsKey(username))
-                    throw new IllegalArgumentException("The user doesn't have notifications.");
+            if(!this.users_messages.containsKey(username))
+                throw new IllegalArgumentException("The user doesn't have notifications.");
 
-                this.users_messages.remove(username);
-                this.real_time_users_messages.remove(username);
-                LogUtility.info("Removed the notifications that where sent to the user " + username);
-            }
+            this.users_messages.remove(username);
+            LogUtility.info("Removed the notifications that where sent to the user " + username);
         }
     }
 
@@ -91,22 +85,7 @@ public class NotificationController implements Observable
                 throw new IllegalArgumentException("The user doesn't have notifications.");
             }
             LogUtility.info("Received notifications of " + username);
-            return this.users_messages.remove(username);
-        }
-    }
-
-    /**
-     * The function will be deleted after adding sockets
-     * */
-    public List<INotification> getUserRealTimeNotifications(String username)
-    {
-        synchronized (this.real_time_users_messages) {
-            if (!this.real_time_users_messages.containsKey(username)) {
-                LogUtility.warn("Tried to receive real time notifications of " + username + " but he doesn't have any notifications.");
-                throw new IllegalArgumentException("The user doesn't have real time notifications.");
-            }
-            LogUtility.info("Received real time notifications of " + username);
-            return this.real_time_users_messages.get(username);
+            return this.users_messages.get(username);
         }
     }
 
@@ -176,7 +155,6 @@ public class NotificationController implements Observable
     public boolean clearNotifications()
     {
         this.users_messages = new ConcurrentHashMap<>();
-        this.real_time_users_messages = new ConcurrentHashMap<>();
         return true;
     }
 }

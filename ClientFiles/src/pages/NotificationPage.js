@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {newNotificationsCounter, notifications, setNewNotificationsCounter} from "../App";
+import {newNotificationsCounter, notifications, setNewNotificationsCounter, stompClient} from "../App";
 
 import {Badge} from "react-bootstrap";
 
@@ -14,6 +14,8 @@ class NotificationPage extends Component {
     }
 
     componentDidMount() {
+        stompClient.send("/app/market/removeNotifications", {}, JSON.stringify({}));
+
         this.state.newCounter = newNotificationsCounter
 
         this.setState({

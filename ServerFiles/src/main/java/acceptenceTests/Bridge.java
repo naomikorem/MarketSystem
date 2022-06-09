@@ -74,7 +74,6 @@ public abstract class Bridge {
 
     // Notifications:
     public abstract Response<List<INotification>> getUserNotifications();
-    public abstract Response<List<INotification>> getUserRealTimeNotifications();
 
     // Use case 6
     public abstract Response<User> getUser(String userName);

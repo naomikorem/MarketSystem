@@ -524,6 +524,12 @@ public class Service {
         return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getUserNotifications();
     }
 
+    @MessageMapping("/market/removeNotifications")
+    @SendToUser("/topic/removeNotificationsResult")
+    public Response<Boolean> removeNotifications(SimpMessageHeaderAccessor headerAccessor) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).removeUserNotifications();
+    }
+
     @MessageMapping("/market/cart/inc")
     @SendToUser("/topic/cart/incResult")
     public Response<ItemDTO> incrementItemInCart(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {

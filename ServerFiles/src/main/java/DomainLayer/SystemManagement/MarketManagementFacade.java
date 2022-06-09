@@ -328,7 +328,7 @@ public class MarketManagementFacade {
      * Remove all the notifications of given user
      * @param username The given user
      */
-    /*public Response<Boolean> removeUserNotifications(String username)
+    public Response<Boolean> removeUserNotifications(String username)
     {
         try
         {
@@ -337,7 +337,7 @@ public class MarketManagementFacade {
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
-    }*/
+    }
 
     /***
      * Receive all the notifications of some user
@@ -347,14 +347,6 @@ public class MarketManagementFacade {
     public Response<List<INotification>> getUserNotifications(String username) {
         try {
             return new Response<>(this.notificationController.getUserNotifications(username));
-        } catch (Exception e) {
-            return new Response<>(e.getMessage());
-        }
-    }
-
-    public Response<List<INotification>> getUserRealTimeNotifications(String username) {
-        try {
-            return new Response<>(this.notificationController.getUserRealTimeNotifications(username));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
