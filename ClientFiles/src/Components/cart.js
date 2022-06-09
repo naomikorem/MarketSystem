@@ -17,7 +17,6 @@ class Cart extends Component{
     async componentDidMount() {
         await connectedPromise;
         this.mounted = true;
-
         stompClient.subscribe('/user/topic/AddItemToCartResult', (r) => {
             if (this.mounted) {
                 let res = JSON.parse(r["body"]);
