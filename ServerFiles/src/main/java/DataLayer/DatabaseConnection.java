@@ -1,6 +1,7 @@
 package DataLayer;
 
 import DataLayer.DALObjects.ItemDAL;
+import DataLayer.DALObjects.UserDAL;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -11,6 +12,7 @@ public class DatabaseConnection {
     private static Configuration getConfiguration() {
         Configuration c = new Configuration().configure("hibernate.cfg.xml");
         c.addAnnotatedClass(ItemDAL.class);
+        c.addAnnotatedClass(UserDAL.class);
         return c;
     }
 
