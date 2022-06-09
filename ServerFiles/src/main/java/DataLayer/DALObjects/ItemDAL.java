@@ -19,7 +19,7 @@ public class ItemDAL {
     private double rate; //each product can be rated by clients
     private int numberOfRatings; // amount of people rated
     private double price;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name="keywords", joinColumns=@JoinColumn(name="itemId"))
     @Column(name="keyword")
     private List<String> keyWords;

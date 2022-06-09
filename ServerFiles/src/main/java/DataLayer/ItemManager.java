@@ -11,7 +11,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class ItemManager {
+public class ItemManager extends DALManager<ItemDAL, Integer> {
+
+    public ItemManager() {
+        super(ItemDAL.class);
+    }
 
     public static void main(String[] args) {
         ItemDAL i = new ItemDAL();
@@ -26,44 +30,8 @@ public class ItemManager {
         i.setCategory(Category.Food);
         i.setPrice(5.99);
         ItemManager im = new ItemManager();
-        im.addItem(i);
-        Object i1 = im.getItem(i.getId());
+        im.addObject(i);
+        Object i1 = im.getObject(i.getId());
         System.out.println(i1);
-    }
-
-    public Integer addItem(ItemDAL item){
-        Session session = DatabaseConnection.getSession();
-        Transaction tx = null;
-        Integer itemID = null;
-
-        try {
-            tx = session.beginTransaction();
-            itemID = (Integer) session.save(item);
-            tx.commit();
-        } catch (HibernateException e) {
-            if (tx!=null) tx.rollback();
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
-        return itemID;
-    }
-
-    public Object getItem(int id) {
-        Session session = DatabaseConnection.getSession();
-        Transaction tx = null;
-
-        try {
-            tx = session.beginTransaction();
-            ItemDAL o = session.get(ItemDAL.class, id);
-            tx.commit();
-            return o;
-        } catch (HibernateException e) {
-            if (tx!=null) tx.rollback();
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
-        return null;
     }
 }
