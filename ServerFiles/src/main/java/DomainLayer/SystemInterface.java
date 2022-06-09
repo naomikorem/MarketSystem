@@ -48,6 +48,9 @@ public interface SystemInterface {
 
     public Response<Boolean> hasSupplyService(String purchase_supply_name);
 
+    public Response<List<String>> getAllExternalSupplyServicesNames();
+
+    public Response<List<String>> getAllExternalPurchaseServicesNames();
 
     public Response<History> getPurchaseHistory();
     public Response<History> getPurchaseHistory(String username);
@@ -105,6 +108,8 @@ public interface SystemInterface {
 
     public Response<List<INotification>> getUserNotifications();
 
+    public Response<Boolean> removeUserNotifications();
+
     public Response<Set<Item>> searchProducts(String productName, String category, List<String> keywords);
 
     public Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating);
@@ -116,8 +121,6 @@ public interface SystemInterface {
 
 
     public Response<Boolean> removeItemFromCart(int storeId, Item item, int amount);
-
-    public Response<List<INotification>> getUserRealTimeNotifications();
 
     public Response<SimpleDiscountPolicy> addDiscount(int storeId, double percentage);
 

@@ -555,6 +555,22 @@ public class SystemImplementor implements SystemInterface {
         return this.marketManagementFacade.hasSupplyService(purchase_supply_name);
     }
 
+    @Override
+    public Response<List<String>> getAllExternalSupplyServicesNames() {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return this.marketManagementFacade.getAllExternalSupplyServicesNames();
+    }
+
+    @Override
+    public Response<List<String>> getAllExternalPurchaseServicesNames() {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return this.marketManagementFacade.getAllExternalPurchaseServicesNames();
+    }
+
 
     public Response<History> getPurchaseHistory()
     {
@@ -740,16 +756,6 @@ public class SystemImplementor implements SystemInterface {
         }
     }
 
-    @Override
-    public Response<List<INotification>> getUserRealTimeNotifications()
-    {
-        if (user == null || !user.isSubscribed()) {
-            return new Response<>("Only logged in users can perform this action.");
-        }
-        return this.marketManagementFacade.getUserRealTimeNotifications(user.getName());
-    }
-
-
     private Response<Boolean> isLoggedInOwnerCheck(int store_id) {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
@@ -815,6 +821,14 @@ public class SystemImplementor implements SystemInterface {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
         return storeFacade.getManagersPermissions(user, storeId, managerName);
+    }
+
+    @Override
+    public Response<Boolean> removeUserNotifications() {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
+        }
+        return this.marketManagementFacade.removeUserNotifications(user.getName());
     }
 
     @Override

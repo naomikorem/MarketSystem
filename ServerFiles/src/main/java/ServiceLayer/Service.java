@@ -240,15 +240,25 @@ public class Service {
     @MessageMapping("/market/addExternalPurchaseService")
     @SendToUser("/topic/addExternalServiceResult")
     public Response<Boolean> addExternalPurchaseService(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
-        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addExternalPurchaseService(map.get("name"), map.get("address"));
-        return res;
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addExternalPurchaseService(map.get("name"), map.get("address"));
     }
 
     @MessageMapping("/market/addExternalSupplyService")
     @SendToUser("/topic/addExternalServiceResult")
     public Response<Boolean> addExternalSupplyService(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
-        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addExternalSupplyService(map.get("name"), map.get("address"));
-        return res;
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addExternalSupplyService(map.get("name"), map.get("address"));
+    }
+
+    @MessageMapping("/market/getAllExternalSupplyServicesNames")
+    @SendToUser("/topic/getAllExternalSupplyServicesNamesResult")
+    public Response<List<String>> getAllExternalSupplyServicesNames(SimpMessageHeaderAccessor headerAccessor) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getAllExternalSupplyServicesNames();
+    }
+
+    @MessageMapping("/market/getAllExternalPurchaseServicesNames")
+    @SendToUser("/topic/getAllExternalPurchaseServicesNamesResult")
+    public Response<List<String>> getAllExternalPurchaseServicesNames(SimpMessageHeaderAccessor headerAccessor) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getAllExternalPurchaseServicesNames();
     }
 
     private HistoryDTO convertToHistoryDTO1(History history) {
@@ -522,6 +532,12 @@ public class Service {
     @SendToUser("/topic/getNotificationsResult")
     public Response<List<INotification>> getNotifications(SimpMessageHeaderAccessor headerAccessor) {
         return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getUserNotifications();
+    }
+
+    @MessageMapping("/market/removeNotifications")
+    @SendToUser("/topic/removeNotificationsResult")
+    public Response<Boolean> removeNotifications(SimpMessageHeaderAccessor headerAccessor) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).removeUserNotifications();
     }
 
     @MessageMapping("/market/cart/inc")
