@@ -1,9 +1,8 @@
 package DataLayer.DALObjects;
 
-import DomainLayer.Stores.Category;
+import DataLayer.ServiceType;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "Services")
@@ -12,9 +11,13 @@ public class ServiceDAL
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "Name")
     private String name;
+    @Column(name = "Url")
     private String url;
-    private int service_type;
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "Type")
+    private ServiceType service_type;
 
 
     public int getId() {
@@ -41,11 +44,11 @@ public class ServiceDAL
         this.url = url;
     }
 
-    public int getServiceType() {
+    public ServiceType getServiceType() {
         return service_type;
     }
 
-    public void setServiceType(int service_type) {
+    public void setServiceType(ServiceType service_type) {
         this.service_type = service_type;
     }
 }
