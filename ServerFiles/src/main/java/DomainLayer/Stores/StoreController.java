@@ -542,7 +542,7 @@ public class StoreController {
         if (!owner.isSubscribed() || !s.canManageDiscounts(owner)) {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
-        SimplePredicate sp = new SimplePredicate((i) -> true, (b) -> b.calculatePrice() >= minPrice);
+        SimplePredicate sp = new SimplePredicate(0, minPrice, null, 0, null, SimplePredicate.PredicateType.Basket);
         sp.setDisplayString(String.format("Basket has to cost at least %s", minPrice));
         return addPredicateToDiscount(owner, s, discountId, PredicateEnum.valueOf(type), sp);
     }
@@ -561,7 +561,8 @@ public class StoreController {
         if (!owner.isSubscribed() || !s.canManagePurchasePolicy(owner)) {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
-        SimplePredicate sp = new SimplePredicate((i) -> true, (b) -> b.calculatePrice() >= minPrice);
+        SimplePredicate sp = new SimplePredicate(0, minPrice, null, 0, null, SimplePredicate.PredicateType.Basket);
+        sp.setDisplayString(String.format("Basket has to cost at least %s", minPrice));
         addPredicateToPolicy(owner, s, policyId, PredicateEnum.valueOf(type), sp);
     }
 /*
