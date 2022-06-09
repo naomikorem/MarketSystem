@@ -23,6 +23,8 @@ public class Item {
         return NEXT_ITEM_ID++;
     }
 
+    public Item() {}
+
     public Item(String product_name, Category category, double price) {
         checkParams(product_name, price);
         this.id = getNextItemId();
@@ -124,5 +126,29 @@ public class Item {
 
     public int getId() {
         return this.id;
+    }
+
+    public String getProduct_name() {
+        return product_name;
+    }
+
+    public void setProduct_name(String product_name) {
+        this.product_name = product_name;
+    }
+
+    public void setRate(double rate) {
+        this.rate = rate;
+    }
+
+    public int getNumberOfRatings() {
+        return numberOfRatings;
+    }
+
+    public void setNumberOfRatings(int numberOfRatings) {
+        this.numberOfRatings = numberOfRatings;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

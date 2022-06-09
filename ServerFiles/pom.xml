@@ -170,6 +170,19 @@
             <version>8.0.29</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>ejb3-persistence</artifactId>
+            <version>1.0.2.GA</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate.common</groupId>
+            <artifactId>hibernate-commons-annotations</artifactId>
+            <version>5.0.4.Final</version>
+        </dependency>
+
+
     </dependencies>
     <build>
         <plugins>
