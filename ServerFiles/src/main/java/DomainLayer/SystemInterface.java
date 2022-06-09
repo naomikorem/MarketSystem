@@ -48,6 +48,9 @@ public interface SystemInterface {
 
     public Response<Boolean> hasSupplyService(String purchase_supply_name);
 
+    public Response<List<String>> getAllExternalSupplyServicesNames();
+
+    public Response<List<String>> getAllExternalPurchaseServicesNames();
 
     public Response<History> getPurchaseHistory();
     public Response<History> getPurchaseHistory(String username);

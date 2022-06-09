@@ -555,6 +555,22 @@ public class SystemImplementor implements SystemInterface {
         return this.marketManagementFacade.hasSupplyService(purchase_supply_name);
     }
 
+    @Override
+    public Response<List<String>> getAllExternalSupplyServicesNames() {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return this.marketManagementFacade.getAllExternalSupplyServicesNames();
+    }
+
+    @Override
+    public Response<List<String>> getAllExternalPurchaseServicesNames() {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return this.marketManagementFacade.getAllExternalPurchaseServicesNames();
+    }
+
 
     public Response<History> getPurchaseHistory()
     {

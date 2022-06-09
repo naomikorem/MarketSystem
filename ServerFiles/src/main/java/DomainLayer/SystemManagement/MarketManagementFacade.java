@@ -255,6 +255,24 @@ public class MarketManagementFacade {
         }
     }
 
+    public Response<List<String>> getAllExternalSupplyServicesNames()
+    {
+        try {
+            return new Response<>(this.services.getAllExternalSupplyServicesNames());
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<List<String>> getAllExternalPurchaseServicesNames()
+    {
+        try {
+            return new Response<>(this.services.getAllExternalPurchaseServicesNames());
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
     /***
      * Receive the purchase history of a subscribed user.
      * @param username The name of the requested user

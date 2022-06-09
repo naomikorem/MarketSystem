@@ -113,6 +113,16 @@ public class ExternalServicesHandler
         return supplyProxyController.hasService(supply_service_name);
     }
 
+    public List<String> getAllExternalSupplyServicesNames()
+    {
+        return supplyProxyController.getAllExternalServicesNames();
+    }
+
+    public List<String> getAllExternalPurchaseServicesNames()
+    {
+        return purchaseProxyController.getAllExternalServicesNames();
+    }
+
     /***
      * Use the given purchase service name and the user's details to pay the requested amount
      * @param price The amount to pay
