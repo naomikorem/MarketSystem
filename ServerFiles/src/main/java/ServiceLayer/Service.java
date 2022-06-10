@@ -39,7 +39,7 @@ public class Service {
 
     public Service() {
         super();
-        MarketManagementFacade.getInstance().initializeMarket();
+        //MarketManagementFacade.getInstance().initializeMarket();
     }
 
     @MessageMapping("/market/login")

@@ -9,6 +9,7 @@ import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.HistoryManagement.HistoryController;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.User;
+import DomainLayer.Users.UserController;
 import ServiceLayer.DTOs.PaymentParamsDTO;
 import ServiceLayer.DTOs.SupplyParamsDTO;
 import org.junit.Before;
@@ -60,6 +61,9 @@ public class NotificationsTests extends AbstractTest
 
         //bridge.initializeMarket();
         bridge.enter();
+
+        addStubs();
+
         bridge.register("user111@gmail.com", username1, "first","last","password");
         bridge.register("user222@gmail.com", store1_owner_username, "first","last","password");
         bridge.register("user223@gmail.com", store2_owner_username, "first","last","password");

@@ -60,6 +60,7 @@ public class PurchaseHistoryTests extends AbstractTest
                 "777777");
 
         bridge.enter();
+        addStubs();
         bridge.register("user111@gmail.com", regular_username1,"first","last", "password");
         bridge.register("user112@gmail.com", regular_username2,"first","last", "password");
         bridge.register("user222@gmail.com", store1_owner_username, "first","last","password");
