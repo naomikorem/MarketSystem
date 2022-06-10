@@ -86,15 +86,15 @@ class EditPolicyPopup extends Component {
 
     handleSave() {
 
-            stompClient.send("/app/market/changePolicy", {}, JSON.stringify({
-                "storeId": this.state.storeId,
-                "policyId": this.state.policy.id,
-                "newHour": this.state.policy.hour,
-                "newDate": this.state.policy.date,
-            }));
-            //this.state.policy.hour = this.state.hour;
-            console.log("policy check");
-            console.log(this.state.policy);
+        stompClient.send("/app/market/changePolicy", {}, JSON.stringify({
+            "storeId": this.state.storeId,
+            "policyId": this.state.policy.id,
+            "newHour": this.state.policy.hour,
+            "newDate": this.state.policy.date,
+        }));
+        //this.state.policy.hour = this.state.hour;
+        console.log("policy check");
+        console.log(this.state.policy);
 
     }
 
