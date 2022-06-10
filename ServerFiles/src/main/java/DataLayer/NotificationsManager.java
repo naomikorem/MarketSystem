@@ -14,6 +14,8 @@ import java.util.List;
 
 public class NotificationsManager /* extends DALManager<NotificationDAL, String>*/
 {
+    // TODO: take care of implementation and extend
+    // add clear table function
     public NotificationsManager() {
        // super(NotificationDAL.class);
     }

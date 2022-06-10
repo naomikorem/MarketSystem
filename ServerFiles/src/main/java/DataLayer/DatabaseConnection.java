@@ -16,6 +16,7 @@ public class DatabaseConnection {
         c.addAnnotatedClass(ShoppingBasketDAL.class);
         c.addAnnotatedClass(NotificationsKey.class);
         c.addAnnotatedClass(NotificationDAL.class);
+        c.addAnnotatedClass(HistoryItemDAL.class);
 
         return c;
     }
