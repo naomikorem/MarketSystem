@@ -318,9 +318,9 @@ public class StoreFacade {
         }
     }
 
-    public Response<SimplePurchasePolicy> addPolicy(User u, int storeId, int hour) {
+    public Response<SimplePurchasePolicy> addPolicy(User u, int storeId, int hour, Calendar date) {
         try {
-            return new Response<>(storeController.addPolicy(u, storeId, hour));
+            return new Response<>(storeController.addPolicy(u, storeId, hour, date));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
@@ -385,19 +385,17 @@ public class StoreFacade {
         }
     }
 
-    public Response<Boolean> addItemPredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, int hour) {
+    public Response<AbstractPurchasePolicy> addItemPredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, int hour) {
         try {
-            storeController.addItemPredicateToPolicy(owner, storeId, policyId, type, itemId,hour);
-            return new Response<>(true);
+            return new Response<>(storeController.addItemPredicateToPolicy(owner, storeId, policyId, type, itemId,hour));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
     }
 
-    public Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, Calendar date) {
+    public Response<AbstractPurchasePolicy> addItemNotAllowedInDatePredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, Calendar date) {
         try {
-            storeController.addItemNotAllowedInDatePredicateToPolicy(owner, storeId, policyId, type, itemId,date);
-            return new Response<>(true);
+            return new Response<>(storeController.addItemNotAllowedInDatePredicateToPolicy(owner, storeId, policyId, type, itemId,date));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }

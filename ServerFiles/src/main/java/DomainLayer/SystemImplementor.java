@@ -494,6 +494,13 @@ public class SystemImplementor implements SystemInterface {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
 
+        for(ShoppingBasket b : user.getCartBaskets()) {
+            Response<Boolean> isPolicyAllowed = storeFacade.getShoppingBasketPurchesPolicy(b);
+            if(isPolicyAllowed.hadError() || !isPolicyAllowed.getObject()) {
+                return new Response<>("policy not allowed");
+            }
+        }
+
 
         /*List<Integer> stores_ids = buying_user.getCartBaskets().stream().map(ShoppingBasket::getStoreId).collect(Collectors.toList());
         List<Response<Store>> stores_response = stores_ids.stream().map(id -> storeFacade.getStore(id)).collect(Collectors.toList());
@@ -900,11 +907,11 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.getAllPurchasePolicies(user, storeId);
     }
 
-    public Response<SimplePurchasePolicy> addPolicy(int storeId, int hour) {
+    public Response<SimplePurchasePolicy> addPolicy(int storeId, int hour, Calendar date) {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Only logged in users can perform this action.");
         }
-        return storeFacade.addPolicy(user, storeId, hour);
+        return storeFacade.addPolicy(user, storeId, hour, date);
     }
 
     public Response<SimpleDiscountPolicy> addExclusiveDiscount(int storeId, double percentage) {
@@ -921,7 +928,7 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.addItemPredicateToDiscount(user, storeId, discountId, type, itemId);
     }
 
-    public Response<Boolean> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour) {
+    public Response<AbstractPurchasePolicy> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour) {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Only logged in users can perform this action.");
         }
@@ -929,7 +936,7 @@ public class SystemImplementor implements SystemInterface {
     }
 
     @Override
-    public Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date) {
+    public Response<AbstractPurchasePolicy> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date) {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Only logged in users can perform this action.");
         }

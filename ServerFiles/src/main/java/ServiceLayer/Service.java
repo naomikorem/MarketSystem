@@ -6,6 +6,7 @@ import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
+import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
 import DomainLayer.Stores.PurchasePolicy.SimplePurchasePolicy;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemImplementor;
@@ -23,6 +24,9 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -587,7 +591,16 @@ public class Service {
     @MessageMapping("/market/addPolicy")
     @SendToUser("/topic/addPolicyResult")
     public Response<PolicyDTO> addPolicy(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
-        Response<SimplePurchasePolicy> sdp = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addPolicy((Integer) map.get("storeId"), Integer.parseInt((String) map.get("hour")));
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal  = Calendar.getInstance();
+        try {
+            cal.setTime(df.parse((String)map.get("date")));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        Response<SimplePurchasePolicy> sdp = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addPolicy((Integer) map.get("storeId"), Integer.parseInt((String) map.get("hour")), cal);
         if (sdp.hadError()) {
             return new Response<>(sdp.getErrorMessage());
         }
@@ -671,7 +684,14 @@ public class Service {
     @MessageMapping("/market/changePolicy")
     @SendToUser("/topic/changePolicyResult")
     public Response<Boolean> changePolicy(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
-        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).changePolicyHour((Integer) map.get("storeId"), (Integer) map.get("policyId"), Integer.parseInt((String) map.get("hour")), (Calendar) map.get("date"));
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal  = Calendar.getInstance();
+        try {
+            cal.setTime(df.parse((String)map.get("newDate")));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).changePolicyHour((Integer) map.get("storeId"), (Integer) map.get("policyId"), Integer.parseInt((String) map.get("newHour")), cal);
         if (res.hadError()) {
             return new Response<>(res.getErrorMessage());
         }
@@ -697,8 +717,15 @@ public class Service {
 
     @MessageMapping("/market/addItemNotAllowedInDatePredicateToPolicy")
     @SendToUser("/topic/addItemNotAllowedInDatePredicateToPolicyResult")
-    public Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
-        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemNotAllowedInDatePredicateToPolicy((Integer) map.get("storeId"), (Integer) map.get("policyId"), (String) map.get("type") ,(Integer) map.get("itemId"), (Calendar) map.get("date"));
+    public Response<AbstractPurchasePolicy> addItemNotAllowedInDatePredicateToPolicy(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal  = Calendar.getInstance();
+        try {
+            cal.setTime(df.parse((String)map.get("date")));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Response<AbstractPurchasePolicy> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemNotAllowedInDatePredicateToPolicy((Integer) map.get("storeId"), (Integer) map.get("policyId"), (String) map.get("policyType") ,Integer.parseInt((String)map.get("itemId")), cal);
         if (res.hadError()) {
             return new Response<>(res.getErrorMessage());
         }
@@ -707,8 +734,8 @@ public class Service {
 
     @MessageMapping("/market/addItemPredicateToPolicy")
     @SendToUser("/topic/addItemPredicateToPolicyResult")
-    public Response<Boolean> addItemPredicateToPolicy(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
-        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemPredicateToPolicy((Integer) map.get("storeId"), (Integer) map.get("policyId"), (String) map.get("type") ,(Integer) map.get("itemId"), (Integer) map.get("hour"));
+    public Response<AbstractPurchasePolicy> addItemPredicateToPolicy(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<AbstractPurchasePolicy> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemPredicateToPolicy((Integer) map.get("storeId"), (Integer) map.get("policyId"), (String) map.get("type") ,(Integer) map.get("itemId"), (Integer) map.get("hour"));
         if (res.hadError()) {
             return new Response<>(res.getErrorMessage());
         }
