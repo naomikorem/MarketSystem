@@ -1,9 +1,6 @@
 package DataLayer;
 
-import DataLayer.DALObjects.ItemDAL;
-import DataLayer.DALObjects.ServiceDAL;
-import DataLayer.DALObjects.ShoppingBasketDAL;
-import DataLayer.DALObjects.UserDAL;
+import DataLayer.DALObjects.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -17,6 +14,9 @@ public class DatabaseConnection {
         c.addAnnotatedClass(UserDAL.class);
         c.addAnnotatedClass(ServiceDAL.class);
         c.addAnnotatedClass(ShoppingBasketDAL.class);
+        c.addAnnotatedClass(NotificationsKey.class);
+        c.addAnnotatedClass(NotificationDAL.class);
+
         return c;
     }
 
