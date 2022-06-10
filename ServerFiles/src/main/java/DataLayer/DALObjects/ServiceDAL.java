@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class ServiceDAL implements DALObject<Integer>
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
     @Column(name = "Name")
     private String name;
