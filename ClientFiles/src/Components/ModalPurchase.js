@@ -1,36 +1,38 @@
 import React, {Component, useState} from "react";
-import {useParams} from "react-router-dom";
 import {stompClient, connectedPromise} from "../App";
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import TextField from "@material-ui/core/TextField";
-import Checkbox from "@material-ui/core/Checkbox";
-import Select from "@material-ui/core/Select";
-import InputLabel from "@material-ui/core/InputLabel";
 import ResultLabel from "../Components/ResultLabel";
-import {categories} from "../Shared/Shared";
+
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+
 
 let [show, setShow] = [undefined, undefined];
 let handleClose = () => undefined;
 
 class ModalPurchase extends Component {
-
     constructor() {
         super();
         this.state = {
             message: "",
             hadError: false,
             address: "",
-            purchaseService: "",
-            supplyService: "",
+            chosenPurchaseService: "",
+            chosenSupplyService: "",
+            purchaseServiceNames: [],
+            supplyServiceNames: []
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleShow = this.handleShow.bind(this);
         this.handleSave = this.handleSave.bind(this);
     }
-
 
     async componentDidMount() {
         await connectedPromise;
@@ -45,6 +47,73 @@ class ModalPurchase extends Component {
                 handleClose();
             }
         });
+
+        /*const updateServicesNames = (names_list, r) => {
+            const res = JSON.parse(r["body"]);
+
+            this.state.message  = res.errorMessage ? res.errorMessage : "";
+            this.state.hadError = res.errorMessage !== null;
+            this.setState({[this.state.error]: this.state.error, [this.state.message]: this.state.message});
+
+            if (!res.errorMessage) {
+                names_list = res.object;
+                this.setState({[names_list]: names_list});
+                console.log("done");
+                console.log(names_list);
+                console.log(this.state.purchaseServiceNames);
+                console.log(this.state.supplyServiceNames);
+            }
+        }*/
+
+        stompClient.subscribe('/user/topic/getAllExternalPurchaseServicesNamesResult', (r) => {
+            /*updateServicesNames(this.state.purchaseServiceNames, r);
+
+            console.log(this.state.purchaseServiceNames);*/
+
+            const res = JSON.parse(r["body"]);
+
+            this.state.message  = res.errorMessage ? res.errorMessage : "";
+            this.state.hadError = res.errorMessage !== null;
+            this.setState({[this.state.error]: this.state.error, [this.state.message]: this.state.message});
+
+            if (!res.errorMessage) {
+                this.state.purchaseServiceNames = res.object;
+                this.setState({[this.state.purchaseServiceNames]: this.state.purchaseServiceNames});
+                //
+                // if (this.state.purchaseServiceNames.length > 0)
+                // {
+                //     this.state.chosenPurchaseService = this.state.purchaseServiceNames[0];
+                //     this.setState({[this.state.chosenPurchaseService]: this.state.chosenPurchaseService});
+                //
+                // }
+            }
+        });
+
+        stompClient.subscribe('/user/topic/getAllExternalSupplyServicesNamesResult', (r) => {
+            /*updateServicesNames(this.state.supplyServiceNames, r);
+
+            console.log(this.state.supplyServiceNames);*/
+
+            const res = JSON.parse(r["body"]);
+
+            this.state.message  = res.errorMessage ? res.errorMessage : "";
+            this.state.hadError = res.errorMessage !== null;
+            this.setState({[this.state.error]: this.state.error, [this.state.message]: this.state.message});
+
+            if (!res.errorMessage) {
+                this.state.supplyServiceNames = res.object;
+                this.setState({[this.state.supplyServiceNames]: this.state.supplyServiceNames});
+
+                // if (this.state.supplyServiceNames.length > 0)
+                // {
+                //     this.state.chosenSupplyService = this.state.supplyServiceNames[0];
+                //     this.setState({[this.state.chosenSupplyService]: this.state.chosenSupplyService});
+                // }
+            }
+        });
+
+        stompClient.send("/app/market/getAllExternalPurchaseServicesNames", {}, {});
+        stompClient.send("/app/market/getAllExternalSupplyServicesNames", {}, {});
 
         this.mounted = true;
     }
@@ -64,8 +133,8 @@ class ModalPurchase extends Component {
     handleSave() {
         stompClient.send("/app/market/purchase", {}, JSON.stringify({
             "address": this.state.address,
-            "p_service": this.state.purchaseService,
-            "s_service": this.state.supplyService
+            "p_service": this.state.chosenPurchaseService,
+            "s_service": this.state.chosenSupplyService
         }));
     }
 
@@ -85,12 +154,40 @@ class ModalPurchase extends Component {
                         <Modal.Title>Purchase</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <TextField className="addItemField" label="Address" variant="filled"
-                                   value={this.state.address} onChange={this.handleChange} name="address"/>
-                        <TextField className="addItemField" label="Purchase Service" variant="filled"
-                                   value={this.state.purchaseService} onChange={this.handleChange} name="purchaseService"/>
-                        <TextField className="addItemField" label="Supply Service" variant="filled"
-                                   value={this.state.supplyService} onChange={this.handleChange} name="supplyService"/>
+                        <div className={"purchase-margin"}>
+                            <TextField className="addItemField" label="Address" variant="filled"
+                                       value={this.state.address} onChange={this.handleChange} name="address"/>
+                        </div>
+                        <div className={"purchase-margin"}>
+                            <Box sx={{ minWidth: 120 }}>
+                                <FormControl fullWidth variant="filled">
+                                    <InputLabel id="demo-simple-select-label">Choose Purchase Service</InputLabel>
+                                    <Select label="Choose Purchase Service"
+                                            name="chosenPurchaseService"
+                                            value={this.state.chosenPurchaseService}
+                                            variant="filled"
+                                            className={"selectItemBarPurchase"}
+                                            onChange={this.handleChange}>
+                                        {this.state.purchaseServiceNames.map((s, i) => <MenuItem key={i} value={s}>{s}</MenuItem>)}
+                                    </Select>
+                                </FormControl>
+                            </Box>
+                        </div>
+                        <div className={"purchase-margin"}>
+                            <Box sx={{ minWidth: 120 }}>
+                                <FormControl fullWidth variant="filled">
+                                    <InputLabel id="demo-simple-select-label">Choose Supply Service</InputLabel>
+                                    <Select label="Choose Supply Service"
+                                            name="chosenSupplyService"
+                                            value={this.state.chosenSupplyService}
+                                            variant="filled"
+                                            className={"selectItemBarPurchase"}
+                                            onChange={this.handleChange}>
+                                        {this.state.supplyServiceNames.map((s, i) => <MenuItem key={i} value={s}>{s}</MenuItem>)}
+                                    </Select>
+                                </FormControl>
+                            </Box>
+                        </div>
                     </Modal.Body>
                     <Modal.Footer>
                         <ResultLabel text={this.state.message} hadError={this.state.hadError}/>

@@ -39,15 +39,12 @@ class Cart extends Component{
         });
 
         stompClient.subscribe('/user/topic/cart/getCartResult', (r) => {
-            console.log('!!!!!!!!!!');
             if (this.mounted) {
-                console.log('?????????');
                 let res = JSON.parse(r["body"]);
                 this.state.error = res.errorMessage;
                 this.setState({error: this.state.error});
                 if (!this.state.error) {
                     this.setState({baskets: []});
-                    console.log('res.object.baskets');
                     this.setState({baskets: res.object.baskets});
                     stompClient.send("/app/market/cart/getPrice", {}, JSON.stringify({}));
                 }

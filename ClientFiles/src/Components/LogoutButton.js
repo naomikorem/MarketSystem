@@ -7,7 +7,7 @@ import {
     setUser,
     setToken,
     notifications,
-    setNotifications
+    setNotifications, setNewNotificationsCounter
 } from "../App";
 import {useNavigate} from "react-router-dom";
 
@@ -19,6 +19,7 @@ function onLogoutButton(navigate) {
     setToken(null);
     stompClient.send("/app/market/logout", {}, {});
     setNotifications([]);
+    setNewNotificationsCounter(0);
     navigate('/home');
 }
 

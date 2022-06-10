@@ -562,7 +562,6 @@ public class StoreController {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
         SimplePredicate sp = new SimplePredicate(0, minPrice, null, 0, null, SimplePredicate.PredicateType.Basket);
-        sp.setDisplayString(String.format("Basket has to cost at least %s", minPrice));
         addPredicateToPolicy(owner, s, policyId, PredicateEnum.valueOf(type), sp);
     }
 /*

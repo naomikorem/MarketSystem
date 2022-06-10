@@ -5,6 +5,7 @@ import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
+import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
 import DomainLayer.Stores.PurchasePolicy.SimplePurchasePolicy;
 import DomainLayer.Stores.Store;
 import DomainLayer.SystemManagement.HistoryManagement.History;
@@ -48,6 +49,9 @@ public interface SystemInterface {
 
     public Response<Boolean> hasSupplyService(String purchase_supply_name);
 
+    public Response<List<String>> getAllExternalSupplyServicesNames();
+
+    public Response<List<String>> getAllExternalPurchaseServicesNames();
 
     public Response<History> getPurchaseHistory();
     public Response<History> getPurchaseHistory(String username);
@@ -105,6 +109,8 @@ public interface SystemInterface {
 
     public Response<List<INotification>> getUserNotifications();
 
+    public Response<Boolean> removeUserNotifications();
+
     public Response<Set<Item>> searchProducts(String productName, String category, List<String> keywords);
 
     public Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating);
@@ -117,17 +123,15 @@ public interface SystemInterface {
 
     public Response<Boolean> removeItemFromCart(int storeId, Item item, int amount);
 
-    public Response<List<INotification>> getUserRealTimeNotifications();
-
     public Response<SimpleDiscountPolicy> addDiscount(int storeId, double percentage);
 
-    public Response<SimplePurchasePolicy> addPolicy(int storeId, int hour);
+    public Response<SimplePurchasePolicy> addPolicy(int storeId, int hour, Calendar date);
 
     public Response<AbstractDiscountPolicy> addItemPredicateToDiscount(int storeId, int discountId, String type, int itemId);
 
-    public Response<Boolean> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour) ;
+    public Response<AbstractPurchasePolicy> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour) ;
 
-    public Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date) ;
+    public Response<AbstractPurchasePolicy> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date) ;
 
     public Response<AbstractDiscountPolicy> addCategoryPredicateToDiscount(int storeId, int discountId, String type, String categoryName);
 

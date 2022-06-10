@@ -237,11 +237,6 @@ public class Real extends Bridge {
     }
 
     @Override
-    public Response<List<INotification>> getUserRealTimeNotifications() {
-        return this.adaptee.getUserRealTimeNotifications();
-    }
-
-    @Override
     public Response<User> getUser(String userName) {
         return this.adaptee.getUser(userName);
     }

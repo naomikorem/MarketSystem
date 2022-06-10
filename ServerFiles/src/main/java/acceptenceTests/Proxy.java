@@ -342,14 +342,6 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<List<INotification>> getUserRealTimeNotifications() {
-        if (this.real == null) {
-            return null;
-        }
-        return real.getUserRealTimeNotifications();
-    }
-
-    @Override
     public Response<User> getUser(String userName) {
         if (this.real == null) {
             return null;
