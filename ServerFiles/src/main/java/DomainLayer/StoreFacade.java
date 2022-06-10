@@ -252,7 +252,7 @@ public class StoreFacade {
             return new Response<>(e.getMessage());
         }
     }
-  
+
     public Response<List<String>> getManagers(User owner, int storeId){
         try {
             return new Response<>(storeController.getManagers(owner, storeId));
@@ -292,7 +292,7 @@ public class StoreFacade {
             return new Response<>(e.getMessage());
         }
     }
-  
+
     public Response<Boolean> isOwner(int store_id, String username) {
         try {
             return new Response<>(storeController.getStore(store_id).isOwner(username));
