@@ -1,6 +1,7 @@
 package DomainLayer.SystemManagement.ExternalServices.PurchaseServices;
 
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
+import DomainLayer.SystemManagement.ExternalServices.HttpClientPost;
 import Utility.LogUtility;
 
 import java.rmi.RemoteException;
@@ -8,8 +9,8 @@ import java.rmi.RemoteException;
 public class PurchaseProxy extends AbstractProxy
 {
     // add type of purchase support
-    public PurchaseProxy(String name) {
-        super(name);
+    public PurchaseProxy(String name, String url) {
+        super(name, url);
     }
 
     /***
@@ -30,7 +31,10 @@ public class PurchaseProxy extends AbstractProxy
             LogUtility.error("Could not charge the user with bad stub purchase service");
             throw new RemoteException("Could not charge the user with bad stub purchase service");
         }
-        LogUtility.error("Could not charge the user with external purchase service named: " + this.name);
-        throw new RemoteException("Could not charge the user with external purchase service named: " + this.name);
+
+
+        HttpClientPost.pay(this.name, this.url, this.headers, this.restTemplate);
+        LogUtility.info("payment success, service name: " + this.name + ", url:" + this.url);
+        return true;
     }
 }

@@ -14,6 +14,7 @@ import DomainLayer.SystemManagement.NotificationManager.NotificationController;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 import Utility.LogUtility;
+import lombok.SneakyThrows;
 
 import java.rmi.ConnectException;
 import java.util.List;
@@ -38,7 +39,7 @@ public class MarketManagementFacade {
         this.historyController = HistoryController.getInstance();
         this.notificationController = NotificationController.getInstance();
         this.storeController = StoreController.getInstance();
-        initializeMarket();
+//        initializeMarket();
     }
 
     // Implementation of thread safe singleton
@@ -63,18 +64,15 @@ public class MarketManagementFacade {
      * After this function, the system will have at least one supply service and one purchase service
      * @return Response - if the initialization succeeded or if there was an error
      */
+    @SneakyThrows
     public synchronized void initializeMarket() {
-        try {
-            // check if there is supply service - if not, add the first one
-            if (!services.hasPurchaseService()) {
-                services.addExternalPurchaseService(AbstractProxy.GOOD_STUB_NAME, "url");
-            }
-            // check if there is purchase service - if not, add the first one
-            if (!services.hasSupplyService()) {
-                services.addExternalSupplyService(AbstractProxy.GOOD_STUB_NAME, "url");
-            }
-        } catch (ConnectException ignored) {
-            // can't reach here
+        // check if there is supply service - if not, add the first one
+        if (!services.hasPurchaseService()) {
+            services.addExternalPurchaseService(AbstractProxy.WSEP_PAYMENT, AbstractProxy.WSEP_PAYMENT_URL);
+        }
+        // check if there is purchase service - if not, add the first one
+        if (!services.hasSupplyService()) {
+            services.addExternalSupplyService(AbstractProxy.WSEP_SUPPLY, AbstractProxy.WSEP_SUPPLY_URL);
         }
     }
 
