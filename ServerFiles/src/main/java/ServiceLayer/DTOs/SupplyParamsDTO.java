@@ -2,21 +2,19 @@ package ServiceLayer.DTOs;
 
 public class SupplyParamsDTO {
     public final String ServiceName;
-    public final String card_number;
-    public final String month;
-    public final String year;
-    public final String holder;
-    public final String ccv;
-    public final String id;
+    public final String name;
+    public final String address;
+    public final String city;
+    public final String country;
+    public final String zip;
 
-    public SupplyParamsDTO(String ServiceName, String card_number, String month, String year, String holder, String ccv, String id)
+    public SupplyParamsDTO(String ServiceName, String name, String address, String city, String country, String zip)
     {
         this.ServiceName = ServiceName;
-        this.card_number = card_number;
-        this.month = month;
-        this.year = year;
-        this.holder = holder;
-        this.ccv = ccv;
-        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.city = city;
+        this.country = country;
+        this.zip = zip;
     }
 }

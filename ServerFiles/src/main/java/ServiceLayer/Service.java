@@ -1,7 +1,6 @@
 package ServiceLayer;
 
 import DomainLayer.Response;
-import DomainLayer.Stores.Category;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.Item;
@@ -186,7 +185,7 @@ public class Service {
     @MessageMapping("/market/getPersonalHistory")
     @SendToUser("/topic/getPersonalHistoryResult")
     public Response<HistoryDTO> getPersonalPurchaseHistory(SimpMessageHeaderAccessor headerAccessor) {
-        ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
+        //((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
 
         Response<History> history = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getPurchaseHistory();
         if (history.hadError())
@@ -644,8 +643,26 @@ public class Service {
     @MessageMapping("/market/purchase")
     @SendToUser("/topic/purchaseResult")
     public Response<Boolean> getPurchase(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
+        PaymentParamsDTO paymentParamsDTO = new PaymentParamsDTO(
+                map.get("paymentServiceName"),
+                map.get("card_number"),
+                map.get("month"),
+                map.get("year"),
+                map.get("holder"),
+                map.get("ccv"),
+                map.get("id")
+                );
 
-        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).purchaseShoppingCart(map.get("address"), map.get("p_service"), map.get("s_service"));
+        SupplyParamsDTO supplyParamsDTO = new SupplyParamsDTO(
+                map.get("supplyServiceName"),
+                map.get("name"),
+                map.get("address"),
+                map.get("city"),
+                map.get("country"),
+                map.get("zip")
+        );
+
+        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
         if (res.hadError()) {
             return new Response<>(res.getErrorMessage());
         }

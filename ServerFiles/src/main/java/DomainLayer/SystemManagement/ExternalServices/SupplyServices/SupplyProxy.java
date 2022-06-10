@@ -3,6 +3,7 @@ package DomainLayer.SystemManagement.ExternalServices.SupplyServices;
 import DomainLayer.Stores.Item;
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
 import DomainLayer.SystemManagement.ExternalServices.HttpClientPost;
+import ServiceLayer.DTOs.SupplyParamsDTO;
 import Utility.LogUtility;
 
 import java.rmi.RemoteException;
@@ -21,10 +22,10 @@ public class SupplyProxy extends AbstractProxy
      * @param items The items that the user paid for
      * @return true if the supply service supplied the items to the user
      */
-    public synchronized boolean supply(String address, List<Map.Entry<Item, Integer>> items) throws RemoteException {
+    public synchronized boolean supply(SupplyParamsDTO supplyParamsDTO, List<Map.Entry<Item, Integer>> items) throws RemoteException {
         if (this.name.equals(GOOD_STUB_NAME) || this.name.equals(GOOD_STUB_NAME_2))
         {
-            LogUtility.info("Supplied the items to the user with " + this.name + " supply service to address " + address);
+            LogUtility.info("Supplied the items to the user with " + this.name + " supply service to address " + supplyParamsDTO.address);
             return true;
         }
         else if (this.name.equals(BAD_STUB_NAME))
@@ -33,7 +34,7 @@ public class SupplyProxy extends AbstractProxy
             throw new RemoteException("Could not supply the items to the user with bad stub supply service");
         }
 
-        HttpClientPost.supply(this.name, this.url, this.headers, this.restTemplate);
+        HttpClientPost.supply(supplyParamsDTO, this.url, this.headers, this.restTemplate);
         LogUtility.info("supply success, service name: " + this.name + ", url:" + this.url);
         return true;
     }

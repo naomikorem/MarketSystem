@@ -13,6 +13,8 @@ import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
+import ServiceLayer.DTOs.PaymentParamsDTO;
+import ServiceLayer.DTOs.SupplyParamsDTO;
 
 import java.util.*;
 
@@ -56,9 +58,9 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<Boolean> purchaseShoppingCart(String address, String purchase_service_name, String supply_service_name) {
+    public Response<Boolean> purchaseShoppingCart(PaymentParamsDTO paymentParamsDTO, SupplyParamsDTO supplyParamsDTO) {
         if (this.real != null) {
-            return real.purchaseShoppingCart(address, purchase_service_name, supply_service_name);
+            return real.purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
 
         }
         return null;

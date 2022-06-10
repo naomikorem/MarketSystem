@@ -8,18 +8,13 @@ import DomainLayer.Stores.PurchasePolicy.SimplePurchasePolicy;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.MarketManagementFacade;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
-import DomainLayer.SystemManagement.NotificationManager.Notification;
 import DomainLayer.SystemManagement.NotificationManager.NotificationController;
 import DomainLayer.Users.GuestState;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
-import ServiceLayer.Service;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import ServiceLayer.DTOs.SupplyParamsDTO;
+import ServiceLayer.DTOs.PaymentParamsDTO;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 
@@ -489,7 +484,7 @@ public class SystemImplementor implements SystemInterface {
         return this.marketManagementFacade.removeExternalSupplyService(name);
     }
 
-    public Response<Boolean> purchaseShoppingCart(String address, String purchase_service_name, String supply_service_name) {
+    public Response<Boolean> purchaseShoppingCart(PaymentParamsDTO paymentParamsDTO, SupplyParamsDTO supplyParamsDTOS) {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
@@ -519,7 +514,7 @@ public class SystemImplementor implements SystemInterface {
         Map<Integer, Store> stores = stores_response.stream().map(Response::getObject).collect(Collectors.toConcurrentMap(Store::getStoreId, store -> store));
         */
 
-        return this.marketManagementFacade.purchaseShoppingCart(user, address, purchase_service_name, supply_service_name);
+        return this.marketManagementFacade.purchaseShoppingCart(user, paymentParamsDTO, supplyParamsDTOS);
 
     }
     public Response<Double> calculateShoppingCartPriceResult(List<ShoppingBasket> baskets) {

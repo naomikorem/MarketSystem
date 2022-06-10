@@ -14,6 +14,8 @@ import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
+import ServiceLayer.DTOs.PaymentParamsDTO;
+import ServiceLayer.DTOs.SupplyParamsDTO;
 
 import java.util.*;
 
@@ -24,7 +26,7 @@ public abstract class Bridge {
     public abstract Response<Boolean> addExternalSupplyService(String name, String url);
     public abstract Response<Boolean> removeExternalPurchaseService(String name);
     public abstract Response<Boolean> removeExternalSupplyService(String name);
-    public abstract Response<Boolean> purchaseShoppingCart(String address, String purchase_service_name, String supply_service_name);
+    public abstract Response<Boolean> purchaseShoppingCart(PaymentParamsDTO paymentParamsDTO, SupplyParamsDTO supplyParamsDTO);
     public abstract Response<Boolean> hasPurchaseService();
     public abstract Response<Boolean> hasSupplyService();
     public abstract Response<Boolean> hasPurchaseService(String purchase_service_name);

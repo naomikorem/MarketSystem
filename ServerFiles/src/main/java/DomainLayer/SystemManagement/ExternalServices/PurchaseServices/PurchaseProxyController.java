@@ -1,6 +1,8 @@
 package DomainLayer.SystemManagement.ExternalServices.PurchaseServices;
 
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxyController;
+import ServiceLayer.DTOs.PaymentParamsDTO;
+import ServiceLayer.DTOs.SupplyParamsDTO;
 import Utility.LogUtility;
 
 import java.rmi.ConnectException;
@@ -39,13 +41,13 @@ public class PurchaseProxyController extends AbstractProxyController<PurchasePro
      * @param purchase_service_name The requested external purchase service
      * @return true - if the payment process ends successfully, false otherwise.
      */
-    public synchronized boolean pay(double price, String purchase_service_name) throws RemoteException {
-        if (!services.containsKey(purchase_service_name))
+    public synchronized boolean pay(double price, PaymentParamsDTO paymentParamsDTO) throws RemoteException {
+        if (!services.containsKey(paymentParamsDTO.ServiceName))
         {
-            LogUtility.error("tried to use external purchase service named " + purchase_service_name + " which does not exists in the system");
-            throw new IllegalArgumentException("The service with the name " + purchase_service_name + " does not exists in the system.");
+            LogUtility.error("tried to use external purchase service named " + paymentParamsDTO.ServiceName + " which does not exists in the system");
+            throw new IllegalArgumentException("The service with the name " + paymentParamsDTO.ServiceName + " does not exists in the system.");
         }
-        LogUtility.info("The purchase service " + purchase_service_name + " will try handle the payment of the user, the price: " + price);
-        return services.get(purchase_service_name).pay(price);
+        LogUtility.info("The purchase service " + paymentParamsDTO.ServiceName + " will try handle the payment of the user, the price: " + price);
+        return services.get(paymentParamsDTO.ServiceName).pay(price, paymentParamsDTO);
     }
 }

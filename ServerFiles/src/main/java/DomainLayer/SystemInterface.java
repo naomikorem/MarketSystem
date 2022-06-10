@@ -12,6 +12,8 @@ import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
+import ServiceLayer.DTOs.SupplyParamsDTO;
+import ServiceLayer.DTOs.PaymentParamsDTO;
 
 import java.util.*;
 
@@ -39,7 +41,7 @@ public interface SystemInterface {
     public Response<Boolean> removeExternalSupplyService(String name);
 
 
-    public Response<Boolean> purchaseShoppingCart(String address, String purchase_service_name, String supply_service_name);
+    public Response<Boolean> purchaseShoppingCart(PaymentParamsDTO paymentParamsDTO, SupplyParamsDTO supplyParamsDTO);
 
     public Response<Boolean> hasPurchaseService();
 

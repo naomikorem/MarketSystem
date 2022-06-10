@@ -7,6 +7,8 @@ import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.HistoryManagement.HistoryController;
 import DomainLayer.SystemManagement.HistoryManagement.ItemHistory;
+import ServiceLayer.DTOs.PaymentParamsDTO;
+import ServiceLayer.DTOs.SupplyParamsDTO;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,6 +24,8 @@ public class PurchaseHistoryTests extends AbstractTest
     private Item item3, item4;
     private int item3_id, item4_id;
     private Set<Item> originals_items_store1_user1, originals_items_store2_user2;
+    private PaymentParamsDTO paymentParamsDTO;
+    private SupplyParamsDTO supplyParamsDTO;
 
     public PurchaseHistoryTests()
     {
@@ -38,6 +42,23 @@ public class PurchaseHistoryTests extends AbstractTest
     @Before
     public void setup()
     {
+        paymentParamsDTO = new PaymentParamsDTO(
+                AbstractProxy.GOOD_STUB_NAME,
+                "1111111111111111",
+                "05",
+                "21",
+                "user",
+                "165",
+                "15");
+
+        supplyParamsDTO = new SupplyParamsDTO(
+                AbstractProxy.GOOD_STUB_NAME,
+                "user",
+                "user address",
+                "bear shava",
+                "israel",
+                "777777");
+
         bridge.enter();
         bridge.register("user111@gmail.com", regular_username1,"first","last", "password");
         bridge.register("user112@gmail.com", regular_username2,"first","last", "password");
@@ -63,13 +84,13 @@ public class PurchaseHistoryTests extends AbstractTest
         this.bridge.login(regular_username1, "password");
         this.bridge.addItemToCart(store1_id, item1_id, 1);
         this.bridge.addItemToCart(store1_id, item2_id, 2);
-        this.bridge.purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
+        this.bridge.purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
         this.bridge.logout();
 
         this.bridge.login(regular_username2, "password");
         this.bridge.addItemToCart(store2_id, item3_id, 1);
         this.bridge.addItemToCart(store2_id, item4_id, 2);
-        this.bridge.purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
+        this.bridge.purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
         this.bridge.logout();
 
         this.originals_items_store1_user1 = new HashSet<>();
@@ -188,7 +209,7 @@ public class PurchaseHistoryTests extends AbstractTest
         originals_items_store2_user1.add(item4);
 
         // check that the payment and supply confirmed.
-        Response<Boolean> purchase_res = this.bridge.purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
+        Response<Boolean> purchase_res = this.bridge.purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
         assertFalse(purchase_res.hadError());
         assertTrue(purchase_res.getObject());
 
@@ -229,7 +250,7 @@ public class PurchaseHistoryTests extends AbstractTest
         this.bridge.addItemToCart(store2_id, item4_id, 2);
 
         // check that the payment and supply confirmed.
-        Response<Boolean> purchase_res = this.bridge.purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
+        Response<Boolean> purchase_res = this.bridge.purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
         assertFalse(purchase_res.hadError());
         assertTrue(purchase_res.getObject());
 

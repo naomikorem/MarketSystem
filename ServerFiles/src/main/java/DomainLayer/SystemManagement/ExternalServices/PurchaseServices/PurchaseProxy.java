@@ -2,6 +2,8 @@ package DomainLayer.SystemManagement.ExternalServices.PurchaseServices;
 
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
 import DomainLayer.SystemManagement.ExternalServices.HttpClientPost;
+import ServiceLayer.DTOs.PaymentParamsDTO;
+import ServiceLayer.DTOs.SupplyParamsDTO;
 import Utility.LogUtility;
 
 import java.rmi.RemoteException;
@@ -19,7 +21,7 @@ public class PurchaseProxy extends AbstractProxy
      * @param amount The amount to pay
      * @return true - if the payment process is successful, false - otherwise
      */
-    public boolean pay(double amount) throws RemoteException
+    public boolean pay(double amount, PaymentParamsDTO paymentParamsDTO) throws RemoteException
     {
         if (this.name.equals(GOOD_STUB_NAME) || this.name.equals(GOOD_STUB_NAME_2))
         {
@@ -33,7 +35,7 @@ public class PurchaseProxy extends AbstractProxy
         }
 
 
-        HttpClientPost.pay(this.name, this.url, this.headers, this.restTemplate);
+        HttpClientPost.pay(paymentParamsDTO, this.url, this.headers, this.restTemplate);
         LogUtility.info("payment success, service name: " + this.name + ", url:" + this.url);
         return true;
     }

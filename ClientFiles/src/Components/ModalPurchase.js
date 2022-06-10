@@ -20,11 +20,26 @@ class ModalPurchase extends Component {
     constructor() {
         super();
         this.state = {
-            message: "",
-            hadError: false,
+            // payment details
+            card_number: "",
+            month: "",
+            year: "",
+            holder: "",
+            ccv: "",
+            id: "",
+
+            // supply details
             address: "",
+            city: "",
+            country: "",
+            zip: "",
+
+            // choose services
             chosenPurchaseService: "",
             chosenSupplyService: "",
+
+            message: "",
+            hadError: false,
             purchaseServiceNames: [],
             supplyServiceNames: []
         };
@@ -132,16 +147,30 @@ class ModalPurchase extends Component {
 
     handleSave() {
         stompClient.send("/app/market/purchase", {}, JSON.stringify({
+            // payment details
+            "card_number": this.state.card_number,
+            "month": this.state.month,
+            "year": this.state.year,
+            "holder": this.state.holder,
+            "ccv": this.state.ccv,
+            "id": this.state.id,
+
+            // supply details
+            "name": this.state.holder,
             "address": this.state.address,
-            "p_service": this.state.chosenPurchaseService,
-            "s_service": this.state.chosenSupplyService
+            "city": this.state.city,
+            "country": this.state.country,
+            "zip": this.state.zip,
+
+            // choose services
+            "paymentServiceName": this.state.chosenPurchaseService,
+            "supplyServiceName": this.state.chosenSupplyService
         }));
     }
 
     handleShow() {
         setShow(true);
     }
-
 
     render() {
         return (
@@ -154,11 +183,34 @@ class ModalPurchase extends Component {
                         <Modal.Title>Purchase</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <div className={"purchase-margin"}>
+                        <div className="purchase-margin">
+                            <h6>Payment Details</h6>
+                            <TextField className="addItemField" label="Card Number" variant="filled"
+                                       value={this.state.card_number} onChange={this.handleChange} name="card_number"/>
+                            <TextField className="addItemField" label="Month" variant="filled"
+                                       value={this.state.month} onChange={this.handleChange} name="month"/>
+                            <TextField className="addItemField" label="Year" variant="filled"
+                                       value={this.state.year} onChange={this.handleChange} name="year"/>
+                            <TextField className="addItemField" label="Holder" variant="filled"
+                                       value={this.state.holder} onChange={this.handleChange} name="holder"/>
+                            <TextField className="addItemField" label="ccv" variant="filled"
+                                       value={this.state.ccv} onChange={this.handleChange} name="ccv"/>
+                            <TextField className="addItemField" label="ID" variant="filled"
+                                       value={this.state.id} onChange={this.handleChange} name="id"/>
+                        </div>
+                        <div className="purchase-margin">
+                            <h6>Supply Details</h6>
                             <TextField className="addItemField" label="Address" variant="filled"
                                        value={this.state.address} onChange={this.handleChange} name="address"/>
+                            <TextField className="addItemField" label="City" variant="filled"
+                                       value={this.state.city} onChange={this.handleChange} name="city"/>
+                            <TextField className="addItemField" label="Country" variant="filled"
+                                       value={this.state.country} onChange={this.handleChange} name="country"/>
+                            <TextField className="addItemField" label="Zip" variant="filled"
+                                        value={this.state.zip} onChange={this.handleChange} name="zip"/>
                         </div>
-                        <div className={"purchase-margin"}>
+                        <div className="purchase-margin">
+                            <h6>Choose Services</h6>
                             <Box sx={{ minWidth: 120 }}>
                                 <FormControl fullWidth variant="filled">
                                     <InputLabel id="demo-simple-select-label">Choose Purchase Service</InputLabel>
@@ -172,8 +224,6 @@ class ModalPurchase extends Component {
                                     </Select>
                                 </FormControl>
                             </Box>
-                        </div>
-                        <div className={"purchase-margin"}>
                             <Box sx={{ minWidth: 120 }}>
                                 <FormControl fullWidth variant="filled">
                                     <InputLabel id="demo-simple-select-label">Choose Supply Service</InputLabel>

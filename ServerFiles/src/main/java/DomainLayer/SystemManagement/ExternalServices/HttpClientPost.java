@@ -1,5 +1,7 @@
 package DomainLayer.SystemManagement.ExternalServices;
 
+import ServiceLayer.DTOs.PaymentParamsDTO;
+import ServiceLayer.DTOs.SupplyParamsDTO;
 import Utility.LogUtility;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -26,47 +28,47 @@ public class HttpClientPost {
         }
     }
 
-    public static boolean pay(String name, String url, HttpHeaders headers, RestTemplate restTemplate) throws ConnectException {
-        handshake(name, url, headers, restTemplate);
+    public static boolean pay(PaymentParamsDTO paymentParamsDTO, String url, HttpHeaders headers, RestTemplate restTemplate) throws ConnectException {
+        handshake(paymentParamsDTO.ServiceName, url, headers, restTemplate);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("action_type", "pay");
-        params.add("card_number", "1111111111111111");
-        params.add("month", "10");
-        params.add("year", "2023");
-        params.add("holder", "holder");
-        params.add("ccv", "162");
-        params.add("id", "15");
+        params.add("card_number", paymentParamsDTO.card_number);
+        params.add("month", paymentParamsDTO.month);
+        params.add("year", paymentParamsDTO.year);
+        params.add("holder", paymentParamsDTO.holder);
+        params.add("ccv", paymentParamsDTO.ccv);
+        params.add("id", paymentParamsDTO.id);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
         ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
 
         if (response.getBody() == null || response.getBody().equals("-1"))
         {
-            LogUtility.error("Payment failed, service named: " + name + ", url: " + url);
-            throw new ConnectException("Payment failed, service named: " + name + ", url: " + url);
+            LogUtility.error("Payment failed, service named: " + paymentParamsDTO.ServiceName + ", url: " + url);
+            throw new ConnectException("Payment failed, service named: " + paymentParamsDTO.ServiceName + ", url: " + url);
         }
         return true;
     }
 
-    public static boolean supply(String name, String url, HttpHeaders headers, RestTemplate restTemplate) throws ConnectException {
-        handshake(name, url, headers, restTemplate);
+    public static boolean supply(SupplyParamsDTO supplyParamsDTO, String url, HttpHeaders headers, RestTemplate restTemplate) throws ConnectException {
+        handshake(supplyParamsDTO.ServiceName, url, headers, restTemplate);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("action_type", "supply");
-        params.add("name", "name");
-        params.add("address", "address");
-        params.add("city", "jerusalem");
-        params.add("country", "israel");
-        params.add("zip", "7777777");
+        params.add("name", supplyParamsDTO.name);
+        params.add("address", supplyParamsDTO.address);
+        params.add("city", supplyParamsDTO.city);
+        params.add("country", supplyParamsDTO.country);
+        params.add("zip", supplyParamsDTO.zip);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
         ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
 
         if (response.getBody() == null || response.getBody().equals("-1"))
         {
-            LogUtility.error("Payment failed, service named: " + name + ", url: " + url);
-            throw new ConnectException("Payment failed, service named: " + name + ", url: " + url);
+            LogUtility.error("Payment failed, service named: " + supplyParamsDTO.ServiceName + ", url: " + url);
+            throw new ConnectException("Payment failed, service named: " + supplyParamsDTO.ServiceName + ", url: " + url);
         }
 
         return true;

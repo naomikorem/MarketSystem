@@ -13,10 +13,11 @@ import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.SystemManagement.NotificationManager.NotificationController;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
+import ServiceLayer.DTOs.SupplyParamsDTO;
+import ServiceLayer.DTOs.PaymentParamsDTO;
 import Utility.LogUtility;
 import lombok.SneakyThrows;
 
-import java.rmi.ConnectException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -79,12 +80,12 @@ public class MarketManagementFacade {
     /***
      * The user wants to pay about the items in his shopping cart.
      * @param user The user that wants to pay
-     * @param address The shipping address, where to send the items.
-     * @param purchase_service_name Which of the external purchase services is selected for this deal.
-     * @param supply_service_name Which of the external supply services is selected for this deal.
+     //* @param address The shipping address, where to send the items.
+     //* @param purchase_service_name Which of the external purchase services is selected for this deal.
+     //* @param supply_service_name Which of the external supply services is selected for this deal.
      * @return Response - if the purchase process succeeded or if there was an error
      */
-    public Response<Boolean> purchaseShoppingCart(User user, String address, String purchase_service_name, String supply_service_name) {
+    public Response<Boolean> purchaseShoppingCart(User user, PaymentParamsDTO paymentParamsDTO, SupplyParamsDTO supplyParamsDTO) {
         /* TODO:
          * 1. choose payment and shipping service
          * 2. check that every item matches the purchase and discount policy
@@ -103,13 +104,13 @@ public class MarketManagementFacade {
             double price = calculateShoppingCartPrice(baskets);
             List<Map.Entry<Item, Integer>> items_and_amounts = PurchaseProcess.getItemsAndAmounts(baskets);
 
-            if (!this.services.supply(address, items_and_amounts, supply_service_name)) {
+            if (!this.services.supply(supplyParamsDTO, items_and_amounts)) {
                 LogUtility.error("The user " + username + " couldn't get confirmation from the supply services.");
                 return new Response<>("The purchase process canceled - couldn't contact the supply service.");
             }
 
             // do not move payment up: so we won't charge user before other checks
-            if (!this.services.pay(price, purchase_service_name)) {
+            if (!this.services.pay(price, paymentParamsDTO)) {
                 LogUtility.error("The user " + username + " couldn't pay to the purchase services.");
                 return new Response<>("The purchase process canceled - couldn't contact the purchase service.");
             }

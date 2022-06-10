@@ -2,6 +2,7 @@ package DomainLayer.SystemManagement.ExternalServices.SupplyServices;
 
 import DomainLayer.Stores.Item;
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxyController;
+import ServiceLayer.DTOs.SupplyParamsDTO;
 import Utility.LogUtility;
 
 import java.rmi.ConnectException;
@@ -43,13 +44,13 @@ public class SupplyProxyController extends AbstractProxyController<SupplyProxy> 
      * @param supply_service_name The requested external supply service
      * @return
      */
-    public synchronized boolean supply(String address, List<Map.Entry<Item, Integer>> items, String supply_service_name) throws RemoteException {
-        if (!services.containsKey(supply_service_name))
+    public synchronized boolean supply(SupplyParamsDTO supplyParamsDTO, List<Map.Entry<Item, Integer>> items) throws RemoteException {
+        if (!services.containsKey(supplyParamsDTO.ServiceName))
         {
-            LogUtility.error("tried to use external supply service named " + supply_service_name + " which does not exists in the system");
-            throw new IllegalArgumentException("The service with the name " + supply_service_name + " does not exists in the system.\n");
+            LogUtility.error("tried to use external supply service named " + supplyParamsDTO.ServiceName + " which does not exists in the system");
+            throw new IllegalArgumentException("The service with the name " + supplyParamsDTO.ServiceName + " does not exists in the system.\n");
         }
-        LogUtility.info("The supply service " + supply_service_name + " will try supply the items to the address: " + address);
-        return services.get(supply_service_name).supply(address, items);
+        LogUtility.info("The supply service " + supplyParamsDTO.ServiceName + " will try supply the items to the address: " + supplyParamsDTO.address);
+        return services.get(supplyParamsDTO.ServiceName).supply(supplyParamsDTO, items);
     }
 }
