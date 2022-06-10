@@ -100,15 +100,15 @@ public abstract class Bridge {
 
     public abstract Response<Boolean> removeDiscount(int storeId, int discountId);
 
-    public abstract Response<SimplePurchasePolicy> addPolicy(int storeId, int hour);
+    public abstract Response<SimplePurchasePolicy> addPolicy(int storeId, int hour, Calendar date);
 
-   public abstract Response<Boolean> removePolicy(int storeId, int policyId);
-
-
-    public abstract Response<Boolean> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour);
+    public abstract Response<Boolean> removePolicy(int storeId, int policyId);
 
 
-    public abstract Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date);
+    public abstract Response<AbstractPurchasePolicy> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour);
+
+
+    public abstract Response<AbstractPurchasePolicy> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date);
 
     public abstract Response<Boolean> setItemRating(int storeId, int itemId, double rate) ;
 
