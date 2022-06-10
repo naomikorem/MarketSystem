@@ -1,5 +1,7 @@
 package DomainLayer.SystemManagement.ExternalServices;
 
+import DataLayer.DALObjects.ServiceDAL;
+import DataLayer.ServicesManager;
 import Utility.LogUtility;
 
 import java.rmi.ConnectException;
@@ -13,8 +15,10 @@ public abstract class AbstractProxyController<T extends AbstractProxy>
 {
     // Holds all the external services from specific type (purchase or supply)
     protected ConcurrentHashMap<String, T> services = new ConcurrentHashMap<>();
+    private ServicesManager manager = ServicesManager.getInstance();
 
     protected abstract T createProxy(String name, String url) throws ConnectException; // abstract function
+    protected abstract ServiceDAL createServiceDALObject(String name, String url);
 
     /***
      * Add external service to the market system
@@ -29,6 +33,7 @@ public abstract class AbstractProxyController<T extends AbstractProxy>
         }
         services.put(name, createProxy(name, url));
         LogUtility.info("Added new external service with the name " + name);
+        manager.addService(createServiceDALObject(name, url));
     }
 
     /***

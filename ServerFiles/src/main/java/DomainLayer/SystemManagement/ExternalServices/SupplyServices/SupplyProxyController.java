@@ -1,5 +1,7 @@
 package DomainLayer.SystemManagement.ExternalServices.SupplyServices;
 
+import DataLayer.DALObjects.ServiceDAL;
+import DataLayer.ServiceType;
 import DomainLayer.Stores.Item;
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxyController;
 import ServiceLayer.DTOs.SupplyParamsDTO;
@@ -37,11 +39,19 @@ public class SupplyProxyController extends AbstractProxyController<SupplyProxy> 
         return connection;
     }
 
+    @Override
+    protected ServiceDAL createServiceDALObject(String name, String url)
+    {
+        ServiceDAL service = new ServiceDAL();
+        service.setName(name);
+        service.setUrl(url);
+        service.setServiceType(ServiceType.Supply);
+        return service;
+    }
+
     /***
      * Call to the requested supply service and ship the items to the user
-     * @param address Shipping address, The user's address
      * @param items The items that the user paid for
-     * @param supply_service_name The requested external supply service
      * @return
      */
     public synchronized boolean supply(SupplyParamsDTO supplyParamsDTO, List<Map.Entry<Item, Integer>> items) throws RemoteException {

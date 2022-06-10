@@ -20,7 +20,7 @@ public class DALManager <T extends DALObject<K>, K> {
         K id = null;
         try {
             tx = session.beginTransaction();
-            session.save(o);
+            session.saveOrUpdate(o);
             id = o.getId();
             tx.commit();
         } catch (HibernateException e) {

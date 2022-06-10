@@ -10,8 +10,8 @@ import javax.persistence.*;
 public class ServiceDAL implements DALObject<Integer>
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Integer id;
     @Column(name = "Name")
     private String name;
     @Column(name = "Url")
@@ -29,14 +29,6 @@ public class ServiceDAL implements DALObject<Integer>
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getUrl() {
         return url;
     }
@@ -51,5 +43,13 @@ public class ServiceDAL implements DALObject<Integer>
 
     public void setServiceType(ServiceType service_type) {
         this.service_type = service_type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

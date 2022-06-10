@@ -1,5 +1,7 @@
 package DomainLayer.SystemManagement.ExternalServices.PurchaseServices;
 
+import DataLayer.DALObjects.ServiceDAL;
+import DataLayer.ServiceType;
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxyController;
 import ServiceLayer.DTOs.PaymentParamsDTO;
 import ServiceLayer.DTOs.SupplyParamsDTO;
@@ -35,10 +37,18 @@ public class PurchaseProxyController extends AbstractProxyController<PurchasePro
         return connection;
     }
 
+    @Override
+    protected ServiceDAL createServiceDALObject(String name, String url) {
+        ServiceDAL service = new ServiceDAL();
+        service.setName(name);
+        service.setUrl(url);
+        service.setServiceType(ServiceType.Purchase);
+        return service;
+    }
+
     /***
      * Call to the requested purchase service and pay the amount with the user details.
      * @param price The amount to pay
-     * @param purchase_service_name The requested external purchase service
      * @return true - if the payment process ends successfully, false otherwise.
      */
     public synchronized boolean pay(double price, PaymentParamsDTO paymentParamsDTO) throws RemoteException {

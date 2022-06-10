@@ -10,11 +10,20 @@ import java.util.List;
 
 public class ServicesManager extends DALManager<ServiceDAL, Integer>
 {
-    public ServicesManager() {
+    private static class ServicesManagerHolder {
+        static final ServicesManager INSTANCE = new ServicesManager();
+    }
+
+    private ServicesManager() {
         super(ServiceDAL.class);
     }
 
-    public static void main(String[] args) {
+    // Implementation of thread safe singleton
+    public static ServicesManager getInstance() {
+        return ServicesManager.ServicesManagerHolder.INSTANCE;
+    }
+
+    /*public static void main(String[] args) {
         ServiceDAL i = new ServiceDAL();
 
         i.setServiceType(ServiceType.Purchase);
@@ -33,7 +42,7 @@ public class ServicesManager extends DALManager<ServiceDAL, Integer>
 
         System.out.println(im.clearServices());
 
-    }
+    }*/
 
     public Integer addService(ServiceDAL service){
 
