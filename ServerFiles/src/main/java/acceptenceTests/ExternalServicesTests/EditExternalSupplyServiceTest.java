@@ -1,6 +1,7 @@
 package acceptenceTests.ExternalServicesTests;
 
 import DomainLayer.Response;
+import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
 import acceptenceTests.Bridge;
 
 public class EditExternalSupplyServiceTest extends AbstractEditExternalTest{
@@ -28,5 +29,10 @@ public class EditExternalSupplyServiceTest extends AbstractEditExternalTest{
     @Override
     protected Response<Boolean> removeExternalService(Bridge bridge, String service_name) {
         return bridge.removeExternalSupplyService(service_name);
+    }
+
+    @Override
+    protected String getServiceName() {
+        return DEFAULT_SUPPLY_NAME;
     }
 }

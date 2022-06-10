@@ -3,6 +3,7 @@ package acceptenceTests;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.StoreController;
 
+import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
 import DomainLayer.SystemManagement.HistoryManagement.ItemHistory;
 import DomainLayer.SystemManagement.MarketManagementFacade;
 
@@ -13,6 +14,8 @@ import java.util.Set;
 
 public abstract class AbstractTest {
     protected Bridge bridge;
+    protected String DEFAULT_PAYMENT_NAME = AbstractProxy.WSEP_PAYMENT;
+    protected String DEFAULT_SUPPLY_NAME = AbstractProxy.BAD_STUB_NAME;
 
 
     public AbstractTest() {
@@ -49,6 +52,14 @@ public abstract class AbstractTest {
                 return false;
         }
         return true;
+    }
+
+    protected void addStubs()
+    {
+        bridge.login(UserController.DEFAULT_ADMIN_USER, UserController.DEFAULT_ADMIN_PASSWORD);
+        bridge.addExternalSupplyService(AbstractProxy.GOOD_STUB_NAME, "url");
+        bridge.addExternalPurchaseService(AbstractProxy.GOOD_STUB_NAME, "url");
+        bridge.logout();
     }
 
     public boolean compare(Item item, ItemHistory itemHistory)

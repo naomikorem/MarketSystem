@@ -7,6 +7,7 @@ import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.HistoryManagement.ItemHistory;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
+import DomainLayer.Users.UserController;
 import ServiceLayer.DTOs.PaymentParamsDTO;
 import ServiceLayer.DTOs.SupplyParamsDTO;
 import org.junit.Before;
@@ -45,6 +46,8 @@ public class PurchaseBadCasesTests extends AbstractTest
     @Before
     public void setup()
     {
+        bridge.enter();
+        addStubs();
         PaymentParamsDTO paymentParamsDTO = new PaymentParamsDTO(
                 AbstractProxy.GOOD_STUB_NAME,
                 "1111111111111111",
@@ -62,7 +65,6 @@ public class PurchaseBadCasesTests extends AbstractTest
                 "israel",
                 "777777");
 
-        bridge.enter();
         bridge.register("storeOwner111@gmail.com", storeOwnerUsername,"first","last", storeOwnerPassword);
 
         assertFalse(bridge.login(storeOwnerUsername, storeOwnerPassword).hadError());

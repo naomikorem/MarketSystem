@@ -40,7 +40,7 @@ public class MarketManagementFacade {
         this.historyController = HistoryController.getInstance();
         this.notificationController = NotificationController.getInstance();
         this.storeController = StoreController.getInstance();
-//        initializeMarket();
+        initializeMarket();
     }
 
     // Implementation of thread safe singleton
