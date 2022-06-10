@@ -31,8 +31,8 @@ public class SupplyProxyController extends AbstractProxyController<SupplyProxy> 
     @Override
     protected SupplyProxy createProxy(String name, String url) throws ConnectException
     {
-        SupplyProxy connection = new SupplyProxy(name);
-        connection.connect(url);
+        SupplyProxy connection = new SupplyProxy(name, url);
+        connection.connect();
         return connection;
     }
 

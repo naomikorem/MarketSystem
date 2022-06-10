@@ -13,6 +13,7 @@ import DomainLayer.SystemImplementor;
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.HistoryManagement.ItemHistory;
+import DomainLayer.SystemManagement.MarketManagementFacade;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
@@ -39,6 +40,7 @@ public class Service {
 
     public Service() {
         super();
+        MarketManagementFacade.getInstance().initializeMarket();
     }
 
     @MessageMapping("/market/login")

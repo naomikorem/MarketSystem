@@ -2,6 +2,7 @@ package DomainLayer.SystemManagement.ExternalServices.SupplyServices;
 
 import DomainLayer.Stores.Item;
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
+import DomainLayer.SystemManagement.ExternalServices.HttpClientPost;
 import Utility.LogUtility;
 
 import java.rmi.RemoteException;
@@ -10,8 +11,8 @@ import java.util.Map;
 
 public class SupplyProxy extends AbstractProxy
 {
-    public SupplyProxy(String name) {
-        super(name);
+    public SupplyProxy(String name, String url) {
+        super(name, url);
     }
 
     /***
@@ -32,7 +33,8 @@ public class SupplyProxy extends AbstractProxy
             throw new RemoteException("Could not supply the items to the user with bad stub supply service");
         }
 
-        LogUtility.error("Could not supply the items to the user with external supply service named: " + this.name);
-        throw new RemoteException("Could not supply the items to the user with external supply service named: " + this.name);
+        HttpClientPost.supply(this.name, this.url, this.headers, this.restTemplate);
+        LogUtility.info("supply success, service name: " + this.name + ", url:" + this.url);
+        return true;
     }
 }

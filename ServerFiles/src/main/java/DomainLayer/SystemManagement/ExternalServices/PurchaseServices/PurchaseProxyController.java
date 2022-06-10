@@ -28,8 +28,8 @@ public class PurchaseProxyController extends AbstractProxyController<PurchasePro
      */
     @Override
     protected PurchaseProxy createProxy(String name, String url) throws ConnectException {
-        PurchaseProxy connection = new PurchaseProxy(name);
-        connection.connect(url);
+        PurchaseProxy connection = new PurchaseProxy(name, url);
+        connection.connect();
         return connection;
     }
 
