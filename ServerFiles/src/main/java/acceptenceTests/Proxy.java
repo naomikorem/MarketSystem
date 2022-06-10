@@ -366,11 +366,11 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<SimplePurchasePolicy> addPolicy (int storeId, int hour) {
+    public Response<SimplePurchasePolicy> addPolicy (int storeId, int hour, Calendar date) {
         if (this.real == null) {
             return null;
         }
-        return real.addPolicy(storeId, hour);
+        return real.addPolicy(storeId, hour, date);
     }
 
     @Override
@@ -382,7 +382,7 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<Boolean> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour) {
+    public Response<AbstractPurchasePolicy> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour) {
         if (this.real == null) {
             return null;
         }
@@ -390,7 +390,7 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date) {
+    public Response<AbstractPurchasePolicy> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date) {
         if (this.real == null) {
             return null;
         }
