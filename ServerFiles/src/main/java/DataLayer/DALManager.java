@@ -7,19 +7,21 @@ import org.hibernate.Transaction;
 
 import java.io.Serializable;
 
-public class DALManager <T, K> {
-    private Class<T> type;
+public class DALManager <T extends DALObject<K>, K> {
+    private Class<? extends DALObject<K>> type;
 
     public DALManager(Class<T> type) {
         this.type = type;
     }
+
     public K addObject(T o){
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
         K id = null;
         try {
             tx = session.beginTransaction();
-            id = (K) session.save(o);
+            session.save(o);
+            id = o.getId();
             tx.commit();
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
@@ -36,7 +38,7 @@ public class DALManager <T, K> {
 
         try {
             tx = session.beginTransaction();
-            T o = session.get(type, (Serializable) id);
+            T o = (T) session.get(type, (Serializable) id);
             tx.commit();
             return o;
         } catch (HibernateException e) {

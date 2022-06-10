@@ -1,12 +1,13 @@
 package DataLayer.DALObjects;
 
+import DataLayer.DALObject;
 import DataLayer.ServiceType;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "Services")
-public class ServiceDAL
+public class ServiceDAL implements DALObject<Integer>
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,11 +21,11 @@ public class ServiceDAL
     private ServiceType service_type;
 
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
