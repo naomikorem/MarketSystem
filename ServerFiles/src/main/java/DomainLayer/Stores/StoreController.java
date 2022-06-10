@@ -526,7 +526,7 @@ public class StoreController {
             throw new IllegalArgumentException("This user cannot add items-predicate to policies");
         }
         SimplePredicate sp = new SimplePredicate(itemId,date);
-        addPredicateToPolicy(owner, s, policyId, PredicateEnum.valueOf(type), sp);
+        return addPredicateToPolicy(owner, s, policyId, PredicateEnum.valueOf(type), sp);
     }
 
     public AbstractDiscountPolicy addCategoryPredicateToDiscount(User owner, int storeId, int discountId, String type, String categoryName) {
