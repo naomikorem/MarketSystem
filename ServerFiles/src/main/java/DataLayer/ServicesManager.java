@@ -31,7 +31,7 @@ public class ServicesManager extends DALManager<ServiceDAL, Integer>
         b.setUrl("sdsbb");
         im.addObject(b);
 
-        System.out.println(im.clearServices());
+        //System.out.println(im.clearServices());
 
     }
 
