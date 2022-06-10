@@ -1,6 +1,7 @@
 package DataLayer.DALObjects;
 
 
+import DataLayer.DALObject;
 import DomainLayer.Stores.Category;
 
 import javax.persistence.*;
@@ -8,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "Items")
-public class ItemDAL {
+public class ItemDAL implements DALObject<Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -37,11 +38,11 @@ public class ItemDAL {
 
     public ItemDAL() {}
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

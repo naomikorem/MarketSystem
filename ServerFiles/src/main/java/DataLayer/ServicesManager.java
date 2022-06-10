@@ -8,7 +8,7 @@ import org.hibernate.query.Query;
 
 import java.util.List;
 
-public class ServicesManager extends DALManager<ServiceDAL, String>
+public class ServicesManager extends DALManager<ServiceDAL, Integer>
 {
     public ServicesManager() {
         super(ServiceDAL.class);
@@ -35,7 +35,7 @@ public class ServicesManager extends DALManager<ServiceDAL, String>
 
     }
 
-    public String addService(ServiceDAL service){
+    public Integer addService(ServiceDAL service){
 
         return super.addObject(service);
     }

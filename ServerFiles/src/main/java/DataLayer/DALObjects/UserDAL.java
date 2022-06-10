@@ -1,11 +1,13 @@
 package DataLayer.DALObjects;
 
+import DataLayer.DALObject;
+
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
 @Table(name = "users")
-public class UserDAL {
+public class UserDAL implements DALObject<String> {
     @Id
     private String userName;
     private String firstName;
@@ -20,6 +22,14 @@ public class UserDAL {
     @CollectionTable(name="storeManagers", joinColumns=@JoinColumn(name="manager"))
     @Column(name="store")
     private Set<Integer> managedStores;
+
+    public String getId() {
+        return getUserName();
+    }
+
+    public void setId(String s) {
+        this.setUserName(s);
+    }
 
     public String getUserName() {
         return userName;
