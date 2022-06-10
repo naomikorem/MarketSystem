@@ -2,37 +2,36 @@ package DataLayer.DALObjects;
 
 import DataLayer.DALObject;
 
-public class NotificationDAL implements DALObject<String>
-{
-    private String username;
-    private String message;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "Notifications")
+public class NotificationDAL /*implements DALObject<NotificationsKey>*/
+{
+    @EmbeddedId
+    NotificationsKey id;
+
+//    private String username;
+   // private String message;
+
+    public NotificationDAL(NotificationsKey id)
+    {
+        this.id = id;
+    }
     public NotificationDAL() {
     }
 
-    @Override
-    public String getId() {
-        return getUsername();
+    //@Override
+    public NotificationsKey getId() {
+        return this.id;
     }
 
-    @Override
-    public void setId(String id) {
-        setUsername(id);
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
+    //@Override
+    public void setId(NotificationsKey id) {
+        this.id.setUsername(id.getUsername());
+        this.id.setMessage(id.getMessage());
     }
 }
