@@ -1,6 +1,7 @@
 package DomainLayer.Stores.PurchasePolicy;
 
 import DataLayer.DALObjects.PurchasePolicyDAL;
+import DataLayer.PurchasePolicyManager;
 import DomainLayer.Stores.DiscountPolicy.CompositeDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.Predicates.AbstarctPredicate;
@@ -90,4 +91,10 @@ public abstract class AbstractPurchasePolicy {
     }
 
     public abstract PurchasePolicyDAL toDAL();
+
+    public void update() {
+        if (getId() != 0) {
+            PurchasePolicyManager.getInstance().addObject(toDAL());
+        }
+    }
 }

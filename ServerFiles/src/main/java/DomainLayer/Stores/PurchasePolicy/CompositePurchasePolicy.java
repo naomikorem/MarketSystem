@@ -18,6 +18,7 @@ public abstract class CompositePurchasePolicy extends AbstractPurchasePolicy {
 
     public void addPolicy(AbstractPurchasePolicy app) {
         this.purchasePolicies.add(app);
+        update();
     }
 
     @Override
