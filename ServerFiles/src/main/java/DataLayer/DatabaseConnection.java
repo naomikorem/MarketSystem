@@ -17,7 +17,17 @@ public class DatabaseConnection {
         c.addAnnotatedClass(NotificationsKey.class);
         c.addAnnotatedClass(NotificationDAL.class);
         c.addAnnotatedClass(HistoryItemDAL.class);
-
+        c.addAnnotatedClass(PredicateDAL.class);
+        c.addAnnotatedClass(CompositePredicateDAL.class);
+        c.addAnnotatedClass(SimplePredicateDAL.class);
+        c.addAnnotatedClass(DiscountDAL.class);
+        c.addAnnotatedClass(SimpleDiscountDAL.class);
+        c.addAnnotatedClass(CompositeDiscountDAL.class);
+        c.addAnnotatedClass(PurchasePolicyDAL.class);
+        c.addAnnotatedClass(SimplePurchasePolicyDAL.class);
+        c.addAnnotatedClass(CompositePurchasePolicyDAL.class);
+        c.addAnnotatedClass(StoreDAL.class);
+        c.addAnnotatedClass(PermissionDAL.class);
         return c;
     }
 
