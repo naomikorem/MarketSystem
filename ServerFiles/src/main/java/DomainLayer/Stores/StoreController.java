@@ -25,6 +25,7 @@ public class StoreController {
     private AtomicInteger NEXT_STORE_ID = new AtomicInteger(1);
     private AtomicInteger NEXT_DISCOUNT_ID = new AtomicInteger(1);
     private AtomicInteger NEXT_POLICY_ID = new AtomicInteger(1);
+    private AtomicInteger NEXT_BID_ID = new AtomicInteger(1);
 
     public StoreController() {
         this.stores = new HashMap<>();
@@ -52,6 +53,9 @@ public class StoreController {
     }
 
     private synchronized int getNewPolicyId() {
+        return NEXT_POLICY_ID.getAndIncrement();
+    }
+    private synchronized int getNewBidId() {
         return NEXT_POLICY_ID.getAndIncrement();
     }
 
@@ -592,5 +596,40 @@ public class StoreController {
         String[] s = new String[1];
         s[0] = getStoreAndThrow(id).getName();
         return s;
+    }
+    public Bid addBid(int storeId,String costumerName, double bidPrice, int item, int amount) {
+        Store s = getStoreAndThrow(storeId);
+        Bid bid = new Bid(getNewBidId(), costumerName, bidPrice, item, amount);
+        s.addBid(bid);
+        return bid;
+    }
+    public Bid approveBid(int storeId, User user, int bidId){
+        Store s = getStoreAndThrow(storeId);
+        if (!s.canProcessBids(user))
+            throw new IllegalArgumentException(String.format("Have to process bids permission in store %s", storeId));
+        Bid bid = s.getOrThrowBid(bidId);
+        bid.approve(user.getName());
+        if(s.isApproved(bidId)){
+            bid.setApproved(true);
+        }
+        return bid;
+    }
+    public Bid removeBid(int storeId, User user, int bidId){
+        Store s = getStoreAndThrow(storeId);
+        Bid bid = s.getOrThrowBid(bidId);
+        if(!bid.getCostumer().equals(user.getName())){
+            if (!s.canProcessBids(user))
+                throw new IllegalArgumentException(String.format("Have to process bids permission in store %s", storeId));
+        }
+        return s.removeBid(bidId);
+    }
+
+    public Collection<Bid> getBids(int storeId) {
+        Store s = getStoreAndThrow(storeId);
+        return s.getBids();
+    }
+    public List<Bid> getBids( int storeId, String userName) {
+        Store s = getStoreAndThrow(storeId);
+        return s.getBids(userName);
     }
 }

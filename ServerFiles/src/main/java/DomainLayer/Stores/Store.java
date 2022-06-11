@@ -30,6 +30,8 @@ public class Store {
     private boolean permanentlyClosed;
     private CompositeDiscountPolicy discountPolicy;
     private CompositePurchasePolicy purchasePolicy;
+    private Map<Integer ,Bid> bids;
+
 
     public Store(User founder, String store_name, int id) {
         this.founder = founder.getName();
@@ -45,7 +47,10 @@ public class Store {
         owners.put(founder, null);
         founder.addOwnedStore(getStoreId());
         setName(store_name);
+        this.bids = new HashMap<>();
     }
+
+
 
     public boolean isOwner(User u) {
         return this.owners.containsKey(u);
@@ -201,17 +206,17 @@ public class Store {
 //            throw new LogException("You can't add 0 items to your shopping cart", "User tried to buy 0 items from item " + itemId);
 //        }
         synchronized (items) {
-        Item i = items.keySet().stream().filter(item -> item.getId() == itemId).findFirst().orElse(null);
-        if (i != null) {
-            int amount = items.getOrDefault(i, 0);
-            if (amount >= toDeduct) {
-                items.put(i, amount - toDeduct);
-                return i;
-            } else {
-                throw new LogException("There isn't enough item " + itemId + " in stock", "User tried to buy item " + itemId + " but there isn't enough in stock");
+            Item i = items.keySet().stream().filter(item -> item.getId() == itemId).findFirst().orElse(null);
+            if (i != null) {
+                int amount = items.getOrDefault(i, 0);
+                if (amount >= toDeduct) {
+                    items.put(i, amount - toDeduct);
+                    return i;
+                } else {
+                    throw new LogException("There isn't enough item " + itemId + " in stock", "User tried to buy item " + itemId + " but there isn't enough in stock");
+                }
             }
-        }
-        throw new IllegalArgumentException("Could not find item id " + itemId);
+            throw new IllegalArgumentException("Could not find item id " + itemId);
         }
     }
 
@@ -406,6 +411,7 @@ public class Store {
             return this.discountPolicy.applyDiscount(sb);
         }
     }
+
     public Map<Item, Double> getDiscounts(ShoppingBasket sb) {
         synchronized (discountLock) {
             if (this.discountPolicy == null) {
@@ -427,6 +433,9 @@ public class Store {
     public boolean canManageDiscounts(User user) {
         return isOwner(user) || (isManager(user) && managers.get(user).canChangeDiscount());
     }
+    public boolean canProcessBids(User user) {
+        return isOwner(user) || (isManager(user) && managers.get(user).canProcessBids());
+    }
 
     public boolean canManagePurchasePolicy(User user) {
         return isOwner(user) || (isManager(user) && managers.get(user).canChangePurchase());
@@ -444,5 +453,38 @@ public class Store {
             return new ArrayList<>();
         }
         return this.purchasePolicy.getAllPurchasePolicies();
+    }
+
+    public void addBid(Bid bid) {
+        bids.put(bid.getId(),bid);
+    }
+
+    public Collection<Bid> getBids() {
+        return bids.values();
+    }
+
+    public List<Bid> getBids(String userName){
+        if (!managers.containsKey(userName) && !owners.containsKey(userName)) {
+            throw new IllegalArgumentException(String.format("%s is not a store manager", userName));
+        }
+        return bids.values().stream().filter(b -> !b.approvedManagers.contains(userName)).filter(b -> !b.isApproved).collect(Collectors.toList());
+    }
+    public Bid getOrThrowBid(int id){
+        Bid bid = bids.get(id);
+        if (bid == null)
+            throw new IllegalArgumentException(String.format("Bid not in store %s", id));
+        return bid;
+    }
+    public boolean isApproved(int bidId){
+        List<String> managers = this.managers.keySet().stream().filter(this::canProcessBids).map(User::getName).collect(Collectors.toList());
+        List<String> owners = this.owners.keySet().stream().map(User::getName).collect(Collectors.toList());
+        return  bids.get(bidId).approvedManagers.containsAll(managers) && bids.get(bidId).approvedManagers.containsAll(owners);
+    }
+    public Bid removeBid(int bidId){
+        Bid bid = bids.get(id);
+        if (bid == null)
+            throw new IllegalArgumentException(String.format("Bid not in store %s", id));
+        bids.remove(bidId);
+        return bid;
     }
 }

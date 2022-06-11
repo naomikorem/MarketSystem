@@ -1,12 +1,9 @@
 package DomainLayer;
 
-import DomainLayer.Stores.Category;
+import DomainLayer.Stores.*;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
-import DomainLayer.Stores.Item;
-import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.PurchasePolicy.SimplePurchasePolicy;
-import DomainLayer.Stores.Store;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
@@ -147,4 +144,9 @@ public interface SystemInterface {
     public Response<String[]> getStoreNameByID(int id) ;
     public Response<Double> calculateShoppingCartPriceResult(List<ShoppingBasket> baskets);
     public Response<Map<Item, Double>> getShoppingBasketDiscounts(ShoppingBasket sb);
+    public Response<Boolean> addBid(int storeId, double bidPrice, int item, int amount);
+    public Response<Collection<Bid>> getBids(int storeId) ;
+    public Response<Collection<Bid>> getUserBids();
+    public Response<Bid> approveBid(int storeId, int bidId);
+    public Response<Bid> updateBid(int storeId,int bidId, double newPrice);
 }
