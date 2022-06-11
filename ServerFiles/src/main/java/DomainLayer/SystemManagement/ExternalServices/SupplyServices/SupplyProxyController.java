@@ -6,6 +6,7 @@ import DomainLayer.Stores.Item;
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxyController;
 import ServiceLayer.DTOs.SupplyParamsDTO;
 import Utility.LogUtility;
+import lombok.SneakyThrows;
 
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
@@ -40,13 +41,24 @@ public class SupplyProxyController extends AbstractProxyController<SupplyProxy> 
     }
 
     @Override
-    protected ServiceDAL createServiceDALObject(String name, String url)
+    protected ServiceDAL toDAL(String name, String url)
     {
         ServiceDAL service = new ServiceDAL();
         service.setName(name);
         service.setUrl(url);
         service.setServiceType(ServiceType.Supply);
         return service;
+    }
+
+    @Override
+    public void loadAllServices() {
+        List<ServiceDAL> serviceDALS = manager.getAllServicesByType(ServiceType.Supply);
+        for (ServiceDAL s: serviceDALS)
+        {
+            String name = s.getName();
+            SupplyProxy service_domain = toDomain(s);
+            this.services.put(name, service_domain);
+        }
     }
 
     /***

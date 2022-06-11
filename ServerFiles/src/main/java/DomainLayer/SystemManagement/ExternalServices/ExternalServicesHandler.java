@@ -31,6 +31,12 @@ public class ExternalServicesHandler
         return ExternalServicesHolder.INSTANCE;
     }
 
+    public void loadServices()
+    {
+        this.purchaseProxyController.loadAllServices();
+        this.supplyProxyController.loadAllServices();
+    }
+
     public void clearServices()
     {
         this.purchaseProxyController.clearServices();

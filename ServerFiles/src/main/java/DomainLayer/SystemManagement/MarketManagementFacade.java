@@ -68,6 +68,7 @@ public class MarketManagementFacade {
     @SneakyThrows
     public synchronized void initializeMarket() {
         // check if there is supply service - if not, add the first one
+        services.loadServices();
         if (!services.hasPurchaseService()) {
             services.addExternalPurchaseService(AbstractProxy.WSEP_PAYMENT, AbstractProxy.WSEP_PAYMENT_URL);
         }

@@ -3,22 +3,22 @@ package DomainLayer.SystemManagement.ExternalServices;
 import DataLayer.DALObjects.ServiceDAL;
 import DataLayer.ServicesManager;
 import Utility.LogUtility;
+import lombok.SneakyThrows;
 
 import java.rmi.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 public abstract class AbstractProxyController<T extends AbstractProxy>
 {
     // Holds all the external services from specific type (purchase or supply)
     protected ConcurrentHashMap<String, T> services = new ConcurrentHashMap<>();
-    private ServicesManager manager = ServicesManager.getInstance();
+    protected ServicesManager manager = ServicesManager.getInstance();
 
     protected abstract T createProxy(String name, String url) throws ConnectException; // abstract function
-    protected abstract ServiceDAL createServiceDALObject(String name, String url);
+    protected abstract ServiceDAL toDAL(String name, String url);
+    public abstract void loadAllServices();
 
     /***
      * Add external service to the market system
@@ -33,7 +33,7 @@ public abstract class AbstractProxyController<T extends AbstractProxy>
         }
         services.put(name, createProxy(name, url));
         LogUtility.info("Added new external service with the name " + name);
-        //manager.addService(createServiceDALObject(name, url));
+        manager.addService(toDAL(name, url));
     }
 
     /***
@@ -54,6 +54,7 @@ public abstract class AbstractProxyController<T extends AbstractProxy>
         }
         services.remove(service_name);
         LogUtility.info("Removed the external service with the name " + service_name + " from the system");
+        manager.deleteAllServicesByName(service_name);
     }
 
     public synchronized List<String> getAllExternalServicesNames()
@@ -88,5 +89,12 @@ public abstract class AbstractProxyController<T extends AbstractProxy>
     public void clearServices()
     {
         this.services = new ConcurrentHashMap<>();
+        this.manager.clearServices();
+    }
+
+    @SneakyThrows
+    protected T toDomain(ServiceDAL s)
+    {
+        return createProxy(s.getName(), s.getUrl());
     }
 }
