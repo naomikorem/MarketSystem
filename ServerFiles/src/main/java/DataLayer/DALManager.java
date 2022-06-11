@@ -27,7 +27,11 @@ public class DALManager <T extends DALObject<K>, K> {
             if (tx!=null) tx.rollback();
             e.printStackTrace();
         } finally {
-            session.close();
+            try {
+                session.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return id;
     }

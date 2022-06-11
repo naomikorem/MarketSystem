@@ -211,17 +211,15 @@ public class SystemImplementor implements SystemInterface {
         List<Store> stores = new ArrayList<>();
         for (int id : user.getOwnedStores()) {
             Response<Store> r = storeFacade.getStore(id);
-            if (r.hadError()) {
-                return new Response<>(r.getErrorMessage());
+            if (!r.hadError()) {
+                stores.add(r.getObject());
             }
-            stores.add(r.getObject());
         }
         for (int id : user.getManagedStores()) {
             Response<Store> r = storeFacade.getStore(id);
-            if (r.hadError()) {
-                return new Response<>(r.getErrorMessage());
+            if (!r.hadError()) {
+                stores.add(r.getObject());
             }
-            stores.add(r.getObject());
         }
         return new Response<>(stores);
     }

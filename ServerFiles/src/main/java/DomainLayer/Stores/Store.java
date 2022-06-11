@@ -1,6 +1,9 @@
 package DomainLayer.Stores;
 
 import DataLayer.DALObjects.*;
+import DataLayer.PermissionManager;
+import DataLayer.StoreManager;
+import DataLayer.UserManager;
 import DomainLayer.Stores.DiscountPolicy.*;
 import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
 import DomainLayer.Stores.PurchasePolicy.AddPurchasePolicy;
@@ -33,6 +36,22 @@ public class Store {
     private CompositePurchasePolicy purchasePolicy;
     private Map<Integer ,Bid> bids;
 
+    public Store(String name, boolean open, int id, String founder, Map<User, String> owners, Map<User, Permission> managers, Map<Item, Integer> items, Lock lock, Lock discountLock, Lock purchaseLock, boolean permanentlyClosed, CompositeDiscountPolicy discountPolicy, CompositePurchasePolicy purchasePolicy, Map<Integer, Bid> bids) {
+        this.name = name;
+        this.open = open;
+        this.id = id;
+        this.founder = founder;
+        this.owners = owners;
+        this.managers = managers;
+        this.items = items;
+        this.lock = lock;
+        this.discountLock = discountLock;
+        this.purchaseLock = purchaseLock;
+        this.permanentlyClosed = permanentlyClosed;
+        this.discountPolicy = discountPolicy;
+        this.purchasePolicy = purchasePolicy;
+        this.bids = bids;
+    }
 
     public Store(User founder, String store_name, int id) {
         this.founder = founder.getName();
@@ -46,7 +65,6 @@ public class Store {
         this.discountLock = new ReentrantLock();
         this.purchaseLock = new ReentrantLock();
         owners.put(founder, null);
-        founder.addOwnedStore(getStoreId());
         setName(store_name);
         this.bids = new HashMap<>();
     }
@@ -66,6 +84,7 @@ public class Store {
         setName(store_name);
         this.discountPolicy = cdp;
         this.purchasePolicy = cpp;
+        this.bids = new HashMap<>();
     }
 
     public boolean isOwner(User u) {
@@ -145,22 +164,27 @@ public class Store {
     }
 
     public void addManager(String givenBy, User manager) {
-        synchronized (lock) {
-            if (!isOpen()) {
-                LogUtility.error("tried to add a manger for a closed store");
-                throw new IllegalArgumentException("This store is closed");
+        saveUpdateState(() -> {
+            synchronized (lock) {
+                if (!isOpen()) {
+                    LogUtility.error("tried to add a manger for a closed store");
+                    throw new IllegalArgumentException("This store is closed");
+                }
+                if (managers.containsKey(manager) || owners.containsKey(manager)) {
+                    LogUtility.error("tried to add a manger who is already a store-owner/ manager");
+                    throw new IllegalArgumentException("This manger is already a store-owner/ manager");
+                }
+                Permission p = new Permission(givenBy);
+                p.setId(PermissionManager.getInstance().addObject(p.toDAL(manager)));
+                this.managers.put(manager, p);
+                manager.addManagedStore(getStoreId());
+                LogUtility.info("New manager for shop " + this.id + ", the store manger is :" + manager.getName());
             }
-            if (managers.containsKey(manager) || owners.containsKey(manager)) {
-                LogUtility.error("tried to add a manger who is already a store-owner/ manager");
-                throw new IllegalArgumentException("This manger is already a store-owner/ manager");
-            }
-            this.managers.put(manager, new Permission(givenBy));
-            manager.addManagedStore(getStoreId());
-            LogUtility.info("New manager for shop " + this.id + ", the store manger is :" + manager.getName());
-        }
+        });
     }
 
     public void addOwner(String givenBy, User newOwner) {
+        saveUpdateState(() -> {
         synchronized (lock) {
             if (!isOpen()) {
                 LogUtility.error("tried to add owner for a closed store");
@@ -173,7 +197,7 @@ public class Store {
             this.owners.put(newOwner, givenBy);
             newOwner.addOwnedStore(getStoreId());
             LogUtility.info("New store owner for shop " + this.id + ", the store owner is :" + newOwner.getName());
-        }
+        }});
     }
 
     public Map<Item, Integer> getItems() {
@@ -227,6 +251,12 @@ public class Store {
                 int amount = items.getOrDefault(i, 0);
                 if (amount >= toDeduct) {
                     items.put(i, amount - toDeduct);
+                    try {
+                        update();
+                    } catch (Exception e) {
+                        items.put(i, amount);
+                        throw e;
+                    }
                     return i;
                 } else {
                     throw new LogException("There isn't enough item " + itemId + " in stock", "User tried to buy item " + itemId + " but there isn't enough in stock");
@@ -237,6 +267,7 @@ public class Store {
     }
 
     public void addItem(Item item, int amount) {
+        saveUpdateState(() -> {
         if (!isOpen()) {
             LogUtility.error("tried to add item for a closed store");
             throw new IllegalArgumentException("This store is closed");
@@ -247,15 +278,17 @@ public class Store {
         }*/
         synchronized (items) {
             this.items.put(item, items.getOrDefault(item, 0) + amount);
-        }
+        }});
     }
 
     public void setItemAmount(Item item, int amount) {
-        synchronized (items) {
-            if (this.items.containsKey(item)) {
-                this.items.put(item, amount);
+        saveUpdateState(() -> {
+            synchronized (items) {
+                if (this.items.containsKey(item)) {
+                    this.items.put(item, amount);
+                }
             }
-        }
+        });
     }
 
     private User getManagerByName(String name) {
@@ -275,7 +308,13 @@ public class Store {
         if (p == null) {
             throw new IllegalArgumentException(String.format("%s is not a manager in the store", manager));
         }
+        byte old = p.getPermissionsMask();
         p.setPermissionsMask(permission);
+        try {
+            PermissionManager.getInstance().addObject(p.toDAL(getManagerByName(manager)));
+        } catch (Exception e) {
+            p.setPermissionsMask(old);
+        }
     }
 
     public String getFounder() {
@@ -283,12 +322,14 @@ public class Store {
     }
 
     public void removeStoreOwner(String removedBy, User owner) {
-        synchronized (lock) {
-            if (!owners.containsKey(owner) || !owners.get(owner).equals(removedBy)) {
-                throw new IllegalArgumentException(String.format("%s is not a store owner that was set by %s", owner, removedBy));
+        saveUpdateState(() -> {
+            synchronized (lock) {
+                if (!owners.containsKey(owner) || !owners.get(owner).equals(removedBy)) {
+                    throw new IllegalArgumentException(String.format("%s is not a store owner that was set by %s", owner, removedBy));
+                }
+                removeAndRemoveEveryoneAssignedBy(owner);
             }
-            removeAndRemoveEveryoneAssignedBy(owner);
-        }
+        });
     }
 
     public void removeAndRemoveEveryoneAssignedBy(User user) {
@@ -304,14 +345,16 @@ public class Store {
     }
 
     public void removeStoreManager(String removedBy, User manager) {
-        synchronized (lock) {
-            if (!managers.containsKey(manager) || !managers.get(manager).getGivenBy().equals(removedBy)) {
-                throw new IllegalArgumentException(String.format("%s is not a store manager that was set by %s", manager, removedBy));
+        saveUpdateState(() -> {
+            synchronized (lock) {
+                if (!managers.containsKey(manager) || !managers.get(manager).getGivenBy().equals(removedBy)) {
+                    throw new IllegalArgumentException(String.format("%s is not a store manager that was set by %s", manager, removedBy));
+                }
+                managers.remove(manager);
+                manager.removedManagedStore(getStoreId());
+                LogUtility.info("Store manager " + manager.getName() + " was removed from position by " + removedBy);
             }
-            managers.remove(manager);
-            manager.removedManagedStore(getStoreId());
-            LogUtility.info("Store manager " + manager.getName() + " was removed from position by " + removedBy);
-        }
+        });
     }
 
     public List<String> getManagers() {
@@ -323,60 +366,68 @@ public class Store {
     }
 
     public void changeName(String oldName, String newName) {
-        synchronized (lock) {
-            Set<User> changedOwners = owners.entrySet().stream().filter(e -> e.getValue().equals(oldName)).map(Map.Entry::getKey).collect(Collectors.toSet());
-            owners.keySet().removeAll(changedOwners);
-            changedOwners.forEach(u -> owners.put(u, newName));
+        saveUpdateState(() -> {
+            synchronized (lock) {
+                Set<User> changedOwners = owners.entrySet().stream().filter(e -> e.getValue().equals(oldName)).map(Map.Entry::getKey).collect(Collectors.toSet());
+                owners.keySet().removeAll(changedOwners);
+                changedOwners.forEach(u -> owners.put(u, newName));
 
-            managers.forEach((key, value) -> {
-                if (value.getGivenBy().equals(oldName)) {
-                    value.setGivenBy(newName);
-                }
-            });
-        }
-        LogUtility.info("User named " + oldName + " changed it's name to " + newName);
+                managers.forEach((key, value) -> {
+                    if (value.getGivenBy().equals(oldName)) {
+                        value.setGivenBy(newName);
+                    }
+                });
+            }
+            LogUtility.info("User named " + oldName + " changed it's name to " + newName);
+        });
     }
 
     public void addDiscount(AbstractDiscountPolicy adp) {
-        synchronized (discountLock) {
-            if (this.discountPolicy == null) {
-                this.discountPolicy = new AddDiscountPolicy();
-                this.discountPolicy.addDiscount(adp);
-                return;
+        saveUpdateState(() -> {
+            synchronized (discountLock) {
+                if (this.discountPolicy == null) {
+                    this.discountPolicy = new AddDiscountPolicy();
+                    this.discountPolicy.addDiscount(adp);
+                    return;
+                }
+                AddDiscountPolicy add = new AddDiscountPolicy();
+                add.addDiscount(this.discountPolicy);
+                add.addDiscount(adp);
+                this.discountPolicy = add;
             }
-            AddDiscountPolicy add = new AddDiscountPolicy();
-            add.addDiscount(this.discountPolicy);
-            add.addDiscount(adp);
-            this.discountPolicy = add;
-        }
+        });
     }
 
     public void addPolicy(AbstractPurchasePolicy app) {
-        synchronized (purchaseLock) {
-            if (this.purchasePolicy == null) {
-                this.purchasePolicy = new AddPurchasePolicy();
-                this.purchasePolicy.addPolicy(app);
-                return;
+        saveUpdateState(() -> {
+            synchronized (purchaseLock) {
+                if (this.purchasePolicy == null) {
+                    this.purchasePolicy = new AddPurchasePolicy();
+                    this.purchasePolicy.addPolicy(app);
+                    return;
+                }
+                AddPurchasePolicy ap = new AddPurchasePolicy();
+                ap.addPolicy(this.purchasePolicy);
+                ap.addPolicy(app);
+                this.purchasePolicy = ap;
             }
-            AddPurchasePolicy ap = new AddPurchasePolicy();
-            ap.addPolicy(this.purchasePolicy);
-            ap.addPolicy(app);
-            this.purchasePolicy = ap;
-        }
+        });
     }
 
     public void addExclusiveDiscount(AbstractDiscountPolicy adp) {
-        synchronized (discountLock) {
-            if (this.discountPolicy == null) {
-                this.discountPolicy = new MaxDiscountPolicy();
-                this.discountPolicy.addDiscount(adp);
-                return;
+        saveUpdateState(() -> {
+            synchronized (discountLock) {
+                if (this.discountPolicy == null) {
+                    this.discountPolicy = new MaxDiscountPolicy();
+                    this.discountPolicy.addDiscount(adp);
+                    return;
+                }
+                MaxDiscountPolicy max = new MaxDiscountPolicy();
+                max.addDiscount(this.discountPolicy);
+                max.addDiscount(adp);
+                this.discountPolicy = max;
             }
-            MaxDiscountPolicy max = new MaxDiscountPolicy();
-            max.addDiscount(this.discountPolicy);
-            max.addDiscount(adp);
-            this.discountPolicy = max;
-        }
+        });
     }
 
     public AbstractDiscountPolicy getDiscount(int discountId) {
@@ -392,31 +443,36 @@ public class Store {
     }
 
     public void removeDiscount(int discountId) {
-        boolean res = false;
-        synchronized (discountLock) {
-            if (discountPolicy.getId() == discountId) {
-                this.discountPolicy = null;
-                return;
+        saveUpdateState(() -> {
+            boolean res = false;
+            synchronized (discountLock) {
+                if (discountPolicy.getId() == discountId) {
+                    this.discountPolicy = null;
+                    return;
+                }
+                res = discountPolicy.removeDiscount(discountId);
             }
-            res = discountPolicy.removeDiscount(discountId);
-        }
-        if (!res) {
-            throw new IllegalArgumentException(String.format("There is no discount in store %s with id %s", getStoreId(), discountId));
-        }
+            if (!res) {
+                throw new IllegalArgumentException(String.format("There is no discount in store %s with id %s", getStoreId(), discountId));
+            }
+        });
     }
 
     public void removePolicy(int purchaseId) {
-        boolean res = false;
-        synchronized (purchaseLock) {
-            if (purchasePolicy.getId() == purchaseId) {
-                this.purchasePolicy = null;
-                return;
+        saveUpdateState(() -> {
+
+            boolean res = false;
+            synchronized (purchaseLock) {
+                if (purchasePolicy.getId() == purchaseId) {
+                    this.purchasePolicy = null;
+                    return;
+                }
+                res = purchasePolicy.removePolicy(purchaseId);
             }
-            res = purchasePolicy.removePolicy(purchaseId);
-        }
-        if (!res) {
-            throw new IllegalArgumentException(String.format("There is no policy in store %s with id %s", getStoreId(), purchaseId));
-        }
+            if (!res) {
+                throw new IllegalArgumentException(String.format("There is no policy in store %s with id %s", getStoreId(), purchaseId));
+            }
+        });
     }
 
     public double applyDiscount(ShoppingBasket sb) {
@@ -496,7 +552,8 @@ public class Store {
         List<String> owners = this.owners.keySet().stream().map(User::getName).collect(Collectors.toList());
         return  bids.get(bidId).approvedManagers.containsAll(managers) && bids.get(bidId).approvedManagers.containsAll(owners);
     }
-    public Bid removeBid(int bidId){
+
+    public Bid removeBid(int bidId) {
         Bid bid = bids.get(id);
         if (bid == null)
             throw new IllegalArgumentException(String.format("Bid not in store %s", id));
@@ -511,8 +568,8 @@ public class Store {
         res.setOpen(open);
         res.setName(getName());
         res.setPermanentlyClosed(permanentlyClosed);
-        res.setDiscount((CompositeDiscountDAL) discountPolicy.toDAL());
-        res.setPurchase((CompositePurchasePolicyDAL) purchasePolicy.toDAL());
+        res.setDiscount(discountPolicy != null ? (CompositeDiscountDAL) discountPolicy.toDAL() : null);
+        res.setPurchase(purchasePolicy != null ? (CompositePurchasePolicyDAL) purchasePolicy.toDAL() : null);
 
         Map<ItemDAL, Integer> items = new HashMap<>();
         getItems().forEach((k, v) -> items.put(k.toDAL(), v));
@@ -526,5 +583,34 @@ public class Store {
         this.managers.forEach((k, v) -> managers.add(v.toDAL(k)));
         res.setManagers(managers);
         return res;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    private void update() {
+        if (getStoreId() != 0) {
+            StoreManager.getInstance().addObject(toDAL());
+        }
+    }
+
+    public void saveUpdateState(Runnable r) {
+        Store copy = new Store(name, open, id, founder, new HashMap<>(owners), new HashMap<>(managers), new HashMap<>(items), lock, discountLock, purchaseLock, permanentlyClosed, discountPolicy, purchasePolicy, new HashMap<>(bids));
+        try {
+            r.run();
+            update();
+        } catch (Exception e) {
+            this.name = copy.name;
+            this.open = copy.open;
+            this.founder = copy.founder;
+            this.owners = copy.owners;
+            this.managers = copy.managers;
+            this.items = copy.items;
+            this.permanentlyClosed = copy.permanentlyClosed;
+            this.discountPolicy = copy.discountPolicy;
+            this.purchasePolicy = copy.purchasePolicy;
+            this.bids = copy.bids;
+        }
     }
 }

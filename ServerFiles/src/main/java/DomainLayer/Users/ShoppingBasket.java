@@ -81,7 +81,7 @@ public class ShoppingBasket {
 
     public ShoppingBasketDAL toDAL() {
         ShoppingBasketDAL res = new ShoppingBasketDAL();
-        res.setId(getStoreId());
+        res.setId(this.id);
         res.setStoreId(getStoreId());
 
         Map<ItemDAL, Integer> items = new HashMap<>();

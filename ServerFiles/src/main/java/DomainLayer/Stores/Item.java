@@ -1,14 +1,15 @@
 package DomainLayer.Stores;
 
 import DataLayer.DALObjects.ItemDAL;
+import DataLayer.ItemManager;
 import Utility.LogUtility;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Item {
 
-    public static int NEXT_ITEM_ID = 1;
 
     private int id;
     private String product_name;
@@ -20,15 +21,12 @@ public class Item {
     private static int TOP_RATE = 5;
     private static int BOTTOM_RATE = 0;
 
-    public synchronized static int getNextItemId() {
-        return NEXT_ITEM_ID++;
-    }
 
     public Item() {}
 
     public Item(String product_name, Category category, double price) {
         checkParams(product_name, price);
-        this.id = getNextItemId();
+        this.id = 0;
         this.product_name = product_name;
         this.category = category;
         this.price = price;
@@ -38,11 +36,25 @@ public class Item {
     }
 
     public void updateItem(String productName, Category category, double price, List<String> keywords) {
+        String oldname = this.product_name;
+        Category oldC = this.category;
+        double oldPrice = this.price;
+        List<String> oldKeywords = this.keyWords;
+
         checkParams(productName, price);
         this.product_name = productName;
         this.category = category;
         this.price = price;
         this.keyWords = keywords;
+
+        try {
+            update();
+        } catch (Exception e) {
+            this.product_name = oldname;
+            this.category = oldC;
+            this.price = oldPrice;
+            this.keyWords = oldKeywords;
+        }
     }
 
     public void checkParams(String product_name, double price) {
@@ -61,9 +73,9 @@ public class Item {
     }
 
     public void setProductName(String product_name) {
+
         checkParams(product_name, price);
         this.product_name = product_name;
-
         LogUtility.info(String.format("Item %d name was updated to %s",this.id, product_name));
     }
 
@@ -80,6 +92,8 @@ public class Item {
     }
 
     public void updateRate(double new_rate) {
+        double oldRate = this.rate;
+
         if (new_rate > TOP_RATE || new_rate < BOTTOM_RATE) {
             if (new_rate > TOP_RATE)
                 LogUtility.warn("tried to add a new rate for a number bigger then 5");
@@ -89,7 +103,14 @@ public class Item {
         }
         this.rate = (this.rate * this.numberOfRatings + new_rate) / (this.numberOfRatings + 1);
         this.numberOfRatings++;
-        LogUtility.info(String.format("Item %d Rate was updated",this.id));
+
+        try {
+            update();
+            LogUtility.info(String.format("Item %d Rate was updated",this.id));
+        } catch (Exception e) {
+            this.rate = oldRate;
+            this.numberOfRatings--;
+        }
     }
 
     public double getPrice() {
@@ -163,5 +184,24 @@ public class Item {
         res.setNumberOfRatings(getNumberOfRatings());
         res.setKeyWords(getKeyWords());
         return res;
+    }
+
+    private void update() {
+        if (getId() != 0) {
+            ItemManager.getInstance().addObject(this.toDAL());
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Item item = (Item) o;
+        return id == item.id && product_name.equals(item.product_name) && category == item.category;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, product_name, category);
     }
 }
