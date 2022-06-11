@@ -21,7 +21,7 @@ public abstract class AbstractEditExternalTest extends AbstractTest {
 
     public AbstractEditExternalTest() {
         super();
-        this.new_service_name = AbstractProxy.GOOD_STUB_NAME_2;
+        this.new_service_name = AbstractProxy.GOOD_STUB_NAME;
         this.anotherAdminUsername = "someAdmin12";
     }
 

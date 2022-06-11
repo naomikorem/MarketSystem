@@ -1,5 +1,8 @@
 package DomainLayer.Stores;
 
+import DataLayer.DALObjects.PredicateDAL;
+import DataLayer.DALObjects.SimplePredicateDAL;
+import DataLayer.PredicateManager;
 import DomainLayer.Response;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.Predicates.AndCompositePredicate;
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 
 public class StoreController {
 
+    private PredicateManager manager;
     private Map<Integer, Store> stores; // store-id , stores
 
     private AtomicInteger NEXT_STORE_ID = new AtomicInteger(1);
@@ -29,6 +33,7 @@ public class StoreController {
 
     public StoreController() {
         this.stores = new HashMap<>();
+        this.manager = PredicateManager.getInstance();
     }
 
     private static class StoreControllerHolder {
@@ -448,6 +453,10 @@ public class StoreController {
                 adp.addXorPredicate(sp);
                 break;
         }
+
+        Integer id = this.manager.addObject(sp.toDAL());
+        sp.setId(id);
+
         return adp;
     }
 

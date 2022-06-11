@@ -57,7 +57,7 @@ public class DALManager <T extends DALObject<K>, K> {
 
         try {
             tx = session.beginTransaction();
-            session.createQuery(new String("delete from " + type)).executeUpdate();
+            session.createQuery(new String("delete from " + type.getName())).executeUpdate();
             tx.commit();
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
