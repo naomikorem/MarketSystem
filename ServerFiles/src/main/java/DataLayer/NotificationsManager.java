@@ -4,7 +4,15 @@ package DataLayer;
 import DataLayer.DALObjects.NotificationDAL;
 import DataLayer.DALObjects.NotificationsKey;
 import DataLayer.DALObjects.ServiceDAL;
+<<<<<<< HEAD
+import org.aspectj.weaver.ast.Not;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+=======
 import org.hibernate.*;
+>>>>>>> 317c90a99c5cd1babd87996a3d18909116a76ae8
 
 import java.util.List;
 
