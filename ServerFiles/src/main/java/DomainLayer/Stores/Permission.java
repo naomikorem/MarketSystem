@@ -6,8 +6,8 @@ public class Permission {
         canAssignManager(0x1),
         canChangeItems(0x2),
         canChangeDiscount(0x4),
-        canChangePurchase(0x8);
-
+        canChangePurchase(0x8),
+        canProcessBids(0x10);
         PermissionEnum(int flag) {
             this.flag = (byte) flag;
         }
@@ -38,6 +38,9 @@ public class Permission {
 
     public boolean canChangePurchase() {
         return (permissionsMask & PermissionEnum.canChangePurchase.flag) != 0;
+    }
+    public boolean canProcessBids() {
+        return (permissionsMask & PermissionEnum.canProcessBids.flag) != 0;
     }
 
     public String getGivenBy() {
