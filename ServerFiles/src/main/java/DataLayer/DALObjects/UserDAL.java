@@ -3,6 +3,7 @@ package DataLayer.DALObjects;
 import DataLayer.DALObject;
 
 import javax.persistence.*;
+import java.util.Map;
 import java.util.Set;
 
 @Entity
@@ -22,6 +23,11 @@ public class UserDAL implements DALObject<String> {
     @CollectionTable(name="storeManagers", joinColumns=@JoinColumn(name="manager"))
     @Column(name="store")
     private Set<Integer> managedStores;
+
+    @OneToMany(cascade=CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name="username")
+    private Set<ShoppingBasketDAL> shoppingBaskets;
+
 
     public String getId() {
         return getUserName();
@@ -85,5 +91,13 @@ public class UserDAL implements DALObject<String> {
 
     public void setManagedStores(Set<Integer> managedStores) {
         this.managedStores = managedStores;
+    }
+
+    public Set<ShoppingBasketDAL> getShoppingBaskets() {
+        return shoppingBaskets;
+    }
+
+    public void setShoppingBaskets(Set<ShoppingBasketDAL> shoppingBaskets) {
+        this.shoppingBaskets = shoppingBaskets;
     }
 }
