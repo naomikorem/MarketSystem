@@ -52,7 +52,8 @@ public class UserController {
     public void clearAll() {
         users = new HashMap<>();
         loggedUsers = new HashSet<>();
-        
+        UserManager.getInstance().clearTable();
+
         loadUser(DEFAULT_ADMIN_USER);
         if (!users.containsKey(DEFAULT_ADMIN_USER)) {
             createUser(DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_USER, DEFAULT_ADMIN_USER_FIRST_NAME, DEFAULT_ADMIN_USER_LAST_NAME, DEFAULT_ADMIN_PASSWORD);

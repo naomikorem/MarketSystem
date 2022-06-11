@@ -6,6 +6,7 @@ import DomainLayer.SystemManagement.ExternalServices.ExternalServicesHandler;
 import DomainLayer.SystemManagement.ExternalServices.SupplyServices.SupplyProxyController;
 import DomainLayer.SystemManagement.MarketManagementFacade;
 import DomainLayer.SystemManagement.NotificationManager.NotificationController;
+import DomainLayer.Users.AdminController;
 import Utility.LogUtility;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,6 +22,8 @@ public class Server {
         LogUtility.info("Starting to load notifications and services...");
         MarketManagementFacade.getInstance();
         LogUtility.info("Finished to load notifications and services");
+        LogUtility.info("Starting to load system admins...");
+        AdminController.getInstance();
         SpringApplication.run(Server.class, args);
     }
 }

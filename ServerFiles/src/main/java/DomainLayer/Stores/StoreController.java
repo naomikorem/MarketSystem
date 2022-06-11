@@ -50,6 +50,7 @@ public class StoreController {
 
     public void clearAll() {
         stores = new HashMap<>();
+        StoreManager.getInstance().clearTable();
     }
 
     private synchronized int getNewStoreId() {
