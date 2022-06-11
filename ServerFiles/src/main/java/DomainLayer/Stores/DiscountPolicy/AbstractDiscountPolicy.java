@@ -3,6 +3,7 @@ package DomainLayer.Stores.DiscountPolicy;
 import DataLayer.DALObjects.CompositePredicateDAL;
 import DataLayer.DALObjects.DiscountDAL;
 import DataLayer.DALObjects.PredicateDAL;
+import DataLayer.DiscountManager;
 import DomainLayer.Stores.Predicates.AbstarctPredicate;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Predicates.CompositePredicate;
@@ -99,4 +100,10 @@ public abstract class AbstractDiscountPolicy {
     }
 
     public abstract DiscountDAL toDAL();
+
+    public void update() {
+        if (getId() != 0) {
+            DiscountManager.getInstance().addObject(toDAL());
+        }
+    }
 }

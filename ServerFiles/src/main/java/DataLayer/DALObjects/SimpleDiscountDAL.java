@@ -35,7 +35,7 @@ public class SimpleDiscountDAL extends DiscountDAL {
 
     @Override
     public AbstractDiscountPolicy toDomain() {
-        SimpleDiscountPolicy sdp = new SimpleDiscountPolicy(getPercentage(), getPredicate().toDomain());
+        SimpleDiscountPolicy sdp = new SimpleDiscountPolicy(getPercentage(), getPredicate() == null ? null : getPredicate().toDomain());
         sdp.setId(getId());
         return sdp;
     }

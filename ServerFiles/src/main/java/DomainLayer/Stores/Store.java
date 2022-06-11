@@ -1,9 +1,7 @@
 package DomainLayer.Stores;
 
+import DataLayer.*;
 import DataLayer.DALObjects.*;
-import DataLayer.PermissionManager;
-import DataLayer.StoreManager;
-import DataLayer.UserManager;
 import DomainLayer.Stores.DiscountPolicy.*;
 import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
 import DomainLayer.Stores.PurchasePolicy.AddPurchasePolicy;
@@ -388,12 +386,14 @@ public class Store {
                 if (this.discountPolicy == null) {
                     this.discountPolicy = new AddDiscountPolicy();
                     this.discountPolicy.addDiscount(adp);
+                    this.discountPolicy.setId(DiscountManager.getInstance().addObject(this.discountPolicy.toDAL()));
                     return;
                 }
                 AddDiscountPolicy add = new AddDiscountPolicy();
                 add.addDiscount(this.discountPolicy);
                 add.addDiscount(adp);
                 this.discountPolicy = add;
+                this.discountPolicy.setId(DiscountManager.getInstance().addObject(this.discountPolicy.toDAL()));
             }
         });
     }
@@ -404,12 +404,14 @@ public class Store {
                 if (this.purchasePolicy == null) {
                     this.purchasePolicy = new AddPurchasePolicy();
                     this.purchasePolicy.addPolicy(app);
+                    this.purchasePolicy.setId(PurchasePolicyManager.getInstance().addObject(this.purchasePolicy.toDAL()));
                     return;
                 }
                 AddPurchasePolicy ap = new AddPurchasePolicy();
                 ap.addPolicy(this.purchasePolicy);
                 ap.addPolicy(app);
                 this.purchasePolicy = ap;
+                this.purchasePolicy.setId(PurchasePolicyManager.getInstance().addObject(this.purchasePolicy.toDAL()));
             }
         });
     }
@@ -420,13 +422,13 @@ public class Store {
                 if (this.discountPolicy == null) {
                     this.discountPolicy = new MaxDiscountPolicy();
                     this.discountPolicy.addDiscount(adp);
-                    return;
+                    this.discountPolicy.setId(DiscountManager.getInstance().addObject(this.discountPolicy.toDAL()));                    return;
                 }
                 MaxDiscountPolicy max = new MaxDiscountPolicy();
                 max.addDiscount(this.discountPolicy);
                 max.addDiscount(adp);
                 this.discountPolicy = max;
-            }
+                this.discountPolicy.setId(DiscountManager.getInstance().addObject(this.discountPolicy.toDAL()));            }
         });
     }
 

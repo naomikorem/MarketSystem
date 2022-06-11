@@ -43,12 +43,15 @@ public class SimplePurchasePolicyDAL extends PurchasePolicyDAL {
 
     @Override
     public AbstractPurchasePolicy toDomain() {
-        SimplePurchasePolicy sp = new SimplePurchasePolicy(getPredicate().toDomain());
+        SimplePurchasePolicy sp = new SimplePurchasePolicy(getPredicate() == null ? null : getPredicate().toDomain());
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(getDate());
-
-        sp.setDate(calendar);
+        if (getDate() == null) {
+            sp.setDate(null);
+        } else {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(getDate());
+            sp.setDate(calendar);
+        }
         sp.setHour(getHour());
         sp.setId(getId());
         return sp;

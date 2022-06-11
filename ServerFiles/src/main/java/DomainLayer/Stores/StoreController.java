@@ -1,11 +1,9 @@
 package DomainLayer.Stores;
 
+import DataLayer.*;
 import DataLayer.DALObjects.StoreDAL;
-import DataLayer.ItemManager;
-import DataLayer.StoreManager;
 import DataLayer.DALObjects.PredicateDAL;
 import DataLayer.DALObjects.SimplePredicateDAL;
-import DataLayer.PredicateManager;
 import DomainLayer.Response;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.Predicates.AndCompositePredicate;
@@ -30,8 +28,6 @@ public class StoreController {
     private Map<Integer, Store> stores; // store-id , stores
 
     private AtomicInteger NEXT_STORE_ID = new AtomicInteger(1);
-    private AtomicInteger NEXT_DISCOUNT_ID = new AtomicInteger(1);
-    private AtomicInteger NEXT_POLICY_ID = new AtomicInteger(1);
     private AtomicInteger NEXT_BID_ID = new AtomicInteger(1);
 
     public StoreController() {
@@ -57,15 +53,8 @@ public class StoreController {
         return NEXT_STORE_ID.getAndIncrement();
     }
 
-    private synchronized int getNewDiscountId() {
-        return NEXT_DISCOUNT_ID.getAndIncrement();
-    }
-
-    private synchronized int getNewPolicyId() {
-        return NEXT_POLICY_ID.getAndIncrement();
-    }
     private synchronized int getNewBidId() {
-        return NEXT_POLICY_ID.getAndIncrement();
+        return NEXT_BID_ID.getAndIncrement();
     }
 
     public Store createStore(User owner, String store_name) {
@@ -406,7 +395,7 @@ public class StoreController {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
         SimpleDiscountPolicy sdp = new SimpleDiscountPolicy(percentage, null);
-        sdp.setId(getNewDiscountId());
+        sdp.setId(DiscountManager.getInstance().addObject(sdp.toDAL()));
         return sdp;
     }
 
@@ -415,9 +404,9 @@ public class StoreController {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
         SimplePurchasePolicy spp = new SimplePurchasePolicy(null);
-        spp.setId(getNewPolicyId());
         if (hour!=24)
             spp.setHour(hour);
+        spp.setId(PurchasePolicyManager.getInstance().addObject(spp.toDAL()));
         return spp;
     }
 
@@ -459,6 +448,7 @@ public class StoreController {
     }
   
     public AbstractDiscountPolicy addPredicateToDiscount(User owner, Store s, int discountId, PredicateEnum type, SimplePredicate sp) {
+        sp.setId(this.manager.addObject(sp.toDAL()));
         AbstractDiscountPolicy adp = s.getDiscount(discountId);
         if (adp == null) {
             throw new LogException(String.format("There is no discount with id %s", discountId), String.format("user %s tried to add a predicate to non existing discount with id %s", owner.getName(), discountId));
@@ -475,8 +465,6 @@ public class StoreController {
                 break;
         }
 
-        Integer id = this.manager.addObject(sp.toDAL());
-        sp.setId(id);
 
         return adp;
     }
@@ -498,6 +486,7 @@ public class StoreController {
     }
 
     public AbstractPurchasePolicy addPredicateToPolicy(User owner, Store s, int policyId, PredicateEnum type, SimplePredicate sp) {
+        sp.setId(this.manager.addObject(sp.toDAL()));
         AbstractPurchasePolicy app = s.getPolicy(policyId);
         if (app == null) {
             throw new LogException(String.format("There is no discount with id %s", policyId), String.format("user %s tried to add a predicate to non existing discount with id %s", owner.getName(), policyId));

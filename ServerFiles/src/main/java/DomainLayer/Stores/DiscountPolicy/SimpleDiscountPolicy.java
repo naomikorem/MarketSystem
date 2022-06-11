@@ -2,6 +2,8 @@ package DomainLayer.Stores.DiscountPolicy;
 
 import DataLayer.DALObjects.DiscountDAL;
 import DataLayer.DALObjects.SimpleDiscountDAL;
+import DataLayer.DiscountManager;
+import DataLayer.PredicateManager;
 import DomainLayer.Stores.Predicates.AbstarctPredicate;
 import DomainLayer.Stores.Predicates.AndCompositePredicate;
 import DomainLayer.Stores.Predicates.OrCompositePredicate;
@@ -59,8 +61,10 @@ public class SimpleDiscountPolicy extends AbstractDiscountPolicy {
             AndCompositePredicate acp = new AndCompositePredicate();
             acp.addPredicate(predicate);
             acp.addPredicate(this.abstarctPredicate);
+            acp.setId(PredicateManager.getInstance().addObject(acp.toDAL()));
             this.abstarctPredicate = acp;
         }
+        update();
     }
 
     @Override
@@ -71,8 +75,10 @@ public class SimpleDiscountPolicy extends AbstractDiscountPolicy {
             OrCompositePredicate acp = new OrCompositePredicate();
             acp.addPredicate(predicate);
             acp.addPredicate(this.abstarctPredicate);
+            acp.setId(PredicateManager.getInstance().addObject(acp.toDAL()));
             this.abstarctPredicate = acp;
         }
+        update();
     }
 
     @Override
@@ -83,8 +89,10 @@ public class SimpleDiscountPolicy extends AbstractDiscountPolicy {
             XorCompositePredicate acp = new XorCompositePredicate();
             acp.addPredicate(predicate);
             acp.addPredicate(this.abstarctPredicate);
+            acp.setId(PredicateManager.getInstance().addObject(acp.toDAL()));
             this.abstarctPredicate = acp;
         }
+        update();
     }
 
     public String display() {
@@ -94,10 +102,12 @@ public class SimpleDiscountPolicy extends AbstractDiscountPolicy {
     public void setPercentage(double percentage) {
         checkFields(percentage);
         this.percentage = percentage;
+        update();
     }
 
     public void setAbstarctPredicate(AbstarctPredicate abstarctPredicate) {
         this.abstarctPredicate = abstarctPredicate;
+        update();
     }
 
     @Override
@@ -105,7 +115,8 @@ public class SimpleDiscountPolicy extends AbstractDiscountPolicy {
         SimpleDiscountDAL res = new SimpleDiscountDAL();
         res.setId(getId());
         res.setPercentage(getPercentage());
-        res.setPredicate(abstarctPredicate.toDAL());
+        res.setPredicate(abstarctPredicate == null ? null : abstarctPredicate.toDAL());
         return res;
     }
+
 }
