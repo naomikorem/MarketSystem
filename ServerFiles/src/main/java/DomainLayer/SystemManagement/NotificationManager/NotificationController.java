@@ -10,8 +10,6 @@ import Utility.LogUtility;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 public class NotificationController implements Observable
 {
@@ -49,13 +47,13 @@ public class NotificationController implements Observable
                 this.users_messages.put(username, new ArrayList<>());
             }
             this.users_messages.get(username).add(new Notification(message));
+            this.manager.addNotification(toDAL(username, message));
             LogUtility.info("Added notification to user " + username);
-            this.manager.addNotification(createNotificationDAL(username, message));
         }
         return true;
     }
 
-    private NotificationDAL createNotificationDAL(String username, String message)
+    private NotificationDAL toDAL(String username, String message)
     {
         NotificationsKey key = new NotificationsKey(username, message);
         return new NotificationDAL(key);
@@ -80,6 +78,7 @@ public class NotificationController implements Observable
                 throw new IllegalArgumentException("The user doesn't have notifications.");
 
             this.users_messages.remove(username);
+            this.manager.deleteAllUserNotifications(username);
             LogUtility.info("Removed the notifications that where sent to the user " + username);
         }
     }
@@ -167,6 +166,28 @@ public class NotificationController implements Observable
     public boolean clearNotifications()
     {
         this.users_messages = new ConcurrentHashMap<>();
+        this.manager.clearNotifications();
         return true;
+    }
+
+    public void loadNotifications()
+    {
+        List<NotificationDAL> notifications = this.manager.getAllNotifications();
+        for(NotificationDAL n : notifications)
+        {
+            String username = n.getId().getUsername();
+            Notification notification_domain = toDomain(n);
+
+            if (!this.users_messages.containsKey(username)) {
+                this.users_messages.put(username, new ArrayList<>());
+            }
+
+            this.users_messages.get(username).add(notification_domain);
+        }
+    }
+
+    private Notification toDomain(NotificationDAL n)
+    {
+        return new Notification(n.getId().getMessage());
     }
 }
