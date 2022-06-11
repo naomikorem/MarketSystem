@@ -1,5 +1,8 @@
 package DomainLayer.SystemManagement.NotificationManager;
 
+import DataLayer.DALObjects.NotificationDAL;
+import DataLayer.DALObjects.NotificationsKey;
+import DataLayer.NotificationsManager;
 import DomainLayer.Observable;
 import DomainLayer.Observer;
 import DomainLayer.Users.UserController;
@@ -16,6 +19,7 @@ public class NotificationController implements Observable
     private Map<String, List<INotification>> users_messages;
     private List<Observer> observers;
     private UserController userController;
+    private NotificationsManager manager;
 
     private static class NotificationControllerHolder {
         static final NotificationController INSTANCE = new NotificationController();
@@ -25,6 +29,7 @@ public class NotificationController implements Observable
         this.users_messages = new HashMap<>();
         this.userController = UserController.getInstance();
         this.observers = new LinkedList<>();
+        this.manager = NotificationsManager.getInstance();
     }
 
     public static NotificationController getInstance() {
@@ -45,8 +50,15 @@ public class NotificationController implements Observable
             }
             this.users_messages.get(username).add(new Notification(message));
             LogUtility.info("Added notification to user " + username);
+            this.manager.addNotification(createNotificationDAL(username, message));
         }
         return true;
+    }
+
+    private NotificationDAL createNotificationDAL(String username, String message)
+    {
+        NotificationsKey key = new NotificationsKey(username, message);
+        return new NotificationDAL(key);
     }
 
     private boolean addRealTimeNotification(Observer user, String msg) {

@@ -11,7 +11,7 @@ public class ServiceDAL implements DALObject<Integer>
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Integer id;
+    private Integer id;
     @Column(name = "Name")
     private String name;
     @Column(name = "Url")
@@ -22,7 +22,7 @@ public class ServiceDAL implements DALObject<Integer>
 
 
     public Integer getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Integer id) {
@@ -30,7 +30,7 @@ public class ServiceDAL implements DALObject<Integer>
     }
 
     public String getUrl() {
-        return url;
+        return this.url;
     }
 
     public void setUrl(String url) {
@@ -38,7 +38,7 @@ public class ServiceDAL implements DALObject<Integer>
     }
 
     public ServiceType getServiceType() {
-        return service_type;
+        return this.service_type;
     }
 
     public void setServiceType(ServiceType service_type) {
@@ -46,7 +46,7 @@ public class ServiceDAL implements DALObject<Integer>
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {

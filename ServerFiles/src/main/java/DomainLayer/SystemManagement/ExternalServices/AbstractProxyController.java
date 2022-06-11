@@ -33,7 +33,7 @@ public abstract class AbstractProxyController<T extends AbstractProxy>
         }
         services.put(name, createProxy(name, url));
         LogUtility.info("Added new external service with the name " + name);
-        manager.addService(createServiceDALObject(name, url));
+        //manager.addService(createServiceDALObject(name, url));
     }
 
     /***

@@ -16,11 +16,21 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
 {
     // TODO: take care of implementation and extend
     // add clear table function
-    public NotificationsManager() {
+
+    private static class NotificationsManagerHolder {
+        static final NotificationsManager INSTANCE = new NotificationsManager();
+    }
+
+    // Implementation of thread safe singleton
+    public static NotificationsManager getInstance() {
+        return NotificationsManager.NotificationsManagerHolder.INSTANCE;
+    }
+
+    private NotificationsManager() {
        // super(NotificationDAL.class);
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         NotificationsKey k = new NotificationsKey("user1","hello world6");
         NotificationDAL i = new NotificationDAL(k);
         NotificationsManager im = new NotificationsManager();
@@ -35,7 +45,7 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
         //im.deleteNotification(i);
         //System.out.println(im.deleteAllUserNotifications("user1"));
 
-    }
+    }*/
 
     public void addNotification(NotificationDAL notification)
     {
