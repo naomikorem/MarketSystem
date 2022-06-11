@@ -40,6 +40,11 @@ public class MarketManagementFacade {
         this.historyController = HistoryController.getInstance();
         this.notificationController = NotificationController.getInstance();
         this.storeController = StoreController.getInstance();
+
+        this.services.loadServices();
+        this.notificationController.loadNotifications();
+        this.historyController.loadHistory();
+
         initializeMarket();
     }
 
@@ -68,8 +73,6 @@ public class MarketManagementFacade {
     @SneakyThrows
     public synchronized void initializeMarket() {
         // check if there is supply service - if not, add the first one
-        services.loadServices();
-        notificationController.loadNotifications();
         if (!services.hasPurchaseService()) {
             services.addExternalPurchaseService(AbstractProxy.WSEP_PAYMENT, AbstractProxy.WSEP_PAYMENT_URL);
         }
