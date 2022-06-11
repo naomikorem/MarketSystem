@@ -98,6 +98,8 @@ public class UserController {
                 LogUtility.warn("tried to remove a nonexistent user");
                 throw new IllegalArgumentException(String.format("Could not find user with name %s", userName));
             }
+            User u = users.get(userName);
+            UserManager.getInstance().removeObject(u.toDAL());
             users.remove(userName);
             loggedUsers.remove(userName);
             LogUtility.info(String.format("A user named %s was removed", userName));

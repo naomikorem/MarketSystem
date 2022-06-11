@@ -72,4 +72,23 @@ public class DALManager <T extends DALObject<K>, K> {
         }
         return true;
     }
+
+    public void removeObject(T o){
+        Session session = DatabaseConnection.getSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            session.delete(o);
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx!=null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            try {
+                session.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

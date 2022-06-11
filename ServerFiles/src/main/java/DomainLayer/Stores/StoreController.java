@@ -37,6 +37,7 @@ public class StoreController {
     public StoreController() {
         this.stores = new HashMap<>();
         this.manager = PredicateManager.getInstance();
+        StoreManager.getInstance().getAllStores().forEach(d -> stores.put(d.getId(), d.toDomain()));
     }
 
     private static class StoreControllerHolder {

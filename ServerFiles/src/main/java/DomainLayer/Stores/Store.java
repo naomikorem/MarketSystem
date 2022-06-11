@@ -81,7 +81,7 @@ public class Store {
         this.lock = new ReentrantLock();
         this.discountLock = new ReentrantLock();
         this.purchaseLock = new ReentrantLock();
-        setName(store_name);
+        this.name = store_name;
         this.discountPolicy = cdp;
         this.purchasePolicy = cpp;
         this.bids = new HashMap<>();
