@@ -1,5 +1,7 @@
 package DomainLayer.Stores.Predicates;
 
+import DataLayer.DALObjects.PredicateDAL;
+import DataLayer.DALObjects.SimplePredicateDAL;
 import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.Users.ShoppingBasket;
@@ -157,5 +159,19 @@ public class SimplePredicate extends AbstarctPredicate {
 
     public String getDisplayString() {
         return displayString;
+    }
+
+
+    @Override
+    public PredicateDAL toDAL() {
+        SimplePredicateDAL res = new SimplePredicateDAL();
+        res.setId(getId());
+        res.setDisplayString(getDisplayString());
+        res.setDate(getDate());
+        res.setCategory(getCategory());
+        res.setType(getType());
+        res.setItemId(getItemId());
+        res.setMinBasket(getMinBasket());
+        return res;
     }
 }

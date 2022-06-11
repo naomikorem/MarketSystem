@@ -1,5 +1,7 @@
 package DomainLayer.Stores.DiscountPolicy;
 
+import DataLayer.DALObjects.DiscountDAL;
+import DataLayer.DALObjects.SimpleDiscountDAL;
 import DomainLayer.Stores.Predicates.AbstarctPredicate;
 import DomainLayer.Stores.Predicates.AndCompositePredicate;
 import DomainLayer.Stores.Predicates.OrCompositePredicate;
@@ -96,5 +98,14 @@ public class SimpleDiscountPolicy extends AbstractDiscountPolicy {
 
     public void setAbstarctPredicate(AbstarctPredicate abstarctPredicate) {
         this.abstarctPredicate = abstarctPredicate;
+    }
+
+    @Override
+    public DiscountDAL toDAL() {
+        SimpleDiscountDAL res = new SimpleDiscountDAL();
+        res.setId(getId());
+        res.setPercentage(getPercentage());
+        res.setPredicate(abstarctPredicate.toDAL());
+        return res;
     }
 }

@@ -1,5 +1,7 @@
 package DomainLayer.Stores.PurchasePolicy;
 
+import DataLayer.DALObjects.PurchasePolicyDAL;
+import DataLayer.DALObjects.SimplePurchasePolicyDAL;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Predicates.*;
@@ -90,5 +92,15 @@ public class SimplePurchasePolicy extends AbstractPurchasePolicy{
 
     public Calendar getDate() {
         return this.date;
+    }
+
+    @Override
+    public PurchasePolicyDAL toDAL() {
+        SimplePurchasePolicyDAL res = new SimplePurchasePolicyDAL();
+        res.setId(getId());
+        res.setHour(getHour());
+        res.setDate(getDate().getTime());
+        res.setPredicate(abstarctPredicate.toDAL());
+        return res;
     }
 }

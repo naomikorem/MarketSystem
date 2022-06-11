@@ -4,6 +4,7 @@ import java.util.Set;
 
 public interface UserState {
     public String getName();
+    public String getPassword();
     public String getFirstName();
     public String getLastName();
     public String getEmail();

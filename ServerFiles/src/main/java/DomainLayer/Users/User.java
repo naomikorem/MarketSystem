@@ -1,5 +1,6 @@
 package DomainLayer.Users;
 
+import DataLayer.DALObjects.UserDAL;
 import DomainLayer.Observer;
 import DomainLayer.Response;
 import DomainLayer.Stores.Bid;
@@ -11,6 +12,7 @@ import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class User implements Observer {
     private UserState state;
@@ -165,5 +167,21 @@ public class User implements Observer {
 
     public void setShoppingCart(ShoppingCart shoppingCart) {
         this.shoppingCart = shoppingCart;
+    }
+
+    public UserDAL toDAL() {
+        if (!isSubscribed()) {
+            throw new IllegalArgumentException("Cannot turn guest user into dal.");
+        }
+        UserDAL res = new UserDAL();
+        res.setFirstName(getFirstName());
+        res.setPassword(getState().getPassword());
+        res.setEmail(getEmail());
+        res.setUserName(getName());
+        res.setLastName(getLastName());
+        res.setOwnedStores(getOwnedStores());
+        res.setManagedStores(getManagedStores());
+        res.setShoppingBaskets(shoppingCart.getBaskets().stream().map(ShoppingBasket::toDAL).collect(Collectors.toSet()));
+        return res;
     }
 }

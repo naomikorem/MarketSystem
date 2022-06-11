@@ -1,10 +1,13 @@
 package DomainLayer.Stores.DiscountPolicy;
 
+import DataLayer.DALObjects.CompositeDiscountDAL;
+import DataLayer.DALObjects.DiscountDAL;
 import DomainLayer.Stores.Item;
 import DomainLayer.Users.ShoppingBasket;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AddDiscountPolicy extends CompositeDiscountPolicy {
     @Override
@@ -22,6 +25,15 @@ public class AddDiscountPolicy extends CompositeDiscountPolicy {
             dp.getDiscounts(sb, discounts);
         }
         return discounts;
+    }
+
+    @Override
+    public DiscountDAL toDAL() {
+        CompositeDiscountDAL res = new CompositeDiscountDAL();
+        res.setId(getId());
+        res.setType(CompositeDiscountDAL.CompositeDiscountType.Add);
+        res.setDiscountPolicies(getDiscountPolicies().stream().map(AbstractDiscountPolicy::toDAL).collect(Collectors.toSet()));
+        return res;
     }
 
 }

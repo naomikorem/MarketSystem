@@ -73,6 +73,11 @@ public class SubscribedState implements UserState {
     }
 
     @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
     public String getFirstName() {
         return this.firstName;
     }

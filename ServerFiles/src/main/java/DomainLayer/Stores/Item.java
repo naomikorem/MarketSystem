@@ -1,5 +1,6 @@
 package DomainLayer.Stores;
 
+import DataLayer.DALObjects.ItemDAL;
 import Utility.LogUtility;
 
 import java.util.ArrayList;
@@ -150,5 +151,17 @@ public class Item {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public ItemDAL toDAL() {
+        ItemDAL res = new ItemDAL();
+        res.setRate(getRate());
+        res.setId(getId());
+        res.setPrice(getPrice());
+        res.setCategory(getCategory());
+        res.setProduct_name(getProduct_name());
+        res.setNumberOfRatings(getNumberOfRatings());
+        res.setKeyWords(getKeyWords());
+        return res;
     }
 }

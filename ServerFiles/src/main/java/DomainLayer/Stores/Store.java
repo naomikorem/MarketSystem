@@ -1,5 +1,6 @@
 package DomainLayer.Stores;
 
+import DataLayer.DALObjects.*;
 import DomainLayer.Stores.DiscountPolicy.*;
 import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
 import DomainLayer.Stores.PurchasePolicy.AddPurchasePolicy;
@@ -501,5 +502,29 @@ public class Store {
             throw new IllegalArgumentException(String.format("Bid not in store %s", id));
         bids.remove(bidId);
         return bid;
+    }
+
+    public StoreDAL toDAL() {
+        StoreDAL res = new StoreDAL();
+        res.setId(getStoreId());
+        res.setFounder(getFounder());
+        res.setOpen(open);
+        res.setName(getName());
+        res.setPermanentlyClosed(permanentlyClosed);
+        res.setDiscount((CompositeDiscountDAL) discountPolicy.toDAL());
+        res.setPurchase((CompositePurchasePolicyDAL) purchasePolicy.toDAL());
+
+        Map<ItemDAL, Integer> items = new HashMap<>();
+        getItems().forEach((k, v) -> items.put(k.toDAL(), v));
+        res.setItems(items);
+
+        Map<UserDAL, String> owners = new HashMap<>();
+        this.owners.forEach((k, v) -> owners.put(k.toDAL(), v));
+        res.setOwners(owners);
+
+        Set<PermissionDAL> managers = new HashSet<>();
+        this.managers.forEach((k, v) -> managers.add(v.toDAL(k)));
+        res.setManagers(managers);
+        return res;
     }
 }
