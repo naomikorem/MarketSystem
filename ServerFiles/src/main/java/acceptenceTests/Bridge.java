@@ -14,6 +14,8 @@ import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
+import ServiceLayer.DTOs.PaymentParamsDTO;
+import ServiceLayer.DTOs.SupplyParamsDTO;
 
 import java.util.*;
 
@@ -24,7 +26,7 @@ public abstract class Bridge {
     public abstract Response<Boolean> addExternalSupplyService(String name, String url);
     public abstract Response<Boolean> removeExternalPurchaseService(String name);
     public abstract Response<Boolean> removeExternalSupplyService(String name);
-    public abstract Response<Boolean> purchaseShoppingCart(String address, String purchase_service_name, String supply_service_name);
+    public abstract Response<Boolean> purchaseShoppingCart(PaymentParamsDTO paymentParamsDTO, SupplyParamsDTO supplyParamsDTO);
     public abstract Response<Boolean> hasPurchaseService();
     public abstract Response<Boolean> hasSupplyService();
     public abstract Response<Boolean> hasPurchaseService(String purchase_service_name);
@@ -74,7 +76,6 @@ public abstract class Bridge {
 
     // Notifications:
     public abstract Response<List<INotification>> getUserNotifications();
-    public abstract Response<List<INotification>> getUserRealTimeNotifications();
 
     // Use case 6
     public abstract Response<User> getUser(String userName);
@@ -101,15 +102,15 @@ public abstract class Bridge {
 
     public abstract Response<Boolean> removeDiscount(int storeId, int discountId);
 
-    public abstract Response<SimplePurchasePolicy> addPolicy(int storeId, int hour);
+    public abstract Response<SimplePurchasePolicy> addPolicy(int storeId, int hour, Calendar date);
 
-   public abstract Response<Boolean> removePolicy(int storeId, int policyId);
-
-
-    public abstract Response<Boolean> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour);
+    public abstract Response<Boolean> removePolicy(int storeId, int policyId);
 
 
-    public abstract Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date);
+    public abstract Response<AbstractPurchasePolicy> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour);
+
+
+    public abstract Response<AbstractPurchasePolicy> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date);
 
     public abstract Response<Boolean> setItemRating(int storeId, int itemId, double rate) ;
 

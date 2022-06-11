@@ -16,6 +16,8 @@ import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
+import ServiceLayer.DTOs.PaymentParamsDTO;
+import ServiceLayer.DTOs.SupplyParamsDTO;
 
 import java.util.*;
 
@@ -47,8 +49,8 @@ public class Real extends Bridge {
     }
 
     @Override
-    public Response<Boolean> purchaseShoppingCart(String address, String purchase_service_name, String supply_service_name) {
-        return this.adaptee.purchaseShoppingCart(address, purchase_service_name, supply_service_name);
+    public Response<Boolean> purchaseShoppingCart(PaymentParamsDTO paymentParamsDTO, SupplyParamsDTO supplyParamsDTO) {
+        return this.adaptee.purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
     }
 
     @Override
@@ -237,11 +239,6 @@ public class Real extends Bridge {
     }
 
     @Override
-    public Response<List<INotification>> getUserRealTimeNotifications() {
-        return this.adaptee.getUserRealTimeNotifications();
-    }
-
-    @Override
     public Response<User> getUser(String userName) {
         return this.adaptee.getUser(userName);
     }
@@ -257,8 +254,8 @@ public class Real extends Bridge {
     }
 
     @Override
-    public Response<SimplePurchasePolicy> addPolicy(int storeId, int hour) {
-        return this.adaptee.addPolicy(storeId, hour);
+    public Response<SimplePurchasePolicy> addPolicy(int storeId, int hour, Calendar date) {
+        return this.adaptee.addPolicy(storeId, hour, date);
     }
 
     @Override
@@ -267,24 +264,24 @@ public class Real extends Bridge {
     }
 
     @Override
-    public Response<Boolean> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour) {
+    public Response<AbstractPurchasePolicy> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour) {
         return this.adaptee.addItemPredicateToPolicy(storeId, policyId, type,itemId,hour);
     }
 
-    public Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date) {
+    public Response<AbstractPurchasePolicy> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date) {
         return this.adaptee.addItemNotAllowedInDatePredicateToPolicy(storeId, policyId, type, itemId, date);
     }
 
     @Override
     public Response<Boolean> addItemPredicateToDiscount(int storeId, int discountId, String type, int itemId) {
         Response<AbstractDiscountPolicy> r = this.adaptee.addItemPredicateToDiscount(storeId, discountId, type, itemId);
-        return r.hadError() ? new Response<>(true) : new Response<>(r.getErrorMessage());
+        return !r.hadError() ? new Response<>(true) : new Response<>(r.getErrorMessage());
     }
 
     @Override
     public Response<Boolean> addCategoryPredicateToDiscount(int storeId, int discountId, String type, String categoryName) {
         Response<AbstractDiscountPolicy> r = this.adaptee.addCategoryPredicateToDiscount(storeId, discountId, type, categoryName);
-        return r.hadError() ? new Response<>(true) : new Response<>(r.getErrorMessage());
+        return !r.hadError() ? new Response<>(true) : new Response<>(r.getErrorMessage());
     }
 
     @Override
@@ -299,7 +296,7 @@ public class Real extends Bridge {
     @Override
     public Response<Boolean> addBasketRequirementPredicateToDiscount(int storeId, int discountId, String type, double minPrice) {
         Response<AbstractDiscountPolicy> r = this.adaptee.addBasketRequirementPredicateToDiscount(storeId, discountId, type, minPrice);
-        return r.hadError() ? new Response<>(true) : new Response<>(r.getErrorMessage());
+        return !r.hadError() ? new Response<>(true) : new Response<>(r.getErrorMessage());
     }
 
     @Override

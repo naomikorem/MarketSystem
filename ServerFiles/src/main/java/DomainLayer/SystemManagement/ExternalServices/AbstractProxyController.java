@@ -1,16 +1,24 @@
 package DomainLayer.SystemManagement.ExternalServices;
 
+import DataLayer.DALObjects.ServiceDAL;
+import DataLayer.ServicesManager;
 import Utility.LogUtility;
 
 import java.rmi.ConnectException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public abstract class AbstractProxyController<T extends AbstractProxy>
 {
     // Holds all the external services from specific type (purchase or supply)
     protected ConcurrentHashMap<String, T> services = new ConcurrentHashMap<>();
+    private ServicesManager manager = ServicesManager.getInstance();
 
     protected abstract T createProxy(String name, String url) throws ConnectException; // abstract function
+    protected abstract ServiceDAL createServiceDALObject(String name, String url);
 
     /***
      * Add external service to the market system
@@ -25,6 +33,7 @@ public abstract class AbstractProxyController<T extends AbstractProxy>
         }
         services.put(name, createProxy(name, url));
         LogUtility.info("Added new external service with the name " + name);
+        //manager.addService(createServiceDALObject(name, url));
     }
 
     /***
@@ -45,6 +54,16 @@ public abstract class AbstractProxyController<T extends AbstractProxy>
         }
         services.remove(service_name);
         LogUtility.info("Removed the external service with the name " + service_name + " from the system");
+    }
+
+    public synchronized List<String> getAllExternalServicesNames()
+    {
+        if (services.isEmpty())
+        {
+            LogUtility.error("tried to get external services, but services map is empty");
+            throw new IllegalArgumentException("There are zero external services connected to the system.");
+        }
+        return new ArrayList<>(services.keySet());
     }
 
     /***

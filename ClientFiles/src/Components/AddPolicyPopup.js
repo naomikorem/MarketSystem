@@ -17,13 +17,15 @@ let handleClose = () => undefined;
 
 class AddPolicyPopup extends Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
             error: "",
-            hour :"24",
-            date: ""
+            hour: "24",
+            date: "0000-01-01",
+            policy: props.policy,
+            storeId: props.storeId,
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -43,10 +45,12 @@ class AddPolicyPopup extends Component {
             }
         });
 
+
         this.mounted = true;
     }
 
     componentWillUnmount() {
+        stompClient.unsubscribe('/user/topic/addPolicyResult');
         this.mounted = false;
     }
 
@@ -60,8 +64,8 @@ class AddPolicyPopup extends Component {
     handleAdd() {
         stompClient.send("/app/market/addPolicy", {}, JSON.stringify({
             "storeId": this.props.storeId,
-            "hour": this.state.hour
-            //"date": this.state.date
+            "hour": this.state.hour,
+            "date": this.state.date
         }));
     }
 

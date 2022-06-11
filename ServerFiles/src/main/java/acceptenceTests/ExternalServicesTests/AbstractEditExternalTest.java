@@ -30,7 +30,7 @@ public abstract class AbstractEditExternalTest extends AbstractTest {
     protected abstract Response<Boolean> addExternalService(Bridge bridge, String service_name, String url);
     protected abstract Response<Boolean> removeExternalService(String service_name);
     protected abstract Response<Boolean> removeExternalService(Bridge bridge, String service_name);
-
+    protected abstract String getServiceName();
 
     @Before
     public void setup()
@@ -71,11 +71,11 @@ public abstract class AbstractEditExternalTest extends AbstractTest {
     @Test
     public void testAddServiceThatAlreadyExists()
     {
-        Response<Boolean> has_service_again = hasService(AbstractProxy.GOOD_STUB_NAME);
+        Response<Boolean> has_service_again = hasService(getServiceName());
         assertFalse(has_service_again.hadError());
         assertTrue(has_service_again.getObject());
 
-        Response<Boolean> add_service_response = addExternalService(AbstractProxy.GOOD_STUB_NAME, "url");
+        Response<Boolean> add_service_response = addExternalService(getServiceName(), "url");
         assertTrue(add_service_response.hadError());
     }
 
@@ -124,7 +124,7 @@ public abstract class AbstractEditExternalTest extends AbstractTest {
         assertFalse(add_service_response.hadError());
         assertTrue(add_service_response.getObject());
 
-        Response<Boolean> remove_first_stub_res = removeExternalService(AbstractProxy.GOOD_STUB_NAME);
+        Response<Boolean> remove_first_stub_res = removeExternalService(getServiceName());
         assertFalse(remove_first_stub_res.hadError());
         assertTrue(remove_first_stub_res.getObject());
 
@@ -206,6 +206,7 @@ public abstract class AbstractEditExternalTest extends AbstractTest {
     public void removeServiceSimultaneously()
     {
         Response<Boolean> addServiceResponse = addExternalService(AbstractProxy.GOOD_STUB_NAME_2, "url");
+        addExternalService(AbstractProxy.GOOD_STUB_NAME, "url");
         assertFalse(addServiceResponse.hadError());
         assertTrue(hasService(AbstractProxy.GOOD_STUB_NAME_2).getObject());
         assertTrue(hasService(AbstractProxy.GOOD_STUB_NAME).getObject());

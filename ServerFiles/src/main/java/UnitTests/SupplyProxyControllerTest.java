@@ -4,6 +4,7 @@ import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.SystemManagement.ExternalServices.SupplyServices.SupplyProxy;
 import DomainLayer.SystemManagement.ExternalServices.SupplyServices.SupplyProxyController;
+import ServiceLayer.DTOs.SupplyParamsDTO;
 import acceptenceTests.AbstractTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,8 +40,15 @@ public class SupplyProxyControllerTest extends AbstractTest {
     @Test
     public void supplyServiceNotExists()
     {
+        SupplyParamsDTO supplyParamsDTO = new SupplyParamsDTO(
+                "not existing supply",
+                "user",
+                "user address",
+                "city",
+                "country",
+                "777777");
         //this.supplyProxyController.addService("Moshe and Avi");
         assertThrows(IllegalArgumentException.class, () ->
-                this.supplyProxyController.supply("user address", items, "not existing supply"));
+                this.supplyProxyController.supply(supplyParamsDTO, items));
     }
 }

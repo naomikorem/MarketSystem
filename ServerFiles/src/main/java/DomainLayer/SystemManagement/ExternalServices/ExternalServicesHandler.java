@@ -3,6 +3,8 @@ package DomainLayer.SystemManagement.ExternalServices;
 import DomainLayer.Stores.Item;
 import DomainLayer.SystemManagement.ExternalServices.PurchaseServices.PurchaseProxyController;
 import DomainLayer.SystemManagement.ExternalServices.SupplyServices.SupplyProxyController;
+import ServiceLayer.DTOs.PaymentParamsDTO;
+import ServiceLayer.DTOs.SupplyParamsDTO;
 
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
@@ -113,24 +115,33 @@ public class ExternalServicesHandler
         return supplyProxyController.hasService(supply_service_name);
     }
 
+    public List<String> getAllExternalSupplyServicesNames()
+    {
+        return supplyProxyController.getAllExternalServicesNames();
+    }
+
+    public List<String> getAllExternalPurchaseServicesNames()
+    {
+        return purchaseProxyController.getAllExternalServicesNames();
+    }
+
     /***
      * Use the given purchase service name and the user's details to pay the requested amount
      * @param price The amount to pay
-     * @param purchase_service_name The selected external purchase service
+     * supplyParamsDTO all required parameters for payment service
      * return true if the payment succeeded.
      */
-    public boolean pay(double price, String purchase_service_name) throws RemoteException {
-        return purchaseProxyController.pay(price, purchase_service_name);
+    public boolean pay(double price, PaymentParamsDTO paymentParamsDTO) throws RemoteException {
+        return purchaseProxyController.pay(price, paymentParamsDTO);
     }
 
     /***
      * Use the given supply service name and the user's details to supply the items to the user
-     * @param address The User's shipping address.
      * @param items The items that the user paid for.
-     * @param supply_service_name The selected external purchase service
+     * @param supplyParamsDTO all required parameters for supply service
      * return true if the supply company shipped the items.
      */
-    public boolean supply(String address, List<Map.Entry<Item, Integer>> items, String supply_service_name) throws RemoteException {
-        return supplyProxyController.supply(address, items, supply_service_name);
+    public boolean supply(SupplyParamsDTO supplyParamsDTO, List<Map.Entry<Item, Integer>> items) throws RemoteException {
+        return supplyProxyController.supply(supplyParamsDTO, items);
     }
 }
