@@ -771,12 +771,12 @@ public class Service {
     }
     @MessageMapping("/market/Bid/getBids")
     @SendToUser("/topic/Bid/getBidsResult")
-    public Response<List<Bid>> getBids(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+    public Response<Collection<Bid>> getBids(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
         return  ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getBids((Integer) map.get("storeId"));
     }
     @MessageMapping("/market/Bid/getUserBids")
     @SendToUser("/topic/Bid/getUserBidsResult")
-    public Response<List<Bid>> getUserBids(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+    public Response<Collection<Bid>> getUserBids(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
         return  ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getUserBids();
     }
 
