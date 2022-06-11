@@ -2,6 +2,7 @@ package DomainLayer.Users;
 
 import DomainLayer.Observer;
 import DomainLayer.Response;
+import DomainLayer.Stores.Bid;
 import DomainLayer.Stores.Item;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import org.springframework.messaging.MessageHeaders;
@@ -30,6 +31,15 @@ public class User implements Observer {
         headerAccessor.setLeaveMutable(true);
         return headerAccessor.getMessageHeaders();
 
+    }
+    public Collection<Bid> getBids(){
+        return shoppingCart.getBids();
+    }
+    public void addBid(Bid bid){
+        shoppingCart.addBid(bid);
+    }
+    public void removeBid(int bidId){
+        shoppingCart.removeBid(bidId);
     }
 
     public void sendNotification(INotification notification) {

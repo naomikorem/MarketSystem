@@ -6,8 +6,8 @@ import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
+import DomainLayer.Stores.*;
 import DomainLayer.Stores.PurchasePolicy.SimplePurchasePolicy;
-import DomainLayer.Stores.Store;
 import DomainLayer.SystemImplementor;
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
 import DomainLayer.SystemManagement.HistoryManagement.History;
@@ -759,6 +759,25 @@ public class Service {
             return new Response<>(res.getErrorMessage());
         }
         return res;
+    }
+    @MessageMapping("/market/Bid/addBid")
+    @SendToUser("/topic/Bid/addBidResult")
+    public Response<Boolean> addBid(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addBid((Integer) map.get("storeId"), (Double) map.get("bidPrice"), (Integer) map.get("itemId"), (Integer) map.get("amount"));
+        if (res.hadError()) {
+            return new Response<>(res.getErrorMessage());
+        }
+        return res;
+    }
+    @MessageMapping("/market/Bid/getBids")
+    @SendToUser("/topic/Bid/getBidsResult")
+    public Response<List<Bid>> getBids(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        return  ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getBids((Integer) map.get("storeId"));
+    }
+    @MessageMapping("/market/Bid/getUserBids")
+    @SendToUser("/topic/Bid/getUserBidsResult")
+    public Response<List<Bid>> getUserBids(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        return  ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getUserBids();
     }
 
 }
