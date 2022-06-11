@@ -1,5 +1,8 @@
 package DomainLayer.Stores;
 
+import DataLayer.DALObjects.StoreDAL;
+import DataLayer.ItemManager;
+import DataLayer.StoreManager;
 import DomainLayer.Response;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.Predicates.AndCompositePredicate;
@@ -41,7 +44,6 @@ public class StoreController {
 
     public void clearAll() {
         stores = new HashMap<>();
-        Item.NEXT_ITEM_ID = 1;
     }
 
     private synchronized int getNewStoreId() {
@@ -60,12 +62,27 @@ public class StoreController {
     }
 
     public Store createStore(User owner, String store_name) {
-        Store store = new Store(owner, store_name, getNewStoreId());
+        Store store = new Store(owner, store_name, 0);
+        store.setId(StoreManager.getInstance().addObject(store.toDAL()));
+        owner.addOwnedStore(store.getStoreId());
         addStore(store);
         return store;
     }
 
-    public Boolean isExist(int storeId) { return this.stores.getOrDefault(storeId, null)!=null;}
+    public void loadStore(int storeId) {
+        if (!stores.containsKey(storeId)) {
+            StoreDAL sd = StoreManager.getInstance().getObject(storeId);
+            if (sd != null) {
+                stores.put(storeId, sd.toDomain());
+            }
+        }
+    }
+
+    public Boolean isExist(int storeId) {
+        loadStore(storeId);
+        return this.stores.containsKey(storeId);
+    }
+
     private void addStore(Store store) {
         this.stores.put(store.getStoreId(), store);
     }
@@ -75,6 +92,7 @@ public class StoreController {
     }
 
     public Store getStore(int id) {
+        loadStore(id);
         return stores.getOrDefault(id, null);
     }
 
@@ -125,6 +143,7 @@ public class StoreController {
             throw new LogException("You cannot add items to this store", String.format("User %s tried to add an item to a store that they do not manager", manager));
         }
         Item i = new Item(name, category, price);
+        i.setId(ItemManager.getInstance().addObject(i.toDAL()));
         s.addItem(i, amount);
         LogUtility.info(String.format("%s added %s %s to store id %s", manager.getName(), amount, name, storeId));
         return i;
@@ -225,7 +244,7 @@ public class StoreController {
     }
 
     public boolean isShopOwner(Store store, String shopOwnerName) {
-        return stores.get(store.getStoreId()).isOwner(shopOwnerName);
+        return getStore(store.getStoreId()).isOwner(shopOwnerName);
     }
 
     public void setManagerPermission(User owner, String manager, int storeId, byte permission) {
@@ -244,9 +263,9 @@ public class StoreController {
         if (!user.isSubscribed()) {
             throw new IllegalArgumentException("Only logged in users can perform this action.");
         }
-        stores.get(storeId).setIsOpen(user.getName(), false);
+        getStore(storeId).setIsOpen(user.getName(), false);
         LogUtility.info(String.format("User %s just closed store %s", user.getName(), storeId));
-        return stores.get(storeId);
+        return getStore(storeId);
     }
 
     public Store reopenStore(User user, int storeId) {
@@ -256,9 +275,9 @@ public class StoreController {
         if (!user.isSubscribed()) {
             throw new IllegalArgumentException("Only logged in users can perform this action.");
         }
-        stores.get(storeId).setIsOpen(user.getName(), true);
+        getStore(storeId).setIsOpen(user.getName(), true);
         LogUtility.info(String.format("User %s just reopened store %s", user.getName(), storeId));
-        return stores.get(storeId);
+        return getStore(storeId);
     }
 
     public Store permanentlyCloseStore(int storeId) {

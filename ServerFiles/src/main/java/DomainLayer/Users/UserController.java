@@ -1,5 +1,7 @@
 package DomainLayer.Users;
 
+import DataLayer.DALObjects.UserDAL;
+import DataLayer.UserManager;
 import Exceptions.LogException;
 import Utility.LogUtility;
 
@@ -33,7 +35,7 @@ public class UserController {
         this.tokensToUsers = new HashMap<>();
 
         //load database
-
+        loadUser(DEFAULT_ADMIN_USER);
         if (!users.containsKey(DEFAULT_ADMIN_USER)) {
             createUser(DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_USER, DEFAULT_ADMIN_USER_FIRST_NAME, DEFAULT_ADMIN_USER_LAST_NAME, DEFAULT_ADMIN_PASSWORD);
         }
@@ -50,7 +52,8 @@ public class UserController {
     public void clearAll() {
         users = new HashMap<>();
         loggedUsers = new HashSet<>();
-
+        
+        loadUser(DEFAULT_ADMIN_USER);
         if (!users.containsKey(DEFAULT_ADMIN_USER)) {
             createUser(DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_USER, DEFAULT_ADMIN_USER_FIRST_NAME, DEFAULT_ADMIN_USER_LAST_NAME, DEFAULT_ADMIN_PASSWORD);
         }
@@ -70,6 +73,7 @@ public class UserController {
         }
         UserState state = new SubscribedState(email, userName,firstName,lastName, password);
         User u = new User(state);
+        UserManager.getInstance().addObject(u.toDAL());
         addUser(u);
         LogUtility.info(String.format("A new user named %s was created", userName));
         return u;
@@ -112,7 +116,18 @@ public class UserController {
         throw new IllegalArgumentException(String.format("Could not find user with name %s", name));
     }
 
+    public void loadUser(String name) {
+        if (!users.containsKey(name)) {
+            UserDAL dal = UserManager.getInstance().getObject(name);
+            if (dal != null) {
+                User u = dal.toDomain();
+                users.put(u.getName(), u);
+            }
+        }
+    }
+
     public boolean isExist(String name) {
+        loadUser(name);
         return users.containsKey(name);
     }
 
@@ -179,6 +194,7 @@ public class UserController {
         }
         removedLoggedUser(name);
         LogUtility.info(String.format("User %s has logged out", name));
+        UserManager.getInstance().addObject(getUser(name).toDAL());
         return true;
     }
 

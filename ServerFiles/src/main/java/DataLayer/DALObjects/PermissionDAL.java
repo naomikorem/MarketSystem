@@ -57,6 +57,7 @@ public class PermissionDAL implements DALObject<Integer> {
     public Permission toDomain() {
         Permission p = new Permission(getGivenBy());
         p.setPermissionsMask(getPermissionMask());
+        p.setId(getId());
         return p;
     }
 }

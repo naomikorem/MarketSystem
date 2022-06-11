@@ -141,6 +141,6 @@ public class StoreDAL implements DALObject<Integer> {
         getItems().forEach((k, v) -> items.put(k.toDomain(), v));
 
 
-        return new Store(getFounder(), isOpen(), isPermanentlyClosed(), owners, managers, items, getName(), getId(), (CompositeDiscountPolicy) getDiscount().toDomain(), (CompositePurchasePolicy) getPurchase().toDomain());
+        return new Store(getFounder(), isOpen(), isPermanentlyClosed(), owners, managers, items, getName(), getId(), getDiscount() == null ? null : (CompositeDiscountPolicy) getDiscount().toDomain(), getPurchase() == null ? null : (CompositePurchasePolicy) getPurchase().toDomain());
     }
 }

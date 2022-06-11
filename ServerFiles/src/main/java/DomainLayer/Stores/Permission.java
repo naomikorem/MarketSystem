@@ -66,4 +66,12 @@ public class Permission {
         res.setManager(u.toDAL());
         return res;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }
