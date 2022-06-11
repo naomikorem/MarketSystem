@@ -1,8 +1,9 @@
 package DataLayer.DALObjects;
 
 import DomainLayer.Stores.Category;
+import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
+import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.Predicates.SimplePredicate;
-import org.hibernate.sql.ast.tree.predicate.AbstractPredicate;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -30,5 +31,12 @@ public class SimpleDiscountDAL extends DiscountDAL {
 
     public void setPredicate(PredicateDAL predicate) {
         this.predicate = predicate;
+    }
+
+    @Override
+    public AbstractDiscountPolicy toDomain() {
+        SimpleDiscountPolicy sdp = new SimpleDiscountPolicy(getPercentage(), getPredicate().toDomain());
+        sdp.setId(getId());
+        return sdp;
     }
 }

@@ -1,13 +1,19 @@
 package DataLayer.DALObjects;
 
 
+import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
+import DomainLayer.Stores.PurchasePolicy.AddPurchasePolicy;
+import DomainLayer.Stores.PurchasePolicy.CompositePurchasePolicy;
+
 import javax.persistence.*;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "CompositePolicy")
 @PrimaryKeyJoinColumn(name = "id")
 public class CompositePurchasePolicyDAL extends PurchasePolicyDAL {
+
     public enum CompositePolicyType {
         Add,
     }
@@ -37,5 +43,20 @@ public class CompositePurchasePolicyDAL extends PurchasePolicyDAL {
 
     public void setPolicies(Set<PurchasePolicyDAL> policies) {
         this.policies = policies;
+    }
+
+    @Override
+    public AbstractPurchasePolicy toDomain() {
+        CompositePurchasePolicy res;
+        switch (type) {
+            case Add:
+                res = new AddPurchasePolicy();
+                break;
+            default:
+                return null;
+        }
+        res.setId(getId());
+        res.setPurchasePolicies(getPolicies().stream().map(PurchasePolicyDAL::toDomain).collect(Collectors.toList()));
+        return res;
     }
 }

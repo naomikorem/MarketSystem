@@ -106,4 +106,56 @@ public class SimplePredicate extends AbstarctPredicate {
     public String display() {
         return displayString;
     }
+
+    public int getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(int itemId) {
+        this.itemId = itemId;
+    }
+
+    public double getMinBasket() {
+        return minBasket;
+    }
+
+    public void setMinBasket(double minBasket) {
+        this.minBasket = minBasket;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public int getHour() {
+        return hour;
+    }
+
+    public void setHour(int hour) {
+        this.hour = hour;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public PredicateType getType() {
+        return type;
+    }
+
+    public void setType(PredicateType type) {
+        this.type = type;
+    }
+
+    public String getDisplayString() {
+        return displayString;
+    }
 }

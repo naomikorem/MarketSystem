@@ -162,4 +162,8 @@ public class User implements Observer {
         }
         return Objects.hashCode(state);
     }
+
+    public void setShoppingCart(ShoppingCart shoppingCart) {
+        this.shoppingCart = shoppingCart;
+    }
 }

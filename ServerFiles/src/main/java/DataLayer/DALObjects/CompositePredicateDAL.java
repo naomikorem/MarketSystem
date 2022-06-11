@@ -1,9 +1,11 @@
 package DataLayer.DALObjects;
 
-import DomainLayer.Stores.Predicates.CompositePredicate;
+import DomainLayer.Stores.Predicates.*;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "CompositePredicates")
@@ -35,5 +37,29 @@ public class CompositePredicateDAL extends PredicateDAL {
 
     public void setPreds(Set<PredicateDAL> preds) {
         this.preds = preds;
+    }
+
+    @Override
+    public AbstarctPredicate toDomain() {
+        List<AbstarctPredicate> preds = getPreds().stream().map(PredicateDAL::toDomain).collect(Collectors.toList());
+        CompositePredicate res;
+        switch (getType()) {
+            case AND:
+                res = new AndCompositePredicate(preds);
+                break;
+            case OR:
+                res = new OrCompositePredicate(preds);
+                break;
+            case XOR:
+                res = new XorCompositePredicate(preds);
+                break;
+            case COND:
+                res = new CondCompositePredicate(preds);
+                break;
+            default:
+                return null;
+        }
+        res.setId(getId());
+        return res;
     }
 }

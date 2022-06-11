@@ -142,4 +142,12 @@ public class SubscribedState implements UserState {
     public boolean login(String password) {
         return password != null && BCrypt.checkpw(password, this.password);
     }
+
+    public void setOwnedStores(Set<Integer> ownedStores) {
+        this.ownedStores = ownedStores;
+    }
+
+    public void setManagedStores(Set<Integer> managedStores) {
+        this.managedStores = managedStores;
+    }
 }

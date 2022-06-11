@@ -18,6 +18,10 @@ public abstract class CompositeDiscountPolicy extends AbstractDiscountPolicy {
         this.discountPolicies.add(adc);
     }
 
+    public void setDiscountPolicies(List<AbstractDiscountPolicy> discountPolicies) {
+        this.discountPolicies = discountPolicies;
+    }
+
     @Override
     public List<AbstractDiscountPolicy> getDiscountPolicies() {
         return this.discountPolicies;

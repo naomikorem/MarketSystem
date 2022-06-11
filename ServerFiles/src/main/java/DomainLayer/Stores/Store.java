@@ -51,6 +51,21 @@ public class Store {
     }
 
 
+    public Store(String founder, boolean open, boolean permanentlyClosed, Map<User, String> owners, Map<User, Permission> managers, Map<Item, Integer> items, String store_name, int id, CompositeDiscountPolicy cdp, CompositePurchasePolicy cpp) {
+        this.founder = founder;
+        this.open = open;
+        this.permanentlyClosed = permanentlyClosed;
+        this.id = id;
+        this.owners = owners;
+        this.managers = managers;
+        this.items = items;
+        this.lock = new ReentrantLock();
+        this.discountLock = new ReentrantLock();
+        this.purchaseLock = new ReentrantLock();
+        setName(store_name);
+        this.discountPolicy = cdp;
+        this.purchasePolicy = cpp;
+    }
 
     public boolean isOwner(User u) {
         return this.owners.containsKey(u);

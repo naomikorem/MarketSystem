@@ -1,6 +1,7 @@
 package DataLayer.DALObjects;
 
 import DataLayer.DALObject;
+import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
 
 import javax.persistence.*;
 
@@ -19,4 +20,6 @@ public abstract class PurchasePolicyDAL implements DALObject<Integer> {
     public void setId(Integer id) {
         this.id = id;
     }
+
+    public abstract AbstractPurchasePolicy toDomain();
 }

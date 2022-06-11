@@ -93,4 +93,8 @@ public class SimpleDiscountPolicy extends AbstractDiscountPolicy {
         checkFields(percentage);
         this.percentage = percentage;
     }
+
+    public void setAbstarctPredicate(AbstarctPredicate abstarctPredicate) {
+        this.abstarctPredicate = abstarctPredicate;
+    }
 }
