@@ -4,8 +4,24 @@ DataBase:
 
 During the intialization of the system we connect the data base. 
 
+- Data base info :  
+  - ***server*** : sql11.freemysqlhosting.net
+  - ***port*** : 3306
+  - ***name*** : sql11498449
+  
+  - hibernate.dialect : org.hibernate.dialect.MySQLDialect
+  - hibernate.connection.driver_class : com.mysql.jdbc.Driver
+
 - In case of succeses we continue to the next step of the initaliztion system.   
 - In case of failure we abourt and return an error massege.
+
+Creating a default Admin user:
+
+- defaultAdminUser="Admin1"
+- defaultAdminPassword="Admin"
+- defualtAdminFirstName="Admin"
+- defualtAdminLastName="Admin"
+- defualtAdminEmail="Admin@mycompany.com"
  
  
  State init file: "Boot file version 3"
