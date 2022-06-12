@@ -4,6 +4,8 @@ import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
 import DomainLayer.Stores.PurchasePolicy.SimplePurchasePolicy;
 
 import javax.persistence.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -30,7 +32,14 @@ public class SimplePurchasePolicyDAL extends PurchasePolicyDAL {
     }
 
     public void setDate(Date date) {
-        this.date = date;
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+
+            this.date = format.parse(date.toString());
+            System.out.println(this.date);
+        }catch (Exception e) {
+            System.out.println("couldn't set date");
+        }
     }
 
     public PredicateDAL getPredicate() {

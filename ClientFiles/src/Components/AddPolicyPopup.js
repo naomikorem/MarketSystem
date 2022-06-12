@@ -23,7 +23,7 @@ class AddPolicyPopup extends Component {
         this.state = {
             error: "",
             hour: "24",
-            date: "0000-01-01",
+            date: "2022-01-01",
             policy: props.policy,
             storeId: props.storeId,
         };

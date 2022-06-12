@@ -116,13 +116,13 @@ public class StorePolicyTests extends AbstractTest {
     @Test
     public void addPredicateSynchronizedTest() {
         Response<SimplePurchasePolicy> p = bridge.addPolicy(s.getStoreId(),24, Calendar.getInstance());
-
         Thread t1 = new Thread(() -> {
             Calendar c = Calendar.getInstance();
             assertFalse(bridge.addItemPredicateToPolicy(s.getStoreId(),p.getObject().getId(),"AND", i1.getId(), c.get(Calendar.HOUR_OF_DAY)+1).hadError());
         });
         Thread t2 = new Thread(() -> {
             Calendar c = Calendar.getInstance();
+            System.out.println("date "+c);
             assertFalse(bridge.addItemNotAllowedInDatePredicateToPolicy(s.getStoreId(),p.getObject().getId(), "AND", i1.getId(),c).hadError());
         });
         t1.start();

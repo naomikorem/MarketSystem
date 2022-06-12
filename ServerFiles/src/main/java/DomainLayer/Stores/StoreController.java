@@ -404,8 +404,12 @@ public class StoreController {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
         SimplePurchasePolicy spp = new SimplePurchasePolicy(null);
+
         if (hour!=24)
             spp.setHour(hour);
+        else
+            spp.setHour(24);
+        spp.setDate(date);
         spp.setId(PurchasePolicyManager.getInstance().addObject(spp.toDAL()));
         return spp;
     }
@@ -540,6 +544,7 @@ public class StoreController {
             throw new IllegalArgumentException("This user cannot add items-predicate to policies");
         }
         SimplePredicate sp = new SimplePredicate(itemId,hour);
+        sp.setDisplayString(String.format("not allowed to purchase after the given hour: %d", hour));
         return addPredicateToPolicy(owner, s, policyId, PredicateEnum.valueOf(type), sp);
     }
 
@@ -549,6 +554,7 @@ public class StoreController {
             throw new IllegalArgumentException("This user cannot add items-predicate to policies");
         }
         SimplePredicate sp = new SimplePredicate(itemId,date);
+        sp.setDisplayString(String.format("This item is not allowed to purchase in the given date"));
         return addPredicateToPolicy(owner, s, policyId, PredicateEnum.valueOf(type), sp);
     }
 

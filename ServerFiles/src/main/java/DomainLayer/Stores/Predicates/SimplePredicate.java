@@ -7,6 +7,8 @@ import DomainLayer.Stores.Item;
 import DomainLayer.Users.ShoppingBasket;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -78,7 +80,7 @@ public class SimplePredicate extends AbstarctPredicate {
 
     @Override
     public boolean canApply(Item item, ShoppingBasket shoppingBasket) {
-        Calendar rightNow  = GregorianCalendar.getInstance();
+        Calendar rightNow  = Calendar.getInstance();
         switch (this.type) {
             case True:
                 return true;
