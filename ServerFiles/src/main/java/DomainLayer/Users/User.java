@@ -45,6 +45,8 @@ public class User implements Observer {
     }
 
     public void sendNotification(INotification notification) {
+        if(getSessionId() == null || getTemplate() == null)
+            return;
         String session = getSessionId();
         getTemplate().convertAndSendToUser(session, "/topic/notificationResult", new Response<>(notification), createHeaders());
     }
