@@ -39,6 +39,7 @@ public class FailedDataBaseInfoTests extends AbstractTest  {
         }catch (Exception e) {
             assertTrue(true);
         }
+        assertFalse(s.isManager(manager));
     }
 
     @Test
@@ -50,11 +51,12 @@ public class FailedDataBaseInfoTests extends AbstractTest  {
         assertTrue(s.isOwner(u));
         User owner = new User(new SubscribedState("owner@gmail.com", "owner","first", "last", "password"));
         try {
-            s.addManager(u.getName(), owner);
+            s.addOwner(u.getName(), owner);
             fail();
         }catch (Exception e) {
             assertTrue(true);
         }
+        assertFalse(s.isOwner(owner));
     }
 
 }
