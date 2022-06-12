@@ -32,14 +32,7 @@ public class SimplePurchasePolicyDAL extends PurchasePolicyDAL {
     }
 
     public void setDate(Date date) {
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-
-            this.date = format.parse(date.toString());
-            System.out.println(this.date);
-        }catch (Exception e) {
-            System.out.println("couldn't set date");
-        }
+        this.date = date;
     }
 
     public PredicateDAL getPredicate() {
