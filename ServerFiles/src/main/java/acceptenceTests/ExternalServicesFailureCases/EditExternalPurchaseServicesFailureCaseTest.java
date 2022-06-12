@@ -4,7 +4,7 @@ import DomainLayer.Response;
 import acceptenceTests.Bridge;
 import acceptenceTests.ExternalServicesTests.AbstractEditExternalTest;
 
-public class EditExternalPurchaseServicesFailureCaseTest extends AbstractEditExternalTest {
+public class EditExternalPurchaseServicesFailureCaseTest extends AbstractEditExternalFailureCaseTest {
 
     public EditExternalPurchaseServicesFailureCaseTest() {
         super();
@@ -21,22 +21,13 @@ public class EditExternalPurchaseServicesFailureCaseTest extends AbstractEditExt
     }
 
     @Override
-    protected Response<Boolean> addExternalService(Bridge bridge, String service_name, String url) {
-        return bridge.addExternalPurchaseService(service_name, url);
-    }
-
-    @Override
     protected Response<Boolean> removeExternalService(String service_name) {
-        return null;
+        return this.bridge.removeExternalSupplyService(service_name);
     }
 
-    @Override
-    protected Response<Boolean> removeExternalService(Bridge bridge, String service_name) {
-        return null;
-    }
 
     @Override
     protected String getServiceName() {
-        return null;
+        return DEFAULT_SUPPLY_NAME;
     }
 }

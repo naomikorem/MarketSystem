@@ -6,8 +6,8 @@ import acceptenceTests.ExternalServicesFailureCases.AbstractEditExternalFailureC
 
 public class EditExternalSupplyServicesFailureCaseTest extends AbstractEditExternalFailureCaseTest {
 
-    public EditExternalSupplyServicesFailureCaseTest(String new_service_name2) {
-        super(new_service_name2);
+    public EditExternalSupplyServicesFailureCaseTest() {
+        super();
     }
 
     @Override
@@ -21,19 +21,10 @@ public class EditExternalSupplyServicesFailureCaseTest extends AbstractEditExter
     }
 
     @Override
-    protected Response<Boolean> addExternalService(Bridge bridge, String service_name, String url) {
-        return bridge.addExternalSupplyService(service_name, url);
-    }
-
-    @Override
     protected Response<Boolean> removeExternalService(String service_name) {
         return this.bridge.removeExternalSupplyService(service_name);
     }
 
-    @Override
-    protected Response<Boolean> removeExternalService(Bridge bridge, String service_name) {
-        return bridge.removeExternalSupplyService(service_name);
-    }
 
     @Override
     protected String getServiceName() {
