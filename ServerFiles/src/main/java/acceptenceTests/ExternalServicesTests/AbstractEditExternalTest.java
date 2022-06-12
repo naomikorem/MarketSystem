@@ -172,7 +172,7 @@ public abstract class AbstractEditExternalTest extends AbstractTest {
     public void addServiceSimultaneously()
     {
         bridge.logout();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10; i++) {
             Thread t1 = new Thread(() -> {
                 assertFalse(bridge.login(UserController.DEFAULT_ADMIN_USER, UserController.DEFAULT_ADMIN_PASSWORD).hadError());
                 res1 = addExternalService(AbstractProxy.GOOD_STUB_NAME_2, "url");
@@ -212,7 +212,7 @@ public abstract class AbstractEditExternalTest extends AbstractTest {
         assertTrue(hasService(AbstractProxy.GOOD_STUB_NAME).getObject());
         bridge.logout();
 
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 10; i++) {
             Thread t1 = new Thread(() -> {
                 assertFalse(bridge.login(UserController.DEFAULT_ADMIN_USER, UserController.DEFAULT_ADMIN_PASSWORD).hadError());
                 res1 = removeExternalService(AbstractProxy.GOOD_STUB_NAME_2);

@@ -15,7 +15,7 @@ import java.util.Set;
 public abstract class AbstractTest {
     protected Bridge bridge;
     protected String DEFAULT_PAYMENT_NAME = AbstractProxy.WSEP_PAYMENT;
-    protected String DEFAULT_SUPPLY_NAME = AbstractProxy.BAD_STUB_NAME;
+    protected String DEFAULT_SUPPLY_NAME = AbstractProxy.WSEP_SUPPLY;
 
 
     public AbstractTest() {
