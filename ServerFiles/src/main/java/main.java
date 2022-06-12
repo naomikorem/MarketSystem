@@ -7,15 +7,24 @@ import DomainLayer.Users.User;
 import org.apache.log4j.Logger;
 import org.yaml.snakeyaml.serializer.Serializer;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.List;
+import java.util.Properties;
 
 public class main {
     public final static Logger logger = Logger.getRootLogger();
     public static void main(String[] args) {
-        List<StoreDAL> l = StoreManager.getInstance().getAllStores();
-        System.out.println(l);
+
+        Properties prop = new Properties();
+        try (InputStream input = new FileInputStream("config.properties")) {
+
+
+            // load a properties file
+            prop.load(input);
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        System.out.println(prop);
     }
 }

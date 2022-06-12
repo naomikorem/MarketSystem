@@ -162,8 +162,8 @@ public class Store {
     }
 
     public void addManager(String givenBy, User manager) {
-        saveUpdateState(() -> {
-            synchronized (lock) {
+        synchronized (lock) {
+            saveUpdateState(() -> {
                 if (!isOpen()) {
                     LogUtility.error("tried to add a manger for a closed store");
                     throw new IllegalArgumentException("This store is closed");
@@ -177,25 +177,26 @@ public class Store {
                 this.managers.put(manager, p);
                 manager.addManagedStore(getStoreId());
                 LogUtility.info("New manager for shop " + this.id + ", the store manger is :" + manager.getName());
-            }
-        });
+            });
+        }
     }
 
     public void addOwner(String givenBy, User newOwner) {
-        saveUpdateState(() -> {
         synchronized (lock) {
-            if (!isOpen()) {
-                LogUtility.error("tried to add owner for a closed store");
-                throw new IllegalArgumentException("This store is closed");
-            }
-            if (managers.containsKey(newOwner) || owners.containsKey(newOwner)) {
-                LogUtility.error("tried to add a manger who is already a store-owner/ manager");
-                throw new IllegalArgumentException("This manger is already a store-owner/ manager");
-            }
-            this.owners.put(newOwner, givenBy);
-            newOwner.addOwnedStore(getStoreId());
-            LogUtility.info("New store owner for shop " + this.id + ", the store owner is :" + newOwner.getName());
-        }});
+            saveUpdateState(() -> {
+                if (!isOpen()) {
+                    LogUtility.error("tried to add owner for a closed store");
+                    throw new IllegalArgumentException("This store is closed");
+                }
+                if (managers.containsKey(newOwner) || owners.containsKey(newOwner)) {
+                    LogUtility.error("tried to add a manger who is already a store-owner/ manager");
+                    throw new IllegalArgumentException("This manger is already a store-owner/ manager");
+                }
+                this.owners.put(newOwner, givenBy);
+                newOwner.addOwnedStore(getStoreId());
+                LogUtility.info("New store owner for shop " + this.id + ", the store owner is :" + newOwner.getName());
+            });
+        }
     }
 
     public Map<Item, Integer> getItems() {
@@ -265,28 +266,30 @@ public class Store {
     }
 
     public void addItem(Item item, int amount) {
-        saveUpdateState(() -> {
-        if (!isOpen()) {
-            LogUtility.error("tried to add item for a closed store");
-            throw new IllegalArgumentException("This store is closed");
-        }
+        synchronized (items) {
+            saveUpdateState(() -> {
+                if (!isOpen()) {
+                    LogUtility.error("tried to add item for a closed store");
+                    throw new IllegalArgumentException("This store is closed");
+                }
         /*if(!isManager(userName) && !isOwner(userName)) {
             LogUtility.error("A user that isn't the store owner/manger tried to add items");
             throw new IllegalArgumentException("This store is closed");
         }*/
-        synchronized (items) {
-            this.items.put(item, items.getOrDefault(item, 0) + amount);
-        }});
+                this.items.put(item, items.getOrDefault(item, 0) + amount);
+            });
+        }
     }
 
     public void setItemAmount(Item item, int amount) {
-        saveUpdateState(() -> {
-            synchronized (items) {
-                if (this.items.containsKey(item)) {
-                    this.items.put(item, amount);
-                }
-            }
-        });
+        synchronized (items) {
+            saveUpdateState(() -> {
+                        if (this.items.containsKey(item)) {
+                            this.items.put(item, amount);
+                        }
+                    }
+            );
+        }
     }
 
     private User getManagerByName(String name) {
@@ -320,14 +323,14 @@ public class Store {
     }
 
     public void removeStoreOwner(String removedBy, User owner) {
-        saveUpdateState(() -> {
-            synchronized (lock) {
+        synchronized (lock) {
+            saveUpdateState(() -> {
                 if (!owners.containsKey(owner) || !owners.get(owner).equals(removedBy)) {
                     throw new IllegalArgumentException(String.format("%s is not a store owner that was set by %s", owner, removedBy));
                 }
                 removeAndRemoveEveryoneAssignedBy(owner);
-            }
-        });
+            });
+        }
     }
 
     public void removeAndRemoveEveryoneAssignedBy(User user) {
@@ -343,16 +346,17 @@ public class Store {
     }
 
     public void removeStoreManager(String removedBy, User manager) {
-        saveUpdateState(() -> {
-            synchronized (lock) {
-                if (!managers.containsKey(manager) || !managers.get(manager).getGivenBy().equals(removedBy)) {
-                    throw new IllegalArgumentException(String.format("%s is not a store manager that was set by %s", manager, removedBy));
-                }
-                managers.remove(manager);
-                manager.removedManagedStore(getStoreId());
-                LogUtility.info("Store manager " + manager.getName() + " was removed from position by " + removedBy);
-            }
-        });
+        synchronized (lock) {
+            saveUpdateState(() -> {
+                        if (!managers.containsKey(manager) || !managers.get(manager).getGivenBy().equals(removedBy)) {
+                            throw new IllegalArgumentException(String.format("%s is not a store manager that was set by %s", manager, removedBy));
+                        }
+                        managers.remove(manager);
+                        manager.removedManagedStore(getStoreId());
+                        LogUtility.info("Store manager " + manager.getName() + " was removed from position by " + removedBy);
+                    }
+            );
+        }
     }
 
     public List<String> getManagers() {
@@ -364,8 +368,8 @@ public class Store {
     }
 
     public void changeName(String oldName, String newName) {
-        saveUpdateState(() -> {
-            synchronized (lock) {
+        synchronized (lock) {
+            saveUpdateState(() -> {
                 Set<User> changedOwners = owners.entrySet().stream().filter(e -> e.getValue().equals(oldName)).map(Map.Entry::getKey).collect(Collectors.toSet());
                 owners.keySet().removeAll(changedOwners);
                 changedOwners.forEach(u -> owners.put(u, newName));
@@ -375,14 +379,14 @@ public class Store {
                         value.setGivenBy(newName);
                     }
                 });
-            }
-            LogUtility.info("User named " + oldName + " changed it's name to " + newName);
-        });
+                LogUtility.info("User named " + oldName + " changed it's name to " + newName);
+            });
+        }
     }
 
     public void addDiscount(AbstractDiscountPolicy adp) {
-        saveUpdateState(() -> {
-            synchronized (discountLock) {
+        synchronized (discountLock) {
+            saveUpdateState(() -> {
                 if (this.discountPolicy == null) {
                     this.discountPolicy = new AddDiscountPolicy();
                     this.discountPolicy.addDiscount(adp);
@@ -394,13 +398,13 @@ public class Store {
                 add.addDiscount(adp);
                 this.discountPolicy = add;
                 this.discountPolicy.setId(DiscountManager.getInstance().addObject(this.discountPolicy.toDAL()));
-            }
-        });
+            });
+        }
     }
 
     public void addPolicy(AbstractPurchasePolicy app) {
-        saveUpdateState(() -> {
-            synchronized (purchaseLock) {
+        synchronized (purchaseLock) {
+            saveUpdateState(() -> {
                 if (this.purchasePolicy == null) {
                     this.purchasePolicy = new AddPurchasePolicy();
                     this.purchasePolicy.addPolicy(app);
@@ -412,24 +416,27 @@ public class Store {
                 ap.addPolicy(app);
                 this.purchasePolicy = ap;
                 this.purchasePolicy.setId(PurchasePolicyManager.getInstance().addObject(this.purchasePolicy.toDAL()));
-            }
-        });
+            });
+        }
     }
 
     public void addExclusiveDiscount(AbstractDiscountPolicy adp) {
-        saveUpdateState(() -> {
-            synchronized (discountLock) {
-                if (this.discountPolicy == null) {
-                    this.discountPolicy = new MaxDiscountPolicy();
-                    this.discountPolicy.addDiscount(adp);
-                    this.discountPolicy.setId(DiscountManager.getInstance().addObject(this.discountPolicy.toDAL()));                    return;
-                }
-                MaxDiscountPolicy max = new MaxDiscountPolicy();
-                max.addDiscount(this.discountPolicy);
-                max.addDiscount(adp);
-                this.discountPolicy = max;
-                this.discountPolicy.setId(DiscountManager.getInstance().addObject(this.discountPolicy.toDAL()));            }
-        });
+        synchronized (discountLock) {
+            saveUpdateState(() -> {
+                        if (this.discountPolicy == null) {
+                            this.discountPolicy = new MaxDiscountPolicy();
+                            this.discountPolicy.addDiscount(adp);
+                            this.discountPolicy.setId(DiscountManager.getInstance().addObject(this.discountPolicy.toDAL()));
+                            return;
+                        }
+                        MaxDiscountPolicy max = new MaxDiscountPolicy();
+                        max.addDiscount(this.discountPolicy);
+                        max.addDiscount(adp);
+                        this.discountPolicy = max;
+                        this.discountPolicy.setId(DiscountManager.getInstance().addObject(this.discountPolicy.toDAL()));
+                    }
+            );
+        }
     }
 
     public AbstractDiscountPolicy getDiscount(int discountId) {
@@ -445,36 +452,36 @@ public class Store {
     }
 
     public void removeDiscount(int discountId) {
-        saveUpdateState(() -> {
-            boolean res = false;
-            synchronized (discountLock) {
+        synchronized (discountLock) {
+            saveUpdateState(() -> {
+                boolean res = false;
                 if (discountPolicy.getId() == discountId) {
                     this.discountPolicy = null;
                     return;
                 }
                 res = discountPolicy.removeDiscount(discountId);
-            }
-            if (!res) {
-                throw new IllegalArgumentException(String.format("There is no discount in store %s with id %s", getStoreId(), discountId));
-            }
-        });
+                if (!res) {
+                    throw new IllegalArgumentException(String.format("There is no discount in store %s with id %s", getStoreId(), discountId));
+                }
+            });
+        }
     }
 
     public void removePolicy(int purchaseId) {
-        saveUpdateState(() -> {
+        synchronized (purchaseLock) {
+            saveUpdateState(() -> {
 
-            boolean res = false;
-            synchronized (purchaseLock) {
+                boolean res = false;
                 if (purchasePolicy.getId() == purchaseId) {
                     this.purchasePolicy = null;
                     return;
                 }
                 res = purchasePolicy.removePolicy(purchaseId);
-            }
-            if (!res) {
-                throw new IllegalArgumentException(String.format("There is no policy in store %s with id %s", getStoreId(), purchaseId));
-            }
-        });
+                if (!res) {
+                    throw new IllegalArgumentException(String.format("There is no policy in store %s with id %s", getStoreId(), purchaseId));
+                }
+            });
+        }
     }
 
     public double applyDiscount(ShoppingBasket sb) {
@@ -613,6 +620,7 @@ public class Store {
             this.discountPolicy = copy.discountPolicy;
             this.purchasePolicy = copy.purchasePolicy;
             this.bids = copy.bids;
+            throw e;
         }
     }
 }
