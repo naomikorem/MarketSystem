@@ -2,7 +2,7 @@ package DataLayer.DALObjects;
 
 import DataLayer.DALObject;
 import DomainLayer.Stores.Item;
-import org.mapstruct.ValueMapping;
+
 
 import javax.persistence.*;
 import java.io.Serializable;

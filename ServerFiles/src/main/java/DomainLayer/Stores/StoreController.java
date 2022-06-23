@@ -18,6 +18,8 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static DomainLayer.Stores.Predicates.SimplePredicate.PredicateType.Basket;
+
 public class StoreController {
 
     private Map<Integer, Store> stores; // store-id , stores
@@ -55,6 +57,7 @@ public class StoreController {
     private synchronized int getNewPolicyId() {
         return NEXT_POLICY_ID.getAndIncrement();
     }
+
     private synchronized int getNewBidId() {
         return NEXT_POLICY_ID.getAndIncrement();
     }
@@ -65,11 +68,17 @@ public class StoreController {
         return store;
     }
 
-    public Boolean isExist(int storeId) { return this.stores.getOrDefault(storeId, null)!=null;}
+    public Boolean isExist(int storeId) {
+        return this.stores.getOrDefault(storeId, null) != null;
+    }
+
     private void addStore(Store store) {
         this.stores.put(store.getStoreId(), store);
     }
-    /**for debugging**/
+
+    /**
+     * for debugging
+     **/
     public void removeStore(Store store) {
         this.stores.remove(store.getStoreId());
     }
@@ -170,7 +179,7 @@ public class StoreController {
         }
         try {
             i.updateRate(rate);
-        }catch (Exception e) {
+        } catch (Exception e) {
             return false;
         }
         return true;
@@ -330,7 +339,7 @@ public class StoreController {
         return s.getItems();
     }
 
-    public Permission getManagersPermissions(User owner, int storeId, String managerName){
+    public Permission getManagersPermissions(User owner, int storeId, String managerName) {
         Store s = getStoreAndThrow(storeId);
         if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
             throw new IllegalArgumentException("This user cannot see the managers");
@@ -339,7 +348,7 @@ public class StoreController {
         return result;
     }
 
-    public List<String> getManagers(User owner, int storeId){
+    public List<String> getManagers(User owner, int storeId) {
         Store s = getStoreAndThrow(storeId);
         if (!owner.isSubscribed() || !s.isOwner(owner.getName())) {
             throw new IllegalArgumentException("This user cannot see the managers");
@@ -349,12 +358,12 @@ public class StoreController {
         return result;
     }
 
-    public Set<Item> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating){
+    public Set<Item> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating) {
         Set<Item> output = new HashSet<>();
-        for (Item item: items) {
-            if(upLimit == -1 || item.getPrice() <= upLimit)
-                if(lowLimit == -1 || item.getPrice() >= lowLimit)
-                    if(rating== -1 || item.getRate() > rating)
+        for (Item item : items) {
+            if (upLimit == -1 || item.getPrice() <= upLimit)
+                if (lowLimit == -1 || item.getPrice() >= lowLimit)
+                    if (rating == -1 || item.getRate() > rating)
                         output.add(item);
         }
         return output;
@@ -390,7 +399,7 @@ public class StoreController {
         }
         SimplePurchasePolicy spp = new SimplePurchasePolicy(null);
         spp.setId(getNewPolicyId());
-        if (hour!=24)
+        if (hour != 24)
             spp.setHour(hour);
         return spp;
     }
@@ -431,7 +440,7 @@ public class StoreController {
         }
         s.removePolicy(policyId);
     }
-  
+
     public AbstractDiscountPolicy addPredicateToDiscount(User owner, Store s, int discountId, PredicateEnum type, SimplePredicate sp) {
         AbstractDiscountPolicy adp = s.getDiscount(discountId);
         if (adp == null) {
@@ -520,7 +529,7 @@ public class StoreController {
         if (!owner.isSubscribed() || !s.canManagePurchasePolicy(owner)) {
             throw new IllegalArgumentException("This user cannot add items-predicate to policies");
         }
-        SimplePredicate sp = new SimplePredicate(itemId,hour);
+        SimplePredicate sp = new SimplePredicate(itemId, hour);
         return addPredicateToPolicy(owner, s, policyId, PredicateEnum.valueOf(type), sp);
     }
 
@@ -529,7 +538,7 @@ public class StoreController {
         if (!owner.isSubscribed() || !s.canManagePurchasePolicy(owner)) {
             throw new IllegalArgumentException("This user cannot add items-predicate to policies");
         }
-        SimplePredicate sp = new SimplePredicate(itemId,date);
+        SimplePredicate sp = new SimplePredicate(itemId, date);
         return addPredicateToPolicy(owner, s, policyId, PredicateEnum.valueOf(type), sp);
     }
 
@@ -547,7 +556,7 @@ public class StoreController {
         if (!owner.isSubscribed() || !s.canManageDiscounts(owner)) {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
-        SimplePredicate sp = new SimplePredicate(0, minPrice, null, 0, null, SimplePredicate.PredicateType.Basket);
+        SimplePredicate sp = new SimplePredicate(0, minPrice, null, 0, null, Basket);
         sp.setDisplayString(String.format("Basket has to cost at least %s", minPrice));
         return addPredicateToDiscount(owner, s, discountId, PredicateEnum.valueOf(type), sp);
     }
@@ -566,7 +575,7 @@ public class StoreController {
         if (!owner.isSubscribed() || !s.canManagePurchasePolicy(owner)) {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
-        SimplePredicate sp = new SimplePredicate(0, minPrice, null, 0, null, SimplePredicate.PredicateType.Basket);
+        SimplePredicate sp = new SimplePredicate(0, minPrice, null, 0, null, Basket);
         addPredicateToPolicy(owner, s, policyId, PredicateEnum.valueOf(type), sp);
     }
 /*
@@ -584,6 +593,7 @@ public class StoreController {
         Store s = getStoreAndThrow(sb.getStoreId());
         return s.applyDiscount(sb);
     }
+
     public Map<Item, Double> getShoppingBasketDiscounts(ShoppingBasket sb) {
         Store s = getStoreAndThrow(sb.getStoreId());
         return s.getDiscounts(sb);
@@ -593,34 +603,53 @@ public class StoreController {
         Store s = getStoreAndThrow(sb.getStoreId());
         return s.applyPolicy(sb);
     }
-    public String[] getStoreNameByID(int id){
+
+    public String[] getStoreNameByID(int id) {
         String[] s = new String[1];
         s[0] = getStoreAndThrow(id).getName();
         return s;
     }
-    public Bid addBid(int storeId,String costumerName, double bidPrice, int item, int amount) {
+
+    public Bid addBid(int storeId, String costumerName, double bidPrice, int item, int amount) {
         Store s = getStoreAndThrow(storeId);
-        Bid bid = new Bid(getNewBidId(), costumerName, bidPrice, item, amount);
+        Bid bid = new Bid(getNewBidId(), storeId, costumerName, bidPrice, item, amount);
         s.addBid(bid);
         return bid;
     }
-    public Bid approveBid(int storeId, User user, int bidId){
+
+    public Bid approveBid(int storeId, User user, int bidId) {
         Store s = getStoreAndThrow(storeId);
         if (!s.canProcessBids(user))
             throw new IllegalArgumentException(String.format("Have to process bids permission in store %s", storeId));
         Bid bid = s.getOrThrowBid(bidId);
         bid.approve(user.getName());
-        if(s.isApproved(bidId)){
+        if (s.isApproved(bidId)) {
             bid.setApproved(true);
         }
         return bid;
     }
-    public Bid removeBid(int storeId, User user, int bidId){
+
+    public void approveAllBids(int storeId, User user) {
+        Store s = getStoreAndThrow(storeId);
+        if (!s.canProcessBids(user))
+            throw new IllegalArgumentException(String.format("Have to process bids permission in store %s", storeId));
+        for (Bid bid : s.getBids()) {
+            bid.approve(user.getName());
+            if (s.isApproved(bid.getId())) {
+                bid.setApproved(true);
+            }
+        }
+    }
+
+    public Bid removeBid(int storeId, User user, int bidId) {
         Store s = getStoreAndThrow(storeId);
         Bid bid = s.getOrThrowBid(bidId);
-        if(!bid.getCostumer().equals(user.getName())){
+        if (!bid.getCostumer().equals(user.getName())) {
             if (!s.canProcessBids(user))
                 throw new IllegalArgumentException(String.format("Have to process bids permission in store %s", storeId));
+        }
+        if (bid.isInCart()) {
+            returnItemToStore(storeId, getItemFromStore(storeId, bid.getItem()), bid.getAmount());
         }
         return s.removeBid(bidId);
     }
@@ -629,8 +658,23 @@ public class StoreController {
         Store s = getStoreAndThrow(storeId);
         return s.getBids();
     }
-    public List<Bid> getBids( int storeId, String userName) {
+
+    public List<Bid> getBids(int storeId, User user) {
         Store s = getStoreAndThrow(storeId);
-        return s.getBids(userName);
+        if (!s.canProcessBids(user))
+            throw new IllegalArgumentException(String.format("Need permission to process bids in store %s", storeId));
+        return s.getBids();
+    }
+    public void addBidsToBaskets( List<ShoppingBasket> baskets, Collection<Bid> bids){
+        for(Bid bid : bids){
+            Optional<ShoppingBasket> basket_op = baskets.stream().filter(b -> b.getStoreId()==bid.getStore()).findFirst();
+            ShoppingBasket basket;
+            if(basket_op.isPresent())
+                basket = basket_op.get();
+            else
+                basket = new ShoppingBasket(bid.getStore());
+            Item item = getItemFromStore(bid.getStore(), bid.getItem());
+            basket.addItem(new Item(item.getProductName(),item.getCategory(),bid.bidPrice / bid.getAmount()),bid.getAmount());
+        }
     }
 }
