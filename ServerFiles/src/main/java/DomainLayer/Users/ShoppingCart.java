@@ -22,6 +22,13 @@ public class ShoppingCart {
     public void removeBid(int bid){
         bids.remove(bid);
     }
+    public Bid addBidToCart(int bidId){
+        bids.get(bidId).addToCart();
+        return bids.get(bidId);
+    }
+    public Bid getBid(int bidId){
+        return bids.get(bidId);
+    }
 
     public ShoppingCart() {
         this.shoppingBaskets = new HashMap<>();

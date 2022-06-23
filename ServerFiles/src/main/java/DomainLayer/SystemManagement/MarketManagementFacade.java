@@ -2,6 +2,7 @@ package DomainLayer.SystemManagement;
 
 import DomainLayer.Observer;
 import DomainLayer.Response;
+import DomainLayer.Stores.Bid;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
 import DomainLayer.Stores.StoreController;
@@ -18,6 +19,7 @@ import ServiceLayer.DTOs.PaymentParamsDTO;
 import Utility.LogUtility;
 import lombok.SneakyThrows;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -100,15 +102,16 @@ public class MarketManagementFacade {
         try {
             String username = checkUsername(user);
             List<ShoppingBasket> baskets = user.getCartBaskets();
-
-            if (baskets.isEmpty()) {
+            Collection<Bid> bids = user.getBidsInCart();
+            if (baskets.isEmpty() && bids.isEmpty()) {
                 LogUtility.error("User " + username + " tried to purchase empty shopping cart");
                 return new Response<>("Purchase shopping cart cannot be empty");
             }
 
             double price = calculateShoppingCartPrice(baskets);
+            price+= calculateBidsPrice(bids);
+            storeController.addBidsToBaskets(baskets, bids);
             List<Map.Entry<Item, Integer>> items_and_amounts = PurchaseProcess.getItemsAndAmounts(baskets);
-
             if (!this.services.supply(supplyParamsDTO, items_and_amounts)) {
                 LogUtility.error("The user " + username + " couldn't get confirmation from the supply services.");
                 return new Response<>("The purchase process canceled - couldn't contact the supply service.");
@@ -128,6 +131,7 @@ public class MarketManagementFacade {
             user.emptyShoppingCart();
 
             LogUtility.info("Purchase process of shopping cart that the user " + username + " owned ended successfully");
+
             return new Response<>(true);
         } catch (Exception e) {
             //throw new IllegalArgumentException(e.getMessage());
@@ -143,6 +147,10 @@ public class MarketManagementFacade {
     public double calculateShoppingCartPrice(List<ShoppingBasket> baskets) {
         List<Double> basket_prices = baskets.stream().map(b -> storeController.getShoppingBasketPrice(b)).collect(Collectors.toList());
         return basket_prices.stream().reduce(0.0, (subtotal, element) -> subtotal + element);
+    }
+    private double calculateBidsPrice(Collection<Bid> bids) {
+        List<Double> prices = bids.stream().map(Bid::getBidPrice).collect(Collectors.toList());
+        return prices.stream().reduce(0.0, Double::sum);
     }
 
     public Response<Double> calculateShoppingCartPriceResult(List<ShoppingBasket> baskets) {

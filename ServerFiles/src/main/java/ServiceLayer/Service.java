@@ -760,24 +760,70 @@ public class Service {
         }
         return res;
     }
-    @MessageMapping("/market/Bid/addBid")
-    @SendToUser("/topic/Bid/addBidResult")
+    @MessageMapping("/market/bid/addBid")
+    @SendToUser("/topic/bid/addBidResult")
     public Response<Boolean> addBid(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
-        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addBid((Integer) map.get("storeId"), (Double) map.get("bidPrice"), (Integer) map.get("itemId"), (Integer) map.get("amount"));
+        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addBid((Integer) map.get("store_id"), Double.parseDouble((String)map.get("bid_price")), (Integer) map.get("item_id"), (Integer) map.get("amount"));
         if (res.hadError()) {
             return new Response<>(res.getErrorMessage());
         }
         return res;
     }
-    @MessageMapping("/market/Bid/getBids")
-    @SendToUser("/topic/Bid/getBidsResult")
-    public Response<Collection<Bid>> getBids(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
-        return  ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getBids((Integer) map.get("storeId"));
+    @MessageMapping("/market/bid/deleteBid")
+    @SendToUser("/topic/bid/deleteBidResult")
+    public Response<BidDTO> deleteBid(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<Bid> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).deleteBid((Integer) map.get("store_id"), (Integer) map.get("bid_id"));
+        if (res.hadError()) {
+            return new Response<>(res.getErrorMessage());
+        }
+        return new Response<>(new BidDTO(res.getObject()));
     }
-    @MessageMapping("/market/Bid/getUserBids")
-    @SendToUser("/topic/Bid/getUserBidsResult")
-    public Response<Collection<Bid>> getUserBids(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
-        return  ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getUserBids();
+    @MessageMapping("/market/bid/approveBid")
+    @SendToUser("/topic/bid/approveBidResult")
+    public Response<BidDTO> approveBid(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<Bid> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).approveBid((Integer) map.get("store_id"), (Integer) map.get("bid_id"));
+        if (res.hadError()) {
+            return new Response<>(res.getErrorMessage());
+        }
+        return new Response<>(new BidDTO(res.getObject()));
+    }
+    @MessageMapping("/market/bid/approveAllBids")
+    @SendToUser("/topic/bid/approveAllBidsResult")
+    public Response<Boolean> approveAllBids(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).approveAllBids((Integer) map.get("store_id"));
+    }
+    @MessageMapping("/market/bid/updateBid")
+    @SendToUser("/topic/bid/updateBidResult")
+    public Response<BidDTO> updateBid(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<Bid> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).updateBid((Integer) map.get("store_id"), (Integer) map.get("bid_id"), Double.parseDouble((String) map.get("bid_price")));
+        if (res.hadError()) {
+            return new Response<>(res.getErrorMessage());
+        }
+        return new Response<>(new BidDTO(res.getObject()));
+    }
+    @MessageMapping("/market/bid/addBidToCart")
+    @SendToUser("/topic/bid/addBidToCartResult")
+    public Response<Boolean> addBidToCart(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addBidToCart((Integer) map.get("bid_id"));
+    }
+    @MessageMapping("/market/bid/getBids")
+    @SendToUser("/topic/bid/getBidsResult")
+    public Response<Set<BidDTO>> getBids(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<Collection<Bid>> res =  ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getBids((Integer) map.get("store_id"));
+        if(res.hadError())
+            return new Response<>(res.getErrorMessage());
+        Collection<Bid> bids = res.getObject();
+        return new Response<>(bids.stream().map(BidDTO::new).collect(Collectors.toSet()));
+    }
+    @MessageMapping("/market/bid/getUserBids")
+    @SendToUser("/topic/bid/getUserBidsResult")
+    public Response<Set<BidDTO>> getUserBids(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<Collection<Bid>> res =  ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getUserBids();
+        if(res.hadError())
+            return new Response<>(res.getErrorMessage());
+        Collection<Bid> bids = res.getObject();
+        Set<BidDTO> b = bids.stream().map(BidDTO::new).collect(Collectors.toSet());
+        return new Response<Set<BidDTO>>(b);
     }
 
 }

@@ -5,6 +5,7 @@ import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.Predicates.SimplePredicate;
 
+
 import javax.persistence.*;
 import java.util.Date;
 

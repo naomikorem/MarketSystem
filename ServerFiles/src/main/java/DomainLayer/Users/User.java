@@ -37,11 +37,20 @@ public class User implements Observer {
     public Collection<Bid> getBids(){
         return shoppingCart.getBids();
     }
+    public Collection<Bid> getBidsInCart(){
+        return shoppingCart.getBids().stream().filter(Bid::isInCart).collect(Collectors.toSet());
+    }
     public void addBid(Bid bid){
         shoppingCart.addBid(bid);
     }
     public void removeBid(int bidId){
         shoppingCart.removeBid(bidId);
+    }
+    public Bid addBidToCart(int bidId){
+        return shoppingCart.addBidToCart(bidId);
+    }
+    public Bid getBid(int bidId){
+        return shoppingCart.getBid(bidId);
     }
 
     public void sendNotification(INotification notification) {

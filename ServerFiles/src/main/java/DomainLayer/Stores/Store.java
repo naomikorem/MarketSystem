@@ -540,15 +540,8 @@ public class Store {
         bids.put(bid.getId(),bid);
     }
 
-    public Collection<Bid> getBids() {
-        return bids.values();
-    }
-
-    public List<Bid> getBids(String userName){
-        if (!managers.containsKey(userName) && !owners.containsKey(userName)) {
-            throw new IllegalArgumentException(String.format("%s is not a store manager", userName));
-        }
-        return bids.values().stream().filter(b -> !b.approvedManagers.contains(userName)).filter(b -> !b.isApproved).collect(Collectors.toList());
+    public List<Bid> getBids() {
+        return new ArrayList<>(bids.values());
     }
     public Bid getOrThrowBid(int id){
         Bid bid = bids.get(id);
@@ -562,8 +555,8 @@ public class Store {
         return  bids.get(bidId).approvedManagers.containsAll(managers) && bids.get(bidId).approvedManagers.containsAll(owners);
     }
 
-    public Bid removeBid(int bidId) {
-        Bid bid = bids.get(id);
+    public Bid removeBid(int bidId){
+        Bid bid = bids.get(bidId);
         if (bid == null)
             throw new IllegalArgumentException(String.format("Bid not in store %s", id));
         bids.remove(bidId);

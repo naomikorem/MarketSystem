@@ -972,6 +972,10 @@ public class SystemImplementor implements SystemInterface {
             }
             total += response.getObject();
         }
+        for (Bid bid : user.getBids()){ //=========== bids in cart price =========
+            if(bid.isInCart())
+                total += bid.getBidPrice();
+        }
         return new Response<>(total);
     }
 
@@ -1051,13 +1055,25 @@ public class SystemImplementor implements SystemInterface {
         }
         return new Response<>(true);
     }
+    public Response<Boolean> addBidToCart(int bidId){
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        Bid bid = user.getBid(bidId);
+        Response<Item> itemRes = storeFacade.reserveItemFromStore(bid.getStore(), bid.getItem(), bid.getAmount());
+        if (itemRes.hadError()) {
+            return new Response<>(itemRes.getErrorMessage());
+        }
+        user.addBidToCart(bidId);
+        return new Response<>(true);
+    }
 
     @Override
     public Response<Collection<Bid>> getBids(int storeId) {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
-        return storeFacade.getBids(storeId, user.getName());
+        return storeFacade.getBids(storeId, user);
     }
     @Override
     public Response<Collection<Bid>> getUserBids() {
@@ -1074,6 +1090,30 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.approveBid(storeId, user, bidId);
     }
     @Override
+    public Response<Boolean> approveAllBids(int storeId) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.approveAllBids(storeId, user);
+    }
+    @Override
+    public Response<Bid> deleteBid( int storeId, int bidId) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        Response<Bid> response = storeFacade.removeBid(storeId, user, bidId);
+        if(response.hadError())
+            return new Response<>(response.getErrorMessage());
+        Bid bid = response.getObject();
+        Response<User> user_res = getUser(bid.getCostumer());
+        if(user_res.hadError())
+            return new Response<>(user_res.getErrorMessage());
+        User u = user_res.getObject();
+        u.removeBid(bid.getId());
+
+        return response;
+    }
+    @Override
     public Response<Bid> updateBid(int storeId,int bidId, double newPrice){
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
@@ -1083,15 +1123,20 @@ public class SystemImplementor implements SystemInterface {
             return new Response<>(response.getErrorMessage());
         Bid bid = response.getObject();
         Double oldPrice = bid.getBidPrice();
-        user.removeBid(bid.getId());
-        response = storeFacade.addBid(storeId, bid.getCostumer(), bid.getBidPrice(), bid.getItem(), bid.getAmount());
+        Response<User> user_res = getUser(bid.getCostumer());
+        if(user_res.hadError())
+            return new Response<>(user_res.getErrorMessage());
+        User u = user_res.getObject();
+        u.removeBid(bid.getId());
+        response = storeFacade.addBid(storeId, bid.getCostumer(), newPrice , bid.getItem(), bid.getAmount());
         if(response.hadError())
             return new Response<>(response.getErrorMessage());
+        bid = response.getObject();
         Response<Store> store_response = storeFacade.getStore(storeId);
         if(store_response.hadError())
             return new Response<>(store_response.getErrorMessage());
         Store  store  = store_response.getObject();
-        user.addBid(bid);
+        u.addBid(bid);
         Response<Boolean> notify_managers_response = marketManagementFacade.notifyUsers(store.getManagers(), String.format("Bid update - Item %s from price %s₪ to %s₪ for costumer %s in store %s", bid.getItem(), oldPrice, bid.getBidPrice(), bid.getCostumer(),  store.getName()));
         if (notify_managers_response.hadError() || !notify_managers_response.getObject()) {
             return new Response<>( notify_managers_response.getErrorMessage());
