@@ -13,6 +13,7 @@ public class HistoryItemDAL implements DALObject<Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private int itemId;
     private int store_id;
     private String username;
     private String product_name;
@@ -88,5 +89,13 @@ public class HistoryItemDAL implements DALObject<Integer> {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public int getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(int itemId) {
+        this.itemId = itemId;
     }
 }

@@ -3,6 +3,7 @@ package DataLayer.DALObjects;
 
 import DataLayer.DALObject;
 import DomainLayer.Stores.Category;
+import DomainLayer.Stores.Item;
 
 import javax.persistence.*;
 import java.util.List;
@@ -92,5 +93,17 @@ public class ItemDAL implements DALObject<Integer> {
 
     public void setKeyWords(List<String> keyWords) {
         this.keyWords = keyWords;
+    }
+
+    public Item toDomain() {
+        Item i = new Item();
+        i.setId(getId());
+        i.setProduct_name(getProduct_name());
+        i.setCategory(getCategory());
+        i.setRate(getRate());
+        i.setNumberOfRatings(getNumberOfRatings());
+        i.setPrice(getPrice());
+        i.setKeyWords(getKeyWords());
+        return i;
     }
 }

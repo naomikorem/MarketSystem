@@ -2,10 +2,12 @@ package DataLayer.DALObjects;
 
 import DataLayer.DALObject;
 import DomainLayer.Stores.Item;
+import DomainLayer.Users.ShoppingBasket;
 
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -48,5 +50,13 @@ public class ShoppingBasketDAL implements DALObject<Integer> {
 
     public void setItems(Map<ItemDAL, Integer> items) {
         this.items = items;
+    }
+
+    public ShoppingBasket toDomain() {
+        Map<Item, Integer> items = new HashMap<>();
+        getItems().forEach((key, value) -> items.put(key.toDomain(), value));
+        ShoppingBasket sb = new ShoppingBasket(getStoreId(), items);
+        sb.setId(getId());
+        return sb;
     }
 }

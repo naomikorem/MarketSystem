@@ -27,7 +27,11 @@ public class DALManager <T extends DALObject<K>, K> {
             if (tx!=null) tx.rollback();
             e.printStackTrace();
         } finally {
-            session.close();
+            try {
+                session.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return id;
     }
@@ -57,7 +61,7 @@ public class DALManager <T extends DALObject<K>, K> {
 
         try {
             tx = session.beginTransaction();
-            session.createQuery(new String("delete from " + type)).executeUpdate();
+            session.createQuery(new String("delete from " + type.getName())).executeUpdate();
             tx.commit();
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
@@ -67,5 +71,24 @@ public class DALManager <T extends DALObject<K>, K> {
             session.close();
         }
         return true;
+    }
+
+    public void removeObject(T o){
+        Session session = DatabaseConnection.getSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            session.delete(o);
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx!=null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            try {
+                session.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

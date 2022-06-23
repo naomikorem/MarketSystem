@@ -2,6 +2,7 @@ package DataLayer.DALObjects;
 
 
 import DataLayer.DALObject;
+import DomainLayer.Stores.Permission;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -51,5 +52,12 @@ public class PermissionDAL implements DALObject<Integer> {
 
     public void setManager(UserDAL manager) {
         this.manager = manager;
+    }
+
+    public Permission toDomain() {
+        Permission p = new Permission(getGivenBy());
+        p.setPermissionsMask(getPermissionMask());
+        p.setId(getId());
+        return p;
     }
 }

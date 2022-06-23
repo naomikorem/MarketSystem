@@ -1,5 +1,8 @@
 package DomainLayer.Stores;
 
+import DataLayer.DALObjects.PermissionDAL;
+import DomainLayer.Users.User;
+
 public class Permission {
 
     public enum PermissionEnum {
@@ -13,7 +16,7 @@ public class Permission {
         }
         private byte flag;
     }
-
+    private int id;
     private String givenBy;
     private byte permissionsMask;
     public Permission(String givenBy) {
@@ -53,5 +56,22 @@ public class Permission {
 
     public byte getPermissionsMask() {
         return permissionsMask;
+    }
+
+    public PermissionDAL toDAL(User u) {
+        PermissionDAL res = new PermissionDAL();
+        res.setId(this.id);
+        res.setPermissionMask(getPermissionsMask());
+        res.setGivenBy(getGivenBy());
+        res.setManager(u.toDAL());
+        return res;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

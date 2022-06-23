@@ -28,6 +28,7 @@ public class DatabaseConnection {
         c.addAnnotatedClass(CompositePurchasePolicyDAL.class);
         c.addAnnotatedClass(StoreDAL.class);
         c.addAnnotatedClass(PermissionDAL.class);
+        c.addAnnotatedClass(AdminDAL.class);
         return c;
     }
 

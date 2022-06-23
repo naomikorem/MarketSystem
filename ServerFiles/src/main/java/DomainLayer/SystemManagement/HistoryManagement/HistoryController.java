@@ -1,5 +1,7 @@
 package DomainLayer.SystemManagement.HistoryManagement;
 
+import DataLayer.DALObjects.HistoryItemDAL;
+import DataLayer.HistoryManager;
 import DomainLayer.Users.ShoppingBasket;
 import Utility.LogUtility;
 
@@ -13,11 +15,13 @@ public class HistoryController
     public static final String GUEST_DEFAULT_NAME = "guest";
     private Map<String, History> users_history;
     private Map<Integer, History> store_history;
+    private HistoryManager manager;
 
     private HistoryController()
     {
         this.users_history = new ConcurrentHashMap<>();
         this.store_history = new ConcurrentHashMap<>();
+        this.manager = HistoryManager.getInstance();
     }
 
     private static class HistoryControllerHolder {
@@ -69,7 +73,14 @@ public class HistoryController
                     this.store_history.put(store_id, new History());
                 }
 
-                this.store_history.get(store_id).addToHistory(basket.getItemsAndAmounts(), store_id, buying_username, purchase_date);
+                List<ItemHistory> added_items = this.store_history.get(store_id).addToHistory(basket.getItemsAndAmounts(), store_id, buying_username, purchase_date);
+                for(ItemHistory item_domain : added_items)
+                {
+                    this.manager.addItemToHistory(toDAL(item_domain));
+                }
+
+                //added_items.stream().map(hi-> this.manager.addItemToHistory(toDAL(hi)));
+
                 LogUtility.info("Added history to store " + store_id + " history by " + buying_username);
             }
         }
@@ -117,6 +128,51 @@ public class HistoryController
     {
         this.users_history = new ConcurrentHashMap<>();
         this.store_history = new ConcurrentHashMap<>();
+        this.manager.clearTable();
         return true;
+    }
+
+    public void loadHistory()
+    {
+        List< HistoryItemDAL> history_items_dal = this.manager.getAllHistoryItems();
+        for (HistoryItemDAL item_dal: history_items_dal)
+        {
+            ItemHistory item_history_domain = toDomain(item_dal);
+            String username = item_history_domain.username;
+            int store_id = item_history_domain.store_id;
+
+            if (!this.store_history.containsKey(store_id))
+            {
+                this.store_history.put(store_id, new History());
+            }
+            this.store_history.get(store_id).addItemHistory(item_history_domain);
+
+            if (!this.users_history.containsKey(username))
+            {
+                this.users_history.put(username, new History());
+            }
+            this.users_history.get(username).addItemHistory(item_history_domain);
+        }
+    }
+
+    private ItemHistory toDomain(HistoryItemDAL item_dal)
+    {
+        return new ItemHistory(item_dal.getItemId(), item_dal.getStore_id(), item_dal.getUsername(),
+                item_dal.getProduct_name(), item_dal.getCategory(), item_dal.getPrice_per_unit(),
+                item_dal.getAmount(), item_dal.getDate());
+    }
+
+    private HistoryItemDAL toDAL(ItemHistory history_item)
+    {
+        HistoryItemDAL dal_item = new HistoryItemDAL();
+        dal_item.setItemId(history_item.id);
+        dal_item.setUsername(history_item.username);
+        dal_item.setStore_id(history_item.store_id);
+        dal_item.setProduct_name(history_item.product_name);
+        dal_item.setCategory(history_item.category);
+        dal_item.setPrice_per_unit(history_item.price_per_unit);
+        dal_item.setAmount(history_item.amount);
+        dal_item.setDate(history_item.date);
+        return dal_item;
     }
 }

@@ -2,6 +2,7 @@ package DataLayer.DALObjects;
 
 import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Predicates.SimplePredicate;
+import DomainLayer.Stores.Predicates.AbstarctPredicate;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -76,5 +77,19 @@ public class SimplePredicateDAL extends PredicateDAL {
 
     public void setType(SimplePredicate.PredicateType type) {
         this.type = type;
+    }
+
+    @Override
+    public AbstarctPredicate toDomain() {
+        SimplePredicate sp = new SimplePredicate();
+        sp.setId(getId());
+        sp.setItemId(getItemId());
+        sp.setMinBasket(getMinBasket());
+        sp.setCategory(getCategory());
+        sp.setHour(getHour());
+        sp.setDate(getDate());
+        sp.setType(getType());
+        sp.setDisplayString(getDisplayString());
+        return sp;
     }
 }

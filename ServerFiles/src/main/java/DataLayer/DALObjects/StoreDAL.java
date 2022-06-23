@@ -1,8 +1,15 @@
 package DataLayer.DALObjects;
 
 import DataLayer.DALObject;
+import DomainLayer.Stores.DiscountPolicy.CompositeDiscountPolicy;
+import DomainLayer.Stores.Item;
+import DomainLayer.Stores.Permission;
+import DomainLayer.Stores.PurchasePolicy.CompositePurchasePolicy;
+import DomainLayer.Stores.Store;
+import DomainLayer.Users.User;
 
 import javax.persistence.*;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -121,5 +128,19 @@ public class StoreDAL implements DALObject<Integer> {
 
     public void setManagers(Set<PermissionDAL> managers) {
         this.managers = managers;
+    }
+
+    public Store toDomain() {
+        Map<User, String> owners = new HashMap<>();
+        getOwners().forEach((k, v) -> owners.put(k.toDomain(), v));
+
+        Map<User, Permission> managers = new HashMap<>();
+        getManagers().forEach(p -> managers.put(p.getManager().toDomain(), p.toDomain()));
+
+        Map<Item, Integer> items = new HashMap<>();
+        getItems().forEach((k, v) -> items.put(k.toDomain(), v));
+
+
+        return new Store(getFounder(), isOpen(), isPermanentlyClosed(), owners, managers, items, getName(), getId(), getDiscount() == null ? null : (CompositeDiscountPolicy) getDiscount().toDomain(), getPurchase() == null ? null : (CompositePurchasePolicy) getPurchase().toDomain());
     }
 }

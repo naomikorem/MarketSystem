@@ -1,5 +1,6 @@
 package DomainLayer.Users;
 
+import DataLayer.ShoppingBasketManager;
 import DomainLayer.Stores.Bid;
 import DomainLayer.Stores.Item;
 
@@ -53,7 +54,9 @@ public class ShoppingCart {
         if (!shoppingBaskets.containsKey(storeId)) {
             shoppingBaskets.put(storeId, new ShoppingBasket(storeId));
         }
-        shoppingBaskets.get(storeId).addItem(item, amount);
+        ShoppingBasket sb = shoppingBaskets.get(storeId);
+        sb.addItem(item, amount);
+        sb.setId(ShoppingBasketManager.getInstance().addObject(sb.toDAL()));
     }
 
 

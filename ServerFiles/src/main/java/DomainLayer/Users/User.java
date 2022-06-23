@@ -1,5 +1,6 @@
 package DomainLayer.Users;
 
+import DataLayer.DALObjects.UserDAL;
 import DomainLayer.Observer;
 import DomainLayer.Response;
 import DomainLayer.Stores.Bid;
@@ -53,6 +54,8 @@ public class User implements Observer {
     }
 
     public void sendNotification(INotification notification) {
+        if(getSessionId() == null || getTemplate() == null)
+            return;
         String session = getSessionId();
         getTemplate().convertAndSendToUser(session, "/topic/notificationResult", new Response<>(notification), createHeaders());
     }
@@ -171,5 +174,25 @@ public class User implements Observer {
             return Objects.hashCode(this.getName());
         }
         return Objects.hashCode(state);
+    }
+
+    public void setShoppingCart(ShoppingCart shoppingCart) {
+        this.shoppingCart = shoppingCart;
+    }
+
+    public UserDAL toDAL() {
+        if (!isSubscribed()) {
+            throw new IllegalArgumentException("Cannot turn guest user into dal.");
+        }
+        UserDAL res = new UserDAL();
+        res.setFirstName(getFirstName());
+        res.setPassword(getState().getPassword());
+        res.setEmail(getEmail());
+        res.setUserName(getName());
+        res.setLastName(getLastName());
+        res.setOwnedStores(getOwnedStores());
+        res.setManagedStores(getManagedStores());
+        res.setShoppingBaskets(shoppingCart.getBaskets().stream().map(ShoppingBasket::toDAL).collect(Collectors.toSet()));
+        return res;
     }
 }

@@ -1,6 +1,9 @@
 package DataLayer.DALObjects;
 
 import DataLayer.DALObject;
+import DomainLayer.Users.ShoppingCart;
+import DomainLayer.Users.SubscribedState;
+import DomainLayer.Users.User;
 
 import javax.persistence.*;
 import java.util.Map;
@@ -99,5 +102,17 @@ public class UserDAL implements DALObject<String> {
 
     public void setShoppingBaskets(Set<ShoppingBasketDAL> shoppingBaskets) {
         this.shoppingBaskets = shoppingBaskets;
+    }
+
+    public User toDomain() {
+        SubscribedState state = new SubscribedState(getEmail(), getUserName(), getFirstName(), getLastName(), getPassword());
+        state.setOwnedStores(getOwnedStores());
+        state.setManagedStores(getManagedStores());
+
+        User u = new User(state);
+        ShoppingCart sc = new ShoppingCart();
+        getShoppingBaskets().forEach(sb -> sc.addBasket(sb.toDomain()));
+        u.setShoppingCart(sc);
+        return u;
     }
 }

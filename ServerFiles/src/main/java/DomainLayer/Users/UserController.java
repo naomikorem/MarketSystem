@@ -1,6 +1,9 @@
 package DomainLayer.Users;
 
+import DataLayer.DALObjects.UserDAL;
+import DataLayer.UserManager;
 import Exceptions.LogException;
+import ServiceLayer.Server;
 import Utility.LogUtility;
 
 import java.security.SecureRandom;
@@ -17,11 +20,11 @@ public class UserController {
     private Map<String, User> tokensToUsers;
     private Map<User, String> usersToToken;
 
-    public static String DEFAULT_ADMIN_USER = "admin";
-    public static String DEFAULT_ADMIN_USER_FIRST_NAME = "admin";
-    public static String DEFAULT_ADMIN_USER_LAST_NAME = "admin";
-    public static String DEFAULT_ADMIN_PASSWORD = "admin";
-    public static String DEFAULT_ADMIN_EMAIL = "admin@mycompany.com";
+    public static String DEFAULT_ADMIN_USER = Server.prop.getProperty("defaultAdminUser", "admin");
+    public static String DEFAULT_ADMIN_USER_FIRST_NAME = Server.prop.getProperty("defaultAdminFirstName", "admin");
+    public static String DEFAULT_ADMIN_USER_LAST_NAME = Server.prop.getProperty("defaultAdminLastName", "admin");
+    public static String DEFAULT_ADMIN_PASSWORD = Server.prop.getProperty("defaultAdminPassword", "admin");
+    public static String DEFAULT_ADMIN_EMAIL = Server.prop.getProperty("defaultAdminEmail", "admin@mycompany.com");
     public static int SALT_HASH_ROUND_COUNT = 10;
 
     public static Lock lock = new ReentrantLock();
@@ -33,7 +36,7 @@ public class UserController {
         this.tokensToUsers = new HashMap<>();
 
         //load database
-
+        loadUser(DEFAULT_ADMIN_USER);
         if (!users.containsKey(DEFAULT_ADMIN_USER)) {
             createUser(DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_USER, DEFAULT_ADMIN_USER_FIRST_NAME, DEFAULT_ADMIN_USER_LAST_NAME, DEFAULT_ADMIN_PASSWORD);
         }
@@ -50,7 +53,9 @@ public class UserController {
     public void clearAll() {
         users = new HashMap<>();
         loggedUsers = new HashSet<>();
+        UserManager.getInstance().clearTable();
 
+        loadUser(DEFAULT_ADMIN_USER);
         if (!users.containsKey(DEFAULT_ADMIN_USER)) {
             createUser(DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_USER, DEFAULT_ADMIN_USER_FIRST_NAME, DEFAULT_ADMIN_USER_LAST_NAME, DEFAULT_ADMIN_PASSWORD);
         }
@@ -70,6 +75,7 @@ public class UserController {
         }
         UserState state = new SubscribedState(email, userName,firstName,lastName, password);
         User u = new User(state);
+        UserManager.getInstance().addObject(u.toDAL());
         addUser(u);
         LogUtility.info(String.format("A new user named %s was created", userName));
         return u;
@@ -94,6 +100,8 @@ public class UserController {
                 LogUtility.warn("tried to remove a nonexistent user");
                 throw new IllegalArgumentException(String.format("Could not find user with name %s", userName));
             }
+            User u = users.get(userName);
+            UserManager.getInstance().removeObject(u.toDAL());
             users.remove(userName);
             loggedUsers.remove(userName);
             LogUtility.info(String.format("A user named %s was removed", userName));
@@ -112,7 +120,18 @@ public class UserController {
         throw new IllegalArgumentException(String.format("Could not find user with name %s", name));
     }
 
+    public synchronized void loadUser(String name) {
+        if (!users.containsKey(name)) {
+            UserDAL dal = UserManager.getInstance().getObject(name);
+            if (dal != null) {
+                User u = dal.toDomain();
+                users.put(u.getName(), u);
+            }
+        }
+    }
+
     public boolean isExist(String name) {
+        loadUser(name);
         return users.containsKey(name);
     }
 
@@ -179,6 +198,7 @@ public class UserController {
         }
         removedLoggedUser(name);
         LogUtility.info(String.format("User %s has logged out", name));
+        UserManager.getInstance().addObject(getUser(name).toDAL());
         return true;
     }
 

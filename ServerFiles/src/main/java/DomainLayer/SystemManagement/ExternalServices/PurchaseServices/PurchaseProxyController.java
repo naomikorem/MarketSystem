@@ -3,12 +3,15 @@ package DomainLayer.SystemManagement.ExternalServices.PurchaseServices;
 import DataLayer.DALObjects.ServiceDAL;
 import DataLayer.ServiceType;
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxyController;
+import DomainLayer.SystemManagement.ExternalServices.SupplyServices.SupplyProxy;
 import ServiceLayer.DTOs.PaymentParamsDTO;
 import ServiceLayer.DTOs.SupplyParamsDTO;
 import Utility.LogUtility;
+import lombok.SneakyThrows;
 
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
+import java.util.List;
 
 public class PurchaseProxyController extends AbstractProxyController<PurchaseProxy>
 {
@@ -38,12 +41,23 @@ public class PurchaseProxyController extends AbstractProxyController<PurchasePro
     }
 
     @Override
-    protected ServiceDAL createServiceDALObject(String name, String url) {
+    protected ServiceDAL toDAL(String name, String url) {
         ServiceDAL service = new ServiceDAL();
         service.setName(name);
         service.setUrl(url);
         service.setServiceType(ServiceType.Purchase);
         return service;
+    }
+
+    @Override
+    public void loadAllServices() {
+        List<ServiceDAL> serviceDALS = manager.getAllServicesByType(ServiceType.Purchase);
+        for (ServiceDAL s: serviceDALS)
+        {
+            String name = s.getName();
+            PurchaseProxy service_domain = toDomain(s);
+            this.services.put(name, service_domain);
+        }
     }
 
     /***

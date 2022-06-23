@@ -1,5 +1,7 @@
 package DomainLayer.Stores.DiscountPolicy;
 
+import DataLayer.DiscountManager;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -16,6 +18,11 @@ public abstract class CompositeDiscountPolicy extends AbstractDiscountPolicy {
 
     public void addDiscount(AbstractDiscountPolicy adc) {
         this.discountPolicies.add(adc);
+        update();
+    }
+
+    public void setDiscountPolicies(List<AbstractDiscountPolicy> discountPolicies) {
+        this.discountPolicies = discountPolicies;
     }
 
     @Override

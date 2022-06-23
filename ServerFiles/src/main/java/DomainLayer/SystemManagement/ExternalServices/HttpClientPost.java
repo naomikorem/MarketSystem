@@ -15,10 +15,7 @@ import java.rmi.ConnectException;
 public class HttpClientPost {
 
     public static void handshake(String name, String url, HttpHeaders headers, RestTemplate restTemplate) throws ConnectException {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("action_type", "handshake");
-
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(getHandshakeMultiValueMap(), headers);
         ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
 
         if (response.getBody() == null || !response.getBody().equals("OK"))
@@ -26,6 +23,12 @@ public class HttpClientPost {
             LogUtility.error("Could not connect to external service named: " + name + ", url: " + url);
             throw new ConnectException("Could not connect to external service named: " + name + ", url: " + url);
         }
+    }
+
+    public static MultiValueMap<String, String> getHandshakeMultiValueMap() {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("action_type", "handshake");
+        return params;
     }
 
     public static boolean pay(PaymentParamsDTO paymentParamsDTO, String url, HttpHeaders headers, RestTemplate restTemplate) throws ConnectException {

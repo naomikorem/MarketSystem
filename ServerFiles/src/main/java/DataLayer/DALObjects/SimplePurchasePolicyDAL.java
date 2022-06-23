@@ -1,6 +1,12 @@
 package DataLayer.DALObjects;
 
+import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
+import DomainLayer.Stores.PurchasePolicy.SimplePurchasePolicy;
+
 import javax.persistence.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 @Entity
@@ -35,5 +41,21 @@ public class SimplePurchasePolicyDAL extends PurchasePolicyDAL {
 
     public void setPredicate(PredicateDAL predicate) {
         this.predicate = predicate;
+    }
+
+    @Override
+    public AbstractPurchasePolicy toDomain() {
+        SimplePurchasePolicy sp = new SimplePurchasePolicy(getPredicate() == null ? null : getPredicate().toDomain());
+
+        if (getDate() == null) {
+            sp.setDate(null);
+        } else {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(getDate());
+            sp.setDate(calendar);
+        }
+        sp.setHour(getHour());
+        sp.setId(getId());
+        return sp;
     }
 }

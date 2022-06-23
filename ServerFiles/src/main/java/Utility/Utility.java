@@ -9,4 +9,8 @@ public class Utility {
         return EmailValidator.getInstance().isValid(email);
     }
 
+    public static boolean isHashed(String password) {
+        return password.substring(0, 3).equals("$2a");
+    }
+
 }

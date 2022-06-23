@@ -42,6 +42,11 @@ public class MarketManagementFacade {
         this.historyController = HistoryController.getInstance();
         this.notificationController = NotificationController.getInstance();
         this.storeController = StoreController.getInstance();
+
+        this.services.loadServices();
+        this.notificationController.loadNotifications();
+        this.historyController.loadHistory();
+
         initializeMarket();
     }
 

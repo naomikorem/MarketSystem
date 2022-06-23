@@ -1,6 +1,8 @@
 package DataLayer.DALObjects;
 
 import DomainLayer.Stores.Category;
+import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
+import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.Predicates.SimplePredicate;
 
 
@@ -30,5 +32,12 @@ public class SimpleDiscountDAL extends DiscountDAL {
 
     public void setPredicate(PredicateDAL predicate) {
         this.predicate = predicate;
+    }
+
+    @Override
+    public AbstractDiscountPolicy toDomain() {
+        SimpleDiscountPolicy sdp = new SimpleDiscountPolicy(getPercentage(), getPredicate() == null ? null : getPredicate().toDomain());
+        sdp.setId(getId());
+        return sdp;
     }
 }

@@ -15,7 +15,6 @@ import java.util.List;
 public class NotificationsManager /* extends DALManager<NotificationDAL, String>*/
 {
     // TODO: take care of implementation and extend
-    // add clear table function
 
     private static class NotificationsManagerHolder {
         static final NotificationsManager INSTANCE = new NotificationsManager();
@@ -26,26 +25,7 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
         return NotificationsManager.NotificationsManagerHolder.INSTANCE;
     }
 
-    private NotificationsManager() {
-       // super(NotificationDAL.class);
-    }
-
-    /*public static void main(String[] args) {
-        NotificationsKey k = new NotificationsKey("user1","hello world6");
-        NotificationDAL i = new NotificationDAL(k);
-        NotificationsManager im = new NotificationsManager();
-        im.addNotification(i);
-        List<NotificationDAL> i1 = im.getUserNotifications(i.getId().getUsername());
-        System.out.println("after get " + i1.get(0).getId().getUsername());
-
-        NotificationsKey k1 = new NotificationsKey("user2","hello again6");
-        NotificationDAL b = new NotificationDAL(k1);
-        im.addNotification(b);
-
-        //im.deleteNotification(i);
-        //System.out.println(im.deleteAllUserNotifications("user1"));
-
-    }*/
+    private NotificationsManager() {}
 
     public void addNotification(NotificationDAL notification)
     {
@@ -58,7 +38,6 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
             tx.commit();
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            //e.printStackTrace();
             throw e;
         } finally {
             session.close();
@@ -79,17 +58,29 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
             return notifications_by_name;
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            //e.printStackTrace();
             throw e;
         } finally {
             session.close();
         }
     }
 
-    /*public String addNotification(NotificationDAL notification){
+    public List<NotificationDAL> getAllNotifications()
+    {
+        Session session = DatabaseConnection.getSession();
+        Transaction tx = null;
 
-        return super.addObject(notification);
-    }*/
+        try {
+            tx = session.beginTransaction();
+            List<NotificationDAL> notifications = session.createQuery(new String("from NotificationDAL"), NotificationDAL.class).list();
+            tx.commit();
+            return notifications;
+        } catch (HibernateException e) {
+            if (tx!=null) tx.rollback();
+            throw e;
+        } finally {
+            session.close();
+        }
+    }
 
     public boolean deleteNotification(NotificationDAL notification)
     {
@@ -102,8 +93,6 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
             tx.commit();
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-//            e.printStackTrace();
-//            return false;
             throw e;
         } finally {
             session.close();
@@ -129,13 +118,28 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
             throw e;
-//            e.printStackTrace();
-//            return false;
         } finally {
             session.close();
         }
         return true;
     }
 
+    public boolean clearNotifications()
+    {
+        Session session = DatabaseConnection.getSession();
+        Transaction tx = null;
+
+        try {
+            tx = session.beginTransaction();
+            session.createQuery(new String("delete from NotificationDAL")).executeUpdate();
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx!=null) tx.rollback();
+            throw e;
+        } finally {
+            session.close();
+        }
+        return true;
+    }
 }
 

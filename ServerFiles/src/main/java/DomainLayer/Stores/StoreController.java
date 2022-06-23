@@ -1,5 +1,9 @@
 package DomainLayer.Stores;
 
+import DataLayer.*;
+import DataLayer.DALObjects.StoreDAL;
+import DataLayer.DALObjects.PredicateDAL;
+import DataLayer.DALObjects.SimplePredicateDAL;
 import DomainLayer.Response;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.Predicates.AndCompositePredicate;
@@ -22,15 +26,16 @@ import static DomainLayer.Stores.Predicates.SimplePredicate.PredicateType.Basket
 
 public class StoreController {
 
+    private PredicateManager manager;
     private Map<Integer, Store> stores; // store-id , stores
 
     private AtomicInteger NEXT_STORE_ID = new AtomicInteger(1);
-    private AtomicInteger NEXT_DISCOUNT_ID = new AtomicInteger(1);
-    private AtomicInteger NEXT_POLICY_ID = new AtomicInteger(1);
     private AtomicInteger NEXT_BID_ID = new AtomicInteger(1);
 
     public StoreController() {
         this.stores = new HashMap<>();
+        this.manager = PredicateManager.getInstance();
+        StoreManager.getInstance().getAllStores().forEach(d -> stores.put(d.getId(), d.toDomain()));
     }
 
     private static class StoreControllerHolder {
@@ -43,33 +48,39 @@ public class StoreController {
 
     public void clearAll() {
         stores = new HashMap<>();
-        Item.NEXT_ITEM_ID = 1;
+        StoreManager.getInstance().clearTable();
     }
 
     private synchronized int getNewStoreId() {
         return NEXT_STORE_ID.getAndIncrement();
     }
 
-    private synchronized int getNewDiscountId() {
-        return NEXT_DISCOUNT_ID.getAndIncrement();
-    }
-
-    private synchronized int getNewPolicyId() {
-        return NEXT_POLICY_ID.getAndIncrement();
-    }
 
     private synchronized int getNewBidId() {
-        return NEXT_POLICY_ID.getAndIncrement();
+        return NEXT_BID_ID.getAndIncrement();
     }
 
     public Store createStore(User owner, String store_name) {
-        Store store = new Store(owner, store_name, getNewStoreId());
+        Store store = new Store(owner, store_name, 0);
+        store.setId(StoreManager.getInstance().addObject(store.toDAL()));
+        owner.addOwnedStore(store.getStoreId());
         addStore(store);
         return store;
     }
 
+
+    public void loadStore(int storeId) {
+        if (!stores.containsKey(storeId)) {
+            StoreDAL sd = StoreManager.getInstance().getObject(storeId);
+            if (sd != null) {
+                stores.put(storeId, sd.toDomain());
+            }
+        }
+    }
+
     public Boolean isExist(int storeId) {
-        return this.stores.getOrDefault(storeId, null) != null;
+        loadStore(storeId);
+        return this.stores.containsKey(storeId);
     }
 
     private void addStore(Store store) {
@@ -84,6 +95,7 @@ public class StoreController {
     }
 
     public Store getStore(int id) {
+        loadStore(id);
         return stores.getOrDefault(id, null);
     }
 
@@ -134,6 +146,7 @@ public class StoreController {
             throw new LogException("You cannot add items to this store", String.format("User %s tried to add an item to a store that they do not manager", manager));
         }
         Item i = new Item(name, category, price);
+        i.setId(ItemManager.getInstance().addObject(i.toDAL()));
         s.addItem(i, amount);
         LogUtility.info(String.format("%s added %s %s to store id %s", manager.getName(), amount, name, storeId));
         return i;
@@ -234,7 +247,7 @@ public class StoreController {
     }
 
     public boolean isShopOwner(Store store, String shopOwnerName) {
-        return stores.get(store.getStoreId()).isOwner(shopOwnerName);
+        return getStore(store.getStoreId()).isOwner(shopOwnerName);
     }
 
     public void setManagerPermission(User owner, String manager, int storeId, byte permission) {
@@ -253,9 +266,9 @@ public class StoreController {
         if (!user.isSubscribed()) {
             throw new IllegalArgumentException("Only logged in users can perform this action.");
         }
-        stores.get(storeId).setIsOpen(user.getName(), false);
+        getStore(storeId).setIsOpen(user.getName(), false);
         LogUtility.info(String.format("User %s just closed store %s", user.getName(), storeId));
-        return stores.get(storeId);
+        return getStore(storeId);
     }
 
     public Store reopenStore(User user, int storeId) {
@@ -265,9 +278,9 @@ public class StoreController {
         if (!user.isSubscribed()) {
             throw new IllegalArgumentException("Only logged in users can perform this action.");
         }
-        stores.get(storeId).setIsOpen(user.getName(), true);
+        getStore(storeId).setIsOpen(user.getName(), true);
         LogUtility.info(String.format("User %s just reopened store %s", user.getName(), storeId));
-        return stores.get(storeId);
+        return getStore(storeId);
     }
 
     public Store permanentlyCloseStore(int storeId) {
@@ -389,7 +402,7 @@ public class StoreController {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
         SimpleDiscountPolicy sdp = new SimpleDiscountPolicy(percentage, null);
-        sdp.setId(getNewDiscountId());
+        sdp.setId(DiscountManager.getInstance().addObject(sdp.toDAL()));
         return sdp;
     }
 
@@ -398,9 +411,13 @@ public class StoreController {
             throw new IllegalArgumentException("This user cannot see the managers");
         }
         SimplePurchasePolicy spp = new SimplePurchasePolicy(null);
-        spp.setId(getNewPolicyId());
-        if (hour != 24)
+
+        if (hour!=24)
             spp.setHour(hour);
+        else
+            spp.setHour(24);
+        spp.setDate(date);
+        spp.setId(PurchasePolicyManager.getInstance().addObject(spp.toDAL()));
         return spp;
     }
 
@@ -442,6 +459,7 @@ public class StoreController {
     }
 
     public AbstractDiscountPolicy addPredicateToDiscount(User owner, Store s, int discountId, PredicateEnum type, SimplePredicate sp) {
+        sp.setId(this.manager.addObject(sp.toDAL()));
         AbstractDiscountPolicy adp = s.getDiscount(discountId);
         if (adp == null) {
             throw new LogException(String.format("There is no discount with id %s", discountId), String.format("user %s tried to add a predicate to non existing discount with id %s", owner.getName(), discountId));
@@ -457,6 +475,8 @@ public class StoreController {
                 adp.addXorPredicate(sp);
                 break;
         }
+
+
         return adp;
     }
 
@@ -477,6 +497,7 @@ public class StoreController {
     }
 
     public AbstractPurchasePolicy addPredicateToPolicy(User owner, Store s, int policyId, PredicateEnum type, SimplePredicate sp) {
+        sp.setId(this.manager.addObject(sp.toDAL()));
         AbstractPurchasePolicy app = s.getPolicy(policyId);
         if (app == null) {
             throw new LogException(String.format("There is no discount with id %s", policyId), String.format("user %s tried to add a predicate to non existing discount with id %s", owner.getName(), policyId));
@@ -529,7 +550,8 @@ public class StoreController {
         if (!owner.isSubscribed() || !s.canManagePurchasePolicy(owner)) {
             throw new IllegalArgumentException("This user cannot add items-predicate to policies");
         }
-        SimplePredicate sp = new SimplePredicate(itemId, hour);
+        SimplePredicate sp = new SimplePredicate(itemId,hour);
+        sp.setDisplayString(String.format("not allowed to purchase after the given hour: %d", hour));
         return addPredicateToPolicy(owner, s, policyId, PredicateEnum.valueOf(type), sp);
     }
 
@@ -538,7 +560,8 @@ public class StoreController {
         if (!owner.isSubscribed() || !s.canManagePurchasePolicy(owner)) {
             throw new IllegalArgumentException("This user cannot add items-predicate to policies");
         }
-        SimplePredicate sp = new SimplePredicate(itemId, date);
+        SimplePredicate sp = new SimplePredicate(itemId,date);
+        sp.setDisplayString(String.format("This item is not allowed to purchase in the given date"));
         return addPredicateToPolicy(owner, s, policyId, PredicateEnum.valueOf(type), sp);
     }
 

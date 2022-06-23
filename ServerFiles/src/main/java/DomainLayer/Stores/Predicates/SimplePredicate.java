@@ -1,10 +1,14 @@
 package DomainLayer.Stores.Predicates;
 
+import DataLayer.DALObjects.PredicateDAL;
+import DataLayer.DALObjects.SimplePredicateDAL;
 import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.Users.ShoppingBasket;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -76,7 +80,7 @@ public class SimplePredicate extends AbstarctPredicate {
 
     @Override
     public boolean canApply(Item item, ShoppingBasket shoppingBasket) {
-        Calendar rightNow  = GregorianCalendar.getInstance();
+        Calendar rightNow  = Calendar.getInstance();
         switch (this.type) {
             case True:
                 return true;
@@ -105,5 +109,71 @@ public class SimplePredicate extends AbstarctPredicate {
 
     public String display() {
         return displayString;
+    }
+
+    public int getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(int itemId) {
+        this.itemId = itemId;
+    }
+
+    public double getMinBasket() {
+        return minBasket;
+    }
+
+    public void setMinBasket(double minBasket) {
+        this.minBasket = minBasket;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public int getHour() {
+        return hour;
+    }
+
+    public void setHour(int hour) {
+        this.hour = hour;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public PredicateType getType() {
+        return type;
+    }
+
+    public void setType(PredicateType type) {
+        this.type = type;
+    }
+
+    public String getDisplayString() {
+        return displayString;
+    }
+
+
+    @Override
+    public PredicateDAL toDAL() {
+        SimplePredicateDAL res = new SimplePredicateDAL();
+        res.setId(getId());
+        res.setDisplayString(getDisplayString());
+        res.setDate(getDate());
+        res.setCategory(getCategory());
+        res.setType(getType());
+        res.setItemId(getItemId());
+        res.setMinBasket(getMinBasket());
+        return res;
     }
 }

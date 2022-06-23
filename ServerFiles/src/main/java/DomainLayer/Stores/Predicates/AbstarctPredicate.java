@@ -1,5 +1,6 @@
 package DomainLayer.Stores.Predicates;
 
+import DataLayer.DALObjects.PredicateDAL;
 import DomainLayer.Stores.Item;
 import DomainLayer.Users.ShoppingBasket;
 
@@ -10,4 +11,14 @@ public abstract class AbstarctPredicate {
         return this.canApply(null, shoppingBasket);
     }
     public abstract String display();
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public abstract PredicateDAL toDAL();
 }
