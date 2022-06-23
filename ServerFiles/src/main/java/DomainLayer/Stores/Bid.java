@@ -8,26 +8,38 @@ import java.util.List;
 
 public class Bid {
     int id;
+    int store;
     String costumerName;
-    Double bidPrice;
+    double bidPrice;
     int item;
     int amount;
     List<String> approvedManagers;
     Boolean isApproved;
+    Boolean inCart;
 
-    public Bid(int id, String costumerName, Double bidPrice, int item, int amount) {
+    public Bid(int id,int store, String costumerName, double bidPrice, int item, int amount) {
         this.id = id;
+        this.store = store;
         this.costumerName = costumerName;
         this.bidPrice = bidPrice;
         this.item = item;
         this.amount = amount;
         this.approvedManagers = new LinkedList<>();
         this.isApproved = false;
+        this.inCart = false;
     }
 
     public void setBidPrice(Double bidPrice) {
         this.approvedManagers.clear();
         this.bidPrice = bidPrice;
+    }
+
+    public Boolean isInCart() {
+        return inCart;
+    }
+
+    public void addToCart() {
+        this.inCart = true;
     }
 
     public void setApproved(Boolean approved) {
@@ -58,7 +70,15 @@ public class Bid {
         approvedManagers.add(userName);
     }
 
+    public List<String> getApprovedManagers() {
+        return approvedManagers;
+    }
+
     public int getId() {
         return id;
+    }
+
+    public int getStore() {
+        return store;
     }
 }

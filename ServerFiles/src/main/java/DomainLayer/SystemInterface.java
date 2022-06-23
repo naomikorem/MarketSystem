@@ -157,4 +157,7 @@ public interface SystemInterface {
     public Response<Collection<Bid>> getUserBids();
     public Response<Bid> approveBid(int storeId, int bidId);
     public Response<Bid> updateBid(int storeId,int bidId, double newPrice);
+    public Response<Bid> deleteBid( int storeId, int bidId);
+    public Response<Boolean> addBidToCart(int bidId);
+    public Response<Boolean> approveAllBids(int storeId);
 }

@@ -469,16 +469,9 @@ public class StoreFacade {
         }
     }
 
-    public Response<Collection<Bid>> getBids(int storeId) {
+    public Response<Collection<Bid>> getBids(int storeId, User user) {
         try {
-            return new Response<>(storeController.getBids(storeId));
-        } catch (Exception e) {
-            return new Response<>(e.getMessage());
-        }
-    }
-    public Response<Collection<Bid>> getBids(int storeId, String userName) {
-        try {
-            return new Response<>(storeController.getBids(storeId, userName));
+            return new Response<>(storeController.getBids(storeId, user));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
@@ -486,6 +479,14 @@ public class StoreFacade {
     public Response<Bid> approveBid(int storeId, User user, int bidId) {
         try {
             return new Response<>(storeController.approveBid(storeId, user, bidId));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+    public Response<Boolean> approveAllBids(int storeId, User user) {
+        try {
+            storeController.approveAllBids(storeId, user);
+            return new Response<>(true);
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }

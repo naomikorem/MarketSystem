@@ -2,7 +2,7 @@ package DataLayer.DALObjects;
 
 import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Predicates.SimplePredicate;
-import org.hibernate.sql.ast.tree.predicate.AbstractPredicate;
+
 
 import javax.persistence.*;
 import java.util.Date;
