@@ -1,11 +1,14 @@
 package DataLayer;
 
 import DataLayer.DALObjects.ItemDAL;
+import ServiceLayer.Server;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class DALManager <T extends DALObject<K>, K> {
     private Class<? extends DALObject<K>> type;
@@ -15,9 +18,20 @@ public class DALManager <T extends DALObject<K>, K> {
     }
 
     public K addObject(T o){
+        K id = null;
+        if (!Server.useDB) {
+            try {
+                id = type.newInstance().getId();
+            } catch (Exception e) {
+                id = null;
+            }
+            if (id instanceof Integer) {
+                id = (K) ((Integer) (new Random()).nextInt());
+            }
+            return id;
+        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
-        K id = null;
         try {
             tx = session.beginTransaction();
             session.saveOrUpdate(o);
@@ -37,6 +51,9 @@ public class DALManager <T extends DALObject<K>, K> {
     }
 
     public T getObject(K id) {
+        if (!Server.useDB) {
+            return null;
+        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
@@ -56,6 +73,9 @@ public class DALManager <T extends DALObject<K>, K> {
 
     public boolean clearTable()
     {
+        if (!Server.useDB) {
+            return true;
+        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
@@ -74,6 +94,9 @@ public class DALManager <T extends DALObject<K>, K> {
     }
 
     public void removeObject(T o){
+        if (!Server.useDB) {
+            return;
+        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
         try {

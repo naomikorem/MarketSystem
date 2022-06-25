@@ -23,10 +23,11 @@ public class Server {
 
     private static final String CONFIG_PATH = "config.properties";
     public static final Properties prop = new Properties();
-
     static {
         loadConfig();
     }
+    public static boolean useDB = Boolean.parseBoolean(Server.prop.getProperty("useDatabase", "false"));
+
     public static void loadConfig() {
         try (InputStream input = new FileInputStream(CONFIG_PATH)) {
             prop.load(input);

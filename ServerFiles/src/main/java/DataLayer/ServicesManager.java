@@ -1,11 +1,13 @@
 package DataLayer;
 
 import DataLayer.DALObjects.ServiceDAL;
+import ServiceLayer.Server;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ServicesManager extends DALManager<ServiceDAL, Integer>
@@ -30,6 +32,9 @@ public class ServicesManager extends DALManager<ServiceDAL, Integer>
 
     public List<ServiceDAL> getServicesByName(String service_name)
     {
+        if (!Server.useDB) {
+            return new ArrayList<>();
+        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
@@ -51,6 +56,9 @@ public class ServicesManager extends DALManager<ServiceDAL, Integer>
 
     public List<ServiceDAL> getAllServices()
     {
+        if (!Server.useDB) {
+            return new ArrayList<>();
+        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
@@ -70,6 +78,9 @@ public class ServicesManager extends DALManager<ServiceDAL, Integer>
 
     public List<ServiceDAL> getAllServicesByType(ServiceType service_type)
     {
+        if (!Server.useDB) {
+            return new ArrayList<>();
+        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
@@ -101,6 +112,9 @@ public class ServicesManager extends DALManager<ServiceDAL, Integer>
 
     public boolean deleteAllServicesByName(String service_name)
     {
+        if (!Server.useDB) {
+            return true;
+        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
@@ -126,6 +140,9 @@ public class ServicesManager extends DALManager<ServiceDAL, Integer>
 
     public boolean clearServices()
     {
+        if (!Server.useDB) {
+            return true;
+        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 

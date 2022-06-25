@@ -2,11 +2,13 @@ package DataLayer;
 
 import DataLayer.DALObjects.AdminDAL;
 import DataLayer.DALObjects.ServiceDAL;
+import ServiceLayer.Server;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AdminManager extends DALManager<AdminDAL, String>
@@ -26,6 +28,9 @@ public class AdminManager extends DALManager<AdminDAL, String>
 
     public List<AdminDAL> loadAllSystemAdmins()
     {
+        if (!Server.useDB) {
+            return new ArrayList<>();
+        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 

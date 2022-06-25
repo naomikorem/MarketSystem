@@ -3,11 +3,13 @@ package DataLayer;
 import DataLayer.DALObjects.HistoryItemDAL;
 import DataLayer.DALObjects.ServiceDAL;
 import DomainLayer.Stores.Category;
+import ServiceLayer.Server;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,6 +35,9 @@ public class HistoryManager extends DALManager<HistoryItemDAL, Integer>
 
     public List<HistoryItemDAL> getUserHistoryItems(String username)
     {
+        if (!Server.useDB) {
+            return new ArrayList<>();
+        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
@@ -54,6 +59,9 @@ public class HistoryManager extends DALManager<HistoryItemDAL, Integer>
 
     public List<HistoryItemDAL> getStoreHistoryItems(Integer store_id)
     {
+        if (!Server.useDB) {
+            return new ArrayList<>();
+        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
@@ -75,6 +83,9 @@ public class HistoryManager extends DALManager<HistoryItemDAL, Integer>
 
     public List<HistoryItemDAL> getAllHistoryItems()
     {
+        if (!Server.useDB) {
+            return new ArrayList<>();
+        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
