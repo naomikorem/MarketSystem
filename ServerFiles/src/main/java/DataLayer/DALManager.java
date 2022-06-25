@@ -45,6 +45,7 @@ public class DALManager <T extends DALObject<K>, K> {
                 session.close();
             } catch (Exception e) {
                 e.printStackTrace();
+                return null;
             }
         }
         return id;
