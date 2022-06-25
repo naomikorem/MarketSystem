@@ -4,12 +4,14 @@ package DataLayer;
 import DataLayer.DALObjects.NotificationDAL;
 import DataLayer.DALObjects.NotificationsKey;
 import DataLayer.DALObjects.ServiceDAL;
+import ServiceLayer.Server;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class NotificationsManager /* extends DALManager<NotificationDAL, String>*/
@@ -29,6 +31,9 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
 
     public boolean addNotification(NotificationDAL notification)
     {
+        if (!Server.useDB) {
+            return;
+        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
@@ -47,6 +52,9 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
 
     public List<NotificationDAL> getUserNotifications(String username)
     {
+        if (!Server.useDB) {
+            return new ArrayList<>();
+        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
@@ -67,6 +75,9 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
 
     public List<NotificationDAL> getAllNotifications()
     {
+        if (!Server.useDB) {
+            return new ArrayList<>();
+        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
@@ -85,6 +96,9 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
 
     public boolean deleteNotification(NotificationDAL notification)
     {
+        if (!Server.useDB) {
+            return true;
+        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
@@ -103,6 +117,9 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
 
     public boolean deleteAllUserNotifications(String username)
     {
+        if (!Server.useDB) {
+            return true;
+        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
@@ -127,6 +144,9 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
 
     public boolean clearNotifications()
     {
+        if (!Server.useDB) {
+            return true;
+        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 

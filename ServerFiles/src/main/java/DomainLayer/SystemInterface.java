@@ -1,5 +1,6 @@
 package DomainLayer;
 
+import DomainLayer.Stats.Stats;
 import DomainLayer.Stores.*;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
@@ -14,6 +15,7 @@ import DomainLayer.Users.User;
 import ServiceLayer.DTOs.SupplyParamsDTO;
 import ServiceLayer.DTOs.PaymentParamsDTO;
 
+import java.time.LocalDate;
 import java.util.*;
 
 public interface SystemInterface {
@@ -160,4 +162,6 @@ public interface SystemInterface {
     public Response<Bid> deleteBid( int storeId, int bidId);
     public Response<Boolean> addBidToCart(int bidId);
     public Response<Boolean> approveAllBids(int storeId);
+
+    Response<List<Map.Entry<LocalDate, Stats>>> getStats();
 }

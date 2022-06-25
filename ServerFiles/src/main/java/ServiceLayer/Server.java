@@ -29,12 +29,13 @@ public class Server {
 
     private static final String CONFIG_PATH = "config.properties";
     public static final Properties prop = new Properties();
-    public static Parser parser;
 
     static {
         loadConfig();
     }
+    public static boolean useDB = Boolean.parseBoolean(Server.prop.getProperty("useDatabase", "false"));
     public static final String INIT_FILE_PATH = prop.getProperty("initFile");
+
     public static void loadConfig() {
         try (InputStream input = new FileInputStream(CONFIG_PATH)) {
             prop.load(input);

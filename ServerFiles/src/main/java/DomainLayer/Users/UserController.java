@@ -29,7 +29,7 @@ public class UserController {
 
     public static Lock lock = new ReentrantLock();
 
-    public UserController() {
+    public UserController() {         
         this.users = new HashMap<>();
         this.loggedUsers = new HashSet<>();
         this.usersToToken = new HashMap<>();
@@ -53,6 +53,7 @@ public class UserController {
     public void clearAll() {
         users = new HashMap<>();
         loggedUsers = new HashSet<>();
+
         UserManager.getInstance().clearTable();
 
         loadUser(DEFAULT_ADMIN_USER);
