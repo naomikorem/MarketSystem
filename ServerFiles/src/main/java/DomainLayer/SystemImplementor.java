@@ -16,6 +16,7 @@ import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 import ServiceLayer.DTOs.SupplyParamsDTO;
 import ServiceLayer.DTOs.PaymentParamsDTO;
+import ServiceLayer.Service;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.time.LocalDate;
@@ -30,6 +31,7 @@ public class SystemImplementor implements SystemInterface {
     private MarketManagementFacade marketManagementFacade;
     private NotificationController notificationController;
     private User user;
+    private String ip;
 
     //Add catch to every function here.
 
@@ -46,11 +48,17 @@ public class SystemImplementor implements SystemInterface {
     }
 
     public Response<Boolean> enter() {
+        return enter("local");
+    }
+
+    public Response<Boolean> enter(String ip) {
         try {
             if (this.user != null) {
                 return new Response<>(false);
             }
             this.user = new User(new GuestState());
+            this.ip = ip;
+            StatsController.getInstance().addGuest(ip);
             return new Response<>(true);
         } catch (Exception e) {
             return new Response<>(e.getMessage());
@@ -94,6 +102,7 @@ public class SystemImplementor implements SystemInterface {
             User old = this.user;
             this.user = r.getObject();
             StatsController.getInstance().addUser(this.user);
+            StatsController.getInstance().removeGuest(this.ip);
             setSession(old.getSessionId(), old.getTemplate());
             this.marketManagementFacade.attachObserver(this.user);
         } else {
@@ -121,6 +130,7 @@ public class SystemImplementor implements SystemInterface {
         if (!r.hadError()) {
             this.user = r.getObject();
             StatsController.getInstance().addUser(this.user);
+            StatsController.getInstance().removeGuest(this.ip);
             this.marketManagementFacade.attachObserver(this.user);
         } else {
             return r;
@@ -1159,6 +1169,7 @@ public class SystemImplementor implements SystemInterface {
         return response;
     }
 
+    @Override
     public Response<List<Map.Entry<LocalDate, Stats>>> getStats() {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
