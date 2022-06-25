@@ -1,5 +1,7 @@
 package DomainLayer;
 
+import DomainLayer.Stats.Stats;
+import DomainLayer.Stats.StatsController;
 import DomainLayer.Stores.*;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
@@ -16,6 +18,7 @@ import ServiceLayer.DTOs.SupplyParamsDTO;
 import ServiceLayer.DTOs.PaymentParamsDTO;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
+import java.time.LocalDate;
 import java.util.*;
 
 public class SystemImplementor implements SystemInterface {
@@ -90,6 +93,7 @@ public class SystemImplementor implements SystemInterface {
         if (!r.hadError()) {
             User old = this.user;
             this.user = r.getObject();
+            StatsController.getInstance().addUser(this.user);
             setSession(old.getSessionId(), old.getTemplate());
             this.marketManagementFacade.attachObserver(this.user);
         } else {
@@ -116,6 +120,7 @@ public class SystemImplementor implements SystemInterface {
 
         if (!r.hadError()) {
             this.user = r.getObject();
+            StatsController.getInstance().addUser(this.user);
             this.marketManagementFacade.attachObserver(this.user);
         } else {
             return r;
@@ -1152,6 +1157,17 @@ public class SystemImplementor implements SystemInterface {
             return new Response<>( notify_costumer_response.getErrorMessage());
         }
         return response;
+    }
+
+    public Response<List<Map.Entry<LocalDate, Stats>>> getStats() {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        Response<Boolean> r1 = userFacade.isAdmin(user.getName());
+        if (r1.hadError() || !r1.getObject()) {
+            return new Response<>(r1.getErrorMessage());
+        }
+        return new Response<>(StatsController.getInstance().getAllStats());
     }
 }
 

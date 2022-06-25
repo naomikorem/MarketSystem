@@ -1,5 +1,6 @@
 package acceptenceTests;
 
+import DomainLayer.Stats.StatsController;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.StoreController;
 
@@ -28,6 +29,7 @@ public abstract class AbstractTest {
         StoreController.getInstance().clearAll();
         AdminController.getInstance().clearAll();
         MarketManagementFacade.getInstance().clearAll();
+        StatsController.getInstance().clearAll();
     }
 
     public boolean compareHistoryItemsToRegularItems(Set<ItemHistory> history_items, Set<Item> regular_items)
