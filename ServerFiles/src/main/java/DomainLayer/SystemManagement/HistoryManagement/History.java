@@ -50,4 +50,9 @@ public class History
     {
         return this.items;
     }
+
+    public void removeFromHistory(ItemHistory item)
+    {
+        this.items.remove(item);
+    }
 }

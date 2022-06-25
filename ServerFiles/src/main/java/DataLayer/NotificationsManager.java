@@ -27,7 +27,7 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
 
     private NotificationsManager() {}
 
-    public void addNotification(NotificationDAL notification)
+    public boolean addNotification(NotificationDAL notification)
     {
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
@@ -36,9 +36,10 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
             tx = session.beginTransaction();
             session.save(notification);
             tx.commit();
+            return true;
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            throw e;
+            return false;
         } finally {
             session.close();
         }

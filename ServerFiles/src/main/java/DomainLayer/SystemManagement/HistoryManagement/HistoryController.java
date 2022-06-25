@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class HistoryController
 {
@@ -74,13 +75,19 @@ public class HistoryController
                 }
 
                 List<ItemHistory> added_items = this.store_history.get(store_id).addToHistory(basket.getItemsAndAmounts(), store_id, buying_username, purchase_date);
+                /*if(!this.manager.addItemsToHistory(added_items.stream().map(this::toDAL).collect(Collectors.toList())))
+                {
+                    //return to working state
+                    this.store_history.get(store_id).removeFromHistory(added_items);
+                    throw new RuntimeException("Could not save the items in the database");
+                }*/
                 for(ItemHistory item_domain : added_items)
                 {
-                    this.manager.addItemToHistory(toDAL(item_domain));
+                    if(this.manager.addItemToHistory(toDAL(item_domain)) == -1)
+                    {
+                        this.store_history.get(store_id).removeFromHistory(item_domain);
+                    }
                 }
-
-                //added_items.stream().map(hi-> this.manager.addItemToHistory(toDAL(hi)));
-
                 LogUtility.info("Added history to store " + store_id + " history by " + buying_username);
             }
         }
@@ -135,6 +142,9 @@ public class HistoryController
     public void loadHistory()
     {
         List< HistoryItemDAL> history_items_dal = this.manager.getAllHistoryItems();
+        if(history_items_dal == null)
+            throw new RuntimeException("Could not load history from database");
+
         for (HistoryItemDAL item_dal: history_items_dal)
         {
             ItemHistory item_history_domain = toDomain(item_dal);
@@ -157,7 +167,8 @@ public class HistoryController
 
     private ItemHistory toDomain(HistoryItemDAL item_dal)
     {
-        return new ItemHistory(item_dal.getItemId(), item_dal.getStore_id(), item_dal.getUsername(),
+        String username =  item_dal.getUsername() == null ? GUEST_DEFAULT_NAME : item_dal.getUsername();
+        return new ItemHistory(item_dal.getItemId(), item_dal.getStore_id(), username,
                 item_dal.getProduct_name(), item_dal.getCategory(), item_dal.getPrice_per_unit(),
                 item_dal.getAmount(), item_dal.getDate());
     }
@@ -166,7 +177,11 @@ public class HistoryController
     {
         HistoryItemDAL dal_item = new HistoryItemDAL();
         dal_item.setItemId(history_item.id);
-        dal_item.setUsername(history_item.username);
+        if(history_item.username.equals(GUEST_DEFAULT_NAME))
+            dal_item.setUsername(null);
+        else
+            dal_item.setUsername(history_item.username);
+
         dal_item.setStore_id(history_item.store_id);
         dal_item.setProduct_name(history_item.product_name);
         dal_item.setCategory(history_item.category);

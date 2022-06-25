@@ -28,7 +28,10 @@ public class HistoryManager extends DALManager<HistoryItemDAL, Integer>
 
     public Integer addItemToHistory(HistoryItemDAL item)
     {
-        return super.addObject(item);
+        Integer res = super.addObject(item);
+        if(res == null)
+            return -1;
+        else return res;
     }
 
     public List<HistoryItemDAL> getUserHistoryItems(String username)
