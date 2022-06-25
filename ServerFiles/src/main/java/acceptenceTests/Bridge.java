@@ -1,6 +1,7 @@
 package acceptenceTests;
 
 import DomainLayer.Response;
+import DomainLayer.Stats.Stats;
 import DomainLayer.Stores.Category;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
@@ -17,6 +18,7 @@ import DomainLayer.Users.User;
 import ServiceLayer.DTOs.PaymentParamsDTO;
 import ServiceLayer.DTOs.SupplyParamsDTO;
 
+import java.time.LocalDate;
 import java.util.*;
 
 public abstract class Bridge {
@@ -127,4 +129,6 @@ public abstract class Bridge {
 
 
     */
+
+    public abstract Response<List<Map.Entry<LocalDate, Stats>>> getStats();
 }

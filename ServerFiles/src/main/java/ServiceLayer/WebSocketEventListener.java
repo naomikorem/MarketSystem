@@ -25,8 +25,7 @@ public class WebSocketEventListener {
         Map<String, Object> map = (Map<String, Object>) m.getHeaders().get("simpSessionAttributes");
         SystemImplementor systemImplementor = new SystemImplementor();
 
-        systemImplementor.enter();
-        StatsController.getInstance().addGuest((String) map.get(Service.IP_STRING));
+        systemImplementor.enter((String) map.get(Service.IP_STRING));
         systemImplementor.setSession((String) m.getHeaders().get("simpSessionId"), template);
         map.put(Service.SYSTEM_IMPLEMENTOR_STRING, systemImplementor);
     }

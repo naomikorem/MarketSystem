@@ -53,8 +53,6 @@ public class Service {
         Response<User> user = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).login(map.get("user"), map.get("pass"));
         if (user.hadError()) {
             return new Response<>(user.getErrorMessage());
-        } else {
-            StatsController.getInstance().removeGuest((String) headerAccessor.getSessionAttributes().get(IP_STRING));
         }
         return new Response<>(convertToUserDTO(user.getObject()));
     }
@@ -84,8 +82,6 @@ public class Service {
         Response<User> user = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).loginUserByToken(map.get("token"));
         if (user.hadError()) {
             return new Response<>(user.getErrorMessage());
-        } else {
-            StatsController.getInstance().removeGuest((String) headerAccessor.getSessionAttributes().get(IP_STRING));
         }
         return new Response<>(convertToUserDTO(user.getObject()));
     }
