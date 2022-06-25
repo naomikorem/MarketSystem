@@ -24,17 +24,18 @@ public class Server {
     private static final String CONFIG_PATH = "config.properties";
     public static final Properties prop = new Properties();
 
+    static {
+        loadConfig();
+    }
     public static void loadConfig() {
         try (InputStream input = new FileInputStream(CONFIG_PATH)) {
             prop.load(input);
         } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 
     public static void main(String[] args) {
-        LogUtility.info("Loading config...");
-        loadConfig();
-        LogUtility.info("Finished loading config");
         LogUtility.info("Starting to load stores...");
         StoreController.getInstance();
         LogUtility.info("Finished to load stores");

@@ -1,15 +1,21 @@
 package DataLayer;
 
 import DataLayer.DALObjects.*;
+import ServiceLayer.Server;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+
+import java.util.Properties;
 
 public class DatabaseConnection {
     private static SessionFactory factory;
 
     private static Configuration getConfiguration() {
-        Configuration c = new Configuration().configure("hibernate.cfg.xml");
+        Configuration c = new Configuration().configure();
+        Properties properties = Server.prop;
+        c.addProperties(properties);
+
         c.addAnnotatedClass(ItemDAL.class);
         c.addAnnotatedClass(UserDAL.class);
         c.addAnnotatedClass(ServiceDAL.class);
