@@ -1,6 +1,8 @@
 package DataLayer;
 
 import DataLayer.DALObjects.ItemDAL;
+import DataLayer.DALObjects.StatisticsDAL;
+import DataLayer.DALObjects.StoreDAL;
 import ServiceLayer.Server;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -8,10 +10,11 @@ import org.hibernate.Transaction;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class DALManager <T extends DALObject<K>, K> {
-    private Class<? extends DALObject<K>> type;
+    private Class<T> type;
 
     public DALManager(Class<T> type) {
         this.type = type;
@@ -114,5 +117,28 @@ public class DALManager <T extends DALObject<K>, K> {
                 e.printStackTrace();
             }
         }
+    }
+
+    public List<T> getAllObjects() {
+        if (!Server.useDB) {
+            return new ArrayList<>();
+        }
+        Session session = DatabaseConnection.getSession();
+        Transaction tx = null;
+
+        try {
+            tx = session.beginTransaction();
+            System.out.println(type.getName());
+            System.out.println(type.getSimpleName());
+            List<T> res = session.createQuery(String.format("SELECT a FROM %s a", type.getSimpleName()), type).getResultList();
+            tx.commit();
+            return res;
+        } catch (HibernateException e) {
+            if (tx!=null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return null;
     }
 }

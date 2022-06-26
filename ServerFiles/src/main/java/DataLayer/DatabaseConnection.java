@@ -35,6 +35,7 @@ public class DatabaseConnection {
         c.addAnnotatedClass(StoreDAL.class);
         c.addAnnotatedClass(PermissionDAL.class);
         c.addAnnotatedClass(AdminDAL.class);
+        c.addAnnotatedClass(StatisticsDAL.class);
         return c;
     }
 
