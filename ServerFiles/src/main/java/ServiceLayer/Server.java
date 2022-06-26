@@ -35,6 +35,7 @@ public class Server {
     }
     public static boolean useDB = Boolean.parseBoolean(Server.prop.getProperty("useDatabase", "false"));
     public static final String INIT_FILE_PATH = prop.getProperty("initFile");
+    private static Parser parser;
 
     public static void loadConfig() {
         try (InputStream input = new FileInputStream(CONFIG_PATH)) {

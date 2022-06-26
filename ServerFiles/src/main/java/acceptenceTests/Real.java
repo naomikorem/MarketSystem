@@ -105,6 +105,11 @@ public class Real extends Bridge {
     }
 
     @Override
+    public Response<Collection<Store>> getUsersStores() {
+        return adaptee.getUsersStores();
+    }
+
+    @Override
     public Response<Store> getStoreInformation(int storeID) {
         try {
             return adaptee.getStore(storeID);
@@ -243,6 +248,11 @@ public class Real extends Bridge {
     @Override
     public Response<User> getUser(String userName) {
         return this.adaptee.getUser(userName);
+    }
+
+    @Override
+    public Response<Boolean> isLoggedInAdminCheck() {
+        return this.adaptee.isLoggedInAdminCheck();
     }
 
     @Override

@@ -32,7 +32,7 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
     public boolean addNotification(NotificationDAL notification)
     {
         if (!Server.useDB) {
-            return;
+            return true;
         }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;

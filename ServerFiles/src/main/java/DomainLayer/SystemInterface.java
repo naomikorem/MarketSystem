@@ -103,6 +103,8 @@ public interface SystemInterface {
 
     public Response<Item> addItemToStore(int storeId, String name, Category category, double price, int amount);
 
+    public Response<Item> addItemToStore(int storeId, String name, String category, double price, int amount);
+
     public Response<Boolean> deleteUser(String name);
     public Response<List<String>> getStoreManagers(int storeId);
 
@@ -162,6 +164,8 @@ public interface SystemInterface {
     public Response<Bid> deleteBid( int storeId, int bidId);
     public Response<Boolean> addBidToCart(int bidId);
     public Response<Boolean> approveAllBids(int storeId);
+
+    public Response<Boolean> isLoggedInAdminCheck();
 
     Response<List<Map.Entry<LocalDate, Stats>>> getStats();
 }

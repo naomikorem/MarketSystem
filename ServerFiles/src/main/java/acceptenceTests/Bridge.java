@@ -44,6 +44,7 @@ public abstract class Bridge {
 
     //Acceptance Tests for use case 2:
     public abstract Response<Collection<Store>> getStores();
+    public abstract Response<Collection<Store>> getUsersStores();
     public abstract Response<Store> getStoreInformation(int storeID);
     public abstract Response<Map<Item, Integer>> getItems(int storeId);
     public abstract Response<Permission> getManagersPermissions(int storeId, String managerName);
@@ -81,6 +82,7 @@ public abstract class Bridge {
 
     // Use case 6
     public abstract Response<User> getUser(String userName);
+    public abstract Response<Boolean> isLoggedInAdminCheck();
     public abstract Response<Boolean> removeManager(String toRemove, int storeId);
     public abstract Response<Boolean> permanentlyCloseStore(int storeId);
     public abstract Response<List<String>> getStoreOwners(int store_id);

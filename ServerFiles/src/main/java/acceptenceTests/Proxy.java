@@ -149,6 +149,15 @@ public class Proxy extends Bridge {
     }
 
     @Override
+    public Response<Collection<Store>> getUsersStores()
+    {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getUsersStores();
+    }
+
+    @Override
     public Response<Store> getStoreInformation(int storeID) {
         if (this.real == null) {
             return null;
@@ -351,6 +360,14 @@ public class Proxy extends Bridge {
             return null;
         }
         return real.getUser(userName);
+    }
+
+    @Override
+    public Response<Boolean> isLoggedInAdminCheck() {
+        if (this.real == null) {
+            return null;
+        }
+        return real.isLoggedInAdminCheck();
     }
 
     @Override
