@@ -1,12 +1,15 @@
 package DomainLayer.Stats;
 
+import DataLayer.DALObjects.StatisticsDAL;
 import DomainLayer.Users.AdminController;
 import DomainLayer.Users.User;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class Stats {
     private Set<String> guests;
@@ -15,6 +18,11 @@ public class Stats {
     public Stats() {
         this.guests = new HashSet<>();
         this.visitors = new HashSet<>();
+    }
+
+    public Stats(Set<String> guests, Set<User> visitors) {
+        this.guests = guests;
+        this.visitors = visitors;
     }
 
     public void addGuest(String guestAddr) {
@@ -48,5 +56,13 @@ public class Stats {
 
     public long adminUsersCount() {
         return this.visitors.stream().filter(u -> AdminController.getInstance().isAdmin(u.getName())).count();
+    }
+
+    public StatisticsDAL toDAL(LocalDate date) {
+        StatisticsDAL res = new StatisticsDAL();
+        res.setId(date);
+        res.setGuests(this.guests);
+        res.setVisitors(this.visitors.stream().map(User::toDAL).collect(Collectors.toSet()));
+        return res;
     }
 }

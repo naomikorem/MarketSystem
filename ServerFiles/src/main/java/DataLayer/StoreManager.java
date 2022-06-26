@@ -33,7 +33,7 @@ public class StoreManager extends DALManager<StoreDAL, Integer> {
 
         try {
             tx = session.beginTransaction();
-            List<StoreDAL> res = DatabaseConnection.getSession().createQuery("SELECT a FROM StoreDAL a", StoreDAL.class).getResultList();
+            List<StoreDAL> res = session.createQuery("SELECT a FROM StoreDAL a", StoreDAL.class).getResultList();
             tx.commit();
             return res;
         } catch (HibernateException e) {

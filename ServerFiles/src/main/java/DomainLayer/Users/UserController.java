@@ -29,7 +29,7 @@ public class UserController {
 
     public static Lock lock = new ReentrantLock();
 
-    public UserController() {         
+    public UserController() {
         this.users = new HashMap<>();
         this.loggedUsers = new HashSet<>();
         this.usersToToken = new HashMap<>();
@@ -37,7 +37,7 @@ public class UserController {
 
         //load database
         loadUser(DEFAULT_ADMIN_USER);
-        if (!users.containsKey(DEFAULT_ADMIN_USER)) {
+        if (!isExist(DEFAULT_ADMIN_USER)) {
             createUser(DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_USER, DEFAULT_ADMIN_USER_FIRST_NAME, DEFAULT_ADMIN_USER_LAST_NAME, DEFAULT_ADMIN_PASSWORD);
         }
     }
@@ -57,7 +57,7 @@ public class UserController {
         UserManager.getInstance().clearTable();
 
         loadUser(DEFAULT_ADMIN_USER);
-        if (!users.containsKey(DEFAULT_ADMIN_USER)) {
+        if (!isExist(DEFAULT_ADMIN_USER)) {
             createUser(DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_USER, DEFAULT_ADMIN_USER_FIRST_NAME, DEFAULT_ADMIN_USER_LAST_NAME, DEFAULT_ADMIN_PASSWORD);
         }
     }
@@ -83,9 +83,9 @@ public class UserController {
     }
 
     public void addUser(User u) {
-        if (!users.containsKey(u.getName())) {
+        if (!users.containsKey(u.getName().toLowerCase())) {
             synchronized (lock) {
-                users.put(u.getName(), u);
+                users.put(u.getName().toLowerCase(), u);
             }
         }
     }
@@ -110,6 +110,7 @@ public class UserController {
     }
 
     public User getUser(String name) {
+        name = name.toLowerCase();
         synchronized (lock)
         {
             if (isExist(name))
@@ -122,6 +123,7 @@ public class UserController {
     }
 
     public synchronized void loadUser(String name) {
+        name = name.toLowerCase();
         if (!users.containsKey(name)) {
             UserDAL dal = UserManager.getInstance().getObject(name);
             if (dal != null) {
@@ -132,6 +134,7 @@ public class UserController {
     }
 
     public boolean isExist(String name) {
+        name = name.toLowerCase();
         loadUser(name);
         return users.containsKey(name);
     }
@@ -141,7 +144,7 @@ public class UserController {
     }
 
     private void addLoggedUser(String name) {
-        this.loggedUsers.add(name);
+        this.loggedUsers.add(name.toLowerCase());
     }
 
     private void removedLoggedUser(String name) {
@@ -205,6 +208,7 @@ public class UserController {
 
     public void setUserName(User user, String newName) {
         if (user.isSubscribed()) {
+            newName = newName.toLowerCase();
             synchronized (lock) {
                 if (isExist(newName)) {
                     throw new IllegalArgumentException("The new user name is not unique, already exists in the system");

@@ -1,5 +1,7 @@
 package DomainLayer.Stats;
 
+import DataLayer.DALObjects.StatisticsDAL;
+import DataLayer.StatisticsManager;
 import DomainLayer.Users.User;
 import DomainLayer.Users.UserController;
 
@@ -13,6 +15,9 @@ public class StatsController {
 
     public StatsController() {
         this.dateToStats = new HashMap<>();
+        StatisticsManager.getInstance().getAllObjects().forEach((s) -> {
+            dateToStats.put(s.getDate(), s.toDomain());
+        });
     }
 
     public static class StatsControllerHolder {
@@ -26,20 +31,28 @@ public class StatsController {
     public Stats getTodayStats() {
         if (!this.dateToStats.containsKey(LocalDate.now())) {
             this.dateToStats.put(LocalDate.now(), new Stats());
+            saveToday();
         }
         return this.dateToStats.get(LocalDate.now());
     }
 
+    public void saveToday() {
+        StatisticsManager.getInstance().addObject(getTodayStats().toDAL(LocalDate.now()));
+    }
+
     public void addUser(User u) {
         getTodayStats().addUser(u);
+        saveToday();
     }
 
     public void addGuest(String guestAddr) {
         getTodayStats().addGuest(guestAddr);
+        saveToday();
     }
 
     public void removeGuest(String guestAddr) {
         getTodayStats().removeGuest(guestAddr);
+        saveToday();
     }
 
     public List<Map.Entry<LocalDate, Stats>> getAllStats() {
@@ -48,17 +61,6 @@ public class StatsController {
 
     public void clearAll() {
         this.dateToStats = new HashMap<>();
-    }
-
-    public static void main(String[] args) {
-        LocalDate ld = LocalDate.now();
-        System.out.println(ld);
-        LocalDate ld1 = LocalDate.now();
-
-        Map m = new HashMap<>();
-        m.put(ld, 1337);
-
-        System.out.println(m.get(ld));
-        System.out.println(m.get(ld1));
+        StatisticsManager.getInstance().clearTable();
     }
 }
