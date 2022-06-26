@@ -46,7 +46,7 @@ public class NotificationController implements Observable
             if (!this.users_messages.containsKey(username)) {
                 this.users_messages.put(username, new ArrayList<>());
             }
-            Notification notification = new Notification(message);
+            Notification notification = new Notification(message + " at " + (new Date()));
             this.users_messages.get(username).add(notification);
             if(!this.manager.addNotification(toDAL(username, message)))
             {
@@ -116,7 +116,7 @@ public class NotificationController implements Observable
             int store_id = entry.getKey();
             List<String> owners = entry.getValue();
             notifyUsers(owners, "The user " + username +
-                    " bought items from the store " + store_id + " at " + (new Date()));
+                    " bought items from the store " + store_id);
 
             LogUtility.info("Sent notifications to owners of store " + store_id);
         }

@@ -1,0 +1,9 @@
+Login,user2,pass2
+ModifyItem,user2,s,Bamba,Food,30,10,no_keywords
+Register,user5@gmail.com,user5,user5first,user5last,pass5
+Register,user6@gmail.com,user6,user6first,user6last,pass6
+Login,user5,pass5
+Login,user6,pass6
+AddOwner,user2,user4,s
+AddOwner,user2,user5,s
+Logout,user5

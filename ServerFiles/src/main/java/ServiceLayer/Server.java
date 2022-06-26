@@ -35,6 +35,8 @@ public class Server {
     }
     public static boolean useDB = Boolean.parseBoolean(Server.prop.getProperty("useDatabase", "false"));
     public static final String INIT_FILE_PATH = prop.getProperty("initFile");
+    public static final String BAD_INIT_FILE_PATH = prop.getProperty("badInitFile");
+
     private static Parser parser;
 
     public static void loadConfig() {
@@ -47,7 +49,7 @@ public class Server {
 
     public static void main(String[] args) {
         List<UserDAL> users_in_system = UserManager.getInstance().getAllUsers();
-        parser = new Parser();
+        parser = new Parser(INIT_FILE_PATH);
         if(users_in_system.size() == 1 && users_in_system.get(0).getUserName().equals(UserController.DEFAULT_ADMIN_USER))
         {
             LogUtility.info("Starting to load from initialization file...");

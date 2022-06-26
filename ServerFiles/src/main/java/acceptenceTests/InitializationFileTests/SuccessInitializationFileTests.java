@@ -1,11 +1,12 @@
-package acceptenceTests;
+package acceptenceTests.InitializationFileTests;
 
 import DomainLayer.Response;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
-import DomainLayer.SystemImplementor;
 import DomainLayer.Users.User;
 import ServiceLayer.ParseFile.Parser;
+import ServiceLayer.Server;
+import acceptenceTests.AbstractTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,15 +16,16 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
-public class InitializationFileTests extends AbstractTest
+public class SuccessInitializationFileTests extends AbstractTest
 {
-    private Parser parser;
+    private final String init_file = Server.INIT_FILE_PATH;
+    private Parser good_file_parser;
     private final String username1 = "user1", pass1 = "pass1";
-    String username2 = "user2", pass2 = "pass2";
-    String username3 = "user3", pass3 = "pass3";
-    String username4 = "user4", pass4 = "pass4";
-    String store_name = "s";
-    Store s_store;
+    private String username2 = "user2", pass2 = "pass2";
+    private String username3 = "user3", pass3 = "pass3";
+    private String username4 = "user4", pass4 = "pass4";
+    private String store_name = "s";
+    private Store s_store;
     private final String admin_name = "admin", admin_pass = "admin";
 
 
@@ -31,9 +33,9 @@ public class InitializationFileTests extends AbstractTest
     public void setup()
     {
         this.bridge.enter();
-        parser = new Parser();
-        parser.runCommands();
-        parser.clean();
+        good_file_parser = new Parser(init_file);
+        good_file_parser.runCommands();
+        good_file_parser.clean();
         this.bridge.login(username2, pass2);
         Response<Collection<Store>> stores = this.bridge.getUsersStores();
         this.bridge.logout();
@@ -101,5 +103,17 @@ public class InitializationFileTests extends AbstractTest
 
         assertFalse(res.hadError());
         assertTrue(res.getObject());
+    }
+
+    @Test
+    public void successAddStoreManagerInitializationFile()
+    {
+        // check that user3 is now the manager of store s
+        this.bridge.login(username3, pass3);
+        Response<Collection<Store>> res = this.bridge.getUsersStores();
+        this.bridge.logout();
+
+        assertFalse(res.hadError());
+        assertTrue(res.getObject().contains(this.s_store));
     }
 }
