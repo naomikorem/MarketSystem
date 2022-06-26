@@ -44,7 +44,7 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
             return true;
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            return false;
+            throw new RuntimeException("The service is currently unavailable - No connection to database");
         } finally {
             session.close();
         }
@@ -67,7 +67,7 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
             return notifications_by_name;
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            throw e;
+            throw new RuntimeException("The service is currently unavailable - No connection to database");
         } finally {
             session.close();
         }
@@ -88,7 +88,7 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
             return notifications;
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            throw e;
+            throw new RuntimeException("The service is currently unavailable - No connection to database");
         } finally {
             session.close();
         }
@@ -108,7 +108,7 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
             tx.commit();
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            throw e;
+            throw new RuntimeException("The service is currently unavailable - No connection to database");
         } finally {
             session.close();
         }
@@ -135,7 +135,7 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
             tx.commit();
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            throw e;
+            throw new RuntimeException("The service is currently unavailable - No connection to database");
         } finally {
             session.close();
         }
@@ -156,7 +156,7 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
             tx.commit();
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            throw e;
+            throw new RuntimeException("The service is currently unavailable - No connection to database");
         } finally {
             session.close();
         }

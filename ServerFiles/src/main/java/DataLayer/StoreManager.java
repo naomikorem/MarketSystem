@@ -28,7 +28,8 @@ public class StoreManager extends DALManager<StoreDAL, Integer> {
         if (!Server.useDB) {
             return new ArrayList<>();
         }
-        Session session = DatabaseConnection.getSession();
+        return super.getAllObjects();
+        /*Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
         try {
@@ -42,7 +43,7 @@ public class StoreManager extends DALManager<StoreDAL, Integer> {
         } finally {
             session.close();
         }
-        return null;
+        return null;*/
     }
 
     public StoreManager() {

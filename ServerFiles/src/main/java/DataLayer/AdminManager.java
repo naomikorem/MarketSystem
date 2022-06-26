@@ -41,11 +41,10 @@ public class AdminManager extends DALManager<AdminDAL, String>
             return admins;
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            e.printStackTrace();
+            throw new RuntimeException("The service is currently unavailable - No connection to database");
         } finally {
             session.close();
         }
-        return null;
     }
 
 }

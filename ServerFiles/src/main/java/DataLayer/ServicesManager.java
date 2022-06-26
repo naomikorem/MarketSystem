@@ -47,11 +47,10 @@ public class ServicesManager extends DALManager<ServiceDAL, Integer>
             return services_by_name;
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            e.printStackTrace();
+            throw new RuntimeException("The service is currently unavailable - No connection to database");
         } finally {
             session.close();
         }
-        return null;
     }
 
     public List<ServiceDAL> getAllServices()
@@ -59,7 +58,8 @@ public class ServicesManager extends DALManager<ServiceDAL, Integer>
         if (!Server.useDB) {
             return new ArrayList<>();
         }
-        Session session = DatabaseConnection.getSession();
+        return super.getAllObjects();
+        /*Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
         try {
@@ -73,7 +73,7 @@ public class ServicesManager extends DALManager<ServiceDAL, Integer>
         } finally {
             session.close();
         }
-        return null;
+        return null;*/
     }
 
     public List<ServiceDAL> getAllServicesByType(ServiceType service_type)
@@ -93,11 +93,10 @@ public class ServicesManager extends DALManager<ServiceDAL, Integer>
             return services_by_type;
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            e.printStackTrace();
+            throw new RuntimeException("The service is currently unavailable - No connection to database");
         } finally {
             session.close();
         }
-        return null;
     }
 
     public List<ServiceDAL> getAllPurchaseServices()
@@ -143,7 +142,8 @@ public class ServicesManager extends DALManager<ServiceDAL, Integer>
         if (!Server.useDB) {
             return true;
         }
-        Session session = DatabaseConnection.getSession();
+        return super.clearTable();
+        /*Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
         try {
@@ -157,6 +157,6 @@ public class ServicesManager extends DALManager<ServiceDAL, Integer>
         } finally {
             session.close();
         }
-        return true;
+        return true;*/
     }
 }

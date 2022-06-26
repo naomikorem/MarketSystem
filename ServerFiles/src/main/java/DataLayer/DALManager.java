@@ -43,6 +43,7 @@ public class DALManager <T extends DALObject<K>, K> {
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
             e.printStackTrace();
+            throw new RuntimeException("The service is currently unavailable - No connection to database");
         } finally {
             try {
                 session.close();
@@ -68,11 +69,10 @@ public class DALManager <T extends DALObject<K>, K> {
             return o;
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            e.printStackTrace();
+            throw new RuntimeException("The service is currently unavailable - No connection to database");
         } finally {
             session.close();
         }
-        return null;
     }
 
     public boolean clearTable()
@@ -89,8 +89,7 @@ public class DALManager <T extends DALObject<K>, K> {
             tx.commit();
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            e.printStackTrace();
-            return false;
+            throw new RuntimeException("The service is currently unavailable - No connection to database");
         } finally {
             session.close();
         }
@@ -109,12 +108,12 @@ public class DALManager <T extends DALObject<K>, K> {
             tx.commit();
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            e.printStackTrace();
+            throw new RuntimeException("The service is currently unavailable - No connection to database");
         } finally {
             try {
                 session.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new RuntimeException("The service is currently unavailable - No connection to database");
             }
         }
     }
@@ -135,10 +134,9 @@ public class DALManager <T extends DALObject<K>, K> {
             return res;
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            e.printStackTrace();
+            throw new RuntimeException("The service is currently unavailable - No connection to database");
         } finally {
             session.close();
         }
-        return null;
     }
 }

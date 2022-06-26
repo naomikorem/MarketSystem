@@ -89,7 +89,9 @@ public class HistoryManager extends DALManager<HistoryItemDAL, Integer>
         if (!Server.useDB) {
             return new ArrayList<>();
         }
-        Session session = DatabaseConnection.getSession();
+
+        return super.getAllObjects();
+       /* Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
         try {
@@ -103,6 +105,6 @@ public class HistoryManager extends DALManager<HistoryItemDAL, Integer>
         } finally {
             session.close();
         }
-        return null;
+        return null;*/
     }
 }

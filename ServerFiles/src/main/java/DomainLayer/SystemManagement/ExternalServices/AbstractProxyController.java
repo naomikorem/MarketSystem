@@ -64,7 +64,7 @@ public abstract class AbstractProxyController<T extends AbstractProxy>
         {
             // return to state when all was good
             services.put(service_name, temp_proxy);
-            throw new RuntimeException("Could not remove the service" + service_name + " from database");
+            throw new RuntimeException("The service is currently unavailable - No connection to database");
         }
     }
 

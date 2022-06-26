@@ -65,7 +65,7 @@ public class NotificationController implements Observable
 
     private boolean addRealTimeNotification(Observer user, String msg) {
         addNotification(user.getName(), msg);
-        user.sendNotification(new Notification(msg));
+        user.sendNotification(new Notification(msg + " at " + (new Date())));
 
         return true;
     }

@@ -50,14 +50,7 @@ public class Server {
     public static void main(String[] args) {
         List<UserDAL> users_in_system = UserManager.getInstance().getAllUsers();
         parser = new Parser(INIT_FILE_PATH);
-        if(users_in_system.size() == 1 && users_in_system.get(0).getUserName().equals(UserController.DEFAULT_ADMIN_USER))
-        {
-            LogUtility.info("Starting to load from initialization file...");
-            // load from file
-            parser.runCommands();
-            LogUtility.info("Finished to load from initialization file...");
-        }
-        else
+        if(!shouldLoadFromFile())
         {
             LogUtility.info("Starting to load stores...");
             StoreController.getInstance();
@@ -71,5 +64,21 @@ public class Server {
         }
 
         SpringApplication.run(Server.class, args);
+    }
+
+    public static boolean shouldLoadFromFile()
+    {
+        List<UserDAL> users_in_system = UserManager.getInstance().getAllUsers();
+        parser = new Parser(INIT_FILE_PATH);
+        if(users_in_system.size() == 1 && users_in_system.get(0).getUserName().equals(UserController.DEFAULT_ADMIN_USER))
+        {
+            LogUtility.info("Starting to load from initialization file...");
+            // load from file
+            parser.runCommands();
+            parser.clean();
+            LogUtility.info("Finished to load from initialization file...");
+            return true;
+        }
+        return false;
     }
 }

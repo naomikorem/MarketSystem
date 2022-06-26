@@ -7,6 +7,7 @@ import DataLayer.DALObjects.UserDAL;
 import DomainLayer.Stores.Category;
 import DomainLayer.Stores.StoreController;
 import DomainLayer.Users.User;
+import ServiceLayer.Server;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -33,7 +34,11 @@ public class UserManager extends DALManager<UserDAL, String> {
 
     public List<UserDAL> getAllUsers()
     {
-        Session session = DatabaseConnection.getSession();
+        if (!Server.useDB) {
+            return new ArrayList<>();
+        }
+        return super.getAllObjects();
+        /*Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
         try {
@@ -47,7 +52,7 @@ public class UserManager extends DALManager<UserDAL, String> {
         } finally {
             session.close();
         }
-        return null;
+        return null;*/
 
     }
 }
