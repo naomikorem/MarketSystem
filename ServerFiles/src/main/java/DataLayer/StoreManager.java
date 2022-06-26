@@ -29,21 +29,6 @@ public class StoreManager extends DALManager<StoreDAL, Integer> {
             return new ArrayList<>();
         }
         return super.getAllObjects();
-        /*Session session = DatabaseConnection.getSession();
-        Transaction tx = null;
-
-        try {
-            tx = session.beginTransaction();
-            List<StoreDAL> res = session.createQuery("SELECT a FROM StoreDAL a", StoreDAL.class).getResultList();
-            tx.commit();
-            return res;
-        } catch (HibernateException e) {
-            if (tx!=null) tx.rollback();
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
-        return null;*/
     }
 
     public StoreManager() {

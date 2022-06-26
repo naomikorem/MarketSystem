@@ -53,11 +53,10 @@ public class HistoryManager extends DALManager<HistoryItemDAL, Integer>
             return history_items_by_name;
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            e.printStackTrace();
+            throw new RuntimeException("The service is currently unavailable - No connection to database");
         } finally {
             session.close();
         }
-        return null;
     }
 
     public List<HistoryItemDAL> getStoreHistoryItems(Integer store_id)
@@ -77,11 +76,10 @@ public class HistoryManager extends DALManager<HistoryItemDAL, Integer>
             return history_items_by_store;
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            e.printStackTrace();
+            throw new RuntimeException("The service is currently unavailable - No connection to database");
         } finally {
             session.close();
         }
-        return null;
     }
 
     public List<HistoryItemDAL> getAllHistoryItems()
@@ -91,20 +89,5 @@ public class HistoryManager extends DALManager<HistoryItemDAL, Integer>
         }
 
         return super.getAllObjects();
-       /* Session session = DatabaseConnection.getSession();
-        Transaction tx = null;
-
-        try {
-            tx = session.beginTransaction();
-            List<HistoryItemDAL> historyItems = session.createQuery(new String("from HistoryItemDAL"), HistoryItemDAL.class).list();
-            tx.commit();
-            return historyItems;
-        } catch (HibernateException e) {
-            if (tx!=null) tx.rollback();
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
-        return null;*/
     }
 }

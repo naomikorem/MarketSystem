@@ -48,8 +48,7 @@ public class DALManager <T extends DALObject<K>, K> {
             try {
                 session.close();
             } catch (Exception e) {
-                e.printStackTrace();
-                return null;
+                throw new RuntimeException("The service is currently unavailable - No connection to database");
             }
         }
         return id;

@@ -38,21 +38,5 @@ public class UserManager extends DALManager<UserDAL, String> {
             return new ArrayList<>();
         }
         return super.getAllObjects();
-        /*Session session = DatabaseConnection.getSession();
-        Transaction tx = null;
-
-        try {
-            tx = session.beginTransaction();
-            List<UserDAL> users = session.createQuery(new String("from UserDAL"), UserDAL.class).list();
-            tx.commit();
-            return users;
-        } catch (HibernateException e) {
-            if (tx!=null) tx.rollback();
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
-        return null;*/
-
     }
 }

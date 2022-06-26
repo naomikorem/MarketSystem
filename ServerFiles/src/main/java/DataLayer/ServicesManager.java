@@ -59,21 +59,6 @@ public class ServicesManager extends DALManager<ServiceDAL, Integer>
             return new ArrayList<>();
         }
         return super.getAllObjects();
-        /*Session session = DatabaseConnection.getSession();
-        Transaction tx = null;
-
-        try {
-            tx = session.beginTransaction();
-            List<ServiceDAL> services = session.createQuery(new String("from ServiceDAL"), ServiceDAL.class).list();
-            tx.commit();
-            return services;
-        } catch (HibernateException e) {
-            if (tx!=null) tx.rollback();
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
-        return null;*/
     }
 
     public List<ServiceDAL> getAllServicesByType(ServiceType service_type)
@@ -129,8 +114,7 @@ public class ServicesManager extends DALManager<ServiceDAL, Integer>
             tx.commit();
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            e.printStackTrace();
-            return false;
+            throw new RuntimeException("The service is currently unavailable - No connection to database");
         } finally {
             session.close();
         }
@@ -143,20 +127,5 @@ public class ServicesManager extends DALManager<ServiceDAL, Integer>
             return true;
         }
         return super.clearTable();
-        /*Session session = DatabaseConnection.getSession();
-        Transaction tx = null;
-
-        try {
-            tx = session.beginTransaction();
-            session.createQuery(new String("delete from ServiceDAL")).executeUpdate();
-            tx.commit();
-        } catch (HibernateException e) {
-            if (tx!=null) tx.rollback();
-            e.printStackTrace();
-            return false;
-        } finally {
-            session.close();
-        }
-        return true;*/
     }
 }
