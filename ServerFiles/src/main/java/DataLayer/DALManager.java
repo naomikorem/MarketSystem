@@ -26,10 +26,12 @@ public class DALManager <T extends DALObject<K>, K> {
     public K addObject(T o){
         K id = null;
         if (!Server.useDB) {
-            List<Field> fields = Arrays.stream(type.getDeclaredFields()).collect(Collectors.toList());
-            List<Field> class_fields = fields.stream().filter(f -> f.getName().contains("id") || f.getName().contains("Id")).collect(Collectors.toList());
-            if(!class_fields.isEmpty() && class_fields.get(0).getType().isAssignableFrom(Integer.class))
-            {
+            try {
+                id = type.newInstance().getId();
+            } catch (Exception e) {
+                id = null;
+            }
+            if (id instanceof Integer) {
                 id = (K) ((Integer) (new Random()).nextInt());
             }
             return id;
