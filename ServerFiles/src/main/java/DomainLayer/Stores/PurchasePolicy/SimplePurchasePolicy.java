@@ -6,6 +6,7 @@ import DataLayer.PredicateManager;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Predicates.*;
+import DomainLayer.Stores.StoreController;
 import DomainLayer.Users.ShoppingBasket;
 
 import java.util.Calendar;
@@ -33,13 +34,17 @@ public class SimplePurchasePolicy extends AbstractPurchasePolicy{
         if(abstarctPredicate == null){
             return true;
         }
-        return abstarctPredicate.canApply(sb) ;
+        if(!abstarctPredicate.canApply(sb)) {
+            throw new IllegalArgumentException("The purchase could not apply the purchase policies for store "+ StoreController.getInstance().getStore(sb.getStoreId()).getName()+"\nbecause the following the predicate doesn't apply: "+abstarctPredicate.display());
+        }
+        return true;
     }
 
     @Override
     public synchronized void addAndPredicate(AbstarctPredicate predicate) {
         if(this.abstarctPredicate == null) {
             this.abstarctPredicate = predicate;
+            return;
         }
         AndCompositePredicate acp = new AndCompositePredicate();
         acp.addPredicate(predicate);
@@ -53,6 +58,7 @@ public class SimplePurchasePolicy extends AbstractPurchasePolicy{
     public synchronized void addOrPredicate(AbstarctPredicate predicate) {
         if(this.abstarctPredicate == null) {
             this.abstarctPredicate = predicate;
+            return;
         }
         OrCompositePredicate acp = new OrCompositePredicate();
         acp.addPredicate(predicate);
@@ -66,6 +72,7 @@ public class SimplePurchasePolicy extends AbstractPurchasePolicy{
     public synchronized void addCondPredicate(AbstarctPredicate predicate) {
         if(this.abstarctPredicate == null) {
             this.abstarctPredicate = predicate;
+            return;
         }
         CondCompositePredicate ccp = new CondCompositePredicate();
         ccp.addPredicate(predicate);

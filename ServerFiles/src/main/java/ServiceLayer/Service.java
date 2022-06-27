@@ -760,7 +760,7 @@ public class Service {
     @MessageMapping("/market/addItemPredicateToPolicy")
     @SendToUser("/topic/addItemPredicateToPolicyResult")
     public Response<AbstractPurchasePolicy> addItemPredicateToPolicy(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
-        Response<AbstractPurchasePolicy> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemPredicateToPolicy((Integer) map.get("storeId"), (Integer) map.get("policyId"), (String) map.get("type") ,(Integer) map.get("itemId"), (Integer) map.get("hour"));
+        Response<AbstractPurchasePolicy> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemPredicateToPolicy((Integer) map.get("storeId"), (Integer) map.get("policyId"), (String) map.get("policyType") ,Integer.parseInt((String)map.get("itemId")), Integer.parseInt((String)map.get("hour")));
         if (res.hadError()) {
             return new Response<>(res.getErrorMessage());
         }

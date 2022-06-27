@@ -1,5 +1,6 @@
 package DomainLayer;
 
+import DataLayer.DALObject;
 import DomainLayer.Stats.Stats;
 import DomainLayer.Stats.StatsController;
 import DomainLayer.Stores.*;
@@ -504,8 +505,11 @@ public class SystemImplementor implements SystemInterface {
 
         for(ShoppingBasket b : user.getCartBaskets()) {
             Response<Boolean> isPolicyAllowed = storeFacade.getShoppingBasketPurchesPolicy(b);
-            if(isPolicyAllowed.hadError() || !isPolicyAllowed.getObject()) {
-                return new Response<>("policy not allowed");
+            if(isPolicyAllowed.hadError() ) {
+                return new Response<>(isPolicyAllowed.getErrorMessage());
+            }
+            if(!isPolicyAllowed.getObject()) {
+                return new Response<>("policy not allowed " );
             }
         }
 
