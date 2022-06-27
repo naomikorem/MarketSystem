@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "Predicates")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class PredicateDAL implements DALObject<Integer> {
+public abstract class PredicateDAL implements DALObject<Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -21,5 +21,5 @@ public class PredicateDAL implements DALObject<Integer> {
         this.id = id;
     }
 
-    public AbstarctPredicate toDomain() {return null;}
+    public abstract AbstarctPredicate toDomain();
 }

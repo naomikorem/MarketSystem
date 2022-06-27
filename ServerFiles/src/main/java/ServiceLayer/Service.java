@@ -1,8 +1,7 @@
 package ServiceLayer;
 
 import DomainLayer.Response;
-import DomainLayer.Stats.Stats;
-import DomainLayer.Stats.StatsController;
+import DomainLayer.Stores.Category;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.Item;
@@ -19,17 +18,12 @@ import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 import ServiceLayer.DTOs.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,7 +31,6 @@ import java.util.stream.Collectors;
 public class Service {
 
     public static final String SYSTEM_IMPLEMENTOR_STRING = "SystemImplementor";
-    public static final String IP_STRING = "ip";
     @Autowired
     private SimpMessagingTemplate template;
 
@@ -49,9 +42,8 @@ public class Service {
     @SendToUser("/topic/loginResult")
     public Response<UserDTO> login(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
         Response<User> user = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).login(map.get("user"), map.get("pass"));
-        if (user.hadError()) {
+        if (user.hadError())
             return new Response<>(user.getErrorMessage());
-        }
         return new Response<>(convertToUserDTO(user.getObject()));
     }
 
@@ -78,9 +70,8 @@ public class Service {
     @SendToUser("/topic/loginByTokenResult")
     public Response<UserDTO> loginByToken(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
         Response<User> user = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).loginUserByToken(map.get("token"));
-        if (user.hadError()) {
+        if (user.hadError())
             return new Response<>(user.getErrorMessage());
-        }
         return new Response<>(convertToUserDTO(user.getObject()));
     }
 
@@ -400,8 +391,9 @@ public class Service {
     @MessageMapping("/market/logout")
     @SendToUser("/topic/logoutResult")
     public Response<Boolean> logout(SimpMessageHeaderAccessor headerAccessor) {
-        Response<Boolean> r = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).logout();
-        return r;
+
+
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).logout();
     }
 
     @MessageMapping("/market/getStoreItems")
@@ -700,17 +692,8 @@ public class Service {
 
     @MessageMapping("/market/addItemPredicateToPolicy")
     @SendToUser("/topic/addItemPredicateToPolicyResult")
-    public Response<AbstractPurchasePolicy> addItemPredicateToPolicy(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
-        Response<AbstractPurchasePolicy> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemPredicateToPolicy((Integer) map.get("storeId"), (Integer) map.get("policyId"), (String) map.get("policyType") ,Integer.parseInt((String)map.get("itemId")), Integer.parseInt((String)map.get("hour")));
-        if (res.hadError()) {
-            return new Response<>(res.getErrorMessage());
-        }
-        return res;
-    }
-    @MessageMapping("/market/bid/addBid")
-    @SendToUser("/topic/bid/addBidResult")
-    public Response<Boolean> addBid(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
-        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addBid((Integer) map.get("store_id"), Double.parseDouble((String)map.get("bid_price")), (Integer) map.get("item_id"), (Integer) map.get("amount"));
+    public Response<Boolean> addItemPredicateToPolicy(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemPredicateToPolicy((Integer) map.get("storeId"), (Integer) map.get("policyId"), (String) map.get("type") ,(Integer) map.get("itemId"), (Integer) map.get("hour"));
         if (res.hadError()) {
             return new Response<>(res.getErrorMessage());
         }
@@ -764,7 +747,6 @@ public class Service {
         Collection<Bid> bids = res.getObject();
         return new Response<>(bids.stream().map(BidDTO::new).collect(Collectors.toSet()));
     }
-
     @MessageMapping("/market/bid/getUserBids")
     @SendToUser("/topic/bid/getUserBidsResult")
     public Response<Set<BidDTO>> getUserBids(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
@@ -776,12 +758,4 @@ public class Service {
         return new Response<Set<BidDTO>>(b);
     }
 
-    @MessageMapping("/market/getStats")
-    @SendToUser("/topic/getStatsResult")
-    public Response<List<StatsDTO>> getStats(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
-        Response<List<Map.Entry<LocalDate, Stats>>> res =  ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getStats();
-        if(res.hadError())
-            return new Response<>(res.getErrorMessage());
-        return new Response(res.getObject().stream().map(e -> new StatsDTO(e.getKey(), e.getValue())));
-    }
 }

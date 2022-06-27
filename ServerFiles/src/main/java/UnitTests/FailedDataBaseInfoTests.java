@@ -3,9 +3,7 @@ package UnitTests;
 import DomainLayer.Stores.Store;
 import DomainLayer.Users.SubscribedState;
 import DomainLayer.Users.User;
-import ServiceLayer.Server;
 import acceptenceTests.AbstractTest;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,13 +22,7 @@ public class FailedDataBaseInfoTests extends AbstractTest  {
 
     @Before
     public void setup() {
-        Server.useDB = true;
         u = new User(new SubscribedState("user@gmail.com", "user","first", "last", "password"));
-    }
-
-    @After
-    public void after() {
-        Server.useDB = false;
     }
 
     @Test

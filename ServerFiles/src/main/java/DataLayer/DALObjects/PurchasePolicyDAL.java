@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "Policy")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class PurchasePolicyDAL implements DALObject<Integer> {
+public abstract class PurchasePolicyDAL implements DALObject<Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -21,5 +21,5 @@ public class PurchasePolicyDAL implements DALObject<Integer> {
         this.id = id;
     }
 
-    public AbstractPurchasePolicy toDomain() {return null;}
+    public abstract AbstractPurchasePolicy toDomain();
 }

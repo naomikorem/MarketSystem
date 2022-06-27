@@ -2,16 +2,29 @@ package ResistanceTests;
 
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
 import DomainLayer.SystemManagement.ExternalServices.HttpClientPost;
+import DomainLayer.Users.User;
+import DomainLayer.Users.UserController;
 import ServiceLayer.DTOs.PaymentParamsDTO;
 import ServiceLayer.DTOs.SupplyParamsDTO;
 import lombok.SneakyThrows;
-import org.junit.jupiter.api.Assertions;
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.http.HttpHeaders;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
 import java.rmi.ConnectException;
-import java.rmi.UnexpectedException;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+//import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 class HttpClientPostTest {
 
@@ -47,7 +60,7 @@ class HttpClientPostTest {
     @SneakyThrows
     @Test
     void handshakeNotExistingURL() {
-        assertThrows(ConnectException.class, () ->
+        assertThrows(org.springframework.web.client.ResourceAccessException.class, () ->
                 HttpClientPost.handshake("external service", "http://connectSomeNonExistingUrl.com", new HttpHeaders(), new RestTemplate()));
     }
 
@@ -77,7 +90,7 @@ class HttpClientPostTest {
     @Test
     void payNotExistingURL() {
 
-        assertThrows(ConnectException.class, () ->
+        assertThrows(org.springframework.web.client.ResourceAccessException.class, () ->
                 HttpClientPost.pay(paymentParamsDTO, "http://connectSomeNonExistingUrl.com", new HttpHeaders(), new RestTemplate()));
     }
 
@@ -92,46 +105,7 @@ class HttpClientPostTest {
     @Test
     void supplyNotExistingURL() {
 
-        assertThrows(ConnectException.class, () ->
+        assertThrows(org.springframework.web.client.ResourceAccessException.class, () ->
                 HttpClientPost.supply(supplyParamsDTO, "http://connectSomeNonExistingUrl.com", new HttpHeaders(), new RestTemplate()));
-    }
-
-    @SneakyThrows
-    @Test
-    void payCCV984() {
-        PaymentParamsDTO paymentParams984DTO = new PaymentParamsDTO(
-                "external service",
-                "1111111111111111",
-                "05",
-                "21",
-                "user",
-                "984",
-                "15");
-        assertThrows(ConnectException.class, () ->
-                HttpClientPost.pay(paymentParams984DTO, AbstractProxy.WSEP_PAYMENT_URL, new HttpHeaders(), new RestTemplate()));
-    }
-
-    @Test
-    void payCCV986(){
-        PaymentParamsDTO paymentParams986DTO = new PaymentParamsDTO(
-                "external service",
-                "1111111111111111",
-                "05",
-                "21",
-                "user",
-                "986",
-                "15");
-        assertThrows(UnexpectedException.class, () ->
-                HttpClientPost.pay(paymentParams986DTO, AbstractProxy.WSEP_PAYMENT_URL, new HttpHeaders(), new RestTemplate()));
-    }
-
-    @Test
-    void successfulPay() throws UnexpectedException, ConnectException {
-        Assertions.assertTrue(HttpClientPost.pay(paymentParamsDTO, AbstractProxy.WSEP_PAYMENT_URL, new HttpHeaders(), new RestTemplate()));
-    }
-
-    @Test
-    void successfulSupply() throws UnexpectedException, ConnectException {
-        Assertions.assertTrue(HttpClientPost.supply(supplyParamsDTO, AbstractProxy.WSEP_PAYMENT_URL, new HttpHeaders(), new RestTemplate()));
     }
 }

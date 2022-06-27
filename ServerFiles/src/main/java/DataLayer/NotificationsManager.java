@@ -4,14 +4,12 @@ package DataLayer;
 import DataLayer.DALObjects.NotificationDAL;
 import DataLayer.DALObjects.NotificationsKey;
 import DataLayer.DALObjects.ServiceDAL;
-import ServiceLayer.Server;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NotificationsManager /* extends DALManager<NotificationDAL, String>*/
@@ -29,11 +27,8 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
 
     private NotificationsManager() {}
 
-    public boolean addNotification(NotificationDAL notification)
+    public void addNotification(NotificationDAL notification)
     {
-        if (!Server.useDB) {
-            return true;
-        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
@@ -41,10 +36,9 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
             tx = session.beginTransaction();
             session.save(notification);
             tx.commit();
-            return true;
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            throw new RuntimeException("The service is currently unavailable - No connection to database");
+            throw e;
         } finally {
             session.close();
         }
@@ -52,9 +46,6 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
 
     public List<NotificationDAL> getUserNotifications(String username)
     {
-        if (!Server.useDB) {
-            return new ArrayList<>();
-        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
@@ -67,7 +58,7 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
             return notifications_by_name;
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            throw new RuntimeException("The service is currently unavailable - No connection to database");
+            throw e;
         } finally {
             session.close();
         }
@@ -75,9 +66,6 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
 
     public List<NotificationDAL> getAllNotifications()
     {
-        if (!Server.useDB) {
-            return new ArrayList<>();
-        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
@@ -88,7 +76,7 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
             return notifications;
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            throw new RuntimeException("The service is currently unavailable - No connection to database");
+            throw e;
         } finally {
             session.close();
         }
@@ -96,9 +84,6 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
 
     public boolean deleteNotification(NotificationDAL notification)
     {
-        if (!Server.useDB) {
-            return true;
-        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
@@ -108,7 +93,7 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
             tx.commit();
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            throw new RuntimeException("The service is currently unavailable - No connection to database");
+            throw e;
         } finally {
             session.close();
         }
@@ -117,9 +102,6 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
 
     public boolean deleteAllUserNotifications(String username)
     {
-        if (!Server.useDB) {
-            return true;
-        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
@@ -135,7 +117,7 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
             tx.commit();
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            throw new RuntimeException("The service is currently unavailable - No connection to database");
+            throw e;
         } finally {
             session.close();
         }
@@ -144,9 +126,6 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
 
     public boolean clearNotifications()
     {
-        if (!Server.useDB) {
-            return true;
-        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
@@ -156,7 +135,7 @@ public class NotificationsManager /* extends DALManager<NotificationDAL, String>
             tx.commit();
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            throw new RuntimeException("The service is currently unavailable - No connection to database");
+            throw e;
         } finally {
             session.close();
         }

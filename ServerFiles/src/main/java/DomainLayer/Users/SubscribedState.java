@@ -27,7 +27,7 @@ public class SubscribedState implements UserState {
 
     public SubscribedState(String email, String userName, String firstName, String lastName, String password) {
         checkParameters(email,userName,firstName,lastName, password);
-        this.userName = userName.toLowerCase();
+        this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
         if (!Utility.isHashed(password)) {

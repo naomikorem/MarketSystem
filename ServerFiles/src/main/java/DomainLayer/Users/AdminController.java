@@ -40,7 +40,7 @@ public class AdminController {
             if (admins.contains(name)) {
                 return false;
             }
-            admins.add(name.toLowerCase());
+            admins.add(name);
             AdminManager.getInstance().addObject(toDAL(name));
             LogUtility.info(String.format("Admin %s was added", name));
             return true;
