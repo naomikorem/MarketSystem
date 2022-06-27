@@ -694,8 +694,10 @@ public class StoreController {
             ShoppingBasket basket;
             if(basket_op.isPresent())
                 basket = basket_op.get();
-            else
+            else{
                 basket = new ShoppingBasket(bid.getStore());
+                baskets.add(basket);
+            }
             Item item = getItemFromStore(bid.getStore(), bid.getItem());
             basket.addItem(new Item(item.getProductName(),item.getCategory(),bid.bidPrice / bid.getAmount()),bid.getAmount());
         }

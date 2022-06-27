@@ -1,14 +1,11 @@
 package acceptenceTests;
 
 import DomainLayer.Response;
-import DomainLayer.Stores.Category;
+import DomainLayer.Stores.*;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
-import DomainLayer.Stores.Item;
-import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
 import DomainLayer.Stores.PurchasePolicy.SimplePurchasePolicy;
-import DomainLayer.Stores.Store;
 import DomainLayer.SystemImplementor;
 import DomainLayer.SystemInterface;
 import DomainLayer.SystemManagement.HistoryManagement.History;
@@ -337,4 +334,39 @@ public class Real extends Bridge {
     public Response<Boolean> setItemRating(int storeId, int itemId, double rate) {return adaptee.setItemRating(storeId, itemId, rate); }
 
     public Response<Double> getItemRating(int storeId, int itemId) {return adaptee.getItemRating(storeId, itemId); }
+
+    @Override
+    public Response<Boolean> addBid(int storeId, double bidPrice, int item, int amount) {
+        return adaptee.addBid(storeId, bidPrice, item, amount);
+    }
+
+    @Override
+    public Response<Boolean> addBidToCart(int bidId) {
+        return adaptee.addBidToCart(bidId);
+    }
+
+    @Override
+    public Response<Collection<Bid>> getBids(int storeId) {
+        return adaptee.getBids(storeId);
+    }
+
+    @Override
+    public Response<Collection<Bid>> getUserBids() {
+        return adaptee.getUserBids();
+    }
+
+    @Override
+    public Response<Bid> approveBid(int storeId, int bidId) {
+        return adaptee.approveBid(storeId, bidId);
+    }
+
+    @Override
+    public Response<Bid> deleteBid(int storeId, int bidId) {
+        return adaptee.deleteBid(storeId, bidId);
+    }
+
+    @Override
+    public Response<Bid> updateBid(int storeId, int bidId, double newPrice) {
+        return adaptee.updateBid(storeId, bidId, newPrice);
+    }
 }

@@ -1048,8 +1048,8 @@ public class SystemImplementor implements SystemInterface {
             return notify_owners_response;
         }
         List<String> user_to_notify = new LinkedList<>();
-        user_to_notify.add(user.getName());
-        Response<Boolean> notify_costumer_response = marketManagementFacade.notifyUsers(user_to_notify, String.format("Successfully bid %s₪, on %s, from store %s", bid.getBidPrice(), bid.getItem(), store.getName()));
+        user_to_notify.add(bid.getCostumer());
+        Response<Boolean> notify_costumer_response = marketManagementFacade.notifyUsers(user_to_notify, String.format("Successfully bid %s shekels, on %s, from store %s", bid.getBidPrice(), bid.getItem(), store.getName()));
         if (notify_costumer_response.hadError() || !notify_costumer_response.getObject()) {
             return notify_costumer_response;
         }
@@ -1087,14 +1087,33 @@ public class SystemImplementor implements SystemInterface {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
-        return storeFacade.approveBid(storeId, user, bidId);
+        Response<Bid> res = storeFacade.approveBid(storeId, user, bidId);
+        if(res.hadError())
+            return res;
+        Bid bid = res.getObject();
+        List<String> user_to_notify = new LinkedList<>();
+        user_to_notify.add(bid.getCostumer());
+        Response<Boolean> notify_costumer_response = marketManagementFacade.notifyUsers(user_to_notify, String.format("your bid on %s, from store %s, has been approved", bid.getBidPrice(), bid.getItem(), storeId));
+        if (notify_costumer_response.hadError() || !notify_costumer_response.getObject()) {
+            return new Response<>(notify_costumer_response.getErrorMessage());
+        }
+        return res;
     }
     @Override
     public Response<Boolean> approveAllBids(int storeId) {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
-        return storeFacade.approveAllBids(storeId, user);
+        Response<Collection<Bid>> res = getBids(storeId);
+        if (res.hadError()) {
+            return new Response<>(res.getErrorMessage());
+        }
+        for( Bid bid : res.getObject()){
+            Response<Bid> bid_res = approveBid(storeId, bid.getId());
+            if(bid_res.hadError())
+                return new Response<>(bid_res.getErrorMessage());
+        }
+        return new Response<>(true);
     }
     @Override
     public Response<Bid> deleteBid( int storeId, int bidId) {
@@ -1110,6 +1129,15 @@ public class SystemImplementor implements SystemInterface {
             return new Response<>(user_res.getErrorMessage());
         User u = user_res.getObject();
         u.removeBid(bid.getId());
+        Response<Bid> res = storeFacade.approveBid(storeId, user, bidId);
+        if(res.hadError())
+            return res;
+        List<String> user_to_notify = new LinkedList<>();
+        user_to_notify.add(user.getName());
+        Response<Boolean> notify_costumer_response = marketManagementFacade.notifyUsers(user_to_notify, String.format("your bid on %s, from store %s, has been approved", bid.getBidPrice(), bid.getItem(), storeId));
+        if (notify_costumer_response.hadError() || !notify_costumer_response.getObject()) {
+            return new Response<>(notify_costumer_response.getErrorMessage());
+        }
 
         return response;
     }
@@ -1137,17 +1165,17 @@ public class SystemImplementor implements SystemInterface {
             return new Response<>(store_response.getErrorMessage());
         Store  store  = store_response.getObject();
         u.addBid(bid);
-        Response<Boolean> notify_managers_response = marketManagementFacade.notifyUsers(store.getManagers(), String.format("Bid update - Item %s from price %s₪ to %s₪ for costumer %s in store %s", bid.getItem(), oldPrice, bid.getBidPrice(), bid.getCostumer(),  store.getName()));
+        Response<Boolean> notify_managers_response = marketManagementFacade.notifyUsers(store.getManagers(), String.format("Bid update - Item %s from price %s shekels to %s shekels for costumer %s in store %s", bid.getItem(), oldPrice, bid.getBidPrice(), bid.getCostumer(),  store.getName()));
         if (notify_managers_response.hadError() || !notify_managers_response.getObject()) {
             return new Response<>( notify_managers_response.getErrorMessage());
         }
-        Response<Boolean> notify_owners_response = marketManagementFacade.notifyUsers(store.getOwners(), String.format("Bid update - Item %s from price %s₪ to %s₪ for costumer %s in store %s", bid.getItem(),oldPrice, bid.getBidPrice(), bid.getCostumer(),  store.getName()));
+        Response<Boolean> notify_owners_response = marketManagementFacade.notifyUsers(store.getOwners(), String.format("Bid update - Item %s from price %s shekels to %s shekels for costumer %s in store %s", bid.getItem(),oldPrice, bid.getBidPrice(), bid.getCostumer(),  store.getName()));
         if (notify_owners_response.hadError() || !notify_owners_response.getObject()) {
             return new Response<>(notify_owners_response.getErrorMessage());
         }
         List<String> user_to_notify = new LinkedList<>();
         user_to_notify.add(user.getName());
-        Response<Boolean> notify_costumer_response = marketManagementFacade.notifyUsers(user_to_notify,  String.format("Bid update - Item %s from price %s₪ to %s₪ in store %s", bid.getItem(), oldPrice, bid.getBidPrice(), bid.getCostumer(), store.getName()));
+        Response<Boolean> notify_costumer_response = marketManagementFacade.notifyUsers(user_to_notify,  String.format("Bid update - Item %s from price %s shekels to %s shekels in store %s", bid.getItem(), oldPrice, bid.getBidPrice(), bid.getCostumer(), store.getName()));
         if (notify_costumer_response.hadError() || !notify_costumer_response.getObject()) {
             return new Response<>( notify_costumer_response.getErrorMessage());
         }
