@@ -36,7 +36,7 @@ public abstract class AbstractProxyController<T extends AbstractProxy>
         if(manager.addService(toDAL(name, url)) == null)
         {
             services.remove(name);
-            throw new RuntimeException("Could not add the service" + name + " to database");
+//            throw new RuntimeException("Could not add the service" + name + " to database");
         };
     }
 

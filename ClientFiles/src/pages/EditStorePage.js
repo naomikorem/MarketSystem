@@ -16,7 +16,6 @@ import {Link} from "react-router-dom";
 import AddDiscountPopup from "../Components/AddDiscountPopup";
 import ManageDiscountsPopup from "../Components/ManageDiscountsPopup";
 import ManagePoliciesPopup from "../Components/ManagePoliciesPopup";
-import ManageBidsPopup from "../Components/ManageBidsPopup";
 
 function StoreToClose(props) {
     let [modalOpen, setModalOpen] = useState(false);
@@ -147,7 +146,6 @@ class EditStorePage extends Component {
                                 <ManageDiscountsPopup storeId={this.state.store.id}/>
 
                                 <ManagePoliciesPopup storeId={this.state.store.id}/>
-                                <ManageBidsPopup storeId={this.state.store.id}/>
 
                                 { this.state.store.isOpen && !this.state.store.permanentlyClosed ?
                                     <StoreToClose store={this.state.store}/> : <StoreToOpen store={this.state.store}/>

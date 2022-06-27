@@ -11,14 +11,20 @@ During the intialization of the system we connect the data base.
   
   - hibernate.dialect : org.hibernate.dialect.MySQLDialect
   - hibernate.connection.driver_class : com.mysql.jdbc.Driver
+  
+  - paymentURL=https://cs-bgu-wsep.herokuapp.com/
+  - supplyURL=https://cs-bgu-wsep.herokuapp.com/
+  
+  - initFile=InitializationFile.txt
+  - badInitFile=BadInitializationFile.txt
 
 - In case of succeses we continue to the next step of the initaliztion system.   
 - In case of failure we abourt and return an error massege.
 
 Creating a default Admin user:
 
-- defaultAdminUser="Admin1"
-- defaultAdminPassword="Admin"
+- defaultAdminUser="admin"
+- defaultAdminPassword="admin"
 - defualtAdminFirstName="Admin"
 - defualtAdminLastName="Admin"
 - defualtAdminEmail="Admin@mycompany.com"
