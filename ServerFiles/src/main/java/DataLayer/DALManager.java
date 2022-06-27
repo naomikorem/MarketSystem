@@ -28,7 +28,8 @@ public class DALManager <T extends DALObject<K>, K> {
         if (!Server.useDB) {
             List<Field> fields = Arrays.stream(type.getDeclaredFields()).collect(Collectors.toList());
             List<Field> class_fields = fields.stream().filter(f -> f.getName().contains("id") || f.getName().contains("Id")).collect(Collectors.toList());
-            if(!class_fields.isEmpty() && class_fields.get(0).getType().isAssignableFrom(Integer.class))
+            if(!class_fields.isEmpty() && (class_fields.get(0).getType().isAssignableFrom(Integer.class) ||
+                    class_fields.get(0).getType().isAssignableFrom(int.class)))
             {
                 id = (K) ((Integer) (new Random()).nextInt());
             }
