@@ -49,6 +49,3 @@ yarn-error.log*
 
 workspace.xml
 Uncommitted_changes_before*
-
-/ServerFiles/.idea/workspace.xml
-/ServerFiles/MarketSystem.iml

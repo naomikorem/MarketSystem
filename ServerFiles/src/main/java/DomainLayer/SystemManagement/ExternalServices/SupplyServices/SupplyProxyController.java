@@ -53,8 +53,6 @@ public class SupplyProxyController extends AbstractProxyController<SupplyProxy> 
     @Override
     public void loadAllServices() {
         List<ServiceDAL> serviceDALS = manager.getAllServicesByType(ServiceType.Supply);
-        if(serviceDALS == null)
-            throw new RuntimeException("Could not load supply services from database");
         for (ServiceDAL s: serviceDALS)
         {
             String name = s.getName();

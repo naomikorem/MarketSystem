@@ -12,7 +12,7 @@ public class WebSocketMessageConfig implements WebSocketMessageBrokerConfigurer 
 
     @Override
     public void registerStompEndpoints(final StompEndpointRegistry registry) {
-        registry.addEndpoint("/market").setAllowedOrigins("*").withSockJS().setInterceptors(new HttpSessionIdHandshakeInterceptor());
+        registry.addEndpoint("/market").setAllowedOrigins("*").withSockJS();
     }
 
     @Override

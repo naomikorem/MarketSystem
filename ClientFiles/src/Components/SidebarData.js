@@ -7,7 +7,6 @@ import {RiFileUserLine} from "react-icons/ri";
 import {VscHistory} from "react-icons/vsc";
 import {FaUserTie, FaUserAltSlash, FaStoreSlash} from "react-icons/fa";
 import {AiOutlineApi} from "react-icons/ai";
-import {IoIosStats} from "react-icons/io"
 
 export const SidebarData = [
     {
@@ -80,13 +79,6 @@ export const SidebarData = [
         title: 'Add Admin',
         path: '/add-admin',
         icon: <FaUserTie />,
-        cName: 'nav-text',
-        adminOnly: true,
-    },
-    {
-        title: 'Stats',
-        path: '/adminStats',
-        icon: <IoIosStats />,
         cName: 'nav-text',
         adminOnly: true,
     }

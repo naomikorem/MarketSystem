@@ -1,7 +1,6 @@
 package acceptenceTests;
 
 import DomainLayer.Response;
-import DomainLayer.Stats.Stats;
 import DomainLayer.Stores.Category;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
@@ -17,7 +16,6 @@ import DomainLayer.Users.User;
 import ServiceLayer.DTOs.PaymentParamsDTO;
 import ServiceLayer.DTOs.SupplyParamsDTO;
 
-import java.time.LocalDate;
 import java.util.*;
 
 public class Proxy extends Bridge {
@@ -146,15 +144,6 @@ public class Proxy extends Bridge {
             return null;
         }
         return real.getStores();
-    }
-
-    @Override
-    public Response<Collection<Store>> getUsersStores()
-    {
-        if (this.real == null) {
-            return null;
-        }
-        return real.getUsersStores();
     }
 
     @Override
@@ -371,14 +360,6 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<Boolean> isLoggedInAdminCheck() {
-        if (this.real == null) {
-            return null;
-        }
-        return real.isLoggedInAdminCheck();
-    }
-
-    @Override
     public Response<Boolean> removeManager(String toRemove, int storeId) {
         if (this.real == null) {
             return null;
@@ -535,13 +516,6 @@ public class Proxy extends Bridge {
         return real.getItemRating(storeId, itemId);
     }
 
-    @Override
-    public Response<List<Map.Entry<LocalDate, Stats>>> getStats() {
-        if (this.real == null) {
-            return null;
-        }
-        return real.getStats();
-    }
     @Override
     public Response<Boolean> addBid(int storeId, double bidPrice, int item, int amount) {
         if (this.real == null) {

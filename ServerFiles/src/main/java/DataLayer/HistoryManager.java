@@ -3,13 +3,11 @@ package DataLayer;
 import DataLayer.DALObjects.HistoryItemDAL;
 import DataLayer.DALObjects.ServiceDAL;
 import DomainLayer.Stores.Category;
-import ServiceLayer.Server;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -30,17 +28,11 @@ public class HistoryManager extends DALManager<HistoryItemDAL, Integer>
 
     public Integer addItemToHistory(HistoryItemDAL item)
     {
-        Integer res = super.addObject(item);
-        if(res == null)
-            return -1;
-        else return res;
+        return super.addObject(item);
     }
 
     public List<HistoryItemDAL> getUserHistoryItems(String username)
     {
-        if (!Server.useDB) {
-            return new ArrayList<>();
-        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
@@ -53,17 +45,15 @@ public class HistoryManager extends DALManager<HistoryItemDAL, Integer>
             return history_items_by_name;
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            throw new RuntimeException("The service is currently unavailable - No connection to database");
+            e.printStackTrace();
         } finally {
             session.close();
         }
+        return null;
     }
 
     public List<HistoryItemDAL> getStoreHistoryItems(Integer store_id)
     {
-        if (!Server.useDB) {
-            return new ArrayList<>();
-        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
@@ -76,18 +66,29 @@ public class HistoryManager extends DALManager<HistoryItemDAL, Integer>
             return history_items_by_store;
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            throw new RuntimeException("The service is currently unavailable - No connection to database");
+            e.printStackTrace();
         } finally {
             session.close();
         }
+        return null;
     }
 
     public List<HistoryItemDAL> getAllHistoryItems()
     {
-        if (!Server.useDB) {
-            return new ArrayList<>();
-        }
+        Session session = DatabaseConnection.getSession();
+        Transaction tx = null;
 
-        return super.getAllObjects();
+        try {
+            tx = session.beginTransaction();
+            List<HistoryItemDAL> historyItems = session.createQuery(new String("from HistoryItemDAL"), HistoryItemDAL.class).list();
+            tx.commit();
+            return historyItems;
+        } catch (HibernateException e) {
+            if (tx!=null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return null;
     }
 }

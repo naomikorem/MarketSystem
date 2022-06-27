@@ -52,8 +52,6 @@ public class PurchaseProxyController extends AbstractProxyController<PurchasePro
     @Override
     public void loadAllServices() {
         List<ServiceDAL> serviceDALS = manager.getAllServicesByType(ServiceType.Purchase);
-        if(serviceDALS == null)
-            throw new RuntimeException("Could not load purchase services from database");
         for (ServiceDAL s: serviceDALS)
         {
             String name = s.getName();
