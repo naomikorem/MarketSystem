@@ -43,9 +43,7 @@ class ManagePoliciesPopup extends Component {
             this.state.error = res.errorMessage
             this.setState({[this.state.error]: this.state.error});
             if (!res.errorMessage) {
-
                 this.state.policies = res.object;
-                console.log(this.state.policies)
                 this.setState({[this.state.policies]: this.state.policies});
             }
         });
@@ -59,23 +57,12 @@ class ManagePoliciesPopup extends Component {
             }
         });
 
-        stompClient.subscribe('/topic/changePolicyResult', (r) => {
-            const res = JSON.parse(r["body"]);
-            this.state.error = res.errorMessage
-            this.setState({[this.state.error]: this.state.error});
-            if (!res.errorMessage) {
-                this.state.policies = res.object;
-                this.setState({[this.state.policies]: this.state.policies});
-            }
-        });
-
         this.mounted = true;
     }
 
     componentWillUnmount() {
         stompClient.unsubscribe('/user/topic/getAllPurchasePoliciesResult');
         stompClient.unsubscribe('/user/topic/removePolicyResult');
-        stompClient.unsubscribe('/topic/changePolicyResult');
         this.mounted = false;
     }
 

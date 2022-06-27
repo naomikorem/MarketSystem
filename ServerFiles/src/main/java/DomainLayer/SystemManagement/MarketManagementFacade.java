@@ -2,7 +2,6 @@ package DomainLayer.SystemManagement;
 
 import DomainLayer.Observer;
 import DomainLayer.Response;
-import DomainLayer.Stores.Bid;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
 import DomainLayer.Stores.StoreController;
@@ -14,12 +13,9 @@ import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.SystemManagement.NotificationManager.NotificationController;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
-import ServiceLayer.DTOs.SupplyParamsDTO;
-import ServiceLayer.DTOs.PaymentParamsDTO;
 import Utility.LogUtility;
-import lombok.SneakyThrows;
 
-import java.util.Collection;
+import java.rmi.ConnectException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,11 +38,6 @@ public class MarketManagementFacade {
         this.historyController = HistoryController.getInstance();
         this.notificationController = NotificationController.getInstance();
         this.storeController = StoreController.getInstance();
-
-        this.services.loadServices();
-        this.notificationController.loadNotifications();
-        this.historyController.loadHistory();
-
         initializeMarket();
     }
 
@@ -72,27 +63,30 @@ public class MarketManagementFacade {
      * After this function, the system will have at least one supply service and one purchase service
      * @return Response - if the initialization succeeded or if there was an error
      */
-    @SneakyThrows
     public synchronized void initializeMarket() {
-        // check if there is supply service - if not, add the first one
-        if (!services.hasPurchaseService()) {
-            services.addExternalPurchaseService(AbstractProxy.WSEP_PAYMENT, AbstractProxy.WSEP_PAYMENT_URL);
-        }
-        // check if there is purchase service - if not, add the first one
-        if (!services.hasSupplyService()) {
-            services.addExternalSupplyService(AbstractProxy.WSEP_SUPPLY, AbstractProxy.WSEP_SUPPLY_URL);
+        try {
+            // check if there is supply service - if not, add the first one
+            if (!services.hasPurchaseService()) {
+                services.addExternalPurchaseService(AbstractProxy.GOOD_STUB_NAME, "url");
+            }
+            // check if there is purchase service - if not, add the first one
+            if (!services.hasSupplyService()) {
+                services.addExternalSupplyService(AbstractProxy.GOOD_STUB_NAME, "url");
+            }
+        } catch (ConnectException ignored) {
+            // can't reach here
         }
     }
 
     /***
      * The user wants to pay about the items in his shopping cart.
      * @param user The user that wants to pay
-     //* @param address The shipping address, where to send the items.
-     //* @param purchase_service_name Which of the external purchase services is selected for this deal.
-     //* @param supply_service_name Which of the external supply services is selected for this deal.
+     * @param address The shipping address, where to send the items.
+     * @param purchase_service_name Which of the external purchase services is selected for this deal.
+     * @param supply_service_name Which of the external supply services is selected for this deal.
      * @return Response - if the purchase process succeeded or if there was an error
      */
-    public Response<Boolean> purchaseShoppingCart(User user, PaymentParamsDTO paymentParamsDTO, SupplyParamsDTO supplyParamsDTO) {
+    public Response<Boolean> purchaseShoppingCart(User user, String address, String purchase_service_name, String supply_service_name) {
         /* TODO:
          * 1. choose payment and shipping service
          * 2. check that every item matches the purchase and discount policy
@@ -102,23 +96,22 @@ public class MarketManagementFacade {
         try {
             String username = checkUsername(user);
             List<ShoppingBasket> baskets = user.getCartBaskets();
-            Collection<Bid> bids = user.getBidsInCart();
-            if (baskets.isEmpty() && bids.isEmpty()) {
+
+            if (baskets.isEmpty()) {
                 LogUtility.error("User " + username + " tried to purchase empty shopping cart");
                 return new Response<>("Purchase shopping cart cannot be empty");
             }
 
             double price = calculateShoppingCartPrice(baskets);
-            price+= calculateBidsPrice(bids);
-            storeController.addBidsToBaskets(baskets, bids);
             List<Map.Entry<Item, Integer>> items_and_amounts = PurchaseProcess.getItemsAndAmounts(baskets);
-            if (!this.services.supply(supplyParamsDTO, items_and_amounts)) {
+
+            if (!this.services.supply(address, items_and_amounts, supply_service_name)) {
                 LogUtility.error("The user " + username + " couldn't get confirmation from the supply services.");
                 return new Response<>("The purchase process canceled - couldn't contact the supply service.");
             }
 
             // do not move payment up: so we won't charge user before other checks
-            if (!this.services.pay(price, paymentParamsDTO)) {
+            if (!this.services.pay(price, purchase_service_name)) {
                 LogUtility.error("The user " + username + " couldn't pay to the purchase services.");
                 return new Response<>("The purchase process canceled - couldn't contact the purchase service.");
             }
@@ -131,7 +124,6 @@ public class MarketManagementFacade {
             user.emptyShoppingCart();
 
             LogUtility.info("Purchase process of shopping cart that the user " + username + " owned ended successfully");
-
             return new Response<>(true);
         } catch (Exception e) {
             //throw new IllegalArgumentException(e.getMessage());
@@ -147,10 +139,6 @@ public class MarketManagementFacade {
     public double calculateShoppingCartPrice(List<ShoppingBasket> baskets) {
         List<Double> basket_prices = baskets.stream().map(b -> storeController.getShoppingBasketPrice(b)).collect(Collectors.toList());
         return basket_prices.stream().reduce(0.0, (subtotal, element) -> subtotal + element);
-    }
-    private double calculateBidsPrice(Collection<Bid> bids) {
-        List<Double> prices = bids.stream().map(Bid::getBidPrice).collect(Collectors.toList());
-        return prices.stream().reduce(0.0, Double::sum);
     }
 
     public Response<Double> calculateShoppingCartPriceResult(List<ShoppingBasket> baskets) {
@@ -267,24 +255,6 @@ public class MarketManagementFacade {
         }
     }
 
-    public Response<List<String>> getAllExternalSupplyServicesNames()
-    {
-        try {
-            return new Response<>(this.services.getAllExternalSupplyServicesNames());
-        } catch (Exception e) {
-            return new Response<>(e.getMessage());
-        }
-    }
-
-    public Response<List<String>> getAllExternalPurchaseServicesNames()
-    {
-        try {
-            return new Response<>(this.services.getAllExternalPurchaseServicesNames());
-        } catch (Exception e) {
-            return new Response<>(e.getMessage());
-        }
-    }
-
     /***
      * Receive the purchase history of a subscribed user.
      * @param username The name of the requested user
@@ -358,7 +328,7 @@ public class MarketManagementFacade {
      * Remove all the notifications of given user
      * @param username The given user
      */
-    public Response<Boolean> removeUserNotifications(String username)
+    /*public Response<Boolean> removeUserNotifications(String username)
     {
         try
         {
@@ -367,7 +337,7 @@ public class MarketManagementFacade {
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
-    }
+    }*/
 
     /***
      * Receive all the notifications of some user
@@ -377,6 +347,14 @@ public class MarketManagementFacade {
     public Response<List<INotification>> getUserNotifications(String username) {
         try {
             return new Response<>(this.notificationController.getUserNotifications(username));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<List<INotification>> getUserRealTimeNotifications(String username) {
+        try {
+            return new Response<>(this.notificationController.getUserRealTimeNotifications(username));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }

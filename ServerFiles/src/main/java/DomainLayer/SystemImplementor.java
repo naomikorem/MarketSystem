@@ -11,6 +11,7 @@ import DomainLayer.Stores.PurchasePolicy.SimplePurchasePolicy;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.MarketManagementFacade;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
+import DomainLayer.SystemManagement.NotificationManager.Notification;
 import DomainLayer.SystemManagement.NotificationManager.NotificationController;
 import DomainLayer.Users.GuestState;
 import DomainLayer.Users.ShoppingBasket;
@@ -19,6 +20,7 @@ import ServiceLayer.DTOs.SupplyParamsDTO;
 import ServiceLayer.DTOs.PaymentParamsDTO;
 import ServiceLayer.Service;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -227,15 +229,17 @@ public class SystemImplementor implements SystemInterface {
         List<Store> stores = new ArrayList<>();
         for (int id : user.getOwnedStores()) {
             Response<Store> r = storeFacade.getStore(id);
-            if (!r.hadError()) {
-                stores.add(r.getObject());
+            if (r.hadError()) {
+                return new Response<>(r.getErrorMessage());
             }
+            stores.add(r.getObject());
         }
         for (int id : user.getManagedStores()) {
             Response<Store> r = storeFacade.getStore(id);
-            if (!r.hadError()) {
-                stores.add(r.getObject());
+            if (r.hadError()) {
+                return new Response<>(r.getErrorMessage());
             }
+            stores.add(r.getObject());
         }
         return new Response<>(stores);
     }
@@ -498,7 +502,7 @@ public class SystemImplementor implements SystemInterface {
         return this.marketManagementFacade.removeExternalSupplyService(name);
     }
 
-    public Response<Boolean> purchaseShoppingCart(PaymentParamsDTO paymentParamsDTO, SupplyParamsDTO supplyParamsDTOS) {
+    public Response<Boolean> purchaseShoppingCart(String address, String purchase_service_name, String supply_service_name) {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
@@ -531,16 +535,15 @@ public class SystemImplementor implements SystemInterface {
         Map<Integer, Store> stores = stores_response.stream().map(Response::getObject).collect(Collectors.toConcurrentMap(Store::getStoreId, store -> store));
         */
 
-        return this.marketManagementFacade.purchaseShoppingCart(user, paymentParamsDTO, supplyParamsDTOS);
+        return this.marketManagementFacade.purchaseShoppingCart(user, address, purchase_service_name, supply_service_name);
 
     }
-
     public Response<Double> calculateShoppingCartPriceResult(List<ShoppingBasket> baskets) {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
         Response<List<ShoppingBasket>> res = getCartBaskets();
-        if (res.hadError())
+        if(res.hadError())
             return new Response<>(res.getErrorMessage());
         return this.marketManagementFacade.calculateShoppingCartPriceResult(res.getObject());
     }
@@ -575,24 +578,9 @@ public class SystemImplementor implements SystemInterface {
         return this.marketManagementFacade.hasSupplyService(purchase_supply_name);
     }
 
-    @Override
-    public Response<List<String>> getAllExternalSupplyServicesNames() {
-        if (user == null) {
-            return new Response<>("Enter the system properly in order to perform actions in it.");
-        }
-        return this.marketManagementFacade.getAllExternalSupplyServicesNames();
-    }
 
-    @Override
-    public Response<List<String>> getAllExternalPurchaseServicesNames() {
-        if (user == null) {
-            return new Response<>("Enter the system properly in order to perform actions in it.");
-        }
-        return this.marketManagementFacade.getAllExternalPurchaseServicesNames();
-    }
-
-
-    public Response<History> getPurchaseHistory() {
+    public Response<History> getPurchaseHistory()
+    {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Enter the system properly and be subscribes in order get his purchase history");
         }
@@ -600,7 +588,8 @@ public class SystemImplementor implements SystemInterface {
         return this.marketManagementFacade.getPurchaseHistory(user.getName());
     }
 
-    public Response<History> getPurchaseHistory(String username) {
+    public Response<History> getPurchaseHistory(String username)
+    {
         Response<Boolean> is_admin_response = isLoggedInAdminCheck();
         if (is_admin_response.hadError() || !is_admin_response.getObject()) {
             return new Response<>("The current user is not a system admin");
@@ -609,11 +598,13 @@ public class SystemImplementor implements SystemInterface {
         return this.marketManagementFacade.getPurchaseHistory(username);
     }
 
-    public Response<History> getStoreHistory(int store_id) {
+    public Response<History> getStoreHistory(int store_id)
+    {
         Response<Boolean> is_owner_response = isLoggedInOwnerCheck(store_id);
 
         Response<Boolean> is_admin_response = isLoggedInAdminCheck();
-        if ((is_admin_response.hadError() || !is_admin_response.getObject()) && (is_owner_response.hadError() || !is_owner_response.getObject())) {
+        if((is_admin_response.hadError() || !is_admin_response.getObject()) && (is_owner_response.hadError() || !is_owner_response.getObject()))
+        {
             return new Response<>("The user is not an owner of the store and not an admin of the system");
 
         }
@@ -633,10 +624,10 @@ public class SystemImplementor implements SystemInterface {
         if (userResponse.hadError()) {
             return new Response<>(userResponse.getErrorMessage());
         }
-        if (!userResponse.getObject().getManagedStores().isEmpty()) {
+        if(!userResponse.getObject().getManagedStores().isEmpty()) {
             return new Response<>("The user is a manager of a store, can't be removed");
         }
-        if (!userResponse.getObject().getOwnedStores().isEmpty()) {
+        if(!userResponse.getObject().getOwnedStores().isEmpty()) {
             return new Response<>("The user is a store owner of a store, can't be removed");
         }
         //Response<Boolean> responseRemoveRoles = storeFacade.removeUserRoles(user, userResponse.getObject());
@@ -668,7 +659,6 @@ public class SystemImplementor implements SystemInterface {
         }
         return userFacade.removeUser(user.getName(), name);
     }
-
     @Override
     public Response<Boolean> addAdmin(String name) {
         if (user == null || !user.isSubscribed()) {
@@ -688,7 +678,8 @@ public class SystemImplementor implements SystemInterface {
     }
 
     @Override
-    public Response<Boolean> hasAdmin() {
+    public Response<Boolean> hasAdmin()
+    {
         return userFacade.hasAdmin();
     }
 
@@ -772,6 +763,16 @@ public class SystemImplementor implements SystemInterface {
         }
     }
 
+    @Override
+    public Response<List<INotification>> getUserRealTimeNotifications()
+    {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
+        }
+        return this.marketManagementFacade.getUserRealTimeNotifications(user.getName());
+    }
+
+
     private Response<Boolean> isLoggedInOwnerCheck(int store_id) {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
@@ -807,7 +808,6 @@ public class SystemImplementor implements SystemInterface {
 
         return userFacade.isAdmin(username);
     }
-
     @Override
     public Response<User> getUser(String userName) {
         Response<Boolean> r1 = isLoggedInAdminCheck();
@@ -836,14 +836,6 @@ public class SystemImplementor implements SystemInterface {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
         return storeFacade.getManagersPermissions(user, storeId, managerName);
-    }
-
-    @Override
-    public Response<Boolean> removeUserNotifications() {
-        if (user == null || !user.isSubscribed()) {
-            return new Response<>("Only logged in users can perform this action.");
-        }
-        return this.marketManagementFacade.removeUserNotifications(user.getName());
     }
 
     @Override
@@ -915,11 +907,11 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.getAllPurchasePolicies(user, storeId);
     }
 
-    public Response<SimplePurchasePolicy> addPolicy(int storeId, int hour, Calendar date) {
+    public Response<SimplePurchasePolicy> addPolicy(int storeId, int hour) {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Only logged in users can perform this action.");
         }
-        return storeFacade.addPolicy(user, storeId, hour, date);
+        return storeFacade.addPolicy(user, storeId, hour);
     }
 
     public Response<SimpleDiscountPolicy> addExclusiveDiscount(int storeId, double percentage) {
@@ -936,7 +928,7 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.addItemPredicateToDiscount(user, storeId, discountId, type, itemId);
     }
 
-    public Response<AbstractPurchasePolicy> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour) {
+    public Response<Boolean> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour) {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Only logged in users can perform this action.");
         }
@@ -944,7 +936,7 @@ public class SystemImplementor implements SystemInterface {
     }
 
     @Override
-    public Response<AbstractPurchasePolicy> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date) {
+    public Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date) {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Only logged in users can perform this action.");
         }
@@ -997,14 +989,12 @@ public class SystemImplementor implements SystemInterface {
         }
         return new Response<>(total);
     }
-
     public Response<Map<Item, Double>> getShoppingBasketDiscounts(ShoppingBasket sb) {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
         return storeFacade.getShoppingBasketDiscounts(sb);
     }
-
 
     public Response<Boolean> getIsLegalToPurchase(int storeId) {
         if (user == null) {
@@ -1067,8 +1057,8 @@ public class SystemImplementor implements SystemInterface {
             return notify_owners_response;
         }
         List<String> user_to_notify = new LinkedList<>();
-        user_to_notify.add(user.getName());
-        Response<Boolean> notify_costumer_response = marketManagementFacade.notifyUsers(user_to_notify, String.format("Successfully bid %s₪, on %s, from store %s", bid.getBidPrice(), bid.getItem(), store.getName()));
+        user_to_notify.add(bid.getCostumer());
+        Response<Boolean> notify_costumer_response = marketManagementFacade.notifyUsers(user_to_notify, String.format("Successfully bid %s shekels, on %s, from store %s", bid.getBidPrice(), bid.getItem(), store.getName()));
         if (notify_costumer_response.hadError() || !notify_costumer_response.getObject()) {
             return notify_costumer_response;
         }
@@ -1106,14 +1096,33 @@ public class SystemImplementor implements SystemInterface {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
-        return storeFacade.approveBid(storeId, user, bidId);
+        Response<Bid> res = storeFacade.approveBid(storeId, user, bidId);
+        if(res.hadError())
+            return res;
+        Bid bid = res.getObject();
+        List<String> user_to_notify = new LinkedList<>();
+        user_to_notify.add(bid.getCostumer());
+        Response<Boolean> notify_costumer_response = marketManagementFacade.notifyUsers(user_to_notify, String.format("your bid on %s, from store %s, has been approved", bid.getBidPrice(), bid.getItem(), storeId));
+        if (notify_costumer_response.hadError() || !notify_costumer_response.getObject()) {
+            return new Response<>(notify_costumer_response.getErrorMessage());
+        }
+        return res;
     }
     @Override
     public Response<Boolean> approveAllBids(int storeId) {
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
         }
-        return storeFacade.approveAllBids(storeId, user);
+        Response<Collection<Bid>> res = getBids(storeId);
+        if (res.hadError()) {
+            return new Response<>(res.getErrorMessage());
+        }
+        for( Bid bid : res.getObject()){
+            Response<Bid> bid_res = approveBid(storeId, bid.getId());
+            if(bid_res.hadError())
+                return new Response<>(bid_res.getErrorMessage());
+        }
+        return new Response<>(true);
     }
     @Override
     public Response<Bid> deleteBid( int storeId, int bidId) {
@@ -1129,6 +1138,15 @@ public class SystemImplementor implements SystemInterface {
             return new Response<>(user_res.getErrorMessage());
         User u = user_res.getObject();
         u.removeBid(bid.getId());
+        Response<Bid> res = storeFacade.approveBid(storeId, user, bidId);
+        if(res.hadError())
+            return res;
+        List<String> user_to_notify = new LinkedList<>();
+        user_to_notify.add(user.getName());
+        Response<Boolean> notify_costumer_response = marketManagementFacade.notifyUsers(user_to_notify, String.format("your bid on %s, from store %s, has been approved", bid.getBidPrice(), bid.getItem(), storeId));
+        if (notify_costumer_response.hadError() || !notify_costumer_response.getObject()) {
+            return new Response<>(notify_costumer_response.getErrorMessage());
+        }
 
         return response;
     }
@@ -1156,17 +1174,17 @@ public class SystemImplementor implements SystemInterface {
             return new Response<>(store_response.getErrorMessage());
         Store  store  = store_response.getObject();
         u.addBid(bid);
-        Response<Boolean> notify_managers_response = marketManagementFacade.notifyUsers(store.getManagers(), String.format("Bid update - Item %s from price %s₪ to %s₪ for costumer %s in store %s", bid.getItem(), oldPrice, bid.getBidPrice(), bid.getCostumer(),  store.getName()));
+        Response<Boolean> notify_managers_response = marketManagementFacade.notifyUsers(store.getManagers(), String.format("Bid update - Item %s from price %s shekels to %s shekels for costumer %s in store %s", bid.getItem(), oldPrice, bid.getBidPrice(), bid.getCostumer(),  store.getName()));
         if (notify_managers_response.hadError() || !notify_managers_response.getObject()) {
             return new Response<>( notify_managers_response.getErrorMessage());
         }
-        Response<Boolean> notify_owners_response = marketManagementFacade.notifyUsers(store.getOwners(), String.format("Bid update - Item %s from price %s₪ to %s₪ for costumer %s in store %s", bid.getItem(),oldPrice, bid.getBidPrice(), bid.getCostumer(),  store.getName()));
+        Response<Boolean> notify_owners_response = marketManagementFacade.notifyUsers(store.getOwners(), String.format("Bid update - Item %s from price %s shekels to %s shekels for costumer %s in store %s", bid.getItem(),oldPrice, bid.getBidPrice(), bid.getCostumer(),  store.getName()));
         if (notify_owners_response.hadError() || !notify_owners_response.getObject()) {
             return new Response<>(notify_owners_response.getErrorMessage());
         }
         List<String> user_to_notify = new LinkedList<>();
         user_to_notify.add(user.getName());
-        Response<Boolean> notify_costumer_response = marketManagementFacade.notifyUsers(user_to_notify,  String.format("Bid update - Item %s from price %s₪ to %s₪ in store %s", bid.getItem(), oldPrice, bid.getBidPrice(), bid.getCostumer(), store.getName()));
+        Response<Boolean> notify_costumer_response = marketManagementFacade.notifyUsers(user_to_notify,  String.format("Bid update - Item %s from price %s shekels to %s shekels in store %s", bid.getItem(), oldPrice, bid.getBidPrice(), bid.getCostumer(), store.getName()));
         if (notify_costumer_response.hadError() || !notify_costumer_response.getObject()) {
             return new Response<>( notify_costumer_response.getErrorMessage());
         }

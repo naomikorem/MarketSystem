@@ -60,9 +60,9 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<Boolean> purchaseShoppingCart(PaymentParamsDTO paymentParamsDTO, SupplyParamsDTO supplyParamsDTO) {
+    public Response<Boolean> purchaseShoppingCart(String address, String purchase_service_name, String supply_service_name) {
         if (this.real != null) {
-            return real.purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
+            return real.purchaseShoppingCart(address, purchase_service_name, supply_service_name);
 
         }
         return null;
@@ -355,6 +355,14 @@ public class Proxy extends Bridge {
     }
 
     @Override
+    public Response<List<INotification>> getUserRealTimeNotifications() {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getUserRealTimeNotifications();
+    }
+
+    @Override
     public Response<User> getUser(String userName) {
         if (this.real == null) {
             return null;
@@ -387,11 +395,11 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<SimplePurchasePolicy> addPolicy (int storeId, int hour, Calendar date) {
+    public Response<SimplePurchasePolicy> addPolicy (int storeId, int hour) {
         if (this.real == null) {
             return null;
         }
-        return real.addPolicy(storeId, hour, date);
+        return real.addPolicy(storeId, hour);
     }
 
     @Override
@@ -403,7 +411,7 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<AbstractPurchasePolicy> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour) {
+    public Response<Boolean> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour) {
         if (this.real == null) {
             return null;
         }
@@ -411,7 +419,7 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<AbstractPurchasePolicy> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date) {
+    public Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date) {
         if (this.real == null) {
             return null;
         }
@@ -533,5 +541,60 @@ public class Proxy extends Bridge {
             return null;
         }
         return real.getStats();
+    }
+    @Override
+    public Response<Boolean> addBid(int storeId, double bidPrice, int item, int amount) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.addBid( storeId, bidPrice, item, amount);
+    }
+
+    @Override
+    public Response<Boolean> addBidToCart(int bidId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.addBidToCart(bidId);
+    }
+
+    @Override
+    public Response<Collection<Bid>> getBids(int storeId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getBids(storeId);
+    }
+
+    @Override
+    public Response<Collection<Bid>> getUserBids() {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getUserBids();
+    }
+
+    @Override
+    public Response<Bid> approveBid(int storeId, int bidId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.approveBid(storeId, bidId);
+    }
+
+    @Override
+    public Response<Bid> deleteBid(int storeId, int bidId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.deleteBid(storeId, bidId);
+    }
+
+    @Override
+    public Response<Bid> updateBid(int storeId, int bidId, double newPrice) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.updateBid(storeId, bidId, newPrice);
     }
 }

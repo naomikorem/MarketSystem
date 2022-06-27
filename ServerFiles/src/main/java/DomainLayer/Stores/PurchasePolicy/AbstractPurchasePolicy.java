@@ -1,7 +1,5 @@
 package DomainLayer.Stores.PurchasePolicy;
 
-import DataLayer.DALObjects.PurchasePolicyDAL;
-import DataLayer.PurchasePolicyManager;
 import DomainLayer.Stores.DiscountPolicy.CompositeDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.Predicates.AbstarctPredicate;
@@ -88,13 +86,5 @@ public abstract class AbstractPurchasePolicy {
 
     public void setDate(Calendar date) {
         throw new IllegalArgumentException("This discount policy does not have a percentage field.");
-    }
-
-    public abstract PurchasePolicyDAL toDAL();
-
-    public void update() {
-        if (getId() != 0) {
-            PurchasePolicyManager.getInstance().addObject(toDAL());
-        }
     }
 }

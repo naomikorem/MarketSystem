@@ -2,9 +2,6 @@ package DomainLayer.SystemManagement.ExternalServices;
 
 import ServiceLayer.Server;
 import Utility.LogUtility;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.web.client.RestTemplate;
 
 import java.rmi.ConnectException;
 
@@ -20,20 +17,19 @@ public abstract class AbstractProxy
 
     protected String name;
     protected String url;
-    protected final RestTemplate restTemplate;
-    protected final HttpHeaders headers;
 
-    public AbstractProxy(String name, String url)
+    public AbstractProxy(String name)
     {
         this.name = name;
-        this.url = url;
-        this.restTemplate = new RestTemplate();
-        this.headers = new HttpHeaders();
-        this.headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        this.url = "";
     }
 
-    public boolean connect() throws ConnectException
+    public boolean connect(String url) throws ConnectException
     {
+        this.url = url;
+
+        // TODO: add connection to real service
+
         if (this.name.equals(GOOD_STUB_NAME) || this.name.equals(GOOD_STUB_NAME_2))
         {
             return true;
@@ -44,8 +40,7 @@ public abstract class AbstractProxy
             throw new ConnectException("Could not connect to bad stub service");
         }
 
-        HttpClientPost.handshake(this.name, this.url, this.headers, this.restTemplate);
-        LogUtility.info("connected to external service named: " + this.name + ", url:" + this.url);
-        return true;
+        LogUtility.error("Could not connect to external service named: " + this.name);
+        throw new ConnectException("Could not connect to external service named: " + this.name);
     }
 }
