@@ -17,8 +17,8 @@ During the intialization of the system we connect the data base.
 
 Creating a default Admin user:
 
-- defaultAdminUser="Admin1"
-- defaultAdminPassword="Admin"
+- defaultAdminUser="admin"
+- defaultAdminPassword="admin"
 - defualtAdminFirstName="Admin"
 - defualtAdminLastName="Admin"
 - defualtAdminEmail="Admin@mycompany.com"
