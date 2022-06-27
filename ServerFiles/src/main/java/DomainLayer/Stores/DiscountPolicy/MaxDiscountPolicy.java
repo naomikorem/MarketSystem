@@ -1,7 +1,5 @@
 package DomainLayer.Stores.DiscountPolicy;
 
-import DataLayer.DALObjects.CompositeDiscountDAL;
-import DataLayer.DALObjects.DiscountDAL;
 import DomainLayer.Stores.Item;
 import DomainLayer.Users.ShoppingBasket;
 
@@ -31,14 +29,5 @@ public class MaxDiscountPolicy extends CompositeDiscountPolicy {
             }
         }
         return max;
-    }
-
-    @Override
-    public DiscountDAL toDAL() {
-        CompositeDiscountDAL res = new CompositeDiscountDAL();
-        res.setId(getId());
-        res.setType(CompositeDiscountDAL.CompositeDiscountType.Max);
-        res.setDiscountPolicies(getDiscountPolicies().stream().map(AbstractDiscountPolicy::toDAL).collect(Collectors.toSet()));
-        return res;
     }
 }

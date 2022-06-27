@@ -1,11 +1,14 @@
 package acceptenceTests;
 
 import DomainLayer.Response;
-import DomainLayer.Stores.*;
+import DomainLayer.Stores.Category;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
+import DomainLayer.Stores.Item;
+import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
 import DomainLayer.Stores.PurchasePolicy.SimplePurchasePolicy;
+import DomainLayer.Stores.Store;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
@@ -55,9 +58,9 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<Boolean> purchaseShoppingCart(PaymentParamsDTO paymentParamsDTO, SupplyParamsDTO supplyParamsDTO) {
+    public Response<Boolean> purchaseShoppingCart(String address, String purchase_service_name, String supply_service_name) {
         if (this.real != null) {
-            return real.purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
+            return real.purchaseShoppingCart(address, purchase_service_name, supply_service_name);
 
         }
         return null;
@@ -341,6 +344,14 @@ public class Proxy extends Bridge {
     }
 
     @Override
+    public Response<List<INotification>> getUserRealTimeNotifications() {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getUserRealTimeNotifications();
+    }
+
+    @Override
     public Response<User> getUser(String userName) {
         if (this.real == null) {
             return null;
@@ -365,11 +376,11 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<SimplePurchasePolicy> addPolicy (int storeId, int hour, Calendar date) {
+    public Response<SimplePurchasePolicy> addPolicy (int storeId, int hour) {
         if (this.real == null) {
             return null;
         }
-        return real.addPolicy(storeId, hour, date);
+        return real.addPolicy(storeId, hour);
     }
 
     @Override
@@ -381,7 +392,7 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<AbstractPurchasePolicy> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour) {
+    public Response<Boolean> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour) {
         if (this.real == null) {
             return null;
         }
@@ -389,7 +400,7 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<AbstractPurchasePolicy> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date) {
+    public Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date) {
         if (this.real == null) {
             return null;
         }

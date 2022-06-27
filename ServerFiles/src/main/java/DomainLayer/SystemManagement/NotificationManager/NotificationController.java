@@ -1,8 +1,5 @@
 package DomainLayer.SystemManagement.NotificationManager;
 
-import DataLayer.DALObjects.NotificationDAL;
-import DataLayer.DALObjects.NotificationsKey;
-import DataLayer.NotificationsManager;
 import DomainLayer.Observable;
 import DomainLayer.Observer;
 import DomainLayer.Users.UserController;
@@ -10,24 +7,26 @@ import Utility.LogUtility;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 public class NotificationController implements Observable
 {
     public static final String NOTIFICATION_FILE_NAME = "real_time_notifications.txt";
     private Map<String, List<INotification>> users_messages;
+    private Map<String, List<INotification>> real_time_users_messages; // just for check
     private List<Observer> observers;
     private UserController userController;
-    private NotificationsManager manager;
 
     private static class NotificationControllerHolder {
         static final NotificationController INSTANCE = new NotificationController();
     }
     private NotificationController()
     {
+        this.real_time_users_messages = new HashMap<>();
         this.users_messages = new HashMap<>();
         this.userController = UserController.getInstance();
         this.observers = new LinkedList<>();
-        this.manager = NotificationsManager.getInstance();
     }
 
     public static NotificationController getInstance() {
@@ -47,22 +46,15 @@ public class NotificationController implements Observable
                 this.users_messages.put(username, new ArrayList<>());
             }
             this.users_messages.get(username).add(new Notification(message));
-            this.manager.addNotification(toDAL(username, message));
             LogUtility.info("Added notification to user " + username);
         }
         return true;
     }
 
-    private NotificationDAL toDAL(String username, String message)
-    {
-        NotificationsKey key = new NotificationsKey(username, message);
-        return new NotificationDAL(key);
-    }
-
     private boolean addRealTimeNotification(Observer user, String msg) {
-        addNotification(user.getName(), msg);
-        user.sendNotification(new Notification(msg));
-
+        synchronized (this.real_time_users_messages) {
+            user.sendNotification(new Notification(msg));
+        }
         return true;
     }
 
@@ -74,12 +66,15 @@ public class NotificationController implements Observable
     {
         synchronized (this.users_messages)
         {
-            if(!this.users_messages.containsKey(username))
-                throw new IllegalArgumentException("The user doesn't have notifications.");
+            synchronized (this.real_time_users_messages)
+            {
+                if(!this.users_messages.containsKey(username) && !this.real_time_users_messages.containsKey(username))
+                    throw new IllegalArgumentException("The user doesn't have notifications.");
 
-            this.users_messages.remove(username);
-            this.manager.deleteAllUserNotifications(username);
-            LogUtility.info("Removed the notifications that where sent to the user " + username);
+                this.users_messages.remove(username);
+                this.real_time_users_messages.remove(username);
+                LogUtility.info("Removed the notifications that where sent to the user " + username);
+            }
         }
     }
 
@@ -97,6 +92,21 @@ public class NotificationController implements Observable
             }
             LogUtility.info("Received notifications of " + username);
             return this.users_messages.remove(username);
+        }
+    }
+
+    /**
+     * The function will be deleted after adding sockets
+     * */
+    public List<INotification> getUserRealTimeNotifications(String username)
+    {
+        synchronized (this.real_time_users_messages) {
+            if (!this.real_time_users_messages.containsKey(username)) {
+                LogUtility.warn("Tried to receive real time notifications of " + username + " but he doesn't have any notifications.");
+                throw new IllegalArgumentException("The user doesn't have real time notifications.");
+            }
+            LogUtility.info("Received real time notifications of " + username);
+            return this.real_time_users_messages.get(username);
         }
     }
 
@@ -166,28 +176,7 @@ public class NotificationController implements Observable
     public boolean clearNotifications()
     {
         this.users_messages = new ConcurrentHashMap<>();
-        this.manager.clearNotifications();
+        this.real_time_users_messages = new ConcurrentHashMap<>();
         return true;
-    }
-
-    public void loadNotifications()
-    {
-        List<NotificationDAL> notifications = this.manager.getAllNotifications();
-        for(NotificationDAL n : notifications)
-        {
-            String username = n.getId().getUsername();
-            Notification notification_domain = toDomain(n);
-
-            if (!this.users_messages.containsKey(username)) {
-                this.users_messages.put(username, new ArrayList<>());
-            }
-
-            this.users_messages.get(username).add(notification_domain);
-        }
-    }
-
-    private Notification toDomain(NotificationDAL n)
-    {
-        return new Notification(n.getId().getMessage());
     }
 }

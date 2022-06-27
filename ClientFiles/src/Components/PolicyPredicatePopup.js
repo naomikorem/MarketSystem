@@ -22,9 +22,9 @@ class PolicyPredicatePopup extends Component {
             policy: props.policy,
             storeId: props.storeId,
             type: "Item",
-            date:"0000-01-01",
-            hour:"24",
-            policyProperties: {"policyType": predicateTypes[0]},
+            date:"noun",
+            hour:"noun",
+            policyProperties: {"policyType": ""},
             items: [],
         };
 

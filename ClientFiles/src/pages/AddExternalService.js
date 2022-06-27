@@ -1,10 +1,5 @@
 import React, {Component} from "react";
 import {stompClient, connectedPromise} from "../App";
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 
 const serviceTypes = ["Supply service", "Purchase Service"];
 
@@ -79,12 +74,6 @@ class AddService extends Component {
     }
 
     render() {
-        const textFieldStyling = {
-            "& label": {
-                color: "#616e7f",
-            },
-            "&.Mui-selected": { color: "#ffffff"}
-        };
         return (
             <div className="formCenter">
                 <div className="formField">
@@ -117,38 +106,9 @@ class AddService extends Component {
                     />
                 </div>
 
-                {/*<div className="formField">*/}
-                {/*    <Box sx={{ minWidth: 120 }}>*/}
-                {/*        /!*<FormControl fullWidth sx={{...textFieldStyling }}>*!/*/}
-                {/*            <FormControl fullWidth>*/}
-                {/*            <InputLabel  className="addExternalServiceType" id="demo-simple-select-label">Choose Service Type</InputLabel>*/}
-                {/*            <Select*/}
-                {/*                sx={{bgcolor:'red'}}*/}
-                {/*                options={this.state.supplyServiceNames}*/}
-                {/*                    label="Choose Service Type"*/}
-                {/*                    name="serviceType"*/}
-                {/*                    value={this.state.serviceType}*/}
-                {/*                    variant="filled"*/}
-                {/*                    className="formFieldInput"*/}
-                {/*                    onChange={this.handleChange}>*/}
-                {/*                {serviceTypes.map((s, i) => <MenuItem key={i} value={s}>{s}</MenuItem>)}*/}
-                {/*            </Select>*/}
-                {/*        </FormControl>*/}
-                {/*    </Box>*/}
-                {/*</div>*/}
-
-                <Box sx={{ width: '130%' }}>
-                    <FormControl fullWidth variant="filled">
-                        <InputLabel id="demo-simple-select-label">Choose Supply Service</InputLabel>
-                            <Select style={{background: "#FFFFFF"}}
-                                    name="serviceType"
-                                    value={this.state.serviceType}
-                                    variant="filled" className={"selectItemBar"}
-                                    onChange={this.handleChange}>
-                                { serviceTypes.map((s, i) => <MenuItem key={i} value={s}>{s}</MenuItem>)}
-                            </Select>
-                    </FormControl>
-                </Box>
+                <select style={{background: "#FFFFFF"}} name="serviceType" value={this.state.serviceType} variant="filled" className={"selectItemBar"} onChange={this.handleChange}>
+                    { serviceTypes.map((s, i) => <option key={i} value={s}>{s}</option>)}
+                </select>
 
                 <div className="formField">
                     <button onClick={this.handleApply} className="formFieldButton">Apply</button>
