@@ -25,17 +25,29 @@ public class Stats {
         this.visitors = visitors;
     }
 
-    public void addGuest(String guestAddr) {
+    public boolean addGuest(String guestAddr) {
+        if (guests.contains(guestAddr)) {
+            return false;
+        }
         this.guests.add(guestAddr);
+        return true;
     }
 
-    public void removeGuest(String guestAddr) {
+    public boolean removeGuest(String guestAddr) {
         //can happen when guest user logs in
+        if (!guests.contains(guestAddr)) {
+            return false;
+        }
         this.guests.remove(guestAddr);
+        return true;
     }
 
-    public void addUser(User u) {
+    public boolean addUser(User u) {
+        if (visitors.contains(u)) {
+            return false;
+        }
         this.visitors.add(u);
+        return true;
     }
 
     public long guestsCount() {

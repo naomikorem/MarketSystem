@@ -41,18 +41,21 @@ public class StatsController {
     }
 
     public void addUser(User u) {
-        getTodayStats().addUser(u);
-        saveToday();
+        if (getTodayStats().addUser(u)) {
+            saveToday();
+        }
     }
 
     public void addGuest(String guestAddr) {
-        getTodayStats().addGuest(guestAddr);
-        saveToday();
+        if (getTodayStats().addGuest(guestAddr)) {
+            saveToday();
+        }
     }
 
     public void removeGuest(String guestAddr) {
-        getTodayStats().removeGuest(guestAddr);
-        saveToday();
+        if (getTodayStats().removeGuest(guestAddr)) {
+            saveToday();
+        }
     }
 
     public List<Map.Entry<LocalDate, Stats>> getAllStats() {
