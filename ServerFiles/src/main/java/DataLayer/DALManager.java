@@ -9,9 +9,12 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class DALManager <T extends DALObject<K>, K> {
     private Class<T> type;
@@ -23,12 +26,10 @@ public class DALManager <T extends DALObject<K>, K> {
     public K addObject(T o){
         K id = null;
         if (!Server.useDB) {
-            try {
-                id = type.newInstance().getId();
-            } catch (Exception e) {
-                id = null;
-            }
-            if (id instanceof Integer) {
+            List<Field> fields = Arrays.stream(type.getDeclaredFields()).collect(Collectors.toList());
+            List<Field> class_fields = fields.stream().filter(f -> f.getName().contains("id") || f.getName().contains("Id")).collect(Collectors.toList());
+            if(!class_fields.isEmpty() && class_fields.get(0).getType().isAssignableFrom(Integer.class))
+            {
                 id = (K) ((Integer) (new Random()).nextInt());
             }
             return id;
