@@ -55,7 +55,7 @@ class ModalPurchase extends Component {
             const res = JSON.parse(r["body"]);
             this.state.message  = res.errorMessage ? res.errorMessage : "Purchase completed successfully!";
             this.state.hadError = res.errorMessage !== null;
-            this.setState({[this.state.error]: this.state.error, [this.state.message]: this.state.message});
+            this.setState({[this.state.hadError]: this.state.hadError, [this.state.message]: this.state.message});
 
             if (!res.errorMessage) {
                 this.props.onPurchase();
@@ -89,7 +89,7 @@ class ModalPurchase extends Component {
 
             this.state.message  = res.errorMessage ? res.errorMessage : "";
             this.state.hadError = res.errorMessage !== null;
-            this.setState({[this.state.error]: this.state.error, [this.state.message]: this.state.message});
+            this.setState({[this.state.hadError]: this.state.hadError, [this.state.message]: this.state.message});
 
             if (!res.errorMessage) {
                 this.state.purchaseServiceNames = res.object;
@@ -113,7 +113,7 @@ class ModalPurchase extends Component {
 
             this.state.message  = res.errorMessage ? res.errorMessage : "";
             this.state.hadError = res.errorMessage !== null;
-            this.setState({[this.state.error]: this.state.error, [this.state.message]: this.state.message});
+            this.setState({[this.state.hadError]: this.state.hadError, [this.state.message]: this.state.message});
 
             if (!res.errorMessage) {
                 this.state.supplyServiceNames = res.object;
@@ -146,6 +146,9 @@ class ModalPurchase extends Component {
 
 
     handleSave() {
+        this.state.hadError = false;
+        this.state.message = "waiting for response...";
+        this.setState({[this.state.hadError]: this.state.hadError, [this.state.message]: this.state.message});
         stompClient.send("/app/market/purchase", {}, JSON.stringify({
             // payment details
             "card_number": this.state.card_number,

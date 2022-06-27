@@ -1,5 +1,6 @@
 package DomainLayer.SystemManagement.ExternalServices;
 
+import ServiceLayer.Server;
 import Utility.LogUtility;
 
 import java.rmi.ConnectException;
@@ -9,6 +10,11 @@ public abstract class AbstractProxy
     public static final String GOOD_STUB_NAME = "good stub";
     public static final String GOOD_STUB_NAME_2 = "good stub 2";
     public static final String BAD_STUB_NAME = "bad stub";
+    public static final String WSEP_PAYMENT = "wsep payment";
+    public static final String WSEP_PAYMENT_URL = Server.prop.getProperty("paymentURL");
+    public static final String WSEP_SUPPLY = "wsep supply";
+    public static final String WSEP_SUPPLY_URL = Server.prop.getProperty("supplyURL");
+
     protected String name;
     protected String url;
 

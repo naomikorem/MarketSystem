@@ -18,6 +18,9 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static DomainLayer.Stores.Predicates.SimplePredicate.PredicateType.Basket;
+import static DomainLayer.Stores.Predicates.SimplePredicate.PredicateType.Hour;
+
 public class StoreController {
 
     private Map<Integer, Store> stores; // store-id , stores
@@ -507,12 +510,11 @@ public class StoreController {
     public void changePolicyHour(User owner, int storeId, int policyId, int newHour, Calendar newDate) {
         Store s = getStoreAndThrow(storeId);
         if (!owner.isSubscribed() || !s.canManagePurchasePolicy(owner)) {
-            throw new IllegalArgumentException("This user cannot see the managers");
+            throw new IllegalArgumentException("This user cannot update this policy");
         }
         AbstractPurchasePolicy adp = s.getPolicy(policyId);
         adp.setHour(newHour);
         adp.setDate(newDate);
-
     }
 
     public void addItemPredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, int hour) {
@@ -521,7 +523,8 @@ public class StoreController {
             throw new IllegalArgumentException("This user cannot add items-predicate to policies");
         }
         SimplePredicate sp = new SimplePredicate(itemId,hour);
-        addPredicateToPolicy(owner, s, policyId, PredicateEnum.valueOf(type), sp);
+        sp.setDisplayString(String.format("not allowed %s to purchase after the given hour: %d",(s.getItemById(itemId).getProductName()), hour));
+        return addPredicateToPolicy(owner, s, policyId, PredicateEnum.valueOf(type), sp);
     }
 
     public void addItemNotAllowedInDatePredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, Calendar date) {
@@ -530,7 +533,8 @@ public class StoreController {
             throw new IllegalArgumentException("This user cannot add items-predicate to policies");
         }
         SimplePredicate sp = new SimplePredicate(itemId,date);
-        addPredicateToPolicy(owner, s, policyId, PredicateEnum.valueOf(type), sp);
+        sp.setDisplayString(String.format("%s is not allowed to purchase in the given date",s.getItemById(itemId).getProductName()));
+        return addPredicateToPolicy(owner, s, policyId, PredicateEnum.valueOf(type), sp);
     }
 
     public void addCategoryPredicateToDiscount(User owner, int storeId, int discountId, String type, String categoryName) {

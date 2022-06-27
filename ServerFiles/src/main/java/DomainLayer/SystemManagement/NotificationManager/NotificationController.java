@@ -45,16 +45,21 @@ public class NotificationController implements Observable
             if (!this.users_messages.containsKey(username)) {
                 this.users_messages.put(username, new ArrayList<>());
             }
-            this.users_messages.get(username).add(new Notification(message));
+            Notification notification = new Notification(message + " at " + (new Date()));
+            this.users_messages.get(username).add(notification);
+            if(!this.manager.addNotification(toDAL(username, message)))
+            {
+                this.users_messages.get(username).remove(notification);
+            }
             LogUtility.info("Added notification to user " + username);
         }
         return true;
     }
 
     private boolean addRealTimeNotification(Observer user, String msg) {
-        synchronized (this.real_time_users_messages) {
-            user.sendNotification(new Notification(msg));
-        }
+        addNotification(user.getName(), msg);
+        user.sendNotification(new Notification(msg + " at " + (new Date())));
+
         return true;
     }
 
@@ -122,7 +127,7 @@ public class NotificationController implements Observable
             int store_id = entry.getKey();
             List<String> owners = entry.getValue();
             notifyUsers(owners, "The user " + username +
-                    " bought items from the store " + store_id + " at " + (new Date()));
+                    " bought items from the store " + store_id);
 
             LogUtility.info("Sent notifications to owners of store " + store_id);
         }
@@ -178,5 +183,29 @@ public class NotificationController implements Observable
         this.users_messages = new ConcurrentHashMap<>();
         this.real_time_users_messages = new ConcurrentHashMap<>();
         return true;
+    }
+
+    public void loadNotifications()
+    {
+        List<NotificationDAL> notifications = this.manager.getAllNotifications();
+        if(notifications == null)
+            throw new RuntimeException("Could not load notifications from database");
+
+        for(NotificationDAL n : notifications)
+        {
+            String username = n.getId().getUsername();
+            Notification notification_domain = toDomain(n);
+
+            if (!this.users_messages.containsKey(username)) {
+                this.users_messages.put(username, new ArrayList<>());
+            }
+
+            this.users_messages.get(username).add(notification_domain);
+        }
+    }
+
+    private Notification toDomain(NotificationDAL n)
+    {
+        return new Notification(n.getId().getMessage());
     }
 }

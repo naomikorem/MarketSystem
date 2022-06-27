@@ -22,6 +22,7 @@ import UserPurchaseHistory from "./pages/ViewUserPurchaseHistoryAdminPage"
 import StoreHistoryPage from "./pages/StoreHistoryPage"
 import GetSubscriberInfoPage from "./pages/GetSubscriberInfoAdminPage"
 import AddService from "./pages/AddExternalService"
+import StatsCharts from "./pages/StatsCharts";
 import PersonalPurchaseHistoryButton from "./Components/PersonalPurchaseHistoryButton"
 import UserHistoryButton from "./Components/UserHistoryButton"
 import StoreHistoryButton from "./Components/StoreHistoryButton"
@@ -140,6 +141,7 @@ function render() {
               <Route path="/edit-store/:storeid" element={<EditStorePage/>} />
               <Route path="/your-cart" element={<Cart/>} />
               <Route path="/add-admin" element={<AddAdmin/>} />
+              <Route path="/adminStats" element={<StatsCharts/>} />
               <Route path="/*" element={<ErrorPage/>} />
             </Routes>
           </div>

@@ -33,7 +33,11 @@ public abstract class AbstractProxyController<T extends AbstractProxy>
         }
         services.put(name, createProxy(name, url));
         LogUtility.info("Added new external service with the name " + name);
-        manager.addService(toDAL(name, url));
+        if(manager.addService(toDAL(name, url)) == null)
+        {
+            services.remove(name);
+//            throw new RuntimeException("Could not add the service" + name + " to database");
+        };
     }
 
     /***
@@ -52,9 +56,16 @@ public abstract class AbstractProxyController<T extends AbstractProxy>
             LogUtility.error("tried to remove the last external service from this kind in the system");
             throw new IllegalArgumentException("cannot remove the service " + service_name + " because it is the last connection to service in the system from this category.");
         }
+
+        T temp_proxy = services.get(service_name);
         services.remove(service_name);
         LogUtility.info("Removed the external service with the name " + service_name + " from the system");
-        manager.deleteAllServicesByName(service_name);
+        if(!manager.deleteAllServicesByName(service_name))
+        {
+            // return to state when all was good
+            services.put(service_name, temp_proxy);
+            throw new RuntimeException("The service is currently unavailable - No connection to database");
+        }
     }
 
     public synchronized List<String> getAllExternalServicesNames()
