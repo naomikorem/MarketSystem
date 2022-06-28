@@ -128,8 +128,7 @@ public class MarketManagementFacade {
             Set<Store> stores = baskets.stream().map(basket -> this.storeController.getStore(basket.getStoreId())).collect(Collectors.toSet());
             Map<Integer, List<String>> stores_and_owners = stores.stream().collect(Collectors.toMap(Store::getStoreId, Store::getOwners));
             this.notificationController.notifyStoresOwners(stores_and_owners, username);
-            user.emptyShoppingCart();
-
+            emptyShoppingCartAbdBids(user, bids);
             LogUtility.info("Purchase process of shopping cart that the user " + username + " owned ended successfully");
 
             return new Response<>(true);
@@ -137,6 +136,12 @@ public class MarketManagementFacade {
             //throw new IllegalArgumentException(e.getMessage());
             return new Response<>(e.getMessage());
         }
+    }
+
+    private void emptyShoppingCartAbdBids(User user, Collection<Bid> bids) {
+        for( Bid b : bids)
+            storeController.removeBid(b.getStore(), user, b.getId());
+        user.emptyShoppingCart();
     }
 
     /***

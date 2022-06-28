@@ -5,11 +5,8 @@ import DomainLayer.Stats.Stats;
 import DomainLayer.Stores.Category;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
-import DomainLayer.Stores.Item;
-import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
 import DomainLayer.Stores.PurchasePolicy.SimplePurchasePolicy;
-import DomainLayer.Stores.Store;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
@@ -527,6 +524,62 @@ public class Proxy extends Bridge {
         return real.getItemRating(storeId, itemId);
     }
 
+    @Override
+    public Response<Boolean> addBid(int storeId, double bidPrice, int item, int amount) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.addBid( storeId, bidPrice, item, amount);
+    }
+
+    @Override
+    public Response<Boolean> addBidToCart(int bidId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.addBidToCart(bidId);
+    }
+
+    @Override
+    public Response<Collection<Bid>> getBids(int storeId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getBids(storeId);
+    }
+
+    @Override
+    public Response<Collection<Bid>> getUserBids() {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getUserBids();
+    }
+
+    @Override
+    public Response<Bid> approveBid(int storeId, int bidId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.approveBid(storeId, bidId);
+    }
+
+    @Override
+    public Response<Bid> deleteBid(int storeId, int bidId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.deleteBid(storeId, bidId);
+    }
+
+    @Override
+    public Response<Bid> updateBid(int storeId, int bidId, double newPrice) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.updateBid(storeId, bidId, newPrice);
+    }
+    
     @Override
     public Response<List<Map.Entry<LocalDate, Stats>>> getStats() {
         if (this.real == null) {
