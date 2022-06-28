@@ -1116,6 +1116,14 @@ public class SystemImplementor implements SystemInterface {
         }
         return storeFacade.getBids(storeId, user);
     }
+
+    public Response<Collection<OwnerAgreement>> getOAgreements(int storeId) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.getOAgreements(storeId, user);
+    }
+
     @Override
     public Response<Collection<Bid>> getUserBids() {
         if (user == null) {

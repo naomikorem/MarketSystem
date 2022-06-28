@@ -19,7 +19,11 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="98d4c4e5-0288-4ca6-a064-1f371dbb3ac5" name="Default Changelist" comment="" />
+    <list default="true" id="98d4c4e5-0288-4ca6-a064-1f371dbb3ac5" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../ClientFiles/src/Components/EditOwnersAgreement.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ClientFiles/src/Components/ManageOwnersAgreements.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ClientFiles/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../ClientFiles/package-lock.json" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,14 +86,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="main" />
-      <module name="MarketSystem" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="GetUserInfoTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="BidsTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="MarketSystem" />
       <extension name="coverage">
         <pattern>
@@ -98,13 +95,13 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="acceptenceTests" />
-      <option name="MAIN_CLASS_NAME" value="acceptenceTests.GetUserInfoTest" />
+      <option name="MAIN_CLASS_NAME" value="acceptenceTests.BidsTests" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="RatingTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="BidsTests.testNegativeOpenStore" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="MarketSystem" />
       <extension name="coverage">
         <pattern>
@@ -113,13 +110,14 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="acceptenceTests" />
-      <option name="MAIN_CLASS_NAME" value="acceptenceTests.RatingTest" />
-      <option name="TEST_OBJECT" value="class" />
+      <option name="MAIN_CLASS_NAME" value="acceptenceTests.BidsTests" />
+      <option name="METHOD_NAME" value="testNegativeOpenStore" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="StoreDiscountTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="StorePolicyTests.addPoliciesSynchronizedTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="MarketSystem" />
       <extension name="coverage">
         <pattern>
@@ -128,8 +126,23 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="acceptenceTests" />
-      <option name="MAIN_CLASS_NAME" value="acceptenceTests.StoreDiscountTest" />
-      <option name="TEST_OBJECT" value="class" />
+      <option name="MAIN_CLASS_NAME" value="acceptenceTests.StorePolicyTests" />
+      <option name="METHOD_NAME" value="addPoliciesSynchronizedTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="acceptenceTests in MarketSystem" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="MarketSystem" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="acceptenceTests.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="acceptenceTests" />
+      <option name="TEST_OBJECT" value="package" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -137,10 +150,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.Server" />
-        <item itemvalue="JUnit.StoreDiscountTest" />
-        <item itemvalue="Application.main" />
-        <item itemvalue="JUnit.RatingTest" />
-        <item itemvalue="JUnit.GetUserInfoTest" />
+        <item itemvalue="JUnit.BidsTests" />
+        <item itemvalue="JUnit.BidsTests.testNegativeOpenStore" />
+        <item itemvalue="JUnit.StorePolicyTests.addPoliciesSynchronizedTest" />
+        <item itemvalue="JUnit.acceptenceTests in MarketSystem" />
       </list>
     </recent_temporary>
   </component>
@@ -253,14 +266,19 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/acceptenceTests/RatingTest.java</url>
-          <line>51</line>
-          <option name="timeStamp" value="1" />
+          <url>file://$PROJECT_DIR$/src/main/java/acceptenceTests/GetUserInfoTest.java</url>
+          <line>78</line>
+          <option name="timeStamp" value="34" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/DomainLayer/SystemManagement/MarketManagementFacade.java</url>
-          <line>120</line>
-          <option name="timeStamp" value="21" />
+          <url>file://$PROJECT_DIR$/src/main/java/acceptenceTests/StorePolicyTests.java</url>
+          <line>114</line>
+          <option name="timeStamp" value="35" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/acceptenceTests/BidsTests.java</url>
+          <line>113</line>
+          <option name="timeStamp" value="40" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

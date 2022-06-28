@@ -776,8 +776,8 @@ public class Service {
         return res;
     }
 
-    @MessageMapping("/market/bid/addOwnerAgreement")
-    @SendToUser("/topic/bid/addOwnerAgreementResult")
+    @MessageMapping("/market/oa/addOwnerAgreement")
+    @SendToUser("/topic/oa/addOwnerAgreementResult")
     public Response<Boolean> addOwnerAgreement(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
         Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addOwnerAgreement((String) map.get("owner"), (Integer) map.get("store_id"));
         if (res.hadError()) {
@@ -796,8 +796,8 @@ public class Service {
         return new Response<>(new BidDTO(res.getObject()));
     }
 
-    @MessageMapping("/market/bid/deleteOwnerAgreement")
-    @SendToUser("/topic/bid/deleteOwnerAgreementResult")
+    @MessageMapping("/market/oa/deleteOwnerAgreement")
+    @SendToUser("/topic/oa/deleteOwnerAgreementResult")
     public Response<OwnerAgreementDTO> deleteOwnerAgreement(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
         Response<OwnerAgreement> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).deleteAgreement((Integer) map.get("store_id"), (String) map.get("owner_name"));
         if (res.hadError()) {
@@ -814,6 +814,17 @@ public class Service {
         }
         return new Response<>(new BidDTO(res.getObject()));
     }
+
+    @MessageMapping("/market/oa/approveOwnerAgreement")
+    @SendToUser("/topic/oa/approveOwnerAgreementResult")
+    public Response<OwnerAgreementDTO> approveOwnerAgreement(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<OwnerAgreement> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).approveOwnerAgreement((Integer) map.get("store_id"), (String) map.get("owner_name"));
+        if (res.hadError()) {
+            return new Response<>(res.getErrorMessage());
+        }
+        return new Response<>(new OwnerAgreementDTO(res.getObject()));
+    }
+
     @MessageMapping("/market/bid/approveAllBids")
     @SendToUser("/topic/bid/approveAllBidsResult")
     public Response<Boolean> approveAllBids(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
@@ -841,6 +852,16 @@ public class Service {
             return new Response<>(res.getErrorMessage());
         Collection<Bid> bids = res.getObject();
         return new Response<>(bids.stream().map(BidDTO::new).collect(Collectors.toSet()));
+    }
+
+    @MessageMapping("/market/oa/getOwnerAgreements")
+    @SendToUser("/topic/oa/getOwnerAgreementsResult")
+    public Response<Set<OwnerAgreementDTO>> getOwnerAgreements(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<Collection<OwnerAgreement>> res =  ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getOAgreements((Integer) map.get("store_id"));
+        if(res.hadError())
+            return new Response<>(res.getErrorMessage());
+        Collection<OwnerAgreement> bids = res.getObject();
+        return new Response<>(bids.stream().map(OwnerAgreementDTO::new).collect(Collectors.toSet()));
     }
 
     @MessageMapping("/market/bid/getUserBids")

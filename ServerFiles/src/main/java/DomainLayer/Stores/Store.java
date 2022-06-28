@@ -314,6 +314,7 @@ public class Store {
         }
         byte old = p.getPermissionsMask();
         p.setPermissionsMask(permission);
+        checkAllBids();
         try {
             PermissionManager.getInstance().addObject(p.toDAL(getManagerByName(manager)));
         } catch (Exception e) {
@@ -332,9 +333,7 @@ public class Store {
                     throw new IllegalArgumentException(String.format("%s is not a store owner that was set by %s", owner, removedBy));
                 }
                 removeAndRemoveEveryoneAssignedBy(owner);
-                for (Bid b : getBids()) {
-                    b.setApproved(isApproved(b.getId()));
-                }
+                checkAllBids();
             });
         }
     }
@@ -359,9 +358,7 @@ public class Store {
                         }
                         managers.remove(manager);
                         manager.removedManagedStore(getStoreId());
-                        for (Bid b : getBids()) {
-                            b.setApproved(isApproved(b.getId()));
-                        }
+                        checkAllBids();
                         LogUtility.info("Store manager " + manager.getName() + " was removed from position by " + removedBy);
                     }
             );
@@ -606,7 +603,6 @@ public class Store {
         res.setPermanentlyClosed(permanentlyClosed);
         res.setDiscount(discountPolicy != null ? (CompositeDiscountDAL) discountPolicy.toDAL() : null);
         res.setPurchase(purchasePolicy != null ? (CompositePurchasePolicyDAL) purchasePolicy.toDAL() : null);
-
         Map<ItemDAL, Integer> items = new HashMap<>();
         getItems().forEach((k, v) -> items.put(k.toDAL(), v));
         res.setItems(items);
@@ -649,6 +645,12 @@ public class Store {
             this.bids = copy.bids;
             this.oAgreement = copy.oAgreement;
             throw e;
+        }
+    }
+
+    private void checkAllBids() {
+        for (Bid b : getBids()) {
+            b.setApproved(isApproved(b.getId()));
         }
     }
 }

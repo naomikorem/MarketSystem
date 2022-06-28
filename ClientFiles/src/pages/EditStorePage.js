@@ -17,6 +17,7 @@ import AddDiscountPopup from "../Components/AddDiscountPopup";
 import ManageDiscountsPopup from "../Components/ManageDiscountsPopup";
 import ManagePoliciesPopup from "../Components/ManagePoliciesPopup";
 import ManageBidsPopup from "../Components/ManageBidsPopup";
+import ManageOwnersAgreements from "../Components/ManageOwnersAgreements";
 
 function StoreToClose(props) {
     let [modalOpen, setModalOpen] = useState(false);
@@ -135,6 +136,7 @@ class EditStorePage extends Component {
                             </div>
                             <div className="editStoreButtons">
                                 <ManagersPopup managers={this.state.store.managers} storeId={this.state.store.id}/>
+                                <ManageOwnersAgreements storeId={this.state.store.id}/>
                                 <OwnersPopup owners={this.state.store.owners} storeId={this.state.store.id}/>
                                 <InventoryPopup storeId={this.state.store.id}/>
                                 <Link state={{ storeName: this.state.store.name }} to={`/store-purchase-history/${this.state.store.id}`}>
