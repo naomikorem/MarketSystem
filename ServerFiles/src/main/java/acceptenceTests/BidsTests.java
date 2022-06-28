@@ -121,8 +121,14 @@ public class BidsTests extends AbstractTest {
     }
 
     @Test
-    public void testNegativeOpenStore() {
+    public void testNegativeNoStoreBids() {
+        assertTrue(bridge.addBid(-1, 1, 1, 1).hadError());
+        assertTrue(bridge.updateBid(-1, 1, 1).hadError());
+    }
 
+    @Test
+    public void testUpdateNonexistentBid() {
+        assertTrue(bridge.updateBid(store.getStoreId(), -1, 1).hadError());
     }
 
 }
