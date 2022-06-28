@@ -1,11 +1,13 @@
 package DataLayer;
 
 import DataLayer.DALObjects.ServiceDAL;
+import ServiceLayer.Server;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ServicesManager extends DALManager<ServiceDAL, Integer>
@@ -30,6 +32,9 @@ public class ServicesManager extends DALManager<ServiceDAL, Integer>
 
     public List<ServiceDAL> getServicesByName(String service_name)
     {
+        if (!Server.useDB) {
+            return new ArrayList<>();
+        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
@@ -42,34 +47,25 @@ public class ServicesManager extends DALManager<ServiceDAL, Integer>
             return services_by_name;
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            e.printStackTrace();
+            throw new RuntimeException("The service is currently unavailable - No connection to database");
         } finally {
             session.close();
         }
-        return null;
     }
 
     public List<ServiceDAL> getAllServices()
     {
-        Session session = DatabaseConnection.getSession();
-        Transaction tx = null;
-
-        try {
-            tx = session.beginTransaction();
-            List<ServiceDAL> services = session.createQuery(new String("from ServiceDAL"), ServiceDAL.class).list();
-            tx.commit();
-            return services;
-        } catch (HibernateException e) {
-            if (tx!=null) tx.rollback();
-            e.printStackTrace();
-        } finally {
-            session.close();
+        if (!Server.useDB) {
+            return new ArrayList<>();
         }
-        return null;
+        return super.getAllObjects();
     }
 
     public List<ServiceDAL> getAllServicesByType(ServiceType service_type)
     {
+        if (!Server.useDB) {
+            return new ArrayList<>();
+        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
@@ -82,11 +78,10 @@ public class ServicesManager extends DALManager<ServiceDAL, Integer>
             return services_by_type;
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            e.printStackTrace();
+            throw new RuntimeException("The service is currently unavailable - No connection to database");
         } finally {
             session.close();
         }
-        return null;
     }
 
     public List<ServiceDAL> getAllPurchaseServices()
@@ -101,6 +96,9 @@ public class ServicesManager extends DALManager<ServiceDAL, Integer>
 
     public boolean deleteAllServicesByName(String service_name)
     {
+        if (!Server.useDB) {
+            return true;
+        }
         Session session = DatabaseConnection.getSession();
         Transaction tx = null;
 
@@ -116,8 +114,7 @@ public class ServicesManager extends DALManager<ServiceDAL, Integer>
             tx.commit();
         } catch (HibernateException e) {
             if (tx!=null) tx.rollback();
-            e.printStackTrace();
-            return false;
+            throw new RuntimeException("The service is currently unavailable - No connection to database");
         } finally {
             session.close();
         }
@@ -126,20 +123,9 @@ public class ServicesManager extends DALManager<ServiceDAL, Integer>
 
     public boolean clearServices()
     {
-        Session session = DatabaseConnection.getSession();
-        Transaction tx = null;
-
-        try {
-            tx = session.beginTransaction();
-            session.createQuery(new String("delete from ServiceDAL")).executeUpdate();
-            tx.commit();
-        } catch (HibernateException e) {
-            if (tx!=null) tx.rollback();
-            e.printStackTrace();
-            return false;
-        } finally {
-            session.close();
+        if (!Server.useDB) {
+            return true;
         }
-        return true;
+        return super.clearTable();
     }
 }

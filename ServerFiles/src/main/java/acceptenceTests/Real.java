@@ -1,7 +1,8 @@
 package acceptenceTests;
 
 import DomainLayer.Response;
-import DomainLayer.Stores.*;
+import DomainLayer.Stats.Stats;
+import DomainLayer.Stores.Category;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
@@ -16,6 +17,7 @@ import DomainLayer.Users.User;
 import ServiceLayer.DTOs.PaymentParamsDTO;
 import ServiceLayer.DTOs.SupplyParamsDTO;
 
+import java.time.LocalDate;
 import java.util.*;
 
 public class Real extends Bridge {
@@ -97,6 +99,11 @@ public class Real extends Bridge {
     @Override
     public Response<Collection<Store>> getStores() {
         return adaptee.getAllStores();
+    }
+
+    @Override
+    public Response<Collection<Store>> getUsersStores() {
+        return adaptee.getUsersStores();
     }
 
     @Override
@@ -241,6 +248,11 @@ public class Real extends Bridge {
     }
 
     @Override
+    public Response<Boolean> isLoggedInAdminCheck() {
+        return this.adaptee.isLoggedInAdminCheck();
+    }
+
+    @Override
     public Response<Boolean> removeManager(String toRemove, int storeId) {
         return this.adaptee.removeManager(toRemove, storeId);
     }
@@ -368,5 +380,9 @@ public class Real extends Bridge {
     @Override
     public Response<Bid> updateBid(int storeId, int bidId, double newPrice) {
         return adaptee.updateBid(storeId, bidId, newPrice);
+    }
+    @Override
+    public Response<List<Map.Entry<LocalDate, Stats>>> getStats() {
+        return adaptee.getStats();
     }
 }

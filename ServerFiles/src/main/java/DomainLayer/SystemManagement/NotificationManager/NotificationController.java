@@ -46,8 +46,12 @@ public class NotificationController implements Observable
             if (!this.users_messages.containsKey(username)) {
                 this.users_messages.put(username, new ArrayList<>());
             }
-            this.users_messages.get(username).add(new Notification(message));
-            this.manager.addNotification(toDAL(username, message));
+            Notification notification = new Notification(message + " at " + (new Date()));
+            this.users_messages.get(username).add(notification);
+            if(!this.manager.addNotification(toDAL(username, message)))
+            {
+                this.users_messages.get(username).remove(notification);
+            }
             LogUtility.info("Added notification to user " + username);
         }
         return true;
@@ -61,7 +65,7 @@ public class NotificationController implements Observable
 
     private boolean addRealTimeNotification(Observer user, String msg) {
         addNotification(user.getName(), msg);
-        user.sendNotification(new Notification(msg));
+        user.sendNotification(new Notification(msg + " at " + (new Date())));
 
         return true;
     }
@@ -112,7 +116,7 @@ public class NotificationController implements Observable
             int store_id = entry.getKey();
             List<String> owners = entry.getValue();
             notifyUsers(owners, "The user " + username +
-                    " bought items from the store " + store_id + " at " + (new Date()));
+                    " bought items from the store " + store_id);
 
             LogUtility.info("Sent notifications to owners of store " + store_id);
         }
@@ -173,6 +177,9 @@ public class NotificationController implements Observable
     public void loadNotifications()
     {
         List<NotificationDAL> notifications = this.manager.getAllNotifications();
+        if(notifications == null)
+            throw new RuntimeException("Could not load notifications from database");
+
         for(NotificationDAL n : notifications)
         {
             String username = n.getId().getUsername();

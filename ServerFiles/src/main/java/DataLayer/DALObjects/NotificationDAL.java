@@ -14,7 +14,7 @@ public class NotificationDAL /*implements DALObject<NotificationsKey>*/
     @EmbeddedId
     NotificationsKey id;
 
-//    private String username;
+    //    private String username;
    // private String message;
 
     public NotificationDAL(NotificationsKey id)

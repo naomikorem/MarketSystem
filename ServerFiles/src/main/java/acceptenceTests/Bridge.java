@@ -1,7 +1,8 @@
 package acceptenceTests;
 
 import DomainLayer.Response;
-import DomainLayer.Stores.*;
+import DomainLayer.Stats.Stats;
+import DomainLayer.Stores.Category;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
@@ -14,6 +15,7 @@ import DomainLayer.Users.User;
 import ServiceLayer.DTOs.PaymentParamsDTO;
 import ServiceLayer.DTOs.SupplyParamsDTO;
 
+import java.time.LocalDate;
 import java.util.*;
 
 public abstract class Bridge {
@@ -51,7 +53,9 @@ public abstract class Bridge {
 
     //Acceptance Tests for use case 2:
     public abstract Response<Collection<Store>> getStores();
-
+    
+    public abstract Response<Collection<Store>> getUsersStores();
+    
     public abstract Response<Store> getStoreInformation(int storeID);
 
     public abstract Response<Map<Item, Integer>> getItems(int storeId);
@@ -110,6 +114,8 @@ public abstract class Bridge {
 
     // Use case 6
     public abstract Response<User> getUser(String userName);
+
+    public abstract Response<Boolean> isLoggedInAdminCheck();
 
     public abstract Response<Boolean> removeManager(String toRemove, int storeId);
 
@@ -177,4 +183,6 @@ public abstract class Bridge {
 
 
     */
+
+    public abstract Response<List<Map.Entry<LocalDate, Stats>>> getStats();
 }

@@ -62,12 +62,14 @@ public class NotificationControllerTest extends AbstractTest {
         List<INotification> user2_notifications = notificationController.getUserNotifications(username2);
         assertEquals(1, user2_notifications.size());
 
-        notificationController.removeUserNotifications(username1);
+        //notificationController.removeUserNotifications(username1);
 
         assertThrows(IllegalArgumentException.class, () -> notificationController.getUserNotifications(username1));
 
-        user2_notifications = notificationController.getUserNotifications(username2);
-        assertEquals(1, user2_notifications.size());
+        //user2_notifications = notificationController.getUserNotifications(username2);
+        //assertEquals(1, user2_notifications.size());
+
+        assertThrows(IllegalArgumentException.class, () -> notificationController.getUserNotifications(username2));
     }
 
     @Test
