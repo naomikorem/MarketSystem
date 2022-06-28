@@ -2,6 +2,7 @@ package acceptenceTests;
 
 import DomainLayer.Response;
 import DomainLayer.Stats.Stats;
+import DomainLayer.Stores.*;
 import DomainLayer.Stores.Category;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
