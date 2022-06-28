@@ -1,6 +1,6 @@
 import React, {Component, useState} from "react";
 import {useParams} from "react-router-dom";
-import {stompClient, connectedPromise} from "../App";
+import {stompClient, connectedPromise, user} from "../App";
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import FormLabel from 'react-bootstrap/FormLabel'
@@ -43,8 +43,10 @@ class EditBidPopup extends Component {
             this.state.error = res.errorMessage
             this.setState({[this.state.error]: this.state.error});
             if (!res.errorMessage) {
+                this.state.bid.approvedManagers.push(user.userName);
+                this.setState({[this.state.bid.approvedManagers]: this.state.bid.approvedManagers});
                 stompClient.send("/app/market/bid/getBids", {}, JSON.stringify({"store_id" : this.props.bid.store}));
-                this.handleClose();
+                //this.handleClose();
             }
         });
         stompClient.subscribe('/user/topic/bid/updateBidResult', (r) => {
@@ -131,15 +133,19 @@ class EditBidPopup extends Component {
                     </Modal.Body>
                     <Modal.Footer>
                         <ResultLabel text={this.state.error} hadError={this.state.error != null}/>
-                        <Button variant="primary" onClick={this.handleSave}>
-                            Update
-                        </Button>
-                        <Button variant="primary" onClick={this.handleAccept}>
-                            Accept
-                        </Button>
-                        <Button variant="primary" onClick={this.handleReject}>
-                            Reject
-                        </Button>
+                        {!this.state.bid.approvedManagers.includes(user.userName) ?
+                            <div>
+                                <Button variant="primary" onClick={this.handleSave}>
+                                    Update
+                                </Button>
+                                <Button variant="primary" onClick={this.handleAccept}>
+                                    Accept
+                                </Button>
+                                <Button variant="primary" onClick={this.handleReject}>
+                                    Reject
+                                </Button>
+                            </div>:<></>
+                        }
                         <Button variant="secondary" onClick={this.handleClose}>
                             Close
                         </Button>

@@ -117,6 +117,7 @@ class EditStorePage extends Component {
             }
         });
 
+
         stompClient.send("/app/market/getStoreInfo", {}, JSON.stringify({"id": this.props.storeid}));
     }
 
@@ -147,6 +148,7 @@ class EditStorePage extends Component {
                                 <ManageDiscountsPopup storeId={this.state.store.id}/>
 
                                 <ManagePoliciesPopup storeId={this.state.store.id}/>
+
                                 <ManageBidsPopup storeId={this.state.store.id}/>
 
                                 { this.state.store.isOpen && !this.state.store.permanentlyClosed ?

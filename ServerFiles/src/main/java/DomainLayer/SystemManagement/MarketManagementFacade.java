@@ -122,13 +122,12 @@ public class MarketManagementFacade {
                 LogUtility.error("The user " + username + " couldn't pay to the purchase services.");
                 return new Response<>("The purchase process canceled - couldn't contact the purchase service.");
             }
-
+            emptyShoppingCartAbdBids(user, bids);
             PurchaseProcess.addToHistory(username, baskets);
 
             Set<Store> stores = baskets.stream().map(basket -> this.storeController.getStore(basket.getStoreId())).collect(Collectors.toSet());
             Map<Integer, List<String>> stores_and_owners = stores.stream().collect(Collectors.toMap(Store::getStoreId, Store::getOwners));
             this.notificationController.notifyStoresOwners(stores_and_owners, username);
-            emptyShoppingCartAbdBids(user, bids);
             LogUtility.info("Purchase process of shopping cart that the user " + username + " owned ended successfully");
 
             return new Response<>(true);

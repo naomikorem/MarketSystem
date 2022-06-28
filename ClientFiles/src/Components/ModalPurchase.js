@@ -56,7 +56,8 @@ class ModalPurchase extends Component {
             this.state.message  = res.errorMessage ? res.errorMessage : "Purchase completed successfully!";
             this.state.hadError = res.errorMessage !== null;
             this.setState({[this.state.hadError]: this.state.hadError, [this.state.message]: this.state.message});
-
+            stompClient.send("/app/market/cart/getCart", {}, JSON.stringify({}));
+            stompClient.send("/app/market/bid/getUserBids", {}, JSON.stringify({}));
             if (!res.errorMessage) {
                 this.props.onPurchase();
                 handleClose();
