@@ -21,8 +21,8 @@ import static org.junit.Assert.assertTrue;
 
 public class FailInitializationFileTests extends AbstractTest
 {
-    private final String bad_init_file = Server.BAD_INIT_FILE_PATH;
-    private Parser bad_file_parser;
+    private final String bad_init_file = Server.BAD_INIT_FILE_PATH, non_existing_init_file = "non_existing_init_file.txt";
+    private Parser bad_file_parser, non_existing_file_parser;
     private final String username1 = "user1", pass1 = "pass1";
     private String username2 = "user2", pass2 = "pass2";
     private String username3 = "user3", pass3 = "pass3";
@@ -35,13 +35,8 @@ public class FailInitializationFileTests extends AbstractTest
         this.bridge.enter();
         bad_file_parser = new Parser(bad_init_file);
         bad_file_parser.runCommands();
-//        bad_file_parser.clean();
-//        this.bridge.login(username2, pass2);
-//        Response<Collection<Store>> stores = this.bridge.getUsersStores();
-//        this.bridge.logout();
-//        s_store = stores.getObject().stream().collect(Collectors.toList()).get(0);
-//        assertFalse(stores.hadError());
-//        assertEquals(stores.getObject().size(), 1);
+        non_existing_file_parser = new Parser(non_existing_init_file);
+        non_existing_file_parser.runCommands();
     }
 
     @Test
