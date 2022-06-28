@@ -775,6 +775,17 @@ public class Service {
         }
         return res;
     }
+
+    @MessageMapping("/market/bid/addOwnerAgreement")
+    @SendToUser("/topic/bid/addOwnerAgreementResult")
+    public Response<Boolean> addOwnerAgreement(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addOwnerAgreement((String) map.get("owner"), (Integer) map.get("store_id"));
+        if (res.hadError()) {
+            return new Response<>(res.getErrorMessage());
+        }
+        return res;
+    }
+
     @MessageMapping("/market/bid/deleteBid")
     @SendToUser("/topic/bid/deleteBidResult")
     public Response<BidDTO> deleteBid(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
@@ -783,6 +794,16 @@ public class Service {
             return new Response<>(res.getErrorMessage());
         }
         return new Response<>(new BidDTO(res.getObject()));
+    }
+
+    @MessageMapping("/market/bid/deleteOwnerAgreement")
+    @SendToUser("/topic/bid/deleteOwnerAgreementResult")
+    public Response<OwnerAgreementDTO> deleteOwnerAgreement(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<OwnerAgreement> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).deleteAgreement((Integer) map.get("store_id"), (String) map.get("owner_name"));
+        if (res.hadError()) {
+            return new Response<>(res.getErrorMessage());
+        }
+        return new Response<>(new OwnerAgreementDTO(res.getObject()));
     }
     @MessageMapping("/market/bid/approveBid")
     @SendToUser("/topic/bid/approveBidResult")

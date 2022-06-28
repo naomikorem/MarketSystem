@@ -332,6 +332,9 @@ public class Store {
                     throw new IllegalArgumentException(String.format("%s is not a store owner that was set by %s", owner, removedBy));
                 }
                 removeAndRemoveEveryoneAssignedBy(owner);
+                for (Bid b : getBids()) {
+                    b.setApproved(isApproved(b.getId()));
+                }
             });
         }
     }
@@ -356,6 +359,9 @@ public class Store {
                         }
                         managers.remove(manager);
                         manager.removedManagedStore(getStoreId());
+                        for (Bid b : getBids()) {
+                            b.setApproved(isApproved(b.getId()));
+                        }
                         LogUtility.info("Store manager " + manager.getName() + " was removed from position by " + removedBy);
                     }
             );
@@ -560,8 +566,8 @@ public class Store {
             throw new IllegalArgumentException(String.format("Bid is not in store %s", id));
         return bid;
     }
-    public OwnerAgreement getOrThrowOAgreement(int id) {
-        OwnerAgreement ownerAgreement = oAgreement.get(id);
+    public OwnerAgreement getOrThrowOAgreement(String name) {
+        OwnerAgreement ownerAgreement = oAgreement.get(name);
         if (ownerAgreement == null)
             throw new IllegalArgumentException(String.format("owner Agreement is not in store %s", id));
         return ownerAgreement;
@@ -572,7 +578,7 @@ public class Store {
         List<String> owners = this.owners.keySet().stream().map(User::getName).collect(Collectors.toList());
         return bids.get(bidId).approvedManagers.containsAll(managers) && bids.get(bidId).approvedManagers.containsAll(owners);
     }
-    public boolean isApprovedOA(int oaId) {
+    public boolean isApprovedOA(String oaId) {
         return oAgreement.get(oaId).getApproved();
     }
 
@@ -583,11 +589,11 @@ public class Store {
         bids.remove(bidId);
         return bid;
     }
-    public OwnerAgreement removeOA(int oaId) {
-        OwnerAgreement ownerAgreement = oAgreement.get(oaId);
+    public OwnerAgreement removeOA(String name) {
+        OwnerAgreement ownerAgreement = oAgreement.get(name);
         if (ownerAgreement == null)
             throw new IllegalArgumentException(String.format("Owners Agreement is not in store %s", id));
-        oAgreement.remove(oaId);
+        oAgreement.remove(name);
         return ownerAgreement;
     }
 

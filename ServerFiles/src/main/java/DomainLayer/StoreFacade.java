@@ -40,9 +40,17 @@ public class StoreFacade {
         }
     }
 
-    public Response<Boolean> addOwner(User owner, User newOwner, int storeId) {
+    public Response<Boolean> addOwnerAgreement(User owner, User newOwner, int storeId) {
         try {
             storeController.addOAgreement(storeId, newOwner, owner.getName());
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+    public Response<Boolean> addOwner(User owner, User newOwner, int storeId) {
+        try {
+            storeController.addOwner(owner.getName(),newOwner,storeId);
             return new Response<>(true);
         } catch (Exception e) {
             return new Response<>(e.getMessage());
@@ -491,9 +499,9 @@ public class StoreFacade {
             return new Response<>(e.getMessage());
         }
     }
-    public Response<OwnerAgreement> approveOAgreement(int storeId, User user, int bidId) {
+    public Response<OwnerAgreement> approveOAgreement(int storeId, User user, String name) {
         try {
-            return new Response<>(storeController.approveOAgreement(storeId, user, bidId));
+            return new Response<>(storeController.approveOAgreement(storeId, user, name));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
@@ -506,9 +514,9 @@ public class StoreFacade {
             return new Response<>(e.getMessage());
         }
     }
-    public Response<OwnerAgreement> removeOAgreement(int storeId, User user, int oaId){
+    public Response<OwnerAgreement> removeOAgreement(int storeId, User user, String name){
         try {
-            return new Response<>(storeController.removeOAgreement(storeId, user, oaId));
+            return new Response<>(storeController.removeOAgreement(storeId, user, name));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }

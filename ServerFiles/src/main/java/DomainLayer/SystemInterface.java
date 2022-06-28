@@ -168,4 +168,7 @@ public interface SystemInterface {
     public Response<Boolean> isLoggedInAdminCheck();
 
     Response<List<Map.Entry<LocalDate, Stats>>> getStats();
-}
+    public Response<Boolean> addOwnerAgreement(String owner, int storeId);
+
+
+    }

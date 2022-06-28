@@ -226,7 +226,7 @@ public class StoreController {
         return true;
     }
 
-    private boolean addOwner(String owner, User newOwner, int storeId) {
+    public boolean addOwner(String owner, User newOwner, int storeId) {
         if (owner == null || newOwner == null) {
             throw new IllegalArgumentException("A user cannot be null.");
         }
@@ -659,7 +659,7 @@ public class StoreController {
         }
         return bid;
     }
-    public OwnerAgreement approveOAgreement(int storeId, User user, int oaId) {
+    public OwnerAgreement approveOAgreement(int storeId, User user, String oaId) {
         Store s = getStoreAndThrow(storeId);
         if (!s.isOwner(user))
             throw new IllegalArgumentException(String.format("Have to be owner in store %s", storeId));
@@ -685,12 +685,12 @@ public class StoreController {
     }
 
 
-    public OwnerAgreement removeOAgreement(int storeId, User user, int oaId) {
+    public OwnerAgreement removeOAgreement(int storeId, User user, String Name) {
         Store s = getStoreAndThrow(storeId);
-        OwnerAgreement ownerAgreement = s.getOrThrowOAgreement(oaId);
+        OwnerAgreement ownerAgreement = s.getOrThrowOAgreement(Name);
         if (!s.isOwner(user))
             throw new IllegalArgumentException(String.format("Have to be an owner in store %s", storeId));
-        return s.removeOA(oaId);
+        return s.removeOA(Name);
     }
     public Bid removeBid(int storeId, User user, int bidId) {
         Store s = getStoreAndThrow(storeId);
