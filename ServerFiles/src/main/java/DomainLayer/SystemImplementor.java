@@ -146,7 +146,7 @@ public class SystemImplementor implements SystemInterface {
         }
         User current = this.user;
         Response<Boolean> res = userFacade.logout(user.getName());
-        if (res.getObject()) {
+        if (!res.hadError() && res.getObject()) {
             User oldUser = this.user;
             this.user = new User(new GuestState());
             setSession(oldUser.getSessionId(), oldUser.getTemplate());

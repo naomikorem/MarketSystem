@@ -87,7 +87,7 @@ public class PurchaseHistoryTests extends AbstractTest
         this.bridge.login(regular_username1, "password");
         this.bridge.addItemToCart(store1_id, item1_id, 1);
         this.bridge.addItemToCart(store1_id, item2_id, 2);
-        this.bridge.purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
+        Response r = this.bridge.purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
         this.bridge.logout();
 
         this.bridge.login(regular_username2, "password");
