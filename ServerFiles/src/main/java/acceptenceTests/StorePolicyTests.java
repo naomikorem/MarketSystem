@@ -105,12 +105,11 @@ public class StorePolicyTests extends AbstractTest {
 
             assertFalse(bridge.addItemToCart(s.getStoreId(), i1.getId(), 1).hadError());
             Response<Boolean> res = bridge.getIsLegalToPurchase(s.getStoreId());
-            assertFalse(res.hadError());
+            assertTrue(res.hadError());
 
             Response<Boolean> result = bridge.removePolicy(s.getStoreId(), r1.getObject().getId());
             assertFalse(result.hadError());
             assertTrue(result.getObject());
-            assertFalse(res.getObject());
         } catch (Exception e) {
             fail();
         }
@@ -136,8 +135,7 @@ public class StorePolicyTests extends AbstractTest {
             t2.join();
             assertFalse(bridge.addItemToCart(s.getStoreId(), i1.getId(), 1).hadError());
             Response<Boolean> res = bridge.getIsLegalToPurchase(s.getStoreId());
-            assertFalse(res.hadError());
-            assertFalse(res.getObject());
+            assertTrue(res.hadError());
         } catch (Exception e) {
             fail();
         }

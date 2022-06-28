@@ -152,7 +152,7 @@ public class User implements Observer {
 
     public void emptyShoppingCart() {
         this.shoppingCart.emptyShoppingCart();
-        this.shoppingCart.emptyBids();
+        this.shoppingCart.emptyBidsInCart();
     }
 
     public String getFirstName() {

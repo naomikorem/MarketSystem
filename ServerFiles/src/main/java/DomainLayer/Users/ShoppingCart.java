@@ -63,7 +63,10 @@ public class ShoppingCart {
     public void emptyShoppingCart() {
         this.shoppingBaskets = new HashMap<>();
     }
-    public void emptyBids() {
-        this.bids = new HashMap<>();
+    public void emptyBidsInCart() {
+        for( Bid b : this.bids.values()){
+            if(b.isInCart())
+                bids.remove(b.getId());
+        }
     }
 }

@@ -83,9 +83,9 @@ public class UserController {
     }
 
     public void addUser(User u) {
-        if (!users.containsKey(u.getName().toLowerCase())) {
+        if (!users.containsKey(u.getName())) {
             synchronized (lock) {
-                users.put(u.getName().toLowerCase(), u);
+                users.put(u.getName(), u);
             }
         }
     }
@@ -110,7 +110,6 @@ public class UserController {
     }
 
     public User getUser(String name) {
-        name = name.toLowerCase();
         synchronized (lock)
         {
             if (isExist(name))
@@ -123,7 +122,6 @@ public class UserController {
     }
 
     public synchronized void loadUser(String name) {
-        name = name.toLowerCase();
         if (!users.containsKey(name)) {
             UserDAL dal = UserManager.getInstance().getObject(name);
             if (dal != null) {
@@ -134,7 +132,6 @@ public class UserController {
     }
 
     public boolean isExist(String name) {
-        name = name.toLowerCase();
         loadUser(name);
         return users.containsKey(name);
     }
@@ -144,7 +141,7 @@ public class UserController {
     }
 
     private void addLoggedUser(String name) {
-        this.loggedUsers.add(name.toLowerCase());
+        this.loggedUsers.add(name);
     }
 
     private void removedLoggedUser(String name) {
@@ -208,7 +205,6 @@ public class UserController {
 
     public void setUserName(User user, String newName) {
         if (user.isSubscribed()) {
-            newName = newName.toLowerCase();
             synchronized (lock) {
                 if (isExist(newName)) {
                     throw new IllegalArgumentException("The new user name is not unique, already exists in the system");

@@ -173,14 +173,14 @@ public class NotificationsTests extends AbstractTest
         Response<List<INotification>> user2_notifications = bridge.getUserNotifications();
         assertFalse(user2_notifications.hadError());
         assertEquals(user2_notifications.getObject().size(), 1);
-        assertEquals(user2_notifications.getObject().get(0).getMessage(), String.format("You were removed as an owner of store %s", store.getStoreId()));
+        assertTrue(user2_notifications.getObject().get(0).getMessage().contains("You were removed as an owner of store"));
         bridge.logout();
 
         bridge.login("user3", "pass");
         Response<List<INotification>> user3_notifications = bridge.getUserNotifications();
         assertFalse(user3_notifications.hadError());
         assertEquals(user3_notifications.getObject().size(), 1);
-        assertEquals(user3_notifications.getObject().get(0).getMessage(), String.format("You were removed as a manager of store %s", store.getStoreId()));
+        assertTrue(user3_notifications.getObject().get(0).getMessage().contains("You were removed as a manager of store"));
         bridge.logout();
     }
 
@@ -194,14 +194,14 @@ public class NotificationsTests extends AbstractTest
         Response<List<INotification>> user2_notifications = bridge.getUserNotifications();
         assertFalse(user2_notifications.hadError());
         assertEquals(user2_notifications.getObject().size(), 1);
-        assertEquals(user2_notifications.getObject().get(0).getMessage(), String.format("The store %s that is owned by you was shut down", store.getStoreId()));
+        assertTrue(user2_notifications.getObject().get(0).getMessage().contains("that is owned by you was shut down"));
         bridge.logout();
 
         bridge.login("user3", "pass");
         Response<List<INotification>> user3_notifications = bridge.getUserNotifications();
         assertFalse(user3_notifications.hadError());
         assertEquals(user3_notifications.getObject().size(), 1);
-        assertEquals(user3_notifications.getObject().get(0).getMessage(), String.format("The store %s that is managed by you was shut down", store.getStoreId()));
+        assertTrue(user3_notifications.getObject().get(0).getMessage().contains("that is managed by you was shut down"));
         bridge.logout();
     }
 

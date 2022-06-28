@@ -50,7 +50,7 @@ public class BidsTests extends AbstractTest {
         i2 = bridge.addItemToStore(store.getStoreId(), "Item2", Category.Food, 100, 10).getObject();
         i3 = bridge.addItemToStore(store.getStoreId(), "Item3", Category.Food, 100, 10).getObject();
         paymentParamsDTO = new PaymentParamsDTO(
-                AbstractProxy.GOOD_STUB_NAME,
+                AbstractProxy.WSEP_PAYMENT,
                 "1111111111111111",
                 "05",
                 "21",
@@ -59,7 +59,7 @@ public class BidsTests extends AbstractTest {
                 "15");
 
         supplyParamsDTO = new SupplyParamsDTO(
-                AbstractProxy.WSEP_PAYMENT,
+                AbstractProxy.WSEP_SUPPLY,
                 "user",
                 "user address",
                 "bear shava",
@@ -111,16 +111,13 @@ public class BidsTests extends AbstractTest {
         assertEquals(1, store_bids.size());
         assertEquals(1, user_bids.size());
 
-        this.bridge.deleteBid(store.getStoreId(),2);
+        this.bridge.deleteBid(store.getStoreId(),second.getId());
         store_bids = bridge.getBids(store.getStoreId()).getObject();
         user_bids = bridge.getUserBids().getObject();
         assertTrue( store_bids.isEmpty());
         assertTrue( user_bids.isEmpty());
 
         assertTrue(bridge.getUserBids().getObject().isEmpty());
-
-        Store s = new Store(user, "Use", 3);
-        assertNull(StoreController.getInstance().getStore(s.getStoreId()));
     }
 
     @Test

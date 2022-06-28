@@ -138,8 +138,10 @@ public class MarketManagementFacade {
     }
 
     private void emptyShoppingCartAbdBids(User user, Collection<Bid> bids) {
-        for( Bid b : bids)
-            storeController.removeBid(b.getStore(), user, b.getId());
+        for( Bid b : bids){
+            if(b.isInCart())
+                storeController.removeBid(b.getStore(), user, b.getId());
+        }
         user.emptyShoppingCart();
     }
 
