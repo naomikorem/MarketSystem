@@ -29,11 +29,6 @@ public class Bid {
         this.inCart = false;
     }
 
-    public void setBidPrice(Double bidPrice) {
-        this.approvedManagers.clear();
-        this.bidPrice = bidPrice;
-    }
-
     public Boolean isInCart() {
         return inCart;
     }

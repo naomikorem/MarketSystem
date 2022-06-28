@@ -181,7 +181,16 @@ public class SystemImplementor implements SystemInterface {
             if (!userFacade.isExist(owner)) {
                 throw new IllegalArgumentException(String.format("There is no user by the name of %s", owner));
             }
-            return storeFacade.addOwner(user, userFacade.getUser(owner).getObject(), storeId);
+            Response<Boolean> res = storeFacade.addOwner(user, userFacade.getUser(owner).getObject(), storeId);
+            Response<Store> store_response = storeFacade.getStore(storeId);
+            if(store_response.hadError())
+                return new Response<>(store_response.getErrorMessage());
+            Store  store  = store_response.getObject();
+            Response<Boolean> notify_owners_response = marketManagementFacade.notifyUsers(store.getOwners(), String.format("The is  in your store %s",  store.getName()));
+            if (notify_owners_response.hadError() || !notify_owners_response.getObject()) {
+                return notify_owners_response;
+            }
+            return res;
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
@@ -1074,6 +1083,7 @@ public class SystemImplementor implements SystemInterface {
         }
         return new Response<>(true);
     }
+
     public Response<Boolean> addBidToCart(int bidId){
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
