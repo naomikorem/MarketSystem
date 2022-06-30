@@ -382,8 +382,24 @@ public class Real extends Bridge {
     public Response<Bid> updateBid(int storeId, int bidId, double newPrice) {
         return adaptee.updateBid(storeId, bidId, newPrice);
     }
+
+    @Override
+    public Response<Boolean> approveAllBids(int storeId) {
+        return adaptee.approveAllBids(storeId);
+    }
+
     @Override
     public Response<List<Map.Entry<LocalDate, Stats>>> getStats() {
         return adaptee.getStats();
+    }
+
+    @Override
+    public Response<Boolean> addOwnerAgreement(String owner, int storeId) {
+        return adaptee.addOwnerAgreement(owner, storeId);
+    }
+
+    @Override
+    public Response<OwnerAgreement> approveOwnerAgreement(int storeId, String bidId) {
+        return adaptee.approveOwnerAgreement(storeId, bidId);
     }
 }

@@ -314,7 +314,7 @@ public class Store {
         }
         byte old = p.getPermissionsMask();
         p.setPermissionsMask(permission);
-        checkAllBids();
+        checkAllAgreements("");
         try {
             PermissionManager.getInstance().addObject(p.toDAL(getManagerByName(manager)));
         } catch (Exception e) {
@@ -333,7 +333,7 @@ public class Store {
                     throw new IllegalArgumentException(String.format("%s is not a store owner that was set by %s", owner, removedBy));
                 }
                 removeAndRemoveEveryoneAssignedBy(owner);
-                checkAllBids();
+                checkAllAgreements(owner.getName());
             });
         }
     }
@@ -358,7 +358,7 @@ public class Store {
                         }
                         managers.remove(manager);
                         manager.removedManagedStore(getStoreId());
-                        checkAllBids();
+                        checkAllAgreements("");
                         LogUtility.info("Store manager " + manager.getName() + " was removed from position by " + removedBy);
                     }
             );
@@ -648,9 +648,15 @@ public class Store {
         }
     }
 
-    private void checkAllBids() {
+    private void checkAllAgreements(String toRemove) {
         for (Bid b : getBids()) {
             b.setApproved(isApproved(b.getId()));
+        }
+        for (OwnerAgreement oa : getOAgreement()) {
+            oa.approve(toRemove);
+            if (oa.isApproved) {
+                addOwner(oa.getGivenBy(), oa.getOwner());
+            }
         }
     }
 }

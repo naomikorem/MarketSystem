@@ -45,4 +45,8 @@ public class OwnerAgreement {
     public int getStore() {
         return store;
     }
+
+    public void setIsApproved(boolean b) {
+        this.isApproved = b;
+    }
 }

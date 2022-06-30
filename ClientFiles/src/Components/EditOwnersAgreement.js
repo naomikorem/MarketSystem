@@ -40,6 +40,7 @@ class EditOwnersAgreement extends Component {
             this.setState({[this.state.error]: this.state.error});
             if (!res.errorMessage) {
                 stompClient.send("/app/market/oa/getOwnerAgreements", {}, JSON.stringify({"store_id" : this.props.storeId}));
+                stompClient.send("/app/market/getStoreInfo", {}, JSON.stringify({"store_id" : this.props.storeId}));
                 this.handleClose();
             }
         });

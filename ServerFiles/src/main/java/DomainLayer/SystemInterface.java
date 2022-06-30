@@ -169,6 +169,7 @@ public interface SystemInterface {
 
     Response<List<Map.Entry<LocalDate, Stats>>> getStats();
     public Response<Boolean> addOwnerAgreement(String owner, int storeId);
+    public Response<OwnerAgreement> approveOwnerAgreement(int storeId, String bidId);
 
 
     }
