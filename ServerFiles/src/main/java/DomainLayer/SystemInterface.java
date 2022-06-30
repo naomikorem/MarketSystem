@@ -167,5 +167,7 @@ public interface SystemInterface {
 
     public Response<Boolean> isLoggedInAdminCheck();
 
-    Response<List<Map.Entry<LocalDate, Stats>>> getStats();
-}
+    public Response<List<Map.Entry<LocalDate, Stats>>> getStats();
+
+    public Response<AbstractPurchasePolicy> addItemLimitPredicateToPolicy(int storeId, int policyId, String type, int itemId, int min, int max);
+    }

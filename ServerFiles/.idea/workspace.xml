@@ -69,7 +69,7 @@
       <recent name="acceptenceTests" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.StoreInventoryTest">
+  <component name="RunManager" selected="JUnit.StorePolicyTests.testLimitItemAmountPolicy">
     <configuration name="Server" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="ServiceLayer.Server" />
       <module name="MarketSystem" />
@@ -79,43 +79,6 @@
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="main" />
-      <module name="MarketSystem" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="RatingTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="MarketSystem" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="acceptenceTests.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="acceptenceTests" />
-      <option name="MAIN_CLASS_NAME" value="acceptenceTests.RatingTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="StoreDiscountTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="MarketSystem" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="acceptenceTests.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="acceptenceTests" />
-      <option name="MAIN_CLASS_NAME" value="acceptenceTests.StoreDiscountTest" />
-      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -135,13 +98,61 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="StorePolicyTests.testLimitItemAmountPolicy" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="MarketSystem" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="acceptenceTests.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="acceptenceTests" />
+      <option name="MAIN_CLASS_NAME" value="acceptenceTests.StorePolicyTests" />
+      <option name="METHOD_NAME" value="testLimitItemAmountPolicy" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StorePolicyTests.testOrPolicy" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="MarketSystem" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="acceptenceTests.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="acceptenceTests" />
+      <option name="MAIN_CLASS_NAME" value="acceptenceTests.StorePolicyTests" />
+      <option name="METHOD_NAME" value="testOrPolicy" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StorePolicyTests.testStoreGeneralPolicySuccess" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="MarketSystem" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="acceptenceTests.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="acceptenceTests" />
+      <option name="MAIN_CLASS_NAME" value="acceptenceTests.StorePolicyTests" />
+      <option name="METHOD_NAME" value="testStoreGeneralPolicySuccess" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.StoreInventoryTest" />
+        <item itemvalue="JUnit.StorePolicyTests.testLimitItemAmountPolicy" />
+        <item itemvalue="JUnit.StorePolicyTests.testOrPolicy" />
+        <item itemvalue="JUnit.StorePolicyTests.testStoreGeneralPolicySuccess" />
         <item itemvalue="Application.Server" />
-        <item itemvalue="JUnit.StoreDiscountTest" />
-        <item itemvalue="Application.main" />
-        <item itemvalue="JUnit.RatingTest" />
+        <item itemvalue="JUnit.StoreInventoryTest" />
       </list>
     </recent_temporary>
   </component>
@@ -176,11 +187,6 @@
           <url>file://$PROJECT_DIR$/src/main/java/acceptenceTests/RatingTest.java</url>
           <line>51</line>
           <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/DomainLayer/SystemManagement/MarketManagementFacade.java</url>
-          <line>120</line>
-          <option name="timeStamp" value="21" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
