@@ -580,7 +580,15 @@ public class Proxy extends Bridge {
         }
         return real.updateBid(storeId, bidId, newPrice);
     }
-    
+
+    @Override
+    public Response<Boolean> approveAllBids(int storeId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.approveAllBids(storeId);
+    }
+
     @Override
     public Response<List<Map.Entry<LocalDate, Stats>>> getStats() {
         if (this.real == null) {
@@ -589,6 +597,21 @@ public class Proxy extends Bridge {
         return real.getStats();
     }
 
+    @Override
+    public Response<Boolean> addOwnerAgreement(String owner, int storeId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.addOwnerAgreement(owner, storeId);
+    }
+
+    @Override
+    public Response<OwnerAgreement> approveOwnerAgreement(int storeId, String bidId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.approveOwnerAgreement(storeId, bidId);
+    }
     @Override
     public Response<Boolean> setManagerPermission(String manager, int storeId, byte permission) {
         if (this.real == null) {

@@ -173,6 +173,8 @@ public abstract class Bridge {
     public abstract Response<Bid> deleteBid( int storeId, int bidId) ;
 
     public abstract Response<Bid> updateBid(int storeId,int bidId, double newPrice);
+
+    public abstract Response<Boolean> approveAllBids(int storeId);
 /*
     public abstract Response<Boolean> addCategoryPredicateToDiscount(int storeId, int discountId, String type, String categoryName);
 
@@ -186,6 +188,10 @@ public abstract class Bridge {
     */
 
     public abstract Response<List<Map.Entry<LocalDate, Stats>>> getStats();
+
+    public abstract Response<Boolean> addOwnerAgreement(String owner, int storeId);
+    
+    public abstract Response<OwnerAgreement> approveOwnerAgreement(int storeId, String bidId);
 
     public abstract Response<Boolean> setManagerPermission(String manager, int storeId, byte permission);
 

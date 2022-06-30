@@ -33,6 +33,7 @@ public class StoreController {
     private AtomicInteger NEXT_STORE_ID = new AtomicInteger(1);
     private AtomicInteger NEXT_BID_ID = new AtomicInteger(1);
 
+
     public StoreController() {
         this.stores = new HashMap<>();
         this.manager = PredicateManager.getInstance();
@@ -60,6 +61,7 @@ public class StoreController {
     private synchronized int getNewBidId() {
         return NEXT_BID_ID.getAndIncrement();
     }
+
 
     public Store createStore(User owner, String store_name) {
         Store store = new Store(owner, store_name, 0);
@@ -224,19 +226,19 @@ public class StoreController {
         return true;
     }
 
-    public boolean addOwner(User owner, User newOwner, int storeId) {
+    public boolean addOwner(String owner, User newOwner, int storeId) {
         if (owner == null || newOwner == null) {
             throw new IllegalArgumentException("A user cannot be null.");
         }
         Store s = getStoreAndThrow(storeId);
-        if (!owner.isSubscribed() || !s.canAssignOwner(owner.getName())) {
+        if (!s.canAssignOwner(owner)) {
             throw new IllegalArgumentException("This user cannot assign another user to be an owner");
         }
         if (!s.canBecomeOwner(newOwner)) {
             throw new IllegalArgumentException(String.format("%s cannot be promoted to be a an owner of the store with store id %s", newOwner.getName(), storeId));
         }
-        s.addOwner(owner.getName(), newOwner);
-        LogUtility.info(String.format("%s assigned %s as an owner at store %s", owner.getName(), newOwner, storeId));
+        s.addOwner(owner, newOwner);
+        LogUtility.info(String.format("%s assigned %s as an owner at store %s", owner, newOwner, storeId));
         return true;
     }
 
@@ -649,17 +651,35 @@ public class StoreController {
         s.addBid(bid);
         return bid;
     }
+    public OwnerAgreement addOAgreement(int store, User owner, String givenBy) {
+        Store s = getStoreAndThrow(store);
+        OwnerAgreement ownerAgreement = new OwnerAgreement(store, owner, givenBy, s.getOwners());
+        s.addOAgreement(ownerAgreement);
+        return ownerAgreement;
+    }
 
     public Bid approveBid(int storeId, User user, int bidId) {
         Store s = getStoreAndThrow(storeId);
         if (!s.canProcessBids(user))
-            throw new IllegalArgumentException(String.format("Have to process bids permission in store %s", storeId));
+            throw new IllegalArgumentException(String.format("Have to have process bids permission in store %s", storeId));
         Bid bid = s.getOrThrowBid(bidId);
         bid.approve(user.getName());
         if (s.isApproved(bidId)) {
             bid.setApproved(true);
         }
         return bid;
+    }
+    public OwnerAgreement approveOAgreement(int storeId, User user, String oaId) {
+        Store s = getStoreAndThrow(storeId);
+        if (!s.isOwner(user))
+            throw new IllegalArgumentException(String.format("Have to be owner in store %s", storeId));
+        OwnerAgreement ownerAgreement = s.getOrThrowOAgreement(oaId);
+        ownerAgreement.approve(user.getName());
+        if (s.isApprovedOA(oaId)) {
+            s.removeOA(oaId);
+            addOwner(ownerAgreement.givenBy,ownerAgreement.getOwner(), storeId);
+        }
+        return ownerAgreement;
     }
 
     public void approveAllBids(int storeId, User user) {
@@ -674,6 +694,14 @@ public class StoreController {
         }
     }
 
+
+    public OwnerAgreement removeOAgreement(int storeId, User user, String Name) {
+        Store s = getStoreAndThrow(storeId);
+        OwnerAgreement ownerAgreement = s.getOrThrowOAgreement(Name);
+        if (!s.isOwner(user))
+            throw new IllegalArgumentException(String.format("Have to be an owner in store %s", storeId));
+        return s.removeOA(Name);
+    }
     public Bid removeBid(int storeId, User user, int bidId) {
         Store s = getStoreAndThrow(storeId);
         Bid bid = s.getOrThrowBid(bidId);
@@ -687,6 +715,10 @@ public class StoreController {
         return s.removeBid(bidId);
     }
 
+    public Collection<OwnerAgreement> getOAgreements(int storeId) {
+        Store s = getStoreAndThrow(storeId);
+        return s.getOAgreement();
+    }
     public Collection<Bid> getBids(int storeId) {
         Store s = getStoreAndThrow(storeId);
         return s.getBids();

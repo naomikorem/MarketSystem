@@ -188,6 +188,27 @@ public class SystemImplementor implements SystemInterface {
     }
 
     @Override
+    public Response<Boolean> addOwnerAgreement(String owner, int storeId) {
+        try {
+            if (!userFacade.isExist(owner)) {
+                throw new IllegalArgumentException(String.format("There is no user by the name of %s", owner));
+            }
+            Response<Boolean> res = storeFacade.addOwnerAgreement(user, userFacade.getUser(owner).getObject(), storeId);
+            Response<Store> store_response = storeFacade.getStore(storeId);
+            if(store_response.hadError())
+                return new Response<>(store_response.getErrorMessage());
+            Store  store  = store_response.getObject();
+            Response<Boolean> notify_owners_response = marketManagementFacade.notifyUsers(store.getOwners(), String.format("New owner agreement in your store %s",  store.getName()));
+            if (notify_owners_response.hadError() || !notify_owners_response.getObject()) {
+                return notify_owners_response;
+            }
+            return res;
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    @Override
     public Response<Boolean> setManagerPermission(String manager, int storeId, byte permission) {
         try {
             return storeFacade.setManagerPermission(user, manager, storeId, permission);
@@ -1081,6 +1102,7 @@ public class SystemImplementor implements SystemInterface {
         }
         return new Response<>(true);
     }
+
     public Response<Boolean> addBidToCart(int bidId){
         if (user == null) {
             return new Response<>("Enter the system properly in order to perform actions in it.");
@@ -1101,6 +1123,14 @@ public class SystemImplementor implements SystemInterface {
         }
         return storeFacade.getBids(storeId, user);
     }
+
+    public Response<Collection<OwnerAgreement>> getOAgreements(int storeId) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        return storeFacade.getOAgreements(storeId, user);
+    }
+
     @Override
     public Response<Collection<Bid>> getUserBids() {
         if (user == null) {
@@ -1117,9 +1147,30 @@ public class SystemImplementor implements SystemInterface {
         if(res.hadError())
             return res;
         Bid bid = res.getObject();
+        if(!bid.getApproved())
+            return res;
         List<String> user_to_notify = new LinkedList<>();
         user_to_notify.add(bid.getCostumer());
         Response<Boolean> notify_costumer_response = marketManagementFacade.notifyUsers(user_to_notify, String.format("your bid on %s, from store %s, has been approved", bid.getBidPrice(), bid.getItem(), storeId));
+        if (notify_costumer_response.hadError() || !notify_costumer_response.getObject()) {
+            return new Response<>(notify_costumer_response.getErrorMessage());
+        }
+        return res;
+    }
+
+    public Response<OwnerAgreement> approveOwnerAgreement(int storeId, String bidId) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        Response<OwnerAgreement> res = storeFacade.approveOAgreement(storeId, user, bidId);
+        if(res.hadError())
+            return res;
+        OwnerAgreement ownerAgreement = res.getObject();
+        if(!ownerAgreement.getApproved())
+            return res;
+        List<String> user_to_notify = new LinkedList<>();
+        user_to_notify.add(ownerAgreement.getOwner().getName());
+        Response<Boolean> notify_costumer_response = marketManagementFacade.notifyUsers(user_to_notify, String.format("You have been approved as an owner at store %s", storeId));
         if (notify_costumer_response.hadError() || !notify_costumer_response.getObject()) {
             return new Response<>(notify_costumer_response.getErrorMessage());
         }
@@ -1141,6 +1192,25 @@ public class SystemImplementor implements SystemInterface {
         }
         return new Response<>(true);
     }
+
+    public Response<OwnerAgreement> deleteAgreement( int storeId, String name) {
+        if (user == null) {
+            return new Response<>("Enter the system properly in order to perform actions in it.");
+        }
+        Response<OwnerAgreement> response = storeFacade.removeOAgreement(storeId, user, name);
+        if(response.hadError())
+            return new Response<>(response.getErrorMessage());
+        OwnerAgreement oa = response.getObject();
+        Response<User> user_res = getUser(oa.getGivenBy());
+        if(user_res.hadError())
+            return new Response<>(user_res.getErrorMessage());
+
+        Response<OwnerAgreement> res = storeFacade.removeOAgreement(storeId, user, user_res.getObject().getName());
+        if(res.hadError())
+            return res;
+        return response;
+    }
+
     @Override
     public Response<Bid> deleteBid( int storeId, int bidId) {
         if (user == null) {

@@ -22,10 +22,13 @@ import DomainLayer.Users.UserController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 
 import java.util.Collection;
+import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BidsTests extends AbstractTest {
     private User user;
@@ -44,6 +47,8 @@ public class BidsTests extends AbstractTest {
     public void setup() {
         bridge.enter();
         bridge.register("user111@gmail.com", "user1", "first", "last", "password");
+        bridge.register("user@gmail.com", "user3", "user", "user", "user");
+        bridge.register("user@gmail.com", "user2", "user", "user", "user");
         bridge.login("user1", "password");
         store = bridge.addNewStore("Store1").getObject();
         i1 = bridge.addItemToStore(store.getStoreId(), "Item1", Category.Food, 100, 9).getObject();
@@ -73,6 +78,8 @@ public class BidsTests extends AbstractTest {
         bridge.removeItemFromStore(store.getStoreId(), i2.getId(), 9);
         bridge.removeItemFromStore(store.getStoreId(), i3.getId(), 10);
         UserController.getInstance().removeUser("user1");
+        UserController.getInstance().removeUser("user2");
+        UserController.getInstance().removeUser("user3");
         bridge.logout();
     }
 
@@ -124,6 +131,22 @@ public class BidsTests extends AbstractTest {
     public void testNegativeNoStoreBids() {
         assertTrue(bridge.addBid(-1, 1, 1, 1).hadError());
         assertTrue(bridge.updateBid(-1, 1, 1).hadError());
+    }
+
+    @Test
+    public void acceptWithRemovedOwner() {
+        bridge.addOwner("user3", store.getStoreId());
+        bridge.logout();
+        bridge.login("user2", "user");
+        bridge.addBid(store.getStoreId(), 1, i1.getId(), 2);
+        bridge.logout();
+        bridge.login("user1", "password");
+        bridge.approveAllBids(store.getStoreId());
+        Bid bid = bridge.getBids(store.getStoreId()).getObject().stream().findFirst().get();
+        assertFalse(bid.getApproved());
+        bridge.removeOwner("user3", store.getStoreId());
+        bid = bridge.getBids(store.getStoreId()).getObject().stream().findFirst().get();
+        assertTrue(bid.getApproved());
     }
 
     @Test

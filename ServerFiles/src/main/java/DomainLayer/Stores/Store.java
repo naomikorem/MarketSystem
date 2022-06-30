@@ -13,7 +13,6 @@ import Exceptions.LogException;
 import Utility.LogUtility;
 
 import java.util.*;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
@@ -32,9 +31,10 @@ public class Store {
     private boolean permanentlyClosed;
     private CompositeDiscountPolicy discountPolicy;
     private CompositePurchasePolicy purchasePolicy;
-    private Map<Integer ,Bid> bids;
+    private Map<Integer, Bid> bids;
+    private Map<String, OwnerAgreement> oAgreement;
 
-    public Store(String name, boolean open, int id, String founder, Map<User, String> owners, Map<User, Permission> managers, Map<Item, Integer> items, Lock lock, Lock discountLock, Lock purchaseLock, boolean permanentlyClosed, CompositeDiscountPolicy discountPolicy, CompositePurchasePolicy purchasePolicy, Map<Integer, Bid> bids) {
+    public Store(String name, boolean open, int id, String founder, Map<User, String> owners, Map<User, Permission> managers, Map<Item, Integer> items, Lock lock, Lock discountLock, Lock purchaseLock, boolean permanentlyClosed, CompositeDiscountPolicy discountPolicy, CompositePurchasePolicy purchasePolicy, Map<Integer, Bid> bids, Map<String, OwnerAgreement> oAgreement) {
         this.name = name;
         this.open = open;
         this.id = id;
@@ -49,6 +49,7 @@ public class Store {
         this.discountPolicy = discountPolicy;
         this.purchasePolicy = purchasePolicy;
         this.bids = bids;
+        this.oAgreement = oAgreement;
     }
 
     public Store(User founder, String store_name, int id) {
@@ -65,6 +66,7 @@ public class Store {
         owners.put(founder, null);
         setName(store_name);
         this.bids = new HashMap<>();
+        this.oAgreement = new HashMap<>();
     }
 
 
@@ -83,6 +85,7 @@ public class Store {
         this.discountPolicy = cdp;
         this.purchasePolicy = cpp;
         this.bids = new HashMap<>();
+        this.oAgreement = new HashMap<>();
     }
 
     public boolean isOwner(User u) {
@@ -311,6 +314,7 @@ public class Store {
         }
         byte old = p.getPermissionsMask();
         p.setPermissionsMask(permission);
+        checkAllAgreements("");
         try {
             PermissionManager.getInstance().addObject(p.toDAL(getManagerByName(manager)));
         } catch (Exception e) {
@@ -329,6 +333,7 @@ public class Store {
                     throw new IllegalArgumentException(String.format("%s is not a store owner that was set by %s", owner, removedBy));
                 }
                 removeAndRemoveEveryoneAssignedBy(owner);
+                checkAllAgreements(owner.getName());
             });
         }
     }
@@ -353,6 +358,7 @@ public class Store {
                         }
                         managers.remove(manager);
                         manager.removedManagedStore(getStoreId());
+                        checkAllAgreements("");
                         LogUtility.info("Store manager " + manager.getName() + " was removed from position by " + removedBy);
                     }
             );
@@ -514,6 +520,7 @@ public class Store {
     public boolean canManageDiscounts(User user) {
         return isOwner(user) || (isManager(user) && managers.get(user).canChangeDiscount());
     }
+
     public boolean canProcessBids(User user) {
         return isOwner(user) || (isManager(user) && managers.get(user).canProcessBids());
     }
@@ -537,30 +544,54 @@ public class Store {
     }
 
     public void addBid(Bid bid) {
-        bids.put(bid.getId(),bid);
+        bids.put(bid.getId(), bid);
+    }
+    public void addOAgreement(OwnerAgreement ownerAgreement) {
+        oAgreement.put(ownerAgreement.owner.getName(), ownerAgreement);
     }
 
     public List<Bid> getBids() {
         return new ArrayList<>(bids.values());
     }
-    public Bid getOrThrowBid(int id){
-        Bid bid = bids.get(id);
-        if (bid == null)
-            throw new IllegalArgumentException(String.format("Bid not in store %s", id));
-        return bid;
-    }
-    public boolean isApproved(int bidId){
-        List<String> managers = this.managers.keySet().stream().filter(this::canProcessBids).map(User::getName).collect(Collectors.toList());
-        List<String> owners = this.owners.keySet().stream().map(User::getName).collect(Collectors.toList());
-        return  bids.get(bidId).approvedManagers.containsAll(managers) && bids.get(bidId).approvedManagers.containsAll(owners);
+    public List<OwnerAgreement> getOAgreement() {
+        return new ArrayList<>(oAgreement.values());
     }
 
-    public Bid removeBid(int bidId){
+    public Bid getOrThrowBid(int id) {
+        Bid bid = bids.get(id);
+        if (bid == null)
+            throw new IllegalArgumentException(String.format("Bid is not in store %s", id));
+        return bid;
+    }
+    public OwnerAgreement getOrThrowOAgreement(String name) {
+        OwnerAgreement ownerAgreement = oAgreement.get(name);
+        if (ownerAgreement == null)
+            throw new IllegalArgumentException(String.format("owner Agreement is not in store %s", id));
+        return ownerAgreement;
+    }
+
+    public boolean isApproved(int bidId) {
+        List<String> managers = this.managers.keySet().stream().filter(this::canProcessBids).map(User::getName).collect(Collectors.toList());
+        List<String> owners = this.owners.keySet().stream().map(User::getName).collect(Collectors.toList());
+        return bids.get(bidId).approvedManagers.containsAll(managers) && bids.get(bidId).approvedManagers.containsAll(owners);
+    }
+    public boolean isApprovedOA(String oaId) {
+        return oAgreement.get(oaId).getApproved();
+    }
+
+    public Bid removeBid(int bidId) {
         Bid bid = bids.get(bidId);
         if (bid == null)
             throw new IllegalArgumentException(String.format("Bid not in store %s", id));
         bids.remove(bidId);
         return bid;
+    }
+    public OwnerAgreement removeOA(String name) {
+        OwnerAgreement ownerAgreement = oAgreement.get(name);
+        if (ownerAgreement == null)
+            throw new IllegalArgumentException(String.format("Owners Agreement is not in store %s", id));
+        oAgreement.remove(name);
+        return ownerAgreement;
     }
 
     public StoreDAL toDAL() {
@@ -572,7 +603,6 @@ public class Store {
         res.setPermanentlyClosed(permanentlyClosed);
         res.setDiscount(discountPolicy != null ? (CompositeDiscountDAL) discountPolicy.toDAL() : null);
         res.setPurchase(purchasePolicy != null ? (CompositePurchasePolicyDAL) purchasePolicy.toDAL() : null);
-
         Map<ItemDAL, Integer> items = new HashMap<>();
         getItems().forEach((k, v) -> items.put(k.toDAL(), v));
         res.setItems(items);
@@ -598,7 +628,7 @@ public class Store {
     }
 
     public void saveUpdateState(Runnable r) {
-        Store copy = new Store(name, open, id, founder, new HashMap<>(owners), new HashMap<>(managers), new HashMap<>(items), lock, discountLock, purchaseLock, permanentlyClosed, discountPolicy, purchasePolicy, new HashMap<>(bids));
+        Store copy = new Store(name, open, id, founder, new HashMap<>(owners), new HashMap<>(managers), new HashMap<>(items), lock, discountLock, purchaseLock, permanentlyClosed, discountPolicy, purchasePolicy, new HashMap<>(bids), new HashMap<>(oAgreement));
         try {
             r.run();
             update();
@@ -613,7 +643,20 @@ public class Store {
             this.discountPolicy = copy.discountPolicy;
             this.purchasePolicy = copy.purchasePolicy;
             this.bids = copy.bids;
+            this.oAgreement = copy.oAgreement;
             throw e;
+        }
+    }
+
+    private void checkAllAgreements(String toRemove) {
+        for (Bid b : getBids()) {
+            b.setApproved(isApproved(b.getId()));
+        }
+        for (OwnerAgreement oa : getOAgreement()) {
+            oa.approve(toRemove);
+            if (oa.isApproved) {
+                addOwner(oa.getGivenBy(), oa.getOwner());
+            }
         }
     }
 }

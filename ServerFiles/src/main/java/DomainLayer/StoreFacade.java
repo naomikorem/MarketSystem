@@ -40,9 +40,18 @@ public class StoreFacade {
         }
     }
 
+    public Response<Boolean> addOwnerAgreement(User owner, User newOwner, int storeId) {
+        try {
+            storeController.addOAgreement(storeId, newOwner, owner.getName());
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
     public Response<Boolean> addOwner(User owner, User newOwner, int storeId) {
         try {
-            return new Response<>(storeController.addOwner(owner, newOwner, storeId));
+            storeController.addOwner(owner.getName(),newOwner,storeId);
+            return new Response<>(true);
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
@@ -485,6 +494,13 @@ public class StoreFacade {
             return new Response<>(e.getMessage());
         }
     }
+    public Response<Collection<OwnerAgreement>> getOAgreements(int storeId, User user) {
+        try {
+            return new Response<>(storeController.getOAgreements(storeId));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
     public Response<Bid> approveBid(int storeId, User user, int bidId) {
         try {
             return new Response<>(storeController.approveBid(storeId, user, bidId));
@@ -492,17 +508,24 @@ public class StoreFacade {
             return new Response<>(e.getMessage());
         }
     }
-    public Response<Boolean> approveAllBids(int storeId, User user) {
+    public Response<OwnerAgreement> approveOAgreement(int storeId, User user, String name) {
         try {
-            storeController.approveAllBids(storeId, user);
-            return new Response<>(true);
+            return new Response<>(storeController.approveOAgreement(storeId, user, name));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
     }
+
     public Response<Bid> removeBid(int storeId, User user, int bidId){
         try {
             return new Response<>(storeController.removeBid(storeId, user, bidId));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+    public Response<OwnerAgreement> removeOAgreement(int storeId, User user, String name){
+        try {
+            return new Response<>(storeController.removeOAgreement(storeId, user, name));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
