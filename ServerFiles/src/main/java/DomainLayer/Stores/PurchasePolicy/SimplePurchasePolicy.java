@@ -35,7 +35,7 @@ public class SimplePurchasePolicy extends AbstractPurchasePolicy{
             return true;
         }
         if(!abstarctPredicate.canApply(sb)) {
-            throw new IllegalArgumentException("The purchase could not apply the purchase policies for store "+ StoreController.getInstance().getStore(sb.getStoreId()).getName()+"\nbecause the following the predicate doesn't apply: "+abstarctPredicate.display());
+            throw new IllegalArgumentException("The purchase could not apply the purchase policies for store "+ StoreController.getInstance().getStore(sb.getStoreId()).getName()+"\nbecause the following the predicate doesn't apply: " + abstarctPredicate.display());
         }
         return true;
     }

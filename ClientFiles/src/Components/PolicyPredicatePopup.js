@@ -9,7 +9,7 @@ import EditItemPopup from "./EditItemPopup";
 import {categories} from "../Shared/Shared";
 import TextField from "@material-ui/core/TextField";
 
-const policyTypes = ["Hour for buying item until", "Date you are not allowed to buy the item at"];
+const policyTypes = ["Hour for buying item until", "Date you are not allowed to buy the item at", "Limit amount of item"];
 const predicateTypes = ["AND", "OR"];
 
 
@@ -26,6 +26,8 @@ class PolicyPredicatePopup extends Component {
             hour:"24",
             policyProperties: {"policyType": predicateTypes[0]},
             items: [],
+            min: "0",
+            max: "0",
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -117,6 +119,24 @@ class PolicyPredicatePopup extends Component {
                 this.state.policy.date = this.state.date;
                 this.state.policy.hour = this.state.hour;
                 break;
+            case "Limit amount of item":
+                if (this.state.policyProperties.itemId == null) {
+                    this.state.error = "Please select an item to put the policy on";
+                    this.setState({
+                        [this.state.error] : this.state.error
+                    });
+                    return;
+                }
+                stompClient.send("/app/market/addItemLimitPredicateToPolicy", {}, JSON.stringify({
+                    "storeId": this.state.storeId,
+                    "policyId": this.state.policy.id,
+                    "policyType": this.state.policyProperties.policyType,
+                    "itemId": this.state.policyProperties.itemId,
+                    "min" : this.state.min,
+                    "max" : this.state.max,
+                }));
+                break;
+
         }
         this.handleClose();
     }
@@ -156,6 +176,21 @@ class PolicyPredicatePopup extends Component {
                     <TextField type="date" id="outlined-basic" label="policy date" variant="standard"
                                className={"editItemBar"}
                                value={this.state.date} onChange={this.handleChange} name="date"/>
+                </>
+            case "Limit amount of item":
+                return <>
+                    <select style={{background: "#FFFFFF"}} name="itemId" defaultValue={0} value={this.state.policyProperties.itemId} variant="filled" className={"selectItemBar"} onChange={this.handlePolicyPurchaseChange}>
+                        <option value={0} disabled>Choose an item ...</option>
+                        { this.state.items.map((item, i) => <option key={i} value={item.item_id}>{`${item.item_id}: ${item.product_name}`}</option>)}
+                    </select>
+
+                    <TextField type="number" id="outlined-basic" label="Minimum amount that can be purchased" variant="standard"
+                               className={"editItemBar"}
+                               value={this.state.min} onChange={this.handleChange} name="min"/>
+                    <TextField type="number" id="outlined-basic" label="Maximum amount that can be purchased" variant="standard"
+                               className={"editItemBar"}
+                               value={this.state.max} onChange={this.handleChange} name="max"/>
+
                 </>
             default:
                 return "";

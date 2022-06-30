@@ -14,7 +14,7 @@ public class Permission {
         PermissionEnum(int flag) {
             this.flag = (byte) flag;
         }
-        private byte flag;
+        public byte flag;
     }
     private int id;
     private String givenBy;

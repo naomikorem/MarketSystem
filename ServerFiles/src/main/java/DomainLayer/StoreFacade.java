@@ -394,6 +394,15 @@ public class StoreFacade {
         }
     }
 
+    public Response<AbstractPurchasePolicy> addItemLimitPredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, int min, int max) {
+        try {
+            return new Response<>(storeController.addItemLimitPredicateToPolicy(owner, storeId, policyId, type, itemId, min, max));
+
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
     public Response<AbstractPurchasePolicy> addItemPredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, int hour) {
         try {
             return new Response<>(storeController.addItemPredicateToPolicy(owner, storeId, policyId, type, itemId,hour));

@@ -957,6 +957,13 @@ public class SystemImplementor implements SystemInterface {
         return storeFacade.addItemPredicateToDiscount(user, storeId, discountId, type, itemId);
     }
 
+    public Response<AbstractPurchasePolicy> addItemLimitPredicateToPolicy(int storeId, int policyId, String type, int itemId, int min, int max) {
+        if (user == null || !user.isSubscribed()) {
+            return new Response<>("Only logged in users can perform this action.");
+        }
+        return storeFacade.addItemLimitPredicateToPolicy(user, storeId, policyId, type, itemId, min, max);
+    }
+
     public Response<AbstractPurchasePolicy> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour) {
         if (user == null || !user.isSubscribed()) {
             return new Response<>("Only logged in users can perform this action.");

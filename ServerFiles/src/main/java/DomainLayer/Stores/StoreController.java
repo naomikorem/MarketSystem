@@ -547,6 +547,16 @@ public class StoreController {
         adp.setDate(newDate);
     }
 
+    public AbstractPurchasePolicy addItemLimitPredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, int min, int max) {
+        Store s = getStoreAndThrow(storeId);
+        if (!owner.isSubscribed() || !s.canManagePurchasePolicy(owner)) {
+            throw new IllegalArgumentException("This user cannot add items-predicate to policies");
+        }
+        SimplePredicate sp = new SimplePredicate(itemId, min, max);
+        sp.setDisplayString(String.format("not allowed purchase less than %s or more than %s %s", min, max, (s.getItemById(itemId).getProductName())));
+        return addPredicateToPolicy(owner, s, policyId, PredicateEnum.valueOf(type), sp);
+    }
+
     public AbstractPurchasePolicy addItemPredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, int hour) {
         Store s = getStoreAndThrow(storeId);
         if (!owner.isSubscribed() || !s.canManagePurchasePolicy(owner)) {

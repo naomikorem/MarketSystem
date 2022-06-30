@@ -402,4 +402,14 @@ public class Real extends Bridge {
     public Response<OwnerAgreement> approveOwnerAgreement(int storeId, String bidId) {
         return adaptee.approveOwnerAgreement(storeId, bidId);
     }
+    
+    @Override
+    public Response<Boolean> setManagerPermission(String manager, int storeId, byte permission) {
+        return adaptee.setManagerPermission(manager, storeId, permission);
+    }
+
+    @Override
+    public Response<AbstractPurchasePolicy> addItemLimitPredicateToPolicy(int storeId, int policyId, String type, int itemId, int min, int max) {
+        return adaptee.addItemLimitPredicateToPolicy(storeId, policyId, type, itemId, min, max);
+    }
 }

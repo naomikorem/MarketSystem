@@ -22,6 +22,8 @@ public class SimplePredicateDAL extends PredicateDAL {
     @Column(name = "type")
     private SimplePredicate.PredicateType type;
     private String displayString;
+    private int minAmount;
+    private int maxAmount;
 
     public int getItemId() {
         return itemId;
@@ -79,6 +81,22 @@ public class SimplePredicateDAL extends PredicateDAL {
         this.type = type;
     }
 
+    public int getMinAmount() {
+        return minAmount;
+    }
+
+    public void setMinAmount(int minAmount) {
+        this.minAmount = minAmount;
+    }
+
+    public int getMaxAmount() {
+        return maxAmount;
+    }
+
+    public void setMaxAmount(int maxAmount) {
+        this.maxAmount = maxAmount;
+    }
+
     @Override
     public AbstarctPredicate toDomain() {
         SimplePredicate sp = new SimplePredicate();
@@ -90,6 +108,8 @@ public class SimplePredicateDAL extends PredicateDAL {
         sp.setDate(getDate());
         sp.setType(getType());
         sp.setDisplayString(getDisplayString());
+        sp.setMinAmount(getMinAmount());
+        sp.setMaxAmount(getMaxAmount());
         return sp;
     }
 }

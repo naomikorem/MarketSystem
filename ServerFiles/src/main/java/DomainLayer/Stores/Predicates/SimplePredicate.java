@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Map;
 
 public class SimplePredicate extends AbstarctPredicate {
 
@@ -22,6 +23,8 @@ public class SimplePredicate extends AbstarctPredicate {
     private Date date;
     private PredicateType type;
     private String displayString;
+    private int minAmount;
+    private int maxAmount;
 
     public enum PredicateType {
         True,
@@ -30,6 +33,14 @@ public class SimplePredicate extends AbstarctPredicate {
         Basket,
         Hour,
         Date,
+        LimitItem,
+    }
+
+    public SimplePredicate(int itemId, int min, int max) {
+        this.itemId = itemId;
+        this.minAmount = min;
+        this.maxAmount = max;
+        this.type = PredicateType.LimitItem;
     }
 
 
@@ -98,6 +109,13 @@ public class SimplePredicate extends AbstarctPredicate {
                 return (!shoppingBasket.hasItem(itemId) || ((rightNow.get(Calendar.MONTH) < (date_check.get(Calendar.MONTH))) ||
                         ((rightNow.get(Calendar.MONTH) == date_check.get(Calendar.MONTH)) &&
                                 (rightNow.get(Calendar.DAY_OF_MONTH)<date_check.get(Calendar.DAY_OF_MONTH)))));
+
+            case LimitItem:
+                Map.Entry<Item, Integer> itemAmount = shoppingBasket.getItemsAndAmounts().stream().filter(i -> i.getKey().getId() == itemId).findFirst().orElse(null);
+                if (itemAmount == null) {
+                    return true;
+                }
+                return itemAmount.getValue() >= getMinAmount() && itemAmount.getValue() <= getMaxAmount();
             default:
                 return false;
         }
@@ -163,6 +181,21 @@ public class SimplePredicate extends AbstarctPredicate {
         return displayString;
     }
 
+    public int getMinAmount() {
+        return minAmount;
+    }
+
+    public void setMinAmount(int minAmount) {
+        this.minAmount = minAmount;
+    }
+
+    public int getMaxAmount() {
+        return maxAmount;
+    }
+
+    public void setMaxAmount(int maxAmount) {
+        this.maxAmount = maxAmount;
+    }
 
     @Override
     public PredicateDAL toDAL() {
@@ -174,6 +207,8 @@ public class SimplePredicate extends AbstarctPredicate {
         res.setType(getType());
         res.setItemId(getItemId());
         res.setMinBasket(getMinBasket());
+        res.setMinAmount(getMinAmount());
+        res.setMaxAmount(getMaxAmount());
         return res;
     }
 }

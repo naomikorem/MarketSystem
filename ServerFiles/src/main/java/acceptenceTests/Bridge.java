@@ -190,5 +190,10 @@ public abstract class Bridge {
     public abstract Response<List<Map.Entry<LocalDate, Stats>>> getStats();
 
     public abstract Response<Boolean> addOwnerAgreement(String owner, int storeId);
+    
     public abstract Response<OwnerAgreement> approveOwnerAgreement(int storeId, String bidId);
-}
+
+    public abstract Response<Boolean> setManagerPermission(String manager, int storeId, byte permission);
+
+    public abstract Response<AbstractPurchasePolicy> addItemLimitPredicateToPolicy(int storeId, int policyId, String type, int itemId, int min, int max);
+    }

@@ -612,4 +612,19 @@ public class Proxy extends Bridge {
         }
         return real.approveOwnerAgreement(storeId, bidId);
     }
+    @Override
+    public Response<Boolean> setManagerPermission(String manager, int storeId, byte permission) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.setManagerPermission(manager, storeId, permission);
+    }
+
+    @Override
+    public Response<AbstractPurchasePolicy> addItemLimitPredicateToPolicy(int storeId, int policyId, String type, int itemId, int min, int max) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.addItemLimitPredicateToPolicy(storeId, policyId, type, itemId, min, max);
+    }
 }
