@@ -186,4 +186,6 @@ public abstract class Bridge {
     */
 
     public abstract Response<List<Map.Entry<LocalDate, Stats>>> getStats();
-}
+
+    public abstract Response<Boolean> setManagerPermission(String manager, int storeId, byte permission);
+    }

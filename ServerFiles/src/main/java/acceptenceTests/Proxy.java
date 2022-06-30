@@ -588,4 +588,12 @@ public class Proxy extends Bridge {
         }
         return real.getStats();
     }
+
+    @Override
+    public Response<Boolean> setManagerPermission(String manager, int storeId, byte permission) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.setManagerPermission(manager, storeId, permission);
+    }
 }

@@ -386,4 +386,9 @@ public class Real extends Bridge {
     public Response<List<Map.Entry<LocalDate, Stats>>> getStats() {
         return adaptee.getStats();
     }
+
+    @Override
+    public Response<Boolean> setManagerPermission(String manager, int storeId, byte permission) {
+        return adaptee.setManagerPermission(manager, storeId, permission);
+    }
 }
