@@ -757,6 +757,16 @@ public class Service {
         return res;
     }
 
+    @MessageMapping("/market/addItemLimitPredicateToPolicy")
+    @SendToUser("/topic/addItemLimitPredicateToPolicyResult")
+    public Response<AbstractPurchasePolicy> addItemLimitPredicateToPolicy(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<AbstractPurchasePolicy> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemLimitPredicateToPolicy((Integer) map.get("storeId"), (Integer) map.get("policyId"), (String) map.get("policyType") ,Integer.parseInt((String)map.get("itemId")), Integer.parseInt((String)map.get("min")), Integer.parseInt((String)map.get("max")));
+        if (res.hadError()) {
+            return new Response<>(res.getErrorMessage());
+        }
+        return res;
+    }
+
     @MessageMapping("/market/addItemPredicateToPolicy")
     @SendToUser("/topic/addItemPredicateToPolicyResult")
     public Response<AbstractPurchasePolicy> addItemPredicateToPolicy(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
@@ -766,6 +776,7 @@ public class Service {
         }
         return res;
     }
+
     @MessageMapping("/market/bid/addBid")
     @SendToUser("/topic/bid/addBidResult")
     public Response<Boolean> addBid(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {

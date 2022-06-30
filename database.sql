@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `CompositePredicates` (
 CREATE TABLE IF NOT EXISTS `discount` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=217 DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
 
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `Items` (
   `numberOfRatings` int(11) DEFAULT NULL,
   `price` double DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1037 DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
 
@@ -107,7 +107,7 @@ CREATE TABLE IF NOT EXISTS `keywords` (
   `itemId` int(11) DEFAULT NULL,
   `keyword` varchar(50) DEFAULT NULL,
   KEY `itemFK3` (`itemId`),
-  CONSTRAINT `itemFK3` FOREIGN KEY (`itemId`) REFERENCES `Items` (`id`)
+  CONSTRAINT `itemFK3` FOREIGN KEY (`itemId`) REFERENCES `Items` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
@@ -132,7 +132,7 @@ CREATE TABLE IF NOT EXISTS `Permissions` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `managerFK1` (`manager`),
   CONSTRAINT `managerFK1` FOREIGN KEY (`manager`) REFERENCES `users` (`userName`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=111 DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
 
@@ -142,8 +142,8 @@ CREATE TABLE IF NOT EXISTS `PoliciesInComposite` (
   `compositeId` int(11) NOT NULL,
   PRIMARY KEY (`policyId`,`compositeId`),
   KEY `compositePolicyFK` (`compositeId`),
-  CONSTRAINT `policyFK` FOREIGN KEY (`policyId`) REFERENCES `Policy` (`id`),
-  CONSTRAINT `compositePolicyFK` FOREIGN KEY (`compositeId`) REFERENCES `CompositePolicy` (`id`)
+  CONSTRAINT `policyFK` FOREIGN KEY (`policyId`) REFERENCES `Policy` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `compositePolicyFK` FOREIGN KEY (`compositeId`) REFERENCES `CompositePolicy` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
@@ -152,7 +152,7 @@ CREATE TABLE IF NOT EXISTS `PoliciesInComposite` (
 CREATE TABLE IF NOT EXISTS `Policy` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=273 DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
 
@@ -160,7 +160,7 @@ CREATE TABLE IF NOT EXISTS `Policy` (
 CREATE TABLE IF NOT EXISTS `Predicates` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=586 DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
 
@@ -170,8 +170,8 @@ CREATE TABLE IF NOT EXISTS `PredicatesInComposite` (
   `CompositeId` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`PredicateId`,`CompositeId`),
   KEY `CompositeFK` (`CompositeId`),
-  CONSTRAINT `CompositeFK` FOREIGN KEY (`CompositeId`) REFERENCES `CompositePredicates` (`id`),
-  CONSTRAINT `PredicateFK1` FOREIGN KEY (`PredicateId`) REFERENCES `Predicates` (`id`)
+  CONSTRAINT `CompositeFK` FOREIGN KEY (`CompositeId`) REFERENCES `CompositePredicates` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `PredicateFK1` FOREIGN KEY (`PredicateId`) REFERENCES `Predicates` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
@@ -183,7 +183,7 @@ CREATE TABLE IF NOT EXISTS `Services` (
   `Url` varchar(50) NOT NULL,
   `Type` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1819 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4101 DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
 
@@ -195,7 +195,7 @@ CREATE TABLE IF NOT EXISTS `ShoppingBasket` (
   PRIMARY KEY (`id`),
   KEY `userFK` (`username`),
   CONSTRAINT `userFK` FOREIGN KEY (`username`) REFERENCES `users` (`userName`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=413 DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
 
@@ -206,8 +206,8 @@ CREATE TABLE IF NOT EXISTS `simpleDiscount` (
   `percentage` double DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `predicateFK2` (`predicateId`),
-  CONSTRAINT `discountFK2` FOREIGN KEY (`id`) REFERENCES `discount` (`id`),
-  CONSTRAINT `predicateFK2` FOREIGN KEY (`predicateId`) REFERENCES `Predicates` (`id`)
+  CONSTRAINT `discountFK2` FOREIGN KEY (`id`) REFERENCES `discount` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `predicateFK2` FOREIGN KEY (`predicateId`) REFERENCES `Predicates` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
@@ -221,9 +221,11 @@ CREATE TABLE IF NOT EXISTS `SimplePredicate` (
   `hour` int(11) DEFAULT '0',
   `date` date DEFAULT '0000-00-00',
   `type` int(11) NOT NULL DEFAULT '0',
-  `displayString` varchar(50) NOT NULL DEFAULT '',
+  `displayString` varchar(150) NOT NULL DEFAULT '',
+  `minAmount` int(11) DEFAULT NULL,
+  `maxAmount` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `predicateFK` FOREIGN KEY (`id`) REFERENCES `Predicates` (`id`)
+  CONSTRAINT `predicateFK` FOREIGN KEY (`id`) REFERENCES `Predicates` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
@@ -233,11 +235,27 @@ CREATE TABLE IF NOT EXISTS `SimplePurchasePolicy` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `hour` int(11) DEFAULT '24',
   `predicateId` int(11) DEFAULT NULL,
-  `date` date DEFAULT NULL,
+  `date` date DEFAULT '0000-00-00',
   PRIMARY KEY (`id`),
   KEY `predicateId` (`predicateId`),
   CONSTRAINT `FK_SimplePurchasePolicy_Predicates` FOREIGN KEY (`predicateId`) REFERENCES `Predicates` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=272 DEFAULT CHARSET=latin1;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table sql11498449.Statistics
+CREATE TABLE IF NOT EXISTS `Statistics` (
+  `Date` date NOT NULL,
+  PRIMARY KEY (`Date`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table sql11498449.statisticsGuests
+CREATE TABLE IF NOT EXISTS `statisticsGuests` (
+  `statistic` date DEFAULT NULL,
+  `guestIp` text
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
 
@@ -277,7 +295,7 @@ CREATE TABLE IF NOT EXISTS `stores` (
   `discountPolicy` int(11) DEFAULT NULL,
   `purchasePolicy` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=554 DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
 
@@ -286,7 +304,7 @@ CREATE TABLE IF NOT EXISTS `UserHistoryItems` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `itemId` int(11) NOT NULL,
   `store_id` int(11) NOT NULL,
-  `username` varchar(50) NOT NULL,
+  `username` varchar(50) DEFAULT NULL,
   `product_name` varchar(50) NOT NULL,
   `category` int(11) NOT NULL DEFAULT '0',
   `price_per_unit` double NOT NULL DEFAULT '0',
@@ -294,12 +312,12 @@ CREATE TABLE IF NOT EXISTS `UserHistoryItems` (
   `date` date NOT NULL DEFAULT '0000-00-00',
   PRIMARY KEY (`id`),
   KEY `FK_username_history_items` (`username`),
-  KEY `FK_store` (`store_id`),
   KEY `FK_item_id` (`itemId`),
+  KEY `FK_store` (`store_id`),
+  CONSTRAINT `FK_store` FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `FK_item_id` FOREIGN KEY (`itemId`) REFERENCES `Items` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `FK_store` FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_username_history_items` FOREIGN KEY (`username`) REFERENCES `users` (`userName`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=398 DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
 
@@ -312,6 +330,14 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email` varchar(50) NOT NULL,
   PRIMARY KEY (`userName`),
   KEY `userName` (`userName`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table sql11498449.UsersInStatistics
+CREATE TABLE IF NOT EXISTS `UsersInStatistics` (
+  `statisticId` date DEFAULT NULL,
+  `userName` text
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
