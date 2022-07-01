@@ -7,6 +7,9 @@ import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.HistoryManagement.HistoryController;
 import DomainLayer.SystemManagement.HistoryManagement.ItemHistory;
+import ServiceLayer.DTOs.PaymentParamsDTO;
+import ServiceLayer.DTOs.SupplyParamsDTO;
+import ServiceLayer.Server;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,11 +20,13 @@ import static org.junit.Assert.*;
 
 public class PurchaseHistoryTests extends AbstractTest
 {
-    private final String regular_username1, regular_username2, store1_owner_username, store2_owner_username, admin_username;
+    private final String regular_username1, regular_username2, store1_owner_username, store2_owner_username, admin_username, admin_password;
     private int store1_id, store2_id;
     private Item item3, item4;
     private int item3_id, item4_id;
     private Set<Item> originals_items_store1_user1, originals_items_store2_user2;
+    private PaymentParamsDTO paymentParamsDTO;
+    private SupplyParamsDTO supplyParamsDTO;
 
     public PurchaseHistoryTests()
     {
@@ -30,7 +35,8 @@ public class PurchaseHistoryTests extends AbstractTest
         this.regular_username2 = "regularUser2";
         this.store1_owner_username = "store1owner";
         this.store2_owner_username = "store2owner";
-        this.admin_username = "admin";
+        this.admin_username = Server.prop.getProperty("defaultAdminUser");
+        this.admin_password = Server.prop.getProperty("defaultAdminPassword");
         this.store1_id = 1;
         this.store2_id = 2;
     }
@@ -38,7 +44,25 @@ public class PurchaseHistoryTests extends AbstractTest
     @Before
     public void setup()
     {
+        paymentParamsDTO = new PaymentParamsDTO(
+                AbstractProxy.GOOD_STUB_NAME,
+                "1111111111111111",
+                "05",
+                "21",
+                "user",
+                "165",
+                "15");
+
+        supplyParamsDTO = new SupplyParamsDTO(
+                AbstractProxy.GOOD_STUB_NAME,
+                "user",
+                "user address",
+                "bear shava",
+                "israel",
+                "777777");
+
         bridge.enter();
+        addStubs();
         bridge.register("user111@gmail.com", regular_username1,"first","last", "password");
         bridge.register("user112@gmail.com", regular_username2,"first","last", "password");
         bridge.register("user222@gmail.com", store1_owner_username, "first","last","password");
@@ -63,13 +87,13 @@ public class PurchaseHistoryTests extends AbstractTest
         this.bridge.login(regular_username1, "password");
         this.bridge.addItemToCart(store1_id, item1_id, 1);
         this.bridge.addItemToCart(store1_id, item2_id, 2);
-        this.bridge.purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
+        Response r = this.bridge.purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
         this.bridge.logout();
 
         this.bridge.login(regular_username2, "password");
         this.bridge.addItemToCart(store2_id, item3_id, 1);
         this.bridge.addItemToCart(store2_id, item4_id, 2);
-        this.bridge.purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
+        this.bridge.purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
         this.bridge.logout();
 
         this.originals_items_store1_user1 = new HashSet<>();
@@ -105,7 +129,7 @@ public class PurchaseHistoryTests extends AbstractTest
     @Test
     public void AdminReceiveUsersPurchaseHistory()
     {
-        this.bridge.login(admin_username, "admin");
+        this.bridge.login(admin_username, admin_password);
 
         Response<History> res = this.bridge.getPurchaseHistory(regular_username1);
         assertFalse(res.hadError());
@@ -119,7 +143,7 @@ public class PurchaseHistoryTests extends AbstractTest
     @Test
     public void AdminReceiveNotSubscribedUsersPurchaseHistory()
     {
-        this.bridge.login(admin_username, "admin");
+        this.bridge.login(admin_username, admin_password);
 
         Response<History> res = this.bridge.getPurchaseHistory("notInTheSystem");
         assertTrue(res.hadError());
@@ -161,7 +185,7 @@ public class PurchaseHistoryTests extends AbstractTest
     @Test
     public void adminReceiveStorePurchaseHistory()
     {
-        this.bridge.login(admin_username, "admin");
+        this.bridge.login(admin_username, admin_password);
 
         Response<History> res1 = this.bridge.getStoreHistory(store1_id);
         assertFalse(res1.hadError());
@@ -188,7 +212,7 @@ public class PurchaseHistoryTests extends AbstractTest
         originals_items_store2_user1.add(item4);
 
         // check that the payment and supply confirmed.
-        Response<Boolean> purchase_res = this.bridge.purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
+        Response<Boolean> purchase_res = this.bridge.purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
         assertFalse(purchase_res.hadError());
         assertTrue(purchase_res.getObject());
 
@@ -229,7 +253,7 @@ public class PurchaseHistoryTests extends AbstractTest
         this.bridge.addItemToCart(store2_id, item4_id, 2);
 
         // check that the payment and supply confirmed.
-        Response<Boolean> purchase_res = this.bridge.purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
+        Response<Boolean> purchase_res = this.bridge.purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
         assertFalse(purchase_res.hadError());
         assertTrue(purchase_res.getObject());
 
@@ -242,7 +266,7 @@ public class PurchaseHistoryTests extends AbstractTest
         assertTrue(this.bridge.getPurchaseHistory().hadError());
 
         // check that admin user can't receive history of guest
-        assertFalse(this.bridge.login(admin_username, "admin").hadError());
+        assertFalse(this.bridge.login(admin_username, admin_password).hadError());
         assertTrue(this.bridge.getPurchaseHistory(HistoryController.GUEST_DEFAULT_NAME).hadError());
         assertFalse(this.bridge.logout().hadError());
 

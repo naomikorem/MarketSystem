@@ -30,7 +30,10 @@ public class SubscribedState implements UserState {
         this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.password = BCrypt.hashpw(password, BCrypt.gensalt(UserController.SALT_HASH_ROUND_COUNT));
+        if (!Utility.isHashed(password)) {
+            password = BCrypt.hashpw(password, BCrypt.gensalt(UserController.SALT_HASH_ROUND_COUNT));
+        }
+        this.password = password;
         this.email = email;
         this.ownedStores = new HashSet<>();
         this.managedStores = new HashSet<>();
@@ -54,8 +57,8 @@ public class SubscribedState implements UserState {
             throw new IllegalArgumentException("A user name/ last name must be at least 4 letters long.");
         }
 
-        if (password == null || password.length() < MIN_PASSWORD_LENGTH || password.length() > MAX_PASSWORD_LENGTH) {
-            throw new IllegalArgumentException("A password must be at least 4 letters long.");
+        if (password == null || password.length() < MIN_PASSWORD_LENGTH || (password.length() > MAX_PASSWORD_LENGTH && !Utility.isHashed(password))) {
+            throw new IllegalArgumentException(String.format("A password must be between %s and %s letters long.", MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH));
         }
 
         if (email == null || !Utility.isValidEmailAddress(email)) {
@@ -70,6 +73,11 @@ public class SubscribedState implements UserState {
     @Override
     public String getName() {
         return this.userName;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
     }
 
     @Override
@@ -141,5 +149,13 @@ public class SubscribedState implements UserState {
     @Override
     public boolean login(String password) {
         return password != null && BCrypt.checkpw(password, this.password);
+    }
+
+    public void setOwnedStores(Set<Integer> ownedStores) {
+        this.ownedStores = ownedStores;
+    }
+
+    public void setManagedStores(Set<Integer> managedStores) {
+        this.managedStores = managedStores;
     }
 }

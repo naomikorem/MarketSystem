@@ -1,28 +1,36 @@
 package ServiceLayer;
 
 import DomainLayer.Response;
-import DomainLayer.Stores.Category;
+import DomainLayer.Stats.Stats;
+import DomainLayer.Stats.StatsController;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Permission;
+import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
+import DomainLayer.Stores.*;
 import DomainLayer.Stores.PurchasePolicy.SimplePurchasePolicy;
-import DomainLayer.Stores.Store;
 import DomainLayer.SystemImplementor;
 import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.HistoryManagement.ItemHistory;
+import DomainLayer.SystemManagement.MarketManagementFacade;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
 import ServiceLayer.DTOs.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,19 +38,22 @@ import java.util.stream.Collectors;
 public class Service {
 
     public static final String SYSTEM_IMPLEMENTOR_STRING = "SystemImplementor";
+    public static final String IP_STRING = "ip";
     @Autowired
     private SimpMessagingTemplate template;
 
     public Service() {
         super();
+        //MarketManagementFacade.getInstance().initializeMarket();
     }
 
     @MessageMapping("/market/login")
     @SendToUser("/topic/loginResult")
     public Response<UserDTO> login(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
         Response<User> user = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).login(map.get("user"), map.get("pass"));
-        if (user.hadError())
+        if (user.hadError()) {
             return new Response<>(user.getErrorMessage());
+        }
         return new Response<>(convertToUserDTO(user.getObject()));
     }
 
@@ -69,8 +80,9 @@ public class Service {
     @SendToUser("/topic/loginByTokenResult")
     public Response<UserDTO> loginByToken(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
         Response<User> user = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).loginUserByToken(map.get("token"));
-        if (user.hadError())
+        if (user.hadError()) {
             return new Response<>(user.getErrorMessage());
+        }
         return new Response<>(convertToUserDTO(user.getObject()));
     }
 
@@ -180,7 +192,7 @@ public class Service {
     @MessageMapping("/market/getPersonalHistory")
     @SendToUser("/topic/getPersonalHistoryResult")
     public Response<HistoryDTO> getPersonalPurchaseHistory(SimpMessageHeaderAccessor headerAccessor) {
-        ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
+        //((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).purchaseShoppingCart("ashdod", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
 
         Response<History> history = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getPurchaseHistory();
         if (history.hadError())
@@ -240,15 +252,25 @@ public class Service {
     @MessageMapping("/market/addExternalPurchaseService")
     @SendToUser("/topic/addExternalServiceResult")
     public Response<Boolean> addExternalPurchaseService(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
-        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addExternalPurchaseService(map.get("name"), map.get("address"));
-        return res;
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addExternalPurchaseService(map.get("name"), map.get("address"));
     }
 
     @MessageMapping("/market/addExternalSupplyService")
     @SendToUser("/topic/addExternalServiceResult")
     public Response<Boolean> addExternalSupplyService(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
-        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addExternalSupplyService(map.get("name"), map.get("address"));
-        return res;
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addExternalSupplyService(map.get("name"), map.get("address"));
+    }
+
+    @MessageMapping("/market/getAllExternalSupplyServicesNames")
+    @SendToUser("/topic/getAllExternalSupplyServicesNamesResult")
+    public Response<List<String>> getAllExternalSupplyServicesNames(SimpMessageHeaderAccessor headerAccessor) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getAllExternalSupplyServicesNames();
+    }
+
+    @MessageMapping("/market/getAllExternalPurchaseServicesNames")
+    @SendToUser("/topic/getAllExternalPurchaseServicesNamesResult")
+    public Response<List<String>> getAllExternalPurchaseServicesNames(SimpMessageHeaderAccessor headerAccessor) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getAllExternalPurchaseServicesNames();
     }
 
     private HistoryDTO convertToHistoryDTO1(History history) {
@@ -272,7 +294,7 @@ public class Service {
     }
 
     private PermissionDTO convertToPermissionDTO1(Permission p) {
-       return new PermissionDTO(p);
+        return new PermissionDTO(p);
 
     }
 
@@ -390,9 +412,8 @@ public class Service {
     @MessageMapping("/market/logout")
     @SendToUser("/topic/logoutResult")
     public Response<Boolean> logout(SimpMessageHeaderAccessor headerAccessor) {
-
-
-        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).logout();
+        Response<Boolean> r = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).logout();
+        return r;
     }
 
     @MessageMapping("/market/getStoreItems")
@@ -524,6 +545,12 @@ public class Service {
         return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getUserNotifications();
     }
 
+    @MessageMapping("/market/removeNotifications")
+    @SendToUser("/topic/removeNotificationsResult")
+    public Response<Boolean> removeNotifications(SimpMessageHeaderAccessor headerAccessor) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).removeUserNotifications();
+    }
+
     @MessageMapping("/market/cart/inc")
     @SendToUser("/topic/cart/incResult")
     public Response<ItemDTO> incrementItemInCart(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
@@ -571,7 +598,16 @@ public class Service {
     @MessageMapping("/market/addPolicy")
     @SendToUser("/topic/addPolicyResult")
     public Response<PolicyDTO> addPolicy(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
-        Response<SimplePurchasePolicy> sdp = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addPolicy((Integer) map.get("storeId"), Integer.parseInt((String) map.get("hour")));
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal  = Calendar.getInstance();
+        try {
+            cal.setTime(df.parse((String)map.get("date")));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        Response<SimplePurchasePolicy> sdp = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addPolicy((Integer) map.get("storeId"), Integer.parseInt((String) map.get("hour")), cal);
         if (sdp.hadError()) {
             return new Response<>(sdp.getErrorMessage());
         }
@@ -613,8 +649,26 @@ public class Service {
     @MessageMapping("/market/purchase")
     @SendToUser("/topic/purchaseResult")
     public Response<Boolean> getPurchase(SimpMessageHeaderAccessor headerAccessor, Map<String, String> map) {
+        PaymentParamsDTO paymentParamsDTO = new PaymentParamsDTO(
+                map.get("paymentServiceName"),
+                map.get("card_number"),
+                map.get("month"),
+                map.get("year"),
+                map.get("holder"),
+                map.get("ccv"),
+                map.get("id")
+                );
 
-        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).purchaseShoppingCart(map.get("address"), map.get("p_service"), map.get("s_service"));
+        SupplyParamsDTO supplyParamsDTO = new SupplyParamsDTO(
+                map.get("supplyServiceName"),
+                map.get("name"),
+                map.get("address"),
+                map.get("city"),
+                map.get("country"),
+                map.get("zip")
+        );
+
+        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
         if (res.hadError()) {
             return new Response<>(res.getErrorMessage());
         }
@@ -655,7 +709,14 @@ public class Service {
     @MessageMapping("/market/changePolicy")
     @SendToUser("/topic/changePolicyResult")
     public Response<Boolean> changePolicy(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
-        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).changePolicyHour((Integer) map.get("storeId"), (Integer) map.get("policyId"), Integer.parseInt((String) map.get("hour")), (Calendar) map.get("date"));
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal  = Calendar.getInstance();
+        try {
+            cal.setTime(df.parse((String)map.get("newDate")));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).changePolicyHour((Integer) map.get("storeId"), (Integer) map.get("policyId"), Integer.parseInt((String) map.get("newHour")), cal);
         if (res.hadError()) {
             return new Response<>(res.getErrorMessage());
         }
@@ -681,8 +742,25 @@ public class Service {
 
     @MessageMapping("/market/addItemNotAllowedInDatePredicateToPolicy")
     @SendToUser("/topic/addItemNotAllowedInDatePredicateToPolicyResult")
-    public Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
-        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemNotAllowedInDatePredicateToPolicy((Integer) map.get("storeId"), (Integer) map.get("policyId"), (String) map.get("type") ,(Integer) map.get("itemId"), (Calendar) map.get("date"));
+    public Response<AbstractPurchasePolicy> addItemNotAllowedInDatePredicateToPolicy(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal  = Calendar.getInstance();
+        try {
+            cal.setTime(df.parse((String)map.get("date")));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Response<AbstractPurchasePolicy> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemNotAllowedInDatePredicateToPolicy((Integer) map.get("storeId"), (Integer) map.get("policyId"), (String) map.get("policyType") ,Integer.parseInt((String)map.get("itemId")), cal);
+        if (res.hadError()) {
+            return new Response<>(res.getErrorMessage());
+        }
+        return res;
+    }
+
+    @MessageMapping("/market/addItemLimitPredicateToPolicy")
+    @SendToUser("/topic/addItemLimitPredicateToPolicyResult")
+    public Response<AbstractPurchasePolicy> addItemLimitPredicateToPolicy(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<AbstractPurchasePolicy> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemLimitPredicateToPolicy((Integer) map.get("storeId"), (Integer) map.get("policyId"), (String) map.get("policyType") ,Integer.parseInt((String)map.get("itemId")), Integer.parseInt((String)map.get("min")), Integer.parseInt((String)map.get("max")));
         if (res.hadError()) {
             return new Response<>(res.getErrorMessage());
         }
@@ -691,12 +769,129 @@ public class Service {
 
     @MessageMapping("/market/addItemPredicateToPolicy")
     @SendToUser("/topic/addItemPredicateToPolicyResult")
-    public Response<Boolean> addItemPredicateToPolicy(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
-        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemPredicateToPolicy((Integer) map.get("storeId"), (Integer) map.get("policyId"), (String) map.get("type") ,(Integer) map.get("itemId"), (Integer) map.get("hour"));
+    public Response<AbstractPurchasePolicy> addItemPredicateToPolicy(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<AbstractPurchasePolicy> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addItemPredicateToPolicy((Integer) map.get("storeId"), (Integer) map.get("policyId"), (String) map.get("policyType") ,Integer.parseInt((String)map.get("itemId")), Integer.parseInt((String)map.get("hour")));
         if (res.hadError()) {
             return new Response<>(res.getErrorMessage());
         }
         return res;
     }
 
+    @MessageMapping("/market/bid/addBid")
+    @SendToUser("/topic/bid/addBidResult")
+    public Response<Boolean> addBid(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addBid((Integer) map.get("store_id"), Double.parseDouble((String)map.get("bid_price")), (Integer) map.get("item_id"), (Integer) map.get("amount"));
+        if (res.hadError()) {
+            return new Response<>(res.getErrorMessage());
+        }
+        return res;
+    }
+
+    @MessageMapping("/market/oa/addOwnerAgreement")
+    @SendToUser("/topic/oa/addOwnerAgreementResult")
+    public Response<Boolean> addOwnerAgreement(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<Boolean> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addOwnerAgreement((String) map.get("owner"), (Integer) map.get("store_id"));
+        if (res.hadError()) {
+            return new Response<>(res.getErrorMessage());
+        }
+        return res;
+    }
+
+    @MessageMapping("/market/bid/deleteBid")
+    @SendToUser("/topic/bid/deleteBidResult")
+    public Response<BidDTO> deleteBid(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<Bid> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).deleteBid((Integer) map.get("store_id"), (Integer) map.get("bid_id"));
+        if (res.hadError()) {
+            return new Response<>(res.getErrorMessage());
+        }
+        return new Response<>(new BidDTO(res.getObject()));
+    }
+
+    @MessageMapping("/market/oa/deleteOwnerAgreement")
+    @SendToUser("/topic/oa/deleteOwnerAgreementResult")
+    public Response<OwnerAgreementDTO> deleteOwnerAgreement(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<OwnerAgreement> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).deleteAgreement((Integer) map.get("store_id"), (String) map.get("owner_name"));
+        if (res.hadError()) {
+            return new Response<>(res.getErrorMessage());
+        }
+        return new Response<>(new OwnerAgreementDTO(res.getObject()));
+    }
+    @MessageMapping("/market/bid/approveBid")
+    @SendToUser("/topic/bid/approveBidResult")
+    public Response<BidDTO> approveBid(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<Bid> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).approveBid((Integer) map.get("store_id"), (Integer) map.get("bid_id"));
+        if (res.hadError()) {
+            return new Response<>(res.getErrorMessage());
+        }
+        return new Response<>(new BidDTO(res.getObject()));
+    }
+
+    @MessageMapping("/market/oa/approveOwnerAgreement")
+    @SendToUser("/topic/oa/approveOwnerAgreementResult")
+    public Response<OwnerAgreementDTO> approveOwnerAgreement(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<OwnerAgreement> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).approveOwnerAgreement((Integer) map.get("store_id"), (String) map.get("owner_name"));
+        if (res.hadError()) {
+            return new Response<>(res.getErrorMessage());
+        }
+        return new Response<>(new OwnerAgreementDTO(res.getObject()));
+    }
+
+    @MessageMapping("/market/bid/approveAllBids")
+    @SendToUser("/topic/bid/approveAllBidsResult")
+    public Response<Boolean> approveAllBids(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).approveAllBids((Integer) map.get("store_id"));
+    }
+    @MessageMapping("/market/bid/updateBid")
+    @SendToUser("/topic/bid/updateBidResult")
+    public Response<BidDTO> updateBid(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<Bid> res = ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).updateBid((Integer) map.get("store_id"), (Integer) map.get("bid_id"), Double.parseDouble((String) map.get("bid_price")));
+        if (res.hadError()) {
+            return new Response<>(res.getErrorMessage());
+        }
+        return new Response<>(new BidDTO(res.getObject()));
+    }
+    @MessageMapping("/market/bid/addBidToCart")
+    @SendToUser("/topic/bid/addBidToCartResult")
+    public Response<Boolean> addBidToCart(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        return ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).addBidToCart((Integer) map.get("bid_id"));
+    }
+    @MessageMapping("/market/bid/getBids")
+    @SendToUser("/topic/bid/getBidsResult")
+    public Response<Set<BidDTO>> getBids(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<Collection<Bid>> res =  ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getBids((Integer) map.get("store_id"));
+        if(res.hadError())
+            return new Response<>(res.getErrorMessage());
+        Collection<Bid> bids = res.getObject();
+        return new Response<>(bids.stream().map(BidDTO::new).collect(Collectors.toSet()));
+    }
+
+    @MessageMapping("/market/oa/getOwnerAgreements")
+    @SendToUser("/topic/oa/getOwnerAgreementsResult")
+    public Response<Set<OwnerAgreementDTO>> getOwnerAgreements(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<Collection<OwnerAgreement>> res =  ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getOAgreements((Integer) map.get("store_id"));
+        if(res.hadError())
+            return new Response<>(res.getErrorMessage());
+        Collection<OwnerAgreement> bids = res.getObject();
+        return new Response<>(bids.stream().map(OwnerAgreementDTO::new).collect(Collectors.toSet()));
+    }
+
+    @MessageMapping("/market/bid/getUserBids")
+    @SendToUser("/topic/bid/getUserBidsResult")
+    public Response<Set<BidDTO>> getUserBids(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<Collection<Bid>> res =  ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getUserBids();
+        if(res.hadError())
+            return new Response<>(res.getErrorMessage());
+        Collection<Bid> bids = res.getObject();
+        Set<BidDTO> b = bids.stream().map(BidDTO::new).collect(Collectors.toSet());
+        return new Response<Set<BidDTO>>(b);
+    }
+
+    @MessageMapping("/market/getStats")
+    @SendToUser("/topic/getStatsResult")
+    public Response<List<StatsDTO>> getStats(SimpMessageHeaderAccessor headerAccessor, Map<String, Object> map) {
+        Response<List<Map.Entry<LocalDate, Stats>>> res =  ((SystemImplementor) headerAccessor.getSessionAttributes().get(SYSTEM_IMPLEMENTOR_STRING)).getStats();
+        if(res.hadError())
+            return new Response<>(res.getErrorMessage());
+        return new Response(res.getObject().stream().map(e -> new StatsDTO(e.getKey(), e.getValue())));
+    }
 }

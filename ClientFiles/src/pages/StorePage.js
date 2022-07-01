@@ -6,6 +6,7 @@ import ResultLabel from "../Components/ResultLabel";
 import TextField from "@material-ui/core/TextField";
 import Select from "@material-ui/core/Select";
 import {categories} from "../Shared/Shared";
+import {number} from "sockjs-client/lib/utils/random";
 
 let previous_amount = 0;
 
@@ -13,8 +14,10 @@ function StoreItem(props) {
     const item = props.item;
     let [modalOpen, setModalOpen] = useState(false);
 
-    let onContinue = (item_id, amount) => {
+    let onContinue = (item_id, amount, isBid, bid) => {
         previous_amount = item.amount;
+        isBid ?
+            stompClient.send("/app/market/bid/addBid", {}, JSON.stringify({"store_id": parseInt(props.storeid),"bid_price" : bid, "item_id" : item_id, "amount" : parseInt(amount)})) :
         stompClient.send("/app/market/AddItemToCart", {}, JSON.stringify({"store_id": props.storeid, "item_id" : item_id, "amount" : amount}));
     };
 

@@ -18,6 +18,7 @@ public abstract class CompositePurchasePolicy extends AbstractPurchasePolicy {
 
     public void addPolicy(AbstractPurchasePolicy app) {
         this.purchasePolicies.add(app);
+        update();
     }
 
     @Override
@@ -29,4 +30,7 @@ public abstract class CompositePurchasePolicy extends AbstractPurchasePolicy {
         return getPurchasesPolicies().stream().map(AbstractPurchasePolicy::getAllPurchasePolicies).collect(Collectors.toList()).stream().flatMap(Collection::stream).collect(Collectors.toList());
     }
 
+    public void setPurchasePolicies(List<AbstractPurchasePolicy> purchasePolicies) {
+        this.purchasePolicies = purchasePolicies;
+    }
 }

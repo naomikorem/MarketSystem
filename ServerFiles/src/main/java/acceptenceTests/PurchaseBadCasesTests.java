@@ -7,6 +7,9 @@ import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.HistoryManagement.ItemHistory;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
+import DomainLayer.Users.UserController;
+import ServiceLayer.DTOs.PaymentParamsDTO;
+import ServiceLayer.DTOs.SupplyParamsDTO;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,6 +47,24 @@ public class PurchaseBadCasesTests extends AbstractTest
     public void setup()
     {
         bridge.enter();
+        addStubs();
+        PaymentParamsDTO paymentParamsDTO = new PaymentParamsDTO(
+                AbstractProxy.GOOD_STUB_NAME,
+                "1111111111111111",
+                "05",
+                "21",
+                "user",
+                "165",
+                "15");
+
+        SupplyParamsDTO supplyParamsDTO = new SupplyParamsDTO(
+                AbstractProxy.GOOD_STUB_NAME,
+                "user",
+                "user address",
+                "bear shava",
+                "israel",
+                "777777");
+
         bridge.register("storeOwner111@gmail.com", storeOwnerUsername,"first","last", storeOwnerPassword);
 
         assertFalse(bridge.login(storeOwnerUsername, storeOwnerPassword).hadError());
@@ -69,7 +90,7 @@ public class PurchaseBadCasesTests extends AbstractTest
 
         // one successful purchase
         this.bridge.addItemToCart(store2_id, item_id, successfulPurchasedItemAmount);
-        bridge.purchaseShoppingCart("address", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
+        bridge.purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
 
         // prepare unsuccessful purchase
         this.bridge.addItemToCart(store1_id, item1_id, 1);
@@ -81,7 +102,24 @@ public class PurchaseBadCasesTests extends AbstractTest
     @Test
     public void FailedToPay_PurchaseServiceDoesntExist()
     {
-        Response<Boolean> res = this.bridge.purchaseShoppingCart("address", "not existing purchase service", AbstractProxy.GOOD_STUB_NAME);
+        PaymentParamsDTO paymentParamsDTO = new PaymentParamsDTO(
+                "not existing purchase service",
+                "1111111111111111",
+                "05",
+                "21",
+                "user",
+                "165",
+                "15");
+
+        SupplyParamsDTO supplyParamsDTO = new SupplyParamsDTO(
+                AbstractProxy.GOOD_STUB_NAME,
+                "user",
+                "user address",
+                "bear shava",
+                "israel",
+                "777777");
+
+        Response<Boolean> res = this.bridge.purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
         assertTrue(res.hadError());
         savedPreviousStateCheck();
     }
@@ -89,7 +127,24 @@ public class PurchaseBadCasesTests extends AbstractTest
     @Test
     public void FailedToPay_SupplyServiceDoesntExist()
     {
-        Response<Boolean> res = this.bridge.purchaseShoppingCart("address", AbstractProxy.GOOD_STUB_NAME, "not existing supply service");
+        PaymentParamsDTO paymentParamsDTO = new PaymentParamsDTO(
+                AbstractProxy.GOOD_STUB_NAME,
+                "1111111111111111",
+                "05",
+                "21",
+                "user",
+                "165",
+                "15");
+
+        SupplyParamsDTO supplyParamsDTO = new SupplyParamsDTO(
+                "not existing supply service",
+                "user",
+                "user address",
+                "bear shava",
+                "israel",
+                "777777");
+
+        Response<Boolean> res = this.bridge.purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
         assertTrue(res.hadError());
         savedPreviousStateCheck();
     }
@@ -97,7 +152,24 @@ public class PurchaseBadCasesTests extends AbstractTest
     @Test
     public void FailedToPay_PurchaseServiceFailedToCharge()
     {
-        Response<Boolean> res = this.bridge.purchaseShoppingCart("address", AbstractProxy.BAD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
+        PaymentParamsDTO paymentParamsDTO = new PaymentParamsDTO(
+                AbstractProxy.BAD_STUB_NAME,
+                "1111111111111111",
+                "05",
+                "21",
+                "user",
+                "165",
+                "15");
+
+        SupplyParamsDTO supplyParamsDTO = new SupplyParamsDTO(
+                AbstractProxy.GOOD_STUB_NAME,
+                "user",
+                "user address",
+                "bear shava",
+                "israel",
+                "777777");
+
+        Response<Boolean> res = this.bridge.purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
         assertTrue(res.hadError());
         savedPreviousStateCheck();
     }
@@ -105,7 +177,24 @@ public class PurchaseBadCasesTests extends AbstractTest
     @Test
     public void FailedToPay_SupplyServiceFailedToSupply()
     {
-        Response<Boolean> res = this.bridge.purchaseShoppingCart("address", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.BAD_STUB_NAME);
+        PaymentParamsDTO paymentParamsDTO = new PaymentParamsDTO(
+                AbstractProxy.GOOD_STUB_NAME,
+                "1111111111111111",
+                "05",
+                "21",
+                "user",
+                "165",
+                "15");
+
+        SupplyParamsDTO supplyParamsDTO = new SupplyParamsDTO(
+                AbstractProxy.BAD_STUB_NAME,
+                "user",
+                "user address",
+                "bear shava",
+                "israel",
+                "777777");
+
+        Response<Boolean> res = this.bridge.purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
         assertTrue(res.hadError());
         savedPreviousStateCheck();
     }
@@ -113,13 +202,30 @@ public class PurchaseBadCasesTests extends AbstractTest
     @Test
     public void FailedToPay_EmptyShoppingCart()
     {
+        PaymentParamsDTO paymentParamsDTO = new PaymentParamsDTO(
+                AbstractProxy.GOOD_STUB_NAME,
+                "1111111111111111",
+                "05",
+                "21",
+                "user",
+                "165",
+                "15");
+
+        SupplyParamsDTO supplyParamsDTO = new SupplyParamsDTO(
+                AbstractProxy.GOOD_STUB_NAME,
+                "user",
+                "user address",
+                "bear shava",
+                "israel",
+                "777777");
+
         // purchase the second time - ok
-        Response<Boolean> res = this.bridge.purchaseShoppingCart("address", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
+        Response<Boolean> res = this.bridge.purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
         assertFalse(res.hadError());
         assertTrue(res.getObject());
 
         // purchase an empty shopping cart - fail
-        Response<Boolean> res_empty = this.bridge.purchaseShoppingCart("address", AbstractProxy.GOOD_STUB_NAME, AbstractProxy.GOOD_STUB_NAME);
+        Response<Boolean> res_empty = this.bridge.purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
         assertTrue(res_empty.hadError());
     }
 

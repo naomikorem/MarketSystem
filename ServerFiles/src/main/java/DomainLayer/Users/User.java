@@ -1,7 +1,9 @@
 package DomainLayer.Users;
 
+import DataLayer.DALObjects.UserDAL;
 import DomainLayer.Observer;
 import DomainLayer.Response;
+import DomainLayer.Stores.Bid;
 import DomainLayer.Stores.Item;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import org.springframework.messaging.MessageHeaders;
@@ -10,6 +12,7 @@ import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class User implements Observer {
     private UserState state;
@@ -31,8 +34,28 @@ public class User implements Observer {
         return headerAccessor.getMessageHeaders();
 
     }
+    public Collection<Bid> getBids(){
+        return shoppingCart.getBids();
+    }
+    public Collection<Bid> getBidsInCart(){
+        return shoppingCart.getBids().stream().filter(Bid::isInCart).collect(Collectors.toSet());
+    }
+    public void addBid(Bid bid){
+        shoppingCart.addBid(bid);
+    }
+    public void removeBid(int bidId){
+        shoppingCart.removeBid(bidId);
+    }
+    public Bid addBidToCart(int bidId){
+        return shoppingCart.addBidToCart(bidId);
+    }
+    public Bid getBid(int bidId){
+        return shoppingCart.getBid(bidId);
+    }
 
     public void sendNotification(INotification notification) {
+        if(getSessionId() == null || getTemplate() == null)
+            return;
         String session = getSessionId();
         getTemplate().convertAndSendToUser(session, "/topic/notificationResult", new Response<>(notification), createHeaders());
     }
@@ -129,6 +152,7 @@ public class User implements Observer {
 
     public void emptyShoppingCart() {
         this.shoppingCart.emptyShoppingCart();
+        this.shoppingCart.emptyBidsInCart();
     }
 
     public String getFirstName() {
@@ -151,5 +175,25 @@ public class User implements Observer {
             return Objects.hashCode(this.getName());
         }
         return Objects.hashCode(state);
+    }
+
+    public void setShoppingCart(ShoppingCart shoppingCart) {
+        this.shoppingCart = shoppingCart;
+    }
+
+    public UserDAL toDAL() {
+        if (!isSubscribed()) {
+            throw new IllegalArgumentException("Cannot turn guest user into dal.");
+        }
+        UserDAL res = new UserDAL();
+        res.setFirstName(getFirstName());
+        res.setPassword(getState().getPassword());
+        res.setEmail(getEmail());
+        res.setUserName(getName());
+        res.setLastName(getLastName());
+        res.setOwnedStores(getOwnedStores());
+        res.setManagedStores(getManagedStores());
+        res.setShoppingBaskets(shoppingCart.getBaskets().stream().map(ShoppingBasket::toDAL).collect(Collectors.toSet()));
+        return res;
     }
 }

@@ -17,6 +17,7 @@ public class UserFacade {
         try {
             return new Response<>(userController.createUser(email, userName, firstName, lastName, password));
         } catch (Exception e) {
+            e.printStackTrace();
             return new Response<>(e.getMessage());
         }
     }

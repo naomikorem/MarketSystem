@@ -1,16 +1,24 @@
 package DomainLayer.Users;
 
+import DataLayer.DALObjects.ItemDAL;
+import DataLayer.DALObjects.ShoppingBasketDAL;
 import DomainLayer.Stores.Item;
 
 import java.util.*;
 
 public class ShoppingBasket {
+    private int id;
     private int storeId;
     private final Map<Item, Integer> items;
 
     public ShoppingBasket(int storeId) {
         this.storeId = storeId;
         this.items = new HashMap<>();
+    }
+
+    public ShoppingBasket(int storeId, Map<Item, Integer> items) {
+        this.storeId = storeId;
+        this.items = items;
     }
 
     public int getStoreId() {
@@ -65,5 +73,21 @@ public class ShoppingBasket {
 
     public double calculatePrice() {
         return this.calculatePrice(new HashMap<>());
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public ShoppingBasketDAL toDAL() {
+        ShoppingBasketDAL res = new ShoppingBasketDAL();
+        res.setId(this.id);
+        res.setStoreId(getStoreId());
+
+        Map<ItemDAL, Integer> items = new HashMap<>();
+        this.items.forEach((key, value) -> items.put(key.toDAL(), value));
+        res.setItems(items);
+
+        return res;
     }
 }

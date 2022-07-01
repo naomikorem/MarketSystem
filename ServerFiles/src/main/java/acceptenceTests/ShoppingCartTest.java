@@ -4,6 +4,8 @@ import DomainLayer.Stores.Category;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.Store;
 import DomainLayer.Users.UserController;
+import ServiceLayer.DTOs.PaymentParamsDTO;
+import ServiceLayer.DTOs.SupplyParamsDTO;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +65,26 @@ public class ShoppingCartTest extends AbstractTest {
         assertTrue(l.contains(i1));
         assertTrue(l.contains(i2));
         assertFalse(l.contains(i3));
-        bridge.purchaseShoppingCart("bear shava", "UPS", "hello");
+
+
+        PaymentParamsDTO paymentParamsDTO = new PaymentParamsDTO(
+                "hello",
+                "1111111111111111",
+                "05",
+                "21",
+                "user",
+                "165",
+                "15");
+
+        SupplyParamsDTO supplyParamsDTO = new SupplyParamsDTO(
+                "not existing supply",
+                "user",
+                "user address",
+                "bear shava",
+                "israel",
+                "777777");
+
+        bridge.purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
 
         bridge.getShoppingCartItems().getObject();
         //assertTrue(l.isEmpty());

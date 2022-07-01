@@ -1,8 +1,10 @@
 package acceptenceTests;
 
+import DomainLayer.Stats.StatsController;
 import DomainLayer.Stores.Item;
 import DomainLayer.Stores.StoreController;
 
+import DomainLayer.SystemManagement.ExternalServices.AbstractProxy;
 import DomainLayer.SystemManagement.HistoryManagement.ItemHistory;
 import DomainLayer.SystemManagement.MarketManagementFacade;
 
@@ -13,6 +15,8 @@ import java.util.Set;
 
 public abstract class AbstractTest {
     protected Bridge bridge;
+    protected String DEFAULT_PAYMENT_NAME = AbstractProxy.WSEP_PAYMENT;
+    protected String DEFAULT_SUPPLY_NAME = AbstractProxy.WSEP_SUPPLY;
 
 
     public AbstractTest() {
@@ -25,6 +29,7 @@ public abstract class AbstractTest {
         StoreController.getInstance().clearAll();
         AdminController.getInstance().clearAll();
         MarketManagementFacade.getInstance().clearAll();
+        StatsController.getInstance().clearAll();
     }
 
     public boolean compareHistoryItemsToRegularItems(Set<ItemHistory> history_items, Set<Item> regular_items)
@@ -49,6 +54,14 @@ public abstract class AbstractTest {
                 return false;
         }
         return true;
+    }
+
+    protected void addStubs()
+    {
+        bridge.login(UserController.DEFAULT_ADMIN_USER, UserController.DEFAULT_ADMIN_PASSWORD);
+        bridge.addExternalSupplyService(AbstractProxy.GOOD_STUB_NAME, "url");
+        bridge.addExternalPurchaseService(AbstractProxy.GOOD_STUB_NAME, "url");
+        bridge.logout();
     }
 
     public boolean compare(Item item, ItemHistory itemHistory)

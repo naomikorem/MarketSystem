@@ -16,6 +16,8 @@ import {Link} from "react-router-dom";
 import AddDiscountPopup from "../Components/AddDiscountPopup";
 import ManageDiscountsPopup from "../Components/ManageDiscountsPopup";
 import ManagePoliciesPopup from "../Components/ManagePoliciesPopup";
+import ManageBidsPopup from "../Components/ManageBidsPopup";
+import ManageOwnersAgreements from "../Components/ManageOwnersAgreements";
 
 function StoreToClose(props) {
     let [modalOpen, setModalOpen] = useState(false);
@@ -116,6 +118,7 @@ class EditStorePage extends Component {
             }
         });
 
+
         stompClient.send("/app/market/getStoreInfo", {}, JSON.stringify({"id": this.props.storeid}));
     }
 
@@ -133,6 +136,7 @@ class EditStorePage extends Component {
                             </div>
                             <div className="editStoreButtons">
                                 <ManagersPopup managers={this.state.store.managers} storeId={this.state.store.id}/>
+                                <ManageOwnersAgreements storeId={this.state.store.id}/>
                                 <OwnersPopup owners={this.state.store.owners} storeId={this.state.store.id}/>
                                 <InventoryPopup storeId={this.state.store.id}/>
                                 <Link state={{ storeName: this.state.store.name }} to={`/store-purchase-history/${this.state.store.id}`}>
@@ -146,6 +150,8 @@ class EditStorePage extends Component {
                                 <ManageDiscountsPopup storeId={this.state.store.id}/>
 
                                 <ManagePoliciesPopup storeId={this.state.store.id}/>
+
+                                <ManageBidsPopup storeId={this.state.store.id}/>
 
                                 { this.state.store.isOpen && !this.state.store.permanentlyClosed ?
                                     <StoreToClose store={this.state.store}/> : <StoreToOpen store={this.state.store}/>

@@ -40,9 +40,18 @@ public class StoreFacade {
         }
     }
 
+    public Response<Boolean> addOwnerAgreement(User owner, User newOwner, int storeId) {
+        try {
+            storeController.addOAgreement(storeId, newOwner, owner.getName());
+            return new Response<>(true);
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
     public Response<Boolean> addOwner(User owner, User newOwner, int storeId) {
         try {
-            return new Response<>(storeController.addOwner(owner, newOwner, storeId));
+            storeController.addOwner(owner.getName(),newOwner,storeId);
+            return new Response<>(true);
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
@@ -118,14 +127,14 @@ public class StoreFacade {
     }
 
     /**
-     * @param items serched items
-     * @param upLimit if irrelevant value = -1
+     * @param items    serched items
+     * @param upLimit  if irrelevant value = -1
      * @param lowLimit if irrelevant value = -1
-     * @param rating if irrelevant value = -1
+     * @param rating   if irrelevant value = -1
      * @return filtered prodacts
      */
-    public Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating){
-        return new Response<>(storeController.filterProdacts(items,upLimit,lowLimit, rating));
+    public Response<Set<Item>> filterProdacts(Set<Item> items, int upLimit, int lowLimit, int rating) {
+        return new Response<>(storeController.filterProdacts(items, upLimit, lowLimit, rating));
     }
 
     public Response<Double> getRatingOfProduct(int storeId, int itemId) {
@@ -252,8 +261,8 @@ public class StoreFacade {
             return new Response<>(e.getMessage());
         }
     }
-  
-    public Response<List<String>> getManagers(User owner, int storeId){
+
+    public Response<List<String>> getManagers(User owner, int storeId) {
         try {
             return new Response<>(storeController.getManagers(owner, storeId));
         } catch (Exception e) {
@@ -261,7 +270,7 @@ public class StoreFacade {
         }
     }
 
-    public Response<Permission> getManagersPermissions(User owner, int storeId, String managerName){
+    public Response<Permission> getManagersPermissions(User owner, int storeId, String managerName) {
         try {
             return new Response<>(storeController.getManagersPermissions(owner, storeId, managerName));
         } catch (Exception e) {
@@ -292,7 +301,7 @@ public class StoreFacade {
             return new Response<>(e.getMessage());
         }
     }
-  
+
     public Response<Boolean> isOwner(int store_id, String username) {
         try {
             return new Response<>(storeController.getStore(store_id).isOwner(username));
@@ -318,9 +327,9 @@ public class StoreFacade {
         }
     }
 
-    public Response<SimplePurchasePolicy> addPolicy(User u, int storeId, int hour) {
+    public Response<SimplePurchasePolicy> addPolicy(User u, int storeId, int hour, Calendar date) {
         try {
-            return new Response<>(storeController.addPolicy(u, storeId, hour));
+            return new Response<>(storeController.addPolicy(u, storeId, hour, date));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
@@ -385,19 +394,27 @@ public class StoreFacade {
         }
     }
 
-    public Response<Boolean> addItemPredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, int hour) {
+    public Response<AbstractPurchasePolicy> addItemLimitPredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, int min, int max) {
         try {
-            storeController.addItemPredicateToPolicy(owner, storeId, policyId, type, itemId,hour);
-            return new Response<>(true);
+            return new Response<>(storeController.addItemLimitPredicateToPolicy(owner, storeId, policyId, type, itemId, min, max));
+
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
     }
 
-    public Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, Calendar date) {
+    public Response<AbstractPurchasePolicy> addItemPredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, int hour) {
         try {
-            storeController.addItemNotAllowedInDatePredicateToPolicy(owner, storeId, policyId, type, itemId,date);
-            return new Response<>(true);
+            return new Response<>(storeController.addItemPredicateToPolicy(owner, storeId, policyId, type, itemId,hour));
+
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<AbstractPurchasePolicy> addItemNotAllowedInDatePredicateToPolicy(User owner, int storeId, int policyId, String type, int itemId, Calendar date) {
+        try {
+            return new Response<>(storeController.addItemNotAllowedInDatePredicateToPolicy(owner, storeId, policyId, type, itemId,date));
         } catch (Exception e) {
             return new Response<>(e.getMessage());
         }
@@ -436,6 +453,7 @@ public class StoreFacade {
             return new Response<>(e.getMessage());
         }
     }
+
     public Response<Map<Item, Double>> getShoppingBasketDiscounts(ShoppingBasket sb) {
         try {
             return new Response<>(storeController.getShoppingBasketDiscounts(sb));
@@ -461,5 +479,55 @@ public class StoreFacade {
         }
     }
 
+    public Response<Bid> addBid(int storeId, String costumerName, double bidPrice, int item, int amount) {
+        try {
+            return new Response<>(storeController.addBid(storeId, costumerName, bidPrice, item, amount));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
 
+    public Response<Collection<Bid>> getBids(int storeId, User user) {
+        try {
+            return new Response<>(storeController.getBids(storeId, user));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+    public Response<Collection<OwnerAgreement>> getOAgreements(int storeId, User user) {
+        try {
+            return new Response<>(storeController.getOAgreements(storeId));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+    public Response<Bid> approveBid(int storeId, User user, int bidId) {
+        try {
+            return new Response<>(storeController.approveBid(storeId, user, bidId));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+    public Response<OwnerAgreement> approveOAgreement(int storeId, User user, String name) {
+        try {
+            return new Response<>(storeController.approveOAgreement(storeId, user, name));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+
+    public Response<Bid> removeBid(int storeId, User user, int bidId){
+        try {
+            return new Response<>(storeController.removeBid(storeId, user, bidId));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
+    public Response<OwnerAgreement> removeOAgreement(int storeId, User user, String name){
+        try {
+            return new Response<>(storeController.removeOAgreement(storeId, user, name));
+        } catch (Exception e) {
+            return new Response<>(e.getMessage());
+        }
+    }
 }
