@@ -35,7 +35,7 @@ public class StorePolicyTests extends AbstractTest {
         bridge.register("user111@gmail.com", "user", "first", "last", "password");
         bridge.login("user", "password");
         this.s = bridge.addNewStore("store").getObject();
-        i1 = bridge.addItemToStore(s.getStoreId(), "item1", Category.Food, 10, 1).getObject();
+        i1 = bridge.addItemToStore(s.getStoreId(), "item1", Category.Food, 10, 20).getObject();
         i2 = bridge.addItemToStore(s.getStoreId(), "item2", Category.Clothing, 11, 1).getObject();
         i3 = bridge.addItemToStore(s.getStoreId(), "item3", Category.Food, 12, 1).getObject();
     }
@@ -44,51 +44,78 @@ public class StorePolicyTests extends AbstractTest {
     public void testStoreGeneralPolicySuccess() {
         int i = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         assertFalse(bridge.addItemToCart(s.getStoreId(), i1.getId(), 1).hadError());
-        Response<SimplePurchasePolicy> p = bridge.addPolicy(s.getStoreId(), 24);
-        assertFalse(p.hadError());
+        Response<SimplePurchasePolicy> p1 = bridge.addPolicy(s.getStoreId(), 24, Calendar.getInstance());
+        assertFalse(p1.hadError());
         Response<Boolean> res_bool = bridge.getIsLegalToPurchase(s.getStoreId());
         assertFalse(res_bool.hadError());
         assertTrue(res_bool.getObject());
-        assertFalse(bridge.addItemPredicateToPolicy(s.getStoreId(), p.getObject().getId(), "AND", i1.getId(), i + 2).hadError());
+        Response<AbstractPurchasePolicy> res = bridge.addItemPredicateToPolicy(s.getStoreId(), p1.getObject().getId(), "AND", i1.getId(), i + 2);
+        assertFalse(res.hadError());
         res_bool = bridge.getIsLegalToPurchase(s.getStoreId());
         assertFalse(res_bool.hadError());
         assertTrue(res_bool.getObject());
-        Response<SimplePurchasePolicy> p2 = bridge.addPolicy(s.getStoreId(), 24);
+        Response<SimplePurchasePolicy> p2 = bridge.addPolicy(s.getStoreId(), 24, Calendar.getInstance());
         assertFalse(p2.hadError());
         assertFalse(bridge.addItemPredicateToPolicy(s.getStoreId(), p2.getObject().getId(), "AND", i1.getId(), i - 2).hadError());
         res_bool = bridge.getIsLegalToPurchase(s.getStoreId());
-        assertFalse(res_bool.hadError());
-        assertFalse(res_bool.getObject());
+        assertTrue(res_bool.hadError());
     }
 
     @Test
-    public void testOrDiscount() {
+    public void testOrPolicy() {
         Calendar c = Calendar.getInstance();
         assertFalse(bridge.addItemToCart(s.getStoreId(), i1.getId(), 1).hadError());
-        Response<SimplePurchasePolicy> p = bridge.addPolicy(s.getStoreId(), 24);
-        assertFalse(p.hadError());
+        Response<SimplePurchasePolicy> p1 = bridge.addPolicy(s.getStoreId(), 24, Calendar.getInstance());
+        Response<SimplePurchasePolicy> p2 = bridge.addPolicy(s.getStoreId(), 24, Calendar.getInstance());
+        assertFalse(p1.hadError());
+        assertFalse(p2.hadError());
         Response<Boolean> res_bool = bridge.getIsLegalToPurchase(s.getStoreId());
         assertFalse(res_bool.hadError());
         assertTrue(res_bool.getObject());
-        assertFalse(bridge.addItemPredicateToPolicy(s.getStoreId(), p.getObject().getId(), "OR", i1.getId(), c.get(Calendar.HOUR_OF_DAY) - 1).hadError());
+        Response<AbstractPurchasePolicy> e3 = bridge.addItemPredicateToPolicy(s.getStoreId(), p1.getObject().getId(), "OR", i1.getId(), c.get(Calendar.HOUR_OF_DAY) - 1);
+        assertFalse(e3.hadError());
         res_bool = bridge.getIsLegalToPurchase(s.getStoreId());
-        assertFalse(res_bool.hadError());
-        assertFalse(res_bool.getObject());
-        assertFalse(bridge.addItemPredicateToPolicy(s.getStoreId(), p.getObject().getId(), "OR", i1.getId(), c.get(Calendar.HOUR_OF_DAY) + 2).hadError());
+        assertTrue(res_bool.hadError());
+        assertFalse(bridge.addItemPredicateToPolicy(s.getStoreId(), p1.getObject().getId(), "OR", i1.getId(), c.get(Calendar.HOUR_OF_DAY) + 2).hadError());
         res_bool = bridge.getIsLegalToPurchase(s.getStoreId());
         assertFalse(res_bool.hadError());
         assertTrue(res_bool.getObject());
+    }
+
+    @Test
+    public void testLimitItemAmountPolicy() {
+        Calendar c = Calendar.getInstance();
+        assertFalse(bridge.addItemToCart(s.getStoreId(), i1.getId(), 1).hadError());
+        Response<SimplePurchasePolicy> p1 = bridge.addPolicy(s.getStoreId(), 24, Calendar.getInstance());
+        assertFalse(p1.hadError());
+        Response<Boolean> res_bool = bridge.getIsLegalToPurchase(s.getStoreId());
+        assertFalse(res_bool.hadError());
+        assertTrue(res_bool.getObject());
+
+        Response<AbstractPurchasePolicy> e3 = bridge.addItemLimitPredicateToPolicy(s.getStoreId(), p1.getObject().getId(), "OR", i1.getId(), 5, 10);
+        assertFalse(e3.hadError());
+        res_bool = bridge.getIsLegalToPurchase(s.getStoreId());
+        assertTrue(res_bool.hadError());
+
+        assertFalse(bridge.addItemToCart(s.getStoreId(), i1.getId(), 4).hadError());
+        res_bool = bridge.getIsLegalToPurchase(s.getStoreId());
+        assertFalse(res_bool.hadError());
+        assertTrue(res_bool.getObject());
+
+        assertFalse(bridge.addItemToCart(s.getStoreId(), i1.getId(), 6).hadError());
+        res_bool = bridge.getIsLegalToPurchase(s.getStoreId());
+        assertTrue(res_bool.hadError());
     }
 
     @Test
     public void addPoliciesSynchronizedTest() {
         Thread t1 = new Thread(() -> {
-            r1 = bridge.addPolicy(s.getStoreId(), 24);
+            r1 = bridge.addPolicy(s.getStoreId(), 24, Calendar.getInstance());
             Calendar c = Calendar.getInstance();
             assertFalse(bridge.addItemPredicateToPolicy(s.getStoreId(),r1.getObject().getId(),"AND", i1.getId(), c.get(Calendar.HOUR_OF_DAY)-1).hadError());
         });
         Thread t2 = new Thread(() -> {
-            r2 = bridge.addPolicy(s.getStoreId(), 24);
+            r2 = bridge.addPolicy(s.getStoreId(), 24, Calendar.getInstance());
             Calendar c = Calendar.getInstance();
             assertFalse(bridge.addItemPredicateToPolicy(s.getStoreId(),r2.getObject().getId(), "AND", i1.getId(), c.get(Calendar.HOUR_OF_DAY)+1).hadError());
         });
@@ -101,12 +128,11 @@ public class StorePolicyTests extends AbstractTest {
 
             assertFalse(bridge.addItemToCart(s.getStoreId(), i1.getId(), 1).hadError());
             Response<Boolean> res = bridge.getIsLegalToPurchase(s.getStoreId());
-            assertFalse(res.hadError());
+            assertTrue(res.hadError());
 
             Response<Boolean> result = bridge.removePolicy(s.getStoreId(), r1.getObject().getId());
             assertFalse(result.hadError());
             assertTrue(result.getObject());
-            assertFalse(res.getObject());
         } catch (Exception e) {
             fail();
         }
@@ -115,14 +141,14 @@ public class StorePolicyTests extends AbstractTest {
 
     @Test
     public void addPredicateSynchronizedTest() {
-        Response<SimplePurchasePolicy> p = bridge.addPolicy(s.getStoreId(),24);
-
+        Response<SimplePurchasePolicy> p = bridge.addPolicy(s.getStoreId(),24, Calendar.getInstance());
         Thread t1 = new Thread(() -> {
             Calendar c = Calendar.getInstance();
             assertFalse(bridge.addItemPredicateToPolicy(s.getStoreId(),p.getObject().getId(),"AND", i1.getId(), c.get(Calendar.HOUR_OF_DAY)+1).hadError());
         });
         Thread t2 = new Thread(() -> {
             Calendar c = Calendar.getInstance();
+            System.out.println("date "+c);
             assertFalse(bridge.addItemNotAllowedInDatePredicateToPolicy(s.getStoreId(),p.getObject().getId(), "AND", i1.getId(),c).hadError());
         });
         t1.start();
@@ -132,8 +158,7 @@ public class StorePolicyTests extends AbstractTest {
             t2.join();
             assertFalse(bridge.addItemToCart(s.getStoreId(), i1.getId(), 1).hadError());
             Response<Boolean> res = bridge.getIsLegalToPurchase(s.getStoreId());
-            assertFalse(res.hadError());
-            assertFalse(res.getObject());
+            assertTrue(res.hadError());
         } catch (Exception e) {
             fail();
         }
@@ -141,7 +166,7 @@ public class StorePolicyTests extends AbstractTest {
 
     @Test
     public void addPredicate2SynchronizedTest() {
-        Response<SimplePurchasePolicy> p = bridge.addPolicy(s.getStoreId(),24);
+        Response<SimplePurchasePolicy> p = bridge.addPolicy(s.getStoreId(),24, Calendar.getInstance());
 
         Thread t1 = new Thread(() -> {
             Calendar c = Calendar.getInstance();
@@ -165,4 +190,3 @@ public class StorePolicyTests extends AbstractTest {
         }
     }
 }
-

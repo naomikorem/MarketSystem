@@ -111,6 +111,9 @@ class ManagerPermissionPopup extends Component {
                                     <div>
                                         <label><Checkbox checked={(this.state.permission.permissionMask & 0x8) != 0} onChange={(event) => {this.handleCheckboxChanged(0x8)}}/> Allow to manage purchase policies</label>
                                     </div>
+                                    <div>
+                                        <label><Checkbox checked={(this.state.permission.permissionMask & 0x10) != 0} onChange={(event) => {this.handleCheckboxChanged(0x10)}}/> Allow to manage bids</label>
+                                    </div>
                                 </div>
                             }
                         </Modal.Body>

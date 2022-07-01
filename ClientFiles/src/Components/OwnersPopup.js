@@ -20,9 +20,9 @@ function deleteOwner(toRemove, storeId) {
 }
 
 function addOwner(owner, storeId) {
-    stompClient.send("/app/market/addOwner", {}, JSON.stringify({
+    stompClient.send("/app/market/oa/addOwnerAgreement", {}, JSON.stringify({
         "owner": owner,
-        "storeId": storeId
+        "store_id": storeId
     }));
 }
 

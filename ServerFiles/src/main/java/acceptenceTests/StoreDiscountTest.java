@@ -128,7 +128,7 @@ public class StoreDiscountTest extends AbstractTest {
     public void testXorDiscount() {
         Response<SimpleDiscountPolicy> disRes = bridge.addDiscount(s.getStoreId(), 0.6);
         assertFalse(disRes.hadError());
-        assertFalse(bridge.addCategoryPredicateToDiscount(s.getStoreId(), disRes.getObject().getId(), "AND", "Food").hadError());
+        Response<Boolean> r = bridge.addCategoryPredicateToDiscount(s.getStoreId(), disRes.getObject().getId(), "AND", "Food");
 
         assertFalse(bridge.addItemToCart(s.getStoreId(), i1.getId(), 1).hadError());
         Response<Double> priceRes = bridge.getCartPrice();
@@ -218,7 +218,7 @@ public class StoreDiscountTest extends AbstractTest {
             Response<SimpleDiscountPolicy> res = bridge.addDiscount(s.getStoreId(), 0.4);
             assertFalse(res.hadError());
             Thread t1 = new Thread(() -> {
-                assertFalse(bridge.addItemPredicateToDiscount(s.getStoreId(), res.getObject().getId(), "AND", 1).hadError());
+                assertFalse(bridge.addItemPredicateToDiscount(s.getStoreId(), res.getObject().getId(), "AND", i1.getId()).hadError());
             });
             Thread t2 = new Thread(() -> {
                 assertFalse(bridge.addCategoryPredicateToDiscount(s.getStoreId(), res.getObject().getId(), "AND", "Food").hadError());

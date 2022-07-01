@@ -1,14 +1,13 @@
 package acceptenceTests;
 
 import DomainLayer.Response;
+import DomainLayer.Stats.Stats;
+import DomainLayer.Stores.*;
 import DomainLayer.Stores.Category;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
-import DomainLayer.Stores.Item;
-import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
 import DomainLayer.Stores.PurchasePolicy.SimplePurchasePolicy;
-import DomainLayer.Stores.Store;
 import DomainLayer.SystemImplementor;
 import DomainLayer.SystemInterface;
 import DomainLayer.SystemManagement.HistoryManagement.History;
@@ -16,7 +15,10 @@ import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
+import ServiceLayer.DTOs.PaymentParamsDTO;
+import ServiceLayer.DTOs.SupplyParamsDTO;
 
+import java.time.LocalDate;
 import java.util.*;
 
 public class Real extends Bridge {
@@ -47,8 +49,8 @@ public class Real extends Bridge {
     }
 
     @Override
-    public Response<Boolean> purchaseShoppingCart(String address, String purchase_service_name, String supply_service_name) {
-        return this.adaptee.purchaseShoppingCart(address, purchase_service_name, supply_service_name);
+    public Response<Boolean> purchaseShoppingCart(PaymentParamsDTO paymentParamsDTO, SupplyParamsDTO supplyParamsDTO) {
+        return this.adaptee.purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
     }
 
     @Override
@@ -98,6 +100,11 @@ public class Real extends Bridge {
     @Override
     public Response<Collection<Store>> getStores() {
         return adaptee.getAllStores();
+    }
+
+    @Override
+    public Response<Collection<Store>> getUsersStores() {
+        return adaptee.getUsersStores();
     }
 
     @Override
@@ -237,13 +244,13 @@ public class Real extends Bridge {
     }
 
     @Override
-    public Response<List<INotification>> getUserRealTimeNotifications() {
-        return this.adaptee.getUserRealTimeNotifications();
+    public Response<User> getUser(String userName) {
+        return this.adaptee.getUser(userName);
     }
 
     @Override
-    public Response<User> getUser(String userName) {
-        return this.adaptee.getUser(userName);
+    public Response<Boolean> isLoggedInAdminCheck() {
+        return this.adaptee.isLoggedInAdminCheck();
     }
 
     @Override
@@ -257,8 +264,8 @@ public class Real extends Bridge {
     }
 
     @Override
-    public Response<SimplePurchasePolicy> addPolicy(int storeId, int hour) {
-        return this.adaptee.addPolicy(storeId, hour);
+    public Response<SimplePurchasePolicy> addPolicy(int storeId, int hour, Calendar date) {
+        return this.adaptee.addPolicy(storeId, hour, date);
     }
 
     @Override
@@ -267,24 +274,24 @@ public class Real extends Bridge {
     }
 
     @Override
-    public Response<Boolean> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour) {
+    public Response<AbstractPurchasePolicy> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour) {
         return this.adaptee.addItemPredicateToPolicy(storeId, policyId, type,itemId,hour);
     }
 
-    public Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date) {
+    public Response<AbstractPurchasePolicy> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date) {
         return this.adaptee.addItemNotAllowedInDatePredicateToPolicy(storeId, policyId, type, itemId, date);
     }
 
     @Override
     public Response<Boolean> addItemPredicateToDiscount(int storeId, int discountId, String type, int itemId) {
         Response<AbstractDiscountPolicy> r = this.adaptee.addItemPredicateToDiscount(storeId, discountId, type, itemId);
-        return r.hadError() ? new Response<>(true) : new Response<>(r.getErrorMessage());
+        return !r.hadError() ? new Response<>(true) : new Response<>(r.getErrorMessage());
     }
 
     @Override
     public Response<Boolean> addCategoryPredicateToDiscount(int storeId, int discountId, String type, String categoryName) {
         Response<AbstractDiscountPolicy> r = this.adaptee.addCategoryPredicateToDiscount(storeId, discountId, type, categoryName);
-        return r.hadError() ? new Response<>(true) : new Response<>(r.getErrorMessage());
+        return !r.hadError() ? new Response<>(true) : new Response<>(r.getErrorMessage());
     }
 
     @Override
@@ -299,7 +306,7 @@ public class Real extends Bridge {
     @Override
     public Response<Boolean> addBasketRequirementPredicateToDiscount(int storeId, int discountId, String type, double minPrice) {
         Response<AbstractDiscountPolicy> r = this.adaptee.addBasketRequirementPredicateToDiscount(storeId, discountId, type, minPrice);
-        return r.hadError() ? new Response<>(true) : new Response<>(r.getErrorMessage());
+        return !r.hadError() ? new Response<>(true) : new Response<>(r.getErrorMessage());
     }
 
     @Override
@@ -340,4 +347,69 @@ public class Real extends Bridge {
     public Response<Boolean> setItemRating(int storeId, int itemId, double rate) {return adaptee.setItemRating(storeId, itemId, rate); }
 
     public Response<Double> getItemRating(int storeId, int itemId) {return adaptee.getItemRating(storeId, itemId); }
+
+    @Override
+    public Response<Boolean> addBid(int storeId, double bidPrice, int item, int amount) {
+        return adaptee.addBid(storeId, bidPrice, item, amount);
+    }
+
+    @Override
+    public Response<Boolean> addBidToCart(int bidId) {
+        return adaptee.addBidToCart(bidId);
+    }
+
+    @Override
+    public Response<Collection<Bid>> getBids(int storeId) {
+        return adaptee.getBids(storeId);
+    }
+
+    @Override
+    public Response<Collection<Bid>> getUserBids() {
+        return adaptee.getUserBids();
+    }
+
+    @Override
+    public Response<Bid> approveBid(int storeId, int bidId) {
+        return adaptee.approveBid(storeId, bidId);
+    }
+
+    @Override
+    public Response<Bid> deleteBid(int storeId, int bidId) {
+        return adaptee.deleteBid(storeId, bidId);
+    }
+
+    @Override
+    public Response<Bid> updateBid(int storeId, int bidId, double newPrice) {
+        return adaptee.updateBid(storeId, bidId, newPrice);
+    }
+
+    @Override
+    public Response<Boolean> approveAllBids(int storeId) {
+        return adaptee.approveAllBids(storeId);
+    }
+
+    @Override
+    public Response<List<Map.Entry<LocalDate, Stats>>> getStats() {
+        return adaptee.getStats();
+    }
+
+    @Override
+    public Response<Boolean> addOwnerAgreement(String owner, int storeId) {
+        return adaptee.addOwnerAgreement(owner, storeId);
+    }
+
+    @Override
+    public Response<OwnerAgreement> approveOwnerAgreement(int storeId, String bidId) {
+        return adaptee.approveOwnerAgreement(storeId, bidId);
+    }
+    
+    @Override
+    public Response<Boolean> setManagerPermission(String manager, int storeId, byte permission) {
+        return adaptee.setManagerPermission(manager, storeId, permission);
+    }
+
+    @Override
+    public Response<AbstractPurchasePolicy> addItemLimitPredicateToPolicy(int storeId, int policyId, String type, int itemId, int min, int max) {
+        return adaptee.addItemLimitPredicateToPolicy(storeId, policyId, type, itemId, min, max);
+    }
 }

@@ -1,12 +1,18 @@
 package DomainLayer.Stores.DiscountPolicy;
 
+import DataLayer.DALObjects.CompositePredicateDAL;
+import DataLayer.DALObjects.DiscountDAL;
+import DataLayer.DALObjects.PredicateDAL;
+import DataLayer.DiscountManager;
 import DomainLayer.Stores.Predicates.AbstarctPredicate;
 import DomainLayer.Stores.Item;
+import DomainLayer.Stores.Predicates.CompositePredicate;
 import DomainLayer.Users.ShoppingBasket;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public abstract class AbstractDiscountPolicy {
 
@@ -91,5 +97,13 @@ public abstract class AbstractDiscountPolicy {
 
     public void setPercentage(double percentage) {
         throw new IllegalArgumentException("This discount policy does not have a percentage field.");
+    }
+
+    public abstract DiscountDAL toDAL();
+
+    public void update() {
+        if (getId() != 0) {
+            DiscountManager.getInstance().addObject(toDAL());
+        }
     }
 }

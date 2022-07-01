@@ -1,19 +1,21 @@
 package acceptenceTests;
 
 import DomainLayer.Response;
+import DomainLayer.Stats.Stats;
+import DomainLayer.Stores.*;
 import DomainLayer.Stores.Category;
 import DomainLayer.Stores.DiscountPolicy.AbstractDiscountPolicy;
 import DomainLayer.Stores.DiscountPolicy.SimpleDiscountPolicy;
-import DomainLayer.Stores.Item;
-import DomainLayer.Stores.Permission;
 import DomainLayer.Stores.PurchasePolicy.AbstractPurchasePolicy;
 import DomainLayer.Stores.PurchasePolicy.SimplePurchasePolicy;
-import DomainLayer.Stores.Store;
 import DomainLayer.SystemManagement.HistoryManagement.History;
 import DomainLayer.SystemManagement.NotificationManager.INotification;
 import DomainLayer.Users.ShoppingBasket;
 import DomainLayer.Users.User;
+import ServiceLayer.DTOs.PaymentParamsDTO;
+import ServiceLayer.DTOs.SupplyParamsDTO;
 
+import java.time.LocalDate;
 import java.util.*;
 
 public class Proxy extends Bridge {
@@ -56,9 +58,9 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<Boolean> purchaseShoppingCart(String address, String purchase_service_name, String supply_service_name) {
+    public Response<Boolean> purchaseShoppingCart(PaymentParamsDTO paymentParamsDTO, SupplyParamsDTO supplyParamsDTO) {
         if (this.real != null) {
-            return real.purchaseShoppingCart(address, purchase_service_name, supply_service_name);
+            return real.purchaseShoppingCart(paymentParamsDTO, supplyParamsDTO);
 
         }
         return null;
@@ -142,6 +144,15 @@ public class Proxy extends Bridge {
             return null;
         }
         return real.getStores();
+    }
+
+    @Override
+    public Response<Collection<Store>> getUsersStores()
+    {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getUsersStores();
     }
 
     @Override
@@ -342,19 +353,19 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<List<INotification>> getUserRealTimeNotifications() {
-        if (this.real == null) {
-            return null;
-        }
-        return real.getUserRealTimeNotifications();
-    }
-
-    @Override
     public Response<User> getUser(String userName) {
         if (this.real == null) {
             return null;
         }
         return real.getUser(userName);
+    }
+
+    @Override
+    public Response<Boolean> isLoggedInAdminCheck() {
+        if (this.real == null) {
+            return null;
+        }
+        return real.isLoggedInAdminCheck();
     }
 
     @Override
@@ -374,11 +385,11 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<SimplePurchasePolicy> addPolicy (int storeId, int hour) {
+    public Response<SimplePurchasePolicy> addPolicy (int storeId, int hour, Calendar date) {
         if (this.real == null) {
             return null;
         }
-        return real.addPolicy(storeId, hour);
+        return real.addPolicy(storeId, hour, date);
     }
 
     @Override
@@ -390,7 +401,7 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<Boolean> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour) {
+    public Response<AbstractPurchasePolicy> addItemPredicateToPolicy(int storeId, int policyId, String type, int itemId, int hour) {
         if (this.real == null) {
             return null;
         }
@@ -398,7 +409,7 @@ public class Proxy extends Bridge {
     }
 
     @Override
-    public Response<Boolean> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date) {
+    public Response<AbstractPurchasePolicy> addItemNotAllowedInDatePredicateToPolicy(int storeId, int policyId, String type, int itemId, Calendar date) {
         if (this.real == null) {
             return null;
         }
@@ -512,5 +523,108 @@ public class Proxy extends Bridge {
             return null;
         }
         return real.getItemRating(storeId, itemId);
+    }
+
+    @Override
+    public Response<Boolean> addBid(int storeId, double bidPrice, int item, int amount) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.addBid( storeId, bidPrice, item, amount);
+    }
+
+    @Override
+    public Response<Boolean> addBidToCart(int bidId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.addBidToCart(bidId);
+    }
+
+    @Override
+    public Response<Collection<Bid>> getBids(int storeId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getBids(storeId);
+    }
+
+    @Override
+    public Response<Collection<Bid>> getUserBids() {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getUserBids();
+    }
+
+    @Override
+    public Response<Bid> approveBid(int storeId, int bidId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.approveBid(storeId, bidId);
+    }
+
+    @Override
+    public Response<Bid> deleteBid(int storeId, int bidId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.deleteBid(storeId, bidId);
+    }
+
+    @Override
+    public Response<Bid> updateBid(int storeId, int bidId, double newPrice) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.updateBid(storeId, bidId, newPrice);
+    }
+
+    @Override
+    public Response<Boolean> approveAllBids(int storeId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.approveAllBids(storeId);
+    }
+
+    @Override
+    public Response<List<Map.Entry<LocalDate, Stats>>> getStats() {
+        if (this.real == null) {
+            return null;
+        }
+        return real.getStats();
+    }
+
+    @Override
+    public Response<Boolean> addOwnerAgreement(String owner, int storeId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.addOwnerAgreement(owner, storeId);
+    }
+
+    @Override
+    public Response<OwnerAgreement> approveOwnerAgreement(int storeId, String bidId) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.approveOwnerAgreement(storeId, bidId);
+    }
+    @Override
+    public Response<Boolean> setManagerPermission(String manager, int storeId, byte permission) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.setManagerPermission(manager, storeId, permission);
+    }
+
+    @Override
+    public Response<AbstractPurchasePolicy> addItemLimitPredicateToPolicy(int storeId, int policyId, String type, int itemId, int min, int max) {
+        if (this.real == null) {
+            return null;
+        }
+        return real.addItemLimitPredicateToPolicy(storeId, policyId, type, itemId, min, max);
     }
 }

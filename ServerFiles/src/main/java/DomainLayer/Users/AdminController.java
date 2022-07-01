@@ -1,5 +1,8 @@
 package DomainLayer.Users;
 
+import DataLayer.AdminManager;
+import DataLayer.DALObjects.AdminDAL;
+import DataLayer.StoreManager;
 import DomainLayer.Stores.StoreController;
 import Utility.LogUtility;
 
@@ -10,22 +13,25 @@ public class AdminController {
 
     private Set<String> admins;
 
-    public AdminController() {
+    private AdminController() {
         this.admins = new HashSet<>();
 
         // load database
+        AdminManager.getInstance().loadAllSystemAdmins().forEach(a -> admins.add(a.getAdmin_name()));
+
 
         if (admins.isEmpty()) {
-            admins.add(UserController.DEFAULT_ADMIN_USER);
+            addAdmin(UserController.DEFAULT_ADMIN_USER);
         }
 
     }
 
     public void clearAll() {
         admins = new HashSet<>();
+        AdminManager.getInstance().clearTable();
 
         if (admins.isEmpty()) {
-            admins.add(UserController.DEFAULT_ADMIN_USER);
+            addAdmin(UserController.DEFAULT_ADMIN_USER);
         }
     }
 
@@ -34,10 +40,18 @@ public class AdminController {
             if (admins.contains(name)) {
                 return false;
             }
-            admins.add(name);
+            AdminManager.getInstance().addObject(toDAL(name));
             LogUtility.info(String.format("Admin %s was added", name));
+            admins.add(name);
             return true;
         }
+    }
+
+    private AdminDAL toDAL(String name)
+    {
+        AdminDAL admin = new AdminDAL();
+        admin.setAdmin_name(name);
+        return admin;
     }
 
     public boolean isAdmin(String name) {
@@ -55,6 +69,7 @@ public class AdminController {
                 admins.remove(name);
                 return true;
             }
+            AdminManager.getInstance().removeObject(toDAL(name));
             LogUtility.info(String.format("Admin %s was removed", name));
             return false;
         }

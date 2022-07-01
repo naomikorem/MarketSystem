@@ -1,5 +1,6 @@
 package DomainLayer.Stores.Predicates;
 
+import DataLayer.PredicateManager;
 import DomainLayer.Stores.Item;
 import DomainLayer.Users.ShoppingBasket;
 
@@ -23,6 +24,7 @@ public abstract class CompositePredicate extends AbstarctPredicate {
 
     public void addPredicate(AbstarctPredicate ap) {
         this.preds.add(ap);
+        PredicateManager.getInstance().addObject(this.toDAL());
     }
 
     public CompositePredicate(List<AbstarctPredicate> preds) {

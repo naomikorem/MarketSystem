@@ -9,6 +9,11 @@ public class GuestState implements UserState {
     }
 
     @Override
+    public String getPassword() {
+        throw new RuntimeException("Guest user does not have a password field");
+    }
+
+    @Override
     public String getFirstName() {
         throw new RuntimeException("Guest user does not have a name field");
     }
