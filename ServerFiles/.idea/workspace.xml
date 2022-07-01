@@ -69,7 +69,7 @@
       <recent name="acceptenceTests" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.StorePolicyTests.testLimitItemAmountPolicy">
+  <component name="RunManager" selected="Application.Server">
     <configuration name="Server" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="ServiceLayer.Server" />
       <module name="MarketSystem" />
@@ -148,10 +148,10 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Server" />
         <item itemvalue="JUnit.StorePolicyTests.testLimitItemAmountPolicy" />
         <item itemvalue="JUnit.StorePolicyTests.testOrPolicy" />
         <item itemvalue="JUnit.StorePolicyTests.testStoreGeneralPolicySuccess" />
-        <item itemvalue="Application.Server" />
         <item itemvalue="JUnit.StoreInventoryTest" />
       </list>
     </recent_temporary>
